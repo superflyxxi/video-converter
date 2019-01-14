@@ -1,0 +1,2 @@
+ffmpeg -i 10\ Things\ I\ Hate\ About\ You.mkv -map 0:1 -filter:a loudnorm=print_format=summary -f null -
+ffmpeg -i 10\ Things\ I\ Hate\ About\ You.mkv -map 0:1 -filter:a loudnorm=measured_I=-22.3:measured_TP=-0.6:measured_LRA=18.8:measured_thresh=-33.9 -metadata:s:0:0 title=Normalized English 5.1 normalized.aac 

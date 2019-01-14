@@ -1,0 +1,4 @@
+https://trac.ffmpeg.org/wiki/ExtractSubtitles
+
+ffmpeg -txt_format text -i input_file out.srt
+

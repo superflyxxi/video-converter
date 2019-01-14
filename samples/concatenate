@@ -1,0 +1,6 @@
+# make a file with list of files
+# file '/path/to/file1'
+# file '/path/to/file2'
+
+ffmpeg -f concat -safe 0 -i mylist.txt -c copy -f matroska finalFile.mkv
+

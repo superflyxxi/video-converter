@@ -1,0 +1,1 @@
+ffmpeg -y -hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128 -i "../torrents/Wedding Crashers (2005) (1080p BluRay x265 HEVC 10bit AAC 5.1 Tigole)/Wedding Crashers (2005) (1080p x265 10bit Tigole).mkv" -c:v copy -map 0:v -c:s copy -map 0:s -c:a eac3 -q:a 576 -map 0:1 -f matroska "/usr/media/videos/film/Wedding Crashers (2005)-HDCopy.mkv"

@@ -1,0 +1,1 @@
+ffmpeg -i "Shaolin Soccer (2001)-HD.mkv" -i Shaolin\ Soccer\ \(2001\).en.srt -c copy -map 0 -map 1 -c:s:1 ass -metadata:s:s:1 language=eng "Shaolin Soccer (2001)-sub.mkv"
