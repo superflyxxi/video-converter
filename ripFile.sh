@@ -21,7 +21,7 @@ if [ -z "${OUTPUT}" ]; then
 		OUTPUT="${OUTPUT} (${YEAR})"
 	fi
 fi
-OUTPUT_DIR=${OUTPUT_DIR:-/usr/media/videos/rip}
+OUTPUT_DIR=${OUTPUT_DIR:-/usr/media/rip}
 
 LOG=${LOG:-y}
 if [[ "${LOG}" == "y" ]]; then
@@ -48,18 +48,19 @@ SUBTITLE_FORMAT=${SUBTITLE_FORMAT:-ass}
 SUBTITLE_TRACK_ARGS="-c:s ${SUBTITLE_FORMAT} -map 0:${SUBTITLE_TRACK}"
 
 AUDIO_TRACK=${AUDIO_TRACK:-a}
+AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT:-5.1}
 # AUDIO_QUALITY=${AUDIO_QUALITY:-576}
 AUDIO_QUALITY=${AUDIO_QUALITY:-2} # Variable Bitrate of 2 is good
 AUDIO_FORMAT=${AUDIO_FORMAT:-aac} # libfdk_aac is for aac highest quality, aac for great quality, and eac3 is Dolby Digital Ex
 # AUDIO_TRACK_ARGS="-c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
-AUDIO_TRACK_ARGS="-c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
+AUDIO_TRACK_ARGS="-filter:a channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} -c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
 
 HWACCEL=${HWACCEL:-y}
 HWACCEL_ARGS="-hwaccel vaapi "
 if [[ ${HWACCEL} == "y" ]]; then
 	HWACCEL_ARGS="${HWACCEL_ARGS} -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
 	if [[ ${DEINTERLACE:-n} == "y" ]]; then
-		DEINTERLACE_ARGS="-vf 'deinterlace_vaapi=rate=field:auto=1'"
+		DEINTERLACE_ARGS="-vf deinterlace_vaapi=rate=field:auto=1"
 	fi
 fi
 
