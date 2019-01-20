@@ -4,7 +4,7 @@ if [ -z "${SEASON_DIR}" ]; then
 	exit 1;
 fi
 
-RIP_SH=/usr/media/videos/rip/ripFileWip.sh
+RIP_SH=/usr/media/rip/ripFile.sh
 
 LOG=${LOG:-n}
 if [[ "${LOG}" == "y" ]]; then
