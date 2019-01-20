@@ -87,7 +87,7 @@ ffmpeg -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
 	-f matroska "${OUTPUT_DIR}/${OUTPUT}.mkv"
 
 if [[ ${NORMALIZE:-y} == "y" ]]; then
-	// Save an Array of Values from output for only measured values
+	# Save an Array of Values from output for only measured values
 	NORMALIZE_TRACK=${NORMALIZE_TRACK:-1}
 	VALUES=(`ffmpeg -i "${OUTPUT_DIR}/${OUTPUT}.mkv" -map 0:${NORMALIZE_TRACK} -filter:a loudnorm=print_format=json -f null - \
 		| grep \"input \
