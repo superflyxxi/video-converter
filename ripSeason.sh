@@ -22,6 +22,7 @@ SEASON_OVR=${SEASON}
 EPISODE_OVR=${EPISODE}
 TITLE_OVR=${TITLE}
 SUBTITLE_OVR=${SUBTITLE}
+OUTPUT_DIR_OVR=${OUTPUT_DIR}
 
 set -x
 for file in $( ls -1 ${SEASON_DIR} ); do
@@ -29,7 +30,8 @@ for file in $( ls -1 ${SEASON_DIR} ); do
 	EPISODE=${EPISODE_OVR:-`echo "$file" | sed "s/${EPISODE_REGEX}/\1/"`}
 	TITLE=${TITLE_OVR:-`echo "$file" | sed "s/${TITLE_REGEX}/\1/" | sed "s/^\ //" | sed "s/\ $//" | sed "s/\ \ /\ /g"`}
 	SUBTITLE=${SUBTITLE_OVR:-`echo "$file" | sed "s/${SUBTITLE_REGEX}/\1/" | sed "s/^\ //" | sed "s/\ $//" | sed "s/\ \ /\ /g"`}
-	OUTPUT_DIR="${SEASON_DIR}" INPUT="${SEASON_DIR}/${file}" SEASON=${SEASON} EPISODE=${EPISODE} TITLE=${TITLE} SUBTITLE=${SUBTITLE} ${RIP_SH}
+	OUTPUT_DIR=${OUTPUT_DIR_OVR:-${SEASON_DIR}}
+	OUTPUT_DIR="${OUTPUT_DIR}" INPUT="${SEASON_DIR}/${file}" SEASON=${SEASON} EPISODE=${EPISODE} TITLE=${TITLE} SUBTITLE=${SUBTITLE} ${RIP_SH}
 	if [[ "${TEST:-n}" == "y" ]]; then
 		exit 0
 	fi
