@@ -88,18 +88,8 @@ ffmpeg -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
 
 if [[ ${NORMALIZE:-y} == "y" ]]; then
 	# Save an Array of Values from output for only measured values
-	NORMALIZE_TRACK=${NORMALIZE_TRACK:-1}
-	VALUES=(`ffmpeg -i "${OUTPUT_DIR}/${OUTPUT}.mkv" -map 0:${NORMALIZE_TRACK} -filter:a loudnorm=print_format=json -f null - \
-		| grep \"input \
-		| awk '{print $3}' \
-		| grep -o "\-*[0-9.]*"`)
-	echo Measured_I=${VALUES[0]} Measured_TP=${VALUES[1]} Measured_LRA=${VALUES[2]} Measured_Thresh=${VALUES[3]}
-	ffmpeg -i "${OUTPUT_DIR}/${OUTPUT}.mkv" -map 0:${NORMALIZE_TRACK} -filter:a \
-		loudnorm=measured_I=${VALUES[0]}:measured_TP=${VALUES[1]}:measured_LRA=${VALUES[2]}:measured_thresh=${VALUES[3]} \
-		-filter:a channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} -c ${AUDIO_FORMAT} -q ${AUDIO_QUALITY} \
-		-metadata:s:a:0 "title=Normalized Audio" \
-		-f matroska "${OUTPUT_DIR}/${OUTPUT}-normAudio.mkv"
-	ffmpeg -i "${OUTPUT_DIR}/${OUTPUT}.mkv" -i "${OUTPUT_DIR}/${OUTPUT}-normAudio.mkv" -map 0:v -map 0:a -map 1:a -map 0:s? \
-		-c copy -f matroska "${OUTPUT_DIR}/${OUTPUT}-norm.mkv"
+	NORMALIZE_SH=/usr/media/rip/normalizeAudio.sh
+	INPUT="${OUTPUT_DIR}/${OUTPUT}.mkv" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
+		AUDIO_QUALITY=${AUDIO_QUALITY} ${NORMALIZE_SH}
 fi;
 
