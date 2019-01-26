@@ -24,7 +24,7 @@ echo Measured_I=${VALUES[0]} Measured_TP=${VALUES[1]} Measured_LRA=${VALUES[2]} 
 ffmpeg -i "${INPUT}" -y -map 0:${NORMALIZE_TRACK} -filter:a \
 	loudnorm=measured_I=${VALUES[0]}:measured_TP=${VALUES[1]}:measured_LRA=${VALUES[2]}:measured_thresh=${VALUES[3]} \
 	-filter:a channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} -c ${AUDIO_FORMAT} -q ${AUDIO_QUALITY} \
-	-metadata:s:a:0 "title=Normalized Audio" \
+	-metadata:s:a:0 "title=Normalized ${AUDIO_CHANNEL_LAYOUT}" \
 	-f matroska "${INPUT}-normAudio.mkv"
 ffmpeg -i "${INPUT}" -i "${INPUT}-normAudio.mkv" -y -map 0:v -map 0:a -map 1:a -map 0:s? \
 	-c copy -f matroska "${INPUT}-norm.mkv"
