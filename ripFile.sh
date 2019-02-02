@@ -86,3 +86,10 @@ ffmpeg -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
 	-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
 	-f matroska "${OUTPUT_DIR}/${OUTPUT}.mkv"
 
+if [[ ${NORMALIZE:-y} == "y" ]]; then
+	# Save an Array of Values from output for only measured values
+	NORMALIZE_SH=/usr/media/rip/normalizeAudio.sh
+	INPUT="${OUTPUT_DIR}/${OUTPUT}.mkv" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
+		AUDIO_QUALITY=${AUDIO_QUALITY} ${NORMALIZE_SH}
+fi;
+
