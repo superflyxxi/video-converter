@@ -54,7 +54,6 @@ AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT:-5.1}
 AUDIO_QUALITY=${AUDIO_QUALITY:-2} # Variable Bitrate of 2 is good
 AUDIO_FORMAT=${AUDIO_FORMAT:-aac} # libfdk_aac is for aac highest quality, aac for great quality, and eac3 is Dolby Digital Ex
 # AUDIO_TRACK_ARGS="-c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
-
 for audioLayoutTrack in ${AUDIO_CHANNEL_MAPPING_TRACKS}; do
 	AUDIO_LAYOUT_ARGS="${AUDIO_LAYOUT_ARGS} -filter:${audioLayoutTrack} channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT}"
 done
@@ -90,4 +89,11 @@ ffmpeg -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
 	-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
 	-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
 	-f matroska "${OUTPUT_DIR}/${OUTPUT}.mkv"
+
+if [[ ${NORMALIZE:-y} == "y" ]]; then
+	# Save an Array of Values from output for only measured values
+	NORMALIZE_SH=/usr/media/rip/normalizeAudio.sh
+	INPUT="${OUTPUT_DIR}/${OUTPUT}.mkv" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
+		AUDIO_QUALITY=${AUDIO_QUALITY} ${NORMALIZE_SH}
+fi;
 
