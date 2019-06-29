@@ -21,7 +21,7 @@ if [ -z "${OUTPUT}" ]; then
 		OUTPUT="${OUTPUT} (${YEAR})"
 	fi
 fi
-OUTPUT_DIR=${OUTPUT_DIR:-/usr/media/rip}
+OUTPUT_DIR=${OUTPUT_DIR:-/data}
 
 LOG=${LOG:-y}
 if [[ "${LOG}" == "y" ]]; then
@@ -34,7 +34,7 @@ set -v
 INPUT_EXT="${INPUT: -4}"
 if [[ -d ${INPUT} ]] || [[ ${INPUT_EXT,,} == ".iso" ]]; then
 	echo "Using bluray directory"
-	INPUT=bluray:${INPUT}
+	INPUT_PREFIX="bluray:"
 else
 	echo "Using filename"
 fi
@@ -75,21 +75,33 @@ if [[ ${HDR:-n} == "y" ]]; then
 	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10 -map 0:${VIDEO_TRACK}"
 fi
 
-set -x
+echo INPUT=${INPUT}
+FILE_DIR=`dirname "${INPUT}"`
+echo FILE_DIR=${FILE_DIR}
+FILE_DIR=`realpath "${FILE_DIR}"`
+echo FILE_DIR=${FILE_DIR}
+CONTAINER_INPUT=/data/`basename "${INPUT}"`
+echo CONTAINER_INPUT=${CONTAINER_INPUT}
 
-ffmpeg -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
-	${PLAYLIST_ARGS} -i "${INPUT}" \
+set -x
+docker run \
+  --user $UID --privileged \
+  -v /dev/dri:/dev/dri \
+  -v "${FILE_DIR}":/data \
+  -it \
+  ffmpeg -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
+	${PLAYLIST_ARGS} -i "${INPUT_PREFIX}${CONTAINER_INPUT}" \
 	${VIDEO_TRACK_ARGS} ${DEINTERLACE_ARGS} \
 	${AUDIO_TRACK_ARGS} \
 	${SUBTITLE_TRACK_ARGS} \
 	-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
 	-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
-	-f matroska "${OUTPUT_DIR}/${OUTPUT}.mkv"
+	-f matroska "${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
 
-if [[ ${NORMALIZE:-y} == "y" ]]; then
+if [[ ${NORMALIZE:-n} == "y" ]]; then
 	# Save an Array of Values from output for only measured values
 	NORMALIZE_SH=/usr/media/rip/normalizeAudio.sh
-	INPUT="${OUTPUT_DIR}/${OUTPUT}.mkv" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
+	INPUT="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
 		AUDIO_QUALITY=${AUDIO_QUALITY} ${NORMALIZE_SH}
 fi;
 
