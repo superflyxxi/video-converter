@@ -53,9 +53,9 @@ AUDIO_FORMAT=${AUDIO_FORMAT:-aac} # libfdk_aac is for aac highest quality, aac f
 AUDIO_TRACK_ARGS="-filter:a channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} -c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
 
 HWACCEL=${HWACCEL:-y}
-if [[ ${HWACCEL} == "y" ]]; then
+if [[ "${HWACCEL}" == "y" ]]; then
 	HWACCEL_ARGS="--privileged -v /dev/dri:/dev/dri -hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
-	if [[ ${DEINTERLACE:-n} == "y" ]]; then
+	if [[ "${DEINTERLACE:-n}" == "y" ]]; then
 		DEINTERLACE_ARGS="-vf deinterlace_vaapi=rate=field:auto=1"
 	fi
 else
@@ -63,13 +63,13 @@ else
 fi
 
 VIDEO_TRACK=${VIDEO_TRACK:-v}
-if [[ ${HWACCEL} == "y" ]]; then
+if [[ "${HWACCEL}" == "y" ]]; then
 	VIDEO_TRACK_ARGS="-c:v hevc_vaapi -qp 20 -level:v 41 -map 0:${VIDEO_TRACK}"
 else
 	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 41 -map 0:${VIDEO_TRACK}"
 fi
 
-if [[ ${HDR:-n} == "y" ]]; then
+if [[ "${HDR:-n}" == "y" ]]; then
 	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10 -map 0:${VIDEO_TRACK}"
 fi
 
