@@ -84,6 +84,8 @@ else
 	DOCKER_DAEMON_ARGS="-it"
 fi
 
+OUTPUT_FILE="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
+
 set -e
 docker run \
   -v "${FILE_DIR}":/data \
@@ -96,12 +98,12 @@ docker run \
 	${SUBTITLE_TRACK_ARGS} \
 	-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
 	-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
-	-f matroska "${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
+	-f matroska "${OUTPUT_FILE}"
 
 if [[ "${DOCKER_DAEMON}" != "y" && "${NORMALIZE:-n}" == "y" ]]; then
 	# Save an Array of Values from output for only measured values
-	NORMALIZE_SH=/usr/media/rip/normalizeAudio.sh
-	INPUT="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
+	NORMALIZE_SH=./normalizeAudio.sh
+	INPUT="${OUTPUT_FILE}" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
 		AUDIO_QUALITY=${AUDIO_QUALITY} ${NORMALIZE_SH}
 fi;
 
