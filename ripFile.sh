@@ -59,7 +59,7 @@ if [[ "${HWACCEL}" == "y" ]]; then
 		DEINTERLACE_ARGS="-vf deinterlace_vaapi=rate=field:auto=1"
 	fi
 else
-	HWACCEL_ARGS="--user ${USER}"
+	HWACCEL_ARGS="--user ${UID}"
 fi
 
 VIDEO_TRACK=${VIDEO_TRACK:-v}
