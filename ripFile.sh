@@ -85,7 +85,7 @@ echo FILE_DIR=${FILE_DIR}
 CONTAINER_INPUT=/data/`basename "${INPUT}"`
 echo CONTAINER_INPUT=${CONTAINER_INPUT}
 
-set -x
+set -ex
 docker run \
   --user $UID --privileged \
   -v /dev/dri:/dev/dri \
