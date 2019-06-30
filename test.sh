@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# Assuming FFMPEG_DOCKER set
 IMAGE=${IMAGE:-ripfile}
 
 set -ex
