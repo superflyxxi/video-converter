@@ -93,7 +93,7 @@ fi
 
 OUTPUT_FILE="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
 
-set -ex
+set -e
 docker run ${DOCKER_HWACCEL_ARGS} \
   -v "${FILE_DIR}":/data \
   ${DOCKER_DAEMON_ARGS} \
