@@ -94,7 +94,9 @@ fi
 OUTPUT_FILE="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
 
 set -e
-docker run ${DOCKER_HWACCEL_ARGS} \
+docker run \
+  ${DOCKER_HWACCEL_ARGS} \
+  --name ${INPUT} \
   -v "${FILE_DIR}":/data \
   ${DOCKER_DAEMON_ARGS} \
   ${FFMPEG_DOCKER} -${OVERWRITE_FILE:-y} \
