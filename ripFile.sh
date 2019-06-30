@@ -9,6 +9,11 @@ if [ -z "${TITLE}" ]; then
 	exit 2;
 fi
 
+FFMPEG_DOCKER=${FFMPEG_DOCKER:-ffmpeg-vaapi}
+if [[ "y" == "${DOCKER_PULL:-y}" ]]; then
+	docker pull ${FFMPEG_DOCKER}
+fi
+
 if [ -z "${OUTPUT}" ]; then
 	OUTPUT="${TITLE}"
 	if [ ! -z "${SEASON}" ]; then
@@ -21,20 +26,12 @@ if [ -z "${OUTPUT}" ]; then
 		OUTPUT="${OUTPUT} (${YEAR})"
 	fi
 fi
-OUTPUT_DIR=${OUTPUT_DIR:-/usr/media/rip}
+OUTPUT_DIR=${OUTPUT_DIR:-/data}
 
-LOG=${LOG:-y}
-if [[ "${LOG}" == "y" ]]; then
-	LOGFILE=${OUTPUT_DIR}/${OUTPUT}.log
-	exec 1>"${LOGFILE}"
-	exec 2>"${LOGFILE}"
-fi
-
-set -v
 INPUT_EXT="${INPUT: -4}"
 if [[ -d ${INPUT} ]] || [[ ${INPUT_EXT,,} == ".iso" ]]; then
 	echo "Using bluray directory"
-	INPUT=bluray:${INPUT}
+	INPUT_PREFIX="bluray:"
 else
 	echo "Using filename"
 fi
@@ -56,40 +53,64 @@ AUDIO_FORMAT=${AUDIO_FORMAT:-aac} # libfdk_aac is for aac highest quality, aac f
 AUDIO_TRACK_ARGS="-filter:a channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} -c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
 
 HWACCEL=${HWACCEL:-y}
-HWACCEL_ARGS="-hwaccel vaapi "
-if [[ ${HWACCEL} == "y" ]]; then
-	HWACCEL_ARGS="${HWACCEL_ARGS} -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
-	if [[ ${DEINTERLACE:-n} == "y" ]]; then
+if [[ "${HWACCEL}" == "y" ]]; then
+	DOCKER_HWACCEL_ARGS="--device /dev/dri:/dev/dri"
+	FFMPEG_HWACCEL_ARGS="-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
+	if [[ "${DEINTERLACE:-n}" == "y" ]]; then
 		DEINTERLACE_ARGS="-vf deinterlace_vaapi=rate=field:auto=1"
 	fi
+else
+	DOCKER_HWACCEL_ARGS="--user ${UID}"
 fi
 
 VIDEO_TRACK=${VIDEO_TRACK:-v}
-if [[ ${HWACCEL} == "y" ]]; then
+if [[ "${HWACCEL}" == "y" ]]; then
 	VIDEO_TRACK_ARGS="-c:v hevc_vaapi -qp 20 -level:v 41 -map 0:${VIDEO_TRACK}"
 else
 	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 41 -map 0:${VIDEO_TRACK}"
 fi
 
-if [[ ${HDR:-n} == "y" ]]; then
+if [[ "${HDR:-n}" == "y" ]]; then
 	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10 -map 0:${VIDEO_TRACK}"
 fi
 
-set -x
+echo INPUT=${INPUT}
+if [[ -f "${INPUT}" ]]; then
+	# if a file
+	FILE_DIR=`dirname "${INPUT}"`
+	FILE_DIR=`realpath "${FILE_DIR}"`
+	CONTAINER_INPUT=/data/`basename "${INPUT}"`
+else
+	FILE_DIR=`realpath "${INPUT}"`
+	CONTAINER_INPUT="/data"
+fi
 
-ffmpeg -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
-	${PLAYLIST_ARGS} -i "${INPUT}" \
+if [[ "${DOCKER_DAEMON:-n}" == "y" ]]; then
+	DOCKER_DAEMON_ARGS="-d"
+else
+	DOCKER_DAEMON_ARGS="-it"
+fi
+
+OUTPUT_FILE="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
+
+set -e
+docker run ${DOCKER_HWACCEL_ARGS} \
+  -v "${FILE_DIR}":/data \
+  ${DOCKER_DAEMON_ARGS} \
+  ${FFMPEG_DOCKER} -${OVERWRITE_FILE:-y} \
+	${FFMPEG_HWACCEL_ARGS} \
+	${PLAYLIST_ARGS} -i "${INPUT_PREFIX}${CONTAINER_INPUT}" \
 	${VIDEO_TRACK_ARGS} ${DEINTERLACE_ARGS} \
 	${AUDIO_TRACK_ARGS} \
 	${SUBTITLE_TRACK_ARGS} \
 	-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
 	-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
-	-f matroska "${OUTPUT_DIR}/${OUTPUT}.mkv"
+	-f matroska "${OUTPUT_FILE}"
 
-if [[ ${NORMALIZE:-y} == "y" ]]; then
+if [[ "${DOCKER_DAEMON}" != "y" && "${NORMALIZE:-n}" == "y" ]]; then
 	# Save an Array of Values from output for only measured values
-	NORMALIZE_SH=/usr/media/rip/normalizeAudio.sh
-	INPUT="${OUTPUT_DIR}/${OUTPUT}.mkv" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
+	NORMALIZE_SH=./normalizeAudio.sh
+	INPUT="${OUTPUT_FILE}" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
 		AUDIO_QUALITY=${AUDIO_QUALITY} ${NORMALIZE_SH}
 fi;
 
