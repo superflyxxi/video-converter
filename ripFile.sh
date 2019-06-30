@@ -74,9 +74,15 @@ if [[ "${HDR:-n}" == "y" ]]; then
 fi
 
 echo INPUT=${INPUT}
-FILE_DIR=`dirname "${INPUT}"`
-FILE_DIR=`realpath "${FILE_DIR}"`
-CONTAINER_INPUT=/data/`basename "${INPUT}"`
+if [[ -f "${INPUT}" ]]; then
+	# if a file
+	FILE_DIR=`dirname "${INPUT}"`
+	FILE_DIR=`realpath "${FILE_DIR}"`
+	CONTAINER_INPUT=/data/`basename "${INPUT}"`
+else
+	FILE_DIR=${INPUT}
+	CONTAINER_INPUT="/data"
+fi
 
 if [[ "${DOCKER_DAEMON:-n}" == "y" ]]; then
 	DOCKER_DAEMON_ARGS="-d"
