@@ -28,7 +28,6 @@ if [ -z "${OUTPUT}" ]; then
 fi
 OUTPUT_DIR=${OUTPUT_DIR:-/data}
 
-set -v
 INPUT_EXT="${INPUT: -4}"
 if [[ -d ${INPUT} ]] || [[ ${INPUT_EXT,,} == ".iso" ]]; then
 	echo "Using bluray directory"
