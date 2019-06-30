@@ -9,6 +9,8 @@ if [ -z "${TITLE}" ]; then
 	exit 2;
 fi
 
+FFMPEG_DOCKER=${FFMPEG_DOCKER:-ffmpeg-vaapi}
+
 if [ -z "${OUTPUT}" ]; then
 	OUTPUT="${TITLE}"
 	if [ ! -z "${SEASON}" ]; then
@@ -89,7 +91,7 @@ docker run \
   -v /dev/dri:/dev/dri \
   -v "${FILE_DIR}":/data \
   -it \
-  ffmpeg -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
+  ${FFMPEG_DOCKER} -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
 	${PLAYLIST_ARGS} -i "${INPUT_PREFIX}${CONTAINER_INPUT}" \
 	${VIDEO_TRACK_ARGS} ${DEINTERLACE_ARGS} \
 	${AUDIO_TRACK_ARGS} \
