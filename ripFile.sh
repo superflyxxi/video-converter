@@ -28,13 +28,6 @@ if [ -z "${OUTPUT}" ]; then
 fi
 OUTPUT_DIR=${OUTPUT_DIR:-/data}
 
-LOG=${LOG:-y}
-if [[ "${LOG}" == "y" ]]; then
-	LOGFILE=${OUTPUT_DIR}/${OUTPUT}.log
-	exec 1>"${LOGFILE}"
-	exec 2>"${LOGFILE}"
-fi
-
 set -v
 INPUT_EXT="${INPUT: -4}"
 if [[ -d ${INPUT} ]] || [[ ${INPUT_EXT,,} == ".iso" ]]; then
@@ -87,13 +80,18 @@ echo FILE_DIR=${FILE_DIR}
 CONTAINER_INPUT=/data/`basename "${INPUT}"`
 echo CONTAINER_INPUT=${CONTAINER_INPUT}
 
-set -ex
-#  --user $UID
+if [[ "${DOCKER_DAEMON:-n}" == "y" ]]; then
+	DOCKER_DAEMON_ARGS="-d"
+else
+	DOCKER_DAEMON_ARGS="-it"
+fi
+
+set -e
 docker run \
   --privileged \
   -v /dev/dri:/dev/dri \
   -v "${FILE_DIR}":/data \
-  -it \
+  ${DOCKER_DAEMON_ARGS} \
   ${FFMPEG_DOCKER} -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
 	${PLAYLIST_ARGS} -i "${INPUT_PREFIX}${CONTAINER_INPUT}" \
 	${VIDEO_TRACK_ARGS} ${DEINTERLACE_ARGS} \
@@ -103,7 +101,7 @@ docker run \
 	-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
 	-f matroska "${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
 
-if [[ ${NORMALIZE:-n} == "y" ]]; then
+if [[ "${DOCKER_DAEMON}" != "y" && "${NORMALIZE:-n}" == "y" ]]; then
 	# Save an Array of Values from output for only measured values
 	NORMALIZE_SH=/usr/media/rip/normalizeAudio.sh
 	INPUT="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
