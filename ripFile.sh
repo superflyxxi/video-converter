@@ -73,11 +73,8 @@ fi
 
 echo INPUT=${INPUT}
 FILE_DIR=`dirname "${INPUT}"`
-echo FILE_DIR=${FILE_DIR}
 FILE_DIR=`realpath "${FILE_DIR}"`
-echo FILE_DIR=${FILE_DIR}
 CONTAINER_INPUT=/data/`basename "${INPUT}"`
-echo CONTAINER_INPUT=${CONTAINER_INPUT}
 
 if [[ "${DOCKER_DAEMON:-n}" == "y" ]]; then
 	DOCKER_DAEMON_ARGS="-d"
