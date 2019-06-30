@@ -1,0 +1,16 @@
+language: minimal
+
+services:
+  - docker
+
+before_install:
+  - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
+  - sudo service docker restart
+  - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
+  - sudo apt-get install -y realpath
+
+script:
+  - set -e
+  - ./build.sh
+  - ./test.sh
+
