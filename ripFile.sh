@@ -58,9 +58,8 @@ AUDIO_FORMAT=${AUDIO_FORMAT:-aac} # libfdk_aac is for aac highest quality, aac f
 AUDIO_TRACK_ARGS="-filter:a channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} -c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
 
 HWACCEL=${HWACCEL:-y}
-HWACCEL_ARGS="-hwaccel vaapi "
 if [[ ${HWACCEL} == "y" ]]; then
-	HWACCEL_ARGS="${HWACCEL_ARGS} -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
+	HWACCEL_ARGS="-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
 	if [[ ${DEINTERLACE:-n} == "y" ]]; then
 		DEINTERLACE_ARGS="-vf deinterlace_vaapi=rate=field:auto=1"
 	fi
