@@ -3,10 +3,6 @@ language: minimal
 services:
   - docker
 
-env:
-  global:
-    - FFMPEG_DOCKER=${FFMPEG_REGISTRY}/superflyxxi/ffmpeg-vaapi
-
 before_install:
   - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
   - sudo service docker restart
