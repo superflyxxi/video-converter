@@ -107,6 +107,7 @@ docker run \
 	${SUBTITLE_TRACK_ARGS} \
 	-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
 	-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
+	${OTHER_METADATA} \
 	-f matroska "${OUTPUT_FILE}"
 
 if [[ "${DOCKER_DAEMON}" != "y" && "${NORMALIZE:-n}" == "y" ]]; then
