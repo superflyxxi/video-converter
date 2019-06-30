@@ -54,10 +54,12 @@ AUDIO_TRACK_ARGS="-filter:a channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} -c
 
 HWACCEL=${HWACCEL:-y}
 if [[ ${HWACCEL} == "y" ]]; then
-	HWACCEL_ARGS="-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
+	HWACCEL_ARGS="--privileged -v /dev/dri:/dev/dri -hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
 	if [[ ${DEINTERLACE:-n} == "y" ]]; then
 		DEINTERLACE_ARGS="-vf deinterlace_vaapi=rate=field:auto=1"
 	fi
+else
+	HWACCEL_ARGS="--user ${USER}"
 fi
 
 VIDEO_TRACK=${VIDEO_TRACK:-v}
@@ -84,11 +86,10 @@ fi
 
 set -e
 docker run \
-  --privileged \
-  -v /dev/dri:/dev/dri \
   -v "${FILE_DIR}":/data \
   ${DOCKER_DAEMON_ARGS} \
-  ${FFMPEG_DOCKER} -${OVERWRITE_FILE:-y} ${HWACCEL_ARGS} \
+  ${FFMPEG_DOCKER} -${OVERWRITE_FILE:-y} \
+	${HWACCEL_ARGS} \
 	${PLAYLIST_ARGS} -i "${INPUT_PREFIX}${CONTAINER_INPUT}" \
 	${VIDEO_TRACK_ARGS} ${DEINTERLACE_ARGS} \
 	${AUDIO_TRACK_ARGS} \
