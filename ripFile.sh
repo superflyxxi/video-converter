@@ -10,6 +10,9 @@ if [ -z "${TITLE}" ]; then
 fi
 
 FFMPEG_DOCKER=${FFMPEG_DOCKER:-ffmpeg-vaapi}
+if [[ "y" == "${DOCKER_PULL:-y}" ]]; then
+	docker pull ${FFMPEG_DOCKER}
+fi
 
 if [ -z "${OUTPUT}" ]; then
 	OUTPUT="${TITLE}"
@@ -85,8 +88,9 @@ CONTAINER_INPUT=/data/`basename "${INPUT}"`
 echo CONTAINER_INPUT=${CONTAINER_INPUT}
 
 set -ex
+#  --user $UID
 docker run \
-  --user $UID --privileged \
+  --privileged \
   -v /dev/dri:/dev/dri \
   -v "${FILE_DIR}":/data \
   -it \
