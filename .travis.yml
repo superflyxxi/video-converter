@@ -16,5 +16,5 @@ before_install:
 script:
   - set -e
   - curl -L -o test.mpg https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg
-  - INPUT="test.mpg" TITLE="Test" YEAR="2019" LOG=n ./ripFile.sh 
+  - HWACCEL=n INPUT="test.mpg" TITLE="Test" YEAR="2019" LOG=n ./ripFile.sh 
 
