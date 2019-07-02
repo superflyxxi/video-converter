@@ -67,10 +67,14 @@ else
 fi
 
 VIDEO_TRACK=${VIDEO_TRACK:-v}
-if [[ "${HWACCEL}" == "y" ]]; then
-	VIDEO_TRACK_ARGS="-c:v hevc_vaapi -qp 20 -level:v 41 -map 0:${VIDEO_TRACK}"
+VIDEO_FROMAT=${VIDEO_FORMAT:-notcopy}
+VIDEO_TRACK_ARGS="-map 0:${VIDEO_TRACK}"
+if [[ "${VIDEO_FROMAT}" == "copy" ]]; then
+        VIDEO_TRACK_ARGS="${VIDEO_TRACK_ARGS} -c:v copy"
+elif [[ "${HWACCEL}" == "y" ]]; then
+	VIDEO_TRACK_ARGS="-c:v hevc_vaapi -qp 20 -level:v 41"
 else
-	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 41 -map 0:${VIDEO_TRACK}"
+	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 41"
 fi
 
 if [[ "${HDR:-n}" == "y" ]]; then
