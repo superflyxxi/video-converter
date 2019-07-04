@@ -3,7 +3,7 @@ language: minimal
 env:
   global:
     - THIS_LABEL=${TRAVIS_BRANCH}
-    - FROM_IMAGE=${FMPEG_DOCKER}
+    - FROM_IMAGE=${FFMPEG_DOCKER}
 
 services:
   - docker
