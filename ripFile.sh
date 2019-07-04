@@ -94,6 +94,8 @@ else
 fi
 OUTPUT_FILE="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
 
+CONTAINER_NAME=`echo ${INPUT} | sed 's# #_#g'`
+
 if [[ "${DOCKER_DAEMON:-n}" == "y" ]]; then
 	DOCKER_DAEMON_ARGS="-d"
 else
@@ -120,7 +122,7 @@ fi
 set -ex
 docker run \
   ${DOCKER_HWACCEL_ARGS} \
-  --name ${INPUT} \
+  --name ${CONTAINER_NAME} \
   -v "${FILE_DIR}":/data \
   ${DOCKER_DAEMON_ARGS} \
   ${FFMPEG_DOCKER} -${OVERWRITE_FILE:-y} \
