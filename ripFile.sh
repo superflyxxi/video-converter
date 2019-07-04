@@ -46,13 +46,14 @@ SUBTITLE_TRACK_ARGS="-c:s ${SUBTITLE_FORMAT} -map 0:${SUBTITLE_TRACK}"
 
 AUDIO_TRACK=${AUDIO_TRACK:-a}
 AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT:-5.1}
+AUDIO_CHANNEL_TRACK=${AUDIO_CHANNEL_TRACK:-0}
 # AUDIO_QUALITY=${AUDIO_QUALITY:-576}
 AUDIO_QUALITY=${AUDIO_QUALITY:-2} # Variable Bitrate of 2 is good
 AUDIO_FORMAT=${AUDIO_FORMAT:-aac} # libfdk_aac is for aac highest quality, aac for great quality, and eac3 is Dolby Digital Ex
 # AUDIO_TRACK_ARGS="-c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
 AUDIO_TRACK_ARGS="-map 0:${AUDIO_TRACK} -c:a ${AUDIO_FORMAT}"
 if [[ "copy" != "${AUDIO_FORMAT}" ]]; then
-	AUDIO_TRACK_ARGS="-filter:a channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} ${AUDIO_TRACK_ARGS} -q:a ${AUDIO_QUALITY}"
+	AUDIO_TRACK_ARGS="-filter:a:${AUDIO_CHANNEL_TRACK} channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} ${AUDIO_TRACK_ARGS} -q:a ${AUDIO_QUALITY}"
 fi
 
 HWACCEL=${HWACCEL:-y}
