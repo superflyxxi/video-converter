@@ -13,7 +13,7 @@ before_install:
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
   - sudo apt-get install -y realpath
-  - docker pull ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:latest
+  - docker pull ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:latest || true
 
 script:
   - set -e
