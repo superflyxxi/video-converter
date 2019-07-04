@@ -109,8 +109,9 @@ else
 	echo AUDIO_TRACK_ARGS=${AUDIO_TRACK_ARGS}
 	echo SUBTITLE_TRACK_ARGS=${SUBTITLE_TRACK_ARGS}
 	echo OTHER_METADATA=${OTHER_METADATA}
-	echo "Sleeping for 10s, now's your chance to stop"
-	sleep 10s
+	SLEEP=${SLEEP:-30s}
+	echo "Sleeping for ${SLEEP}, now's your chance to stop"
+	sleep ${SLEEP}
 fi
 
 set -ex
