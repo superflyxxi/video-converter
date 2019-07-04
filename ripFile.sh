@@ -72,9 +72,9 @@ VIDEO_TRACK_ARGS="-map 0:${VIDEO_TRACK}"
 if [[ "${VIDEO_FROMAT}" == "copy" ]]; then
         VIDEO_TRACK_ARGS="${VIDEO_TRACK_ARGS} -c:v copy"
 elif [[ "${HWACCEL}" == "y" ]]; then
-	VIDEO_TRACK_ARGS="-c:v hevc_vaapi -qp 20 -level:v 41"
+	VIDEO_TRACK_ARGS="${VIDEO_TRACK_ARGS} -c:v hevc_vaapi -qp 20 -level:v 41"
 else
-	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 41"
+	VIDEO_TRACK_ARGS="${VIDE_TRACK_ARGS} -c:v libx265 -crf 20 -level:v 41"
 fi
 
 if [[ "${HDR:-n}" == "y" ]]; then
@@ -100,7 +100,7 @@ fi
 
 OUTPUT_FILE="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
 
-set -e
+set -ex
 docker run \
   ${DOCKER_HWACCEL_ARGS} \
   --name ${INPUT} \
