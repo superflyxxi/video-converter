@@ -21,11 +21,12 @@ set -x
 VALUES=(`ffmpeg -i "${INPUT}" -map 0:${NORMALIZE_TRACK} -filter:a loudnorm=print_format=json -f null - 2>&1 | grep \"input | awk '{print $3}' | grep -o "\-*[0-9.]*"`)
 echo VALUES=${VALUES[*]}
 echo Measured_I=${VALUES[0]} Measured_TP=${VALUES[1]} Measured_LRA=${VALUES[2]} Measured_Thresh=${VALUES[3]}
-ffmpeg -i "${INPUT}" -y -map 0:${NORMALIZE_TRACK} -filter:a \
-	loudnorm=measured_I=${VALUES[0]}:measured_TP=${VALUES[1]}:measured_LRA=${VALUES[2]}:measured_thresh=${VALUES[3]} \
-	-filter:a channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} -c ${AUDIO_FORMAT} -q ${AUDIO_QUALITY} \
+ffmpeg -i "${INPUT}" -y \
+	-map 0:v -c:v copy \
+	-map 0:${NORMALIZE_TRACK} \
+	-filter:a:0 loudnorm=measured_I=${VALUES[0]}:measured_TP=${VALUES[1]}:measured_LRA=${VALUES[2]}:measured_thresh=${VALUES[3]},channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT} \
+	-c:a:0 ${AUDIO_FORMAT} -q:a:0 ${AUDIO_QUALITY} \
 	-metadata:s:a:0 "title=Normalized ${AUDIO_CHANNEL_LAYOUT}" \
-	-f matroska "${INPUT}-normAudio.mkv"
-ffmpeg -i "${INPUT}" -i "${INPUT}-normAudio.mkv" -y -map 0:v -map 0:a -map 1:a -map 0:s? \
-	-c copy -f matroska "${INPUT}-norm.mkv"
+	-map 0:s? -c:s copy \
+	-f matroska "${INPUT}-norm.mkv"
 
