@@ -9,3 +9,6 @@ fi
 HWACCEL=n INPUT=test.mpg TITLE="Test Title" YEAR=2019 DOCKER_DAEMON=n ./ripFile.sh 
 docker rm test.mpg
 
+HWACCEL=n INPUT=test.mpg TITLE="Test Title" YEAR=2019 DOCKER_DAEMON=n AUDIO_FORMAT=copy ./ripFile.sh 
+docker rm test.mpg
+

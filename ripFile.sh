@@ -47,14 +47,15 @@ SUBTITLE_TRACK_ARGS="-c:s ${SUBTITLE_FORMAT} -map 0:${SUBTITLE_TRACK}"
 AUDIO_TRACK=${AUDIO_TRACK:-a}
 AUDIO_CHANNEL_MAPPING_TRACKS=${AUDIO_CHANNEL_MAPPING_TRACKS:-1}
 AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT:-5.1}
-# AUDIO_QUALITY=${AUDIO_QUALITY:-576}
 AUDIO_QUALITY=${AUDIO_QUALITY:-2} # Variable Bitrate of 2 is good
 AUDIO_FORMAT=${AUDIO_FORMAT:-aac} # libfdk_aac is for aac highest quality, aac for great quality, and eac3 is Dolby Digital Ex
-# AUDIO_TRACK_ARGS="-c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
-for audioLayoutTrack in ${AUDIO_CHANNEL_MAPPING_TRACKS}; do
-	AUDIO_LAYOUT_ARGS="${AUDIO_LAYOUT_ARGS} -filter:${audioLayoutTrack} channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT}"
-done
-AUDIO_TRACK_ARGS="${AUDIO_LAYOUT_ARGS} -c:a ${AUDIO_FORMAT} -q:a ${AUDIO_QUALITY} -map 0:${AUDIO_TRACK}"
+AUDIO_TRACK_ARGS="-map 0:${AUDIO_TRACK} -c:a ${AUDIO_FORMAT}"
+if [[ "copy" != "${AUDIO_FORMAT}" ]]; then
+	for audioLayoutTrack in ${AUDIO_CHANNEL_MAPPING_TRACKS}; do
+		AUDIO_LAYOUT_ARGS="${AUDIO_LAYOUT_ARGS} -filter:${audioLayoutTrack} channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT}"
+	done
+	AUDIO_TRACK_ARGS="${AUDIO_TRACK_ARGS} ${AUDIO_LAYOUT_ARGS} -q:a ${AUDIO_QUALITY}"
+fi
 
 HWACCEL=${HWACCEL:-y}
 if [[ "${HWACCEL}" == "y" ]]; then
@@ -68,17 +69,20 @@ else
 fi
 
 VIDEO_TRACK=${VIDEO_TRACK:-v}
-if [[ "${HWACCEL}" == "y" ]]; then
-	VIDEO_TRACK_ARGS="-c:v hevc_vaapi -qp 20 -level:v 41 -map 0:${VIDEO_TRACK}"
+VIDEO_FROMAT=${VIDEO_FORMAT:-notcopy}
+VIDEO_TRACK_ARGS="-map 0:${VIDEO_TRACK}"
+if [[ "${VIDEO_FROMAT}" == "copy" ]]; then
+        VIDEO_TRACK_ARGS="${VIDEO_TRACK_ARGS} -c:v copy"
+elif [[ "${HWACCEL}" == "y" ]]; then
+	VIDEO_TRACK_ARGS="${VIDEO_TRACK_ARGS} -c:v hevc_vaapi -qp 20 -level:v 41"
 else
-	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 41 -map 0:${VIDEO_TRACK}"
+	VIDEO_TRACK_ARGS="${VIDEO_TRACK_ARGS} -c:v libx265 -crf 20 -level:v 41"
 fi
 
 if [[ "${HDR:-n}" == "y" ]]; then
 	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10 -map 0:${VIDEO_TRACK}"
 fi
 
-echo INPUT=${INPUT}
 if [[ -f "${INPUT}" ]]; then
 	# if a file
 	FILE_DIR=`dirname "${INPUT}"`
@@ -88,16 +92,32 @@ else
 	FILE_DIR=`realpath "${INPUT}"`
 	CONTAINER_INPUT="/data"
 fi
+OUTPUT_FILE="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
 
 if [[ "${DOCKER_DAEMON:-n}" == "y" ]]; then
 	DOCKER_DAEMON_ARGS="-d"
 else
 	DOCKER_DAEMON_ARGS="-it"
+	echo INPUT=${INPUT}
+	echo TITLE=${TITLE}
+	echo SUBTITLE=${SUBTITLE}
+	echo YEAR=${YEAR}
+	echo SEASON=${SEASON}
+	echo EPISODE=${EPISODE}
+	echo FFMPEG_HWACCEL_ARGS=${FFMPEG_HWACCEL_ARGS}
+	echo DEINTERLACE_ARGS=${DEINTERLACE_ARGS}
+	echo VIDEO_TRACK_ARGS=${VIDEO_TRACK_ARGS}
+	echo PLAYLIST_ARGS=${PLAYLIST_ARGS}
+	echo AUDIO_TRACK_ARGS=${AUDIO_TRACK_ARGS}
+	echo SUBTITLE_TRACK_ARGS=${SUBTITLE_TRACK_ARGS}
+	echo OTHER_METADATA=${OTHER_METADATA}
+	docker run --rm -it -v "${FILE_DIR}":/data ${FFMPEG_DOCKER} -i "${INPUT_PREFIX}${CONTAINER_INPUT}"
+	SLEEP=${SLEEP:-30s}
+	echo "Sleeping for ${SLEEP}, now's your chance to stop"
+	sleep ${SLEEP}
 fi
 
-OUTPUT_FILE="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
-
-set -e
+set -ex
 docker run \
   ${DOCKER_HWACCEL_ARGS} \
   --name ${INPUT} \
