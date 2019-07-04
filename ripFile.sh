@@ -80,7 +80,6 @@ if [[ "${HDR:-n}" == "y" ]]; then
 	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10 -map 0:${VIDEO_TRACK}"
 fi
 
-echo INPUT=${INPUT}
 if [[ -f "${INPUT}" ]]; then
 	# if a file
 	FILE_DIR=`dirname "${INPUT}"`
@@ -109,6 +108,7 @@ else
 	echo AUDIO_TRACK_ARGS=${AUDIO_TRACK_ARGS}
 	echo SUBTITLE_TRACK_ARGS=${SUBTITLE_TRACK_ARGS}
 	echo OTHER_METADATA=${OTHER_METADATA}
+	docker run --rm -it -v "${FILE_DIR}":/data ${FFMPEG_DOCKER} -i "${INPUT_PREFIX}${CONTAINER_INPUT}"
 	SLEEP=${SLEEP:-30s}
 	echo "Sleeping for ${SLEEP}, now's your chance to stop"
 	sleep ${SLEEP}
