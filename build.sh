@@ -6,6 +6,6 @@ THIS_REGISTRY=${THIS_REGISTRY:-build}
 THIS_IMAGE=${RIPFILE_IMAGE:-ripfile}
 LABEL=${LABEL:-latest}
 
-sed "s#{FROM_IMAGE}#${FFMPEG_DOCKER}#g" Dockerfile
+sed -i "s#{FROM_IMAGE}#${FFMPEG_DOCKER}#g" Dockerfile
 docker build --tag ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${LABEL} .
 
