@@ -1,0 +1,2 @@
+FROM {FROM_IMAGE}
+
