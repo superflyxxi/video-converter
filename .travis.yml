@@ -1,5 +1,9 @@
 language: minimal
 
+env:
+  global:
+    - THIS_LABEL=${TRAVIS_BRANCH}
+
 services:
   - docker
 
