@@ -17,7 +17,8 @@ before_install:
 
 script:
   - set -e
-  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; fi
+  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=latest; fi
   - ./build.sh
   - ./test.sh
+  - ./push.sh
 
