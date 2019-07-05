@@ -8,7 +8,7 @@ class InputFile {
 		$this->filename = $json["filename"];
 		foreach ($json["streams"] as $stream) {
 			$oStream = new Stream($stream);
-			$this->streams[$stream["index"]] = $oStream;
+			$this->streams[$oStream->index] = $oStream;
 			switch ($oStream->codec_type) {
 				case "video":
 					$this->videoStreams[$oStream->index] = $oStream;
