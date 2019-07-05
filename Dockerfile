@@ -2,7 +2,7 @@ ARG FROM_IMAGE
 FROM ${FROM_IMAGE}
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
-ADD ripFile.sh /home/ripvideo/
+ADD ripFile.php /home/ripvideo/
 
-ENTRYPOINT /home/ripvideo/ripFile.sh
+ENTRYPOINT /home/ripvideo/ripFile.php
 
