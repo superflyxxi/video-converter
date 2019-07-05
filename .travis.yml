@@ -1,4 +1,4 @@
-language: minimal
+language: php
 
 env:
   global:
@@ -13,7 +13,7 @@ before_install:
   - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
-  - sudo apt-get install -y php
+  - sudo apt-get install -y php || true
 # skip for now  - docker pull ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:latest || true
 
 script:
