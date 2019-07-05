@@ -7,7 +7,7 @@ class InputFile {
 	public function __construct($filename) {
 		$this->filename = $filename;
 		exec('ffprobe -v quiet -print_format json -show_format -show_streams "'.$this->filename.'"', $out);
-		$json = json_decode(implode($out, true));
+		$json = json_decode(implode($out), true);
 		foreach ($json["streams"] as $stream) {
 			$oStream = new Stream($stream);
 			$this->streams[$oStream->index] = $oStream;
