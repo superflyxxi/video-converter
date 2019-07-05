@@ -39,10 +39,10 @@ $outputFile = getEnvWithDefault("OUTPUT_DIR", "/data")."/".$output.".ffmpeg.mkv"
 
 $input = "/data/".getEnvWithDefault("INPUT", ".");
 if (is_dir($input) || substr($input, -strlen($input)) === ".iso") {
-	print("Using bluray directory");
+	print_r("Using bluray directory");
 	$input = "bluray:".$input;
 } else {
-	print("Using filename");
+	print_r("Using filename");
 }
 
 $playlistArgs = (getEnv("PLAYLIST") ? "-playlist ".getEnv("PLAYLIST") : "");
@@ -53,7 +53,7 @@ $subtitleTrackArgs = "-map 0:".getEnvWithDefault("SUBTITLE_TRACK", "s?")
 $audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
 $audioTrackArgs = "-map 0:".getEnvWithDefault("AUDIO_TRACK", "a")." -c:a ".$audioFormat;
 if ("copy" != $audioFormat) {
-	foreach $track in (explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1"))) {
+	foreach ( explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1")) as $track ){
 		$audioTrackArgs .= " -filter:".$track." channelmap=channel_layout=".getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "5.1");
 	}
 	$audioTrackArgs .= " -q:a ".getEnvWithDefault("AUDIO_QUALITY", "2");
