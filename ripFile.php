@@ -99,6 +99,10 @@ $finalCommand = "ffmpeg "
 print_r("Going to execute: ");
 print_r($finalCommand);
 
+exec($finalCommand, $systemOut, $returnValue);
+
+exit($returnValue);
+
 /*if [[ "${DOCKER_DAEMON}" != "y" && "${NORMALIZE:-n}" == "y" ]]; then
 	# Save an Array of Values from output for only measured values
 	NORMALIZE_SH=./normalizeAudio.sh
