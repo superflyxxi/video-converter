@@ -11,7 +11,7 @@ function getEnvWithDefault($env, $default) {
 
 $title = getEnv("TITLE");
 if (!$title) {
-	print_r("Missing TITLE variable");
+	print_r("Missing TITLE variable\n");
 	exit(1);
 }
 
@@ -39,10 +39,10 @@ $outputFile = getEnvWithDefault("OUTPUT_DIR", "/data")."/".$output.".ffmpeg.mkv"
 
 $input = "/data/".getEnvWithDefault("INPUT", ".");
 if (is_dir($input) || substr($input, -strlen($input)) === ".iso") {
-	print_r("Using bluray directory");
+	print_r("Using bluray directory\n");
 	$input = "bluray:".$input;
 } else {
-	print_r("Using filename");
+	print_r("Using filename\n");
 }
 
 $playlistArgs = (getEnv("PLAYLIST") ? "-playlist ".getEnv("PLAYLIST") : "");
@@ -98,8 +98,13 @@ $finalCommand = "ffmpeg "
 
 print_r("Going to execute: ");
 print_r($finalCommand);
+print_r("\n");
 
 exec($finalCommand, $systemOut, $returnValue);
+
+print_r("\nReturning ");
+print_r($returnValue);
+print_r("\n");
 
 exit($returnValue);
 
