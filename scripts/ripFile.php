@@ -87,6 +87,11 @@ print_r($probeCommand);
 print_r("\n");
 
 exec($probeCommand, $systemOut, $returnValue);
+$oInputFile = new InputFile($ffprobeJson = json_decode(implode($systemOut), true));
+
+print_r("Input file object: ");
+print_r($oInputFile);
+print_r("\n");
 
 $finalCommand = "ffmpeg "
 	." ".("true" == getEnvWithDefault("OVERWRITE_FILE", "true") ? "-y" : "")
