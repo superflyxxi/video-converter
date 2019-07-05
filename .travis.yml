@@ -4,6 +4,7 @@ env:
   global:
     - THIS_LABEL=${TRAVIS_BRANCH}
     - FROM_IMAGE=${FFMPEG_DOCKER}
+    - CACHE_FROM_ARGS="--no-cache" # Just for now
 
 services:
   - docker
