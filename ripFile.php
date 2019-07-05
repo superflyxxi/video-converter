@@ -53,29 +53,27 @@ if ("copy" != $audioFormat) {
 	$audioTrackArgs .= " -q:a ".getEnvWithDefault("AUDIO_QUALITY", "2");
 }
 
+$hwaccel = ("true" == getEnvWithDefault("HWACCEL", "true"));
 $ffmpegHwaccelArgs = "";
 $dinterlaceArgs = "";
-if ("true" == getEnvWithDefault("HWACCEL", "true")) {
+if ($hwaccel) {
 	$ffmpegHwaccelArgs = "-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128";
 	if ("true" == getEnvWithDefault("DEINTERLACE", "false")) {
 		$deinterlaceArgs = "-vf deinterlace_vaapi=rate=field:auto=1";
 	}
 }
 
-VIDEO_TRACK=${VIDEO_TRACK:-v}
-VIDEO_FROMAT=${VIDEO_FORMAT:-notcopy}
-VIDEO_TRACK_ARGS="-map 0:${VIDEO_TRACK}"
-if [[ "${VIDEO_FROMAT}" == "copy" ]]; then
-        VIDEO_TRACK_ARGS="${VIDEO_TRACK_ARGS} -c:v copy"
-elif [[ "${HWACCEL}" == "y" ]]; then
-	VIDEO_TRACK_ARGS="${VIDEO_TRACK_ARGS} -c:v hevc_vaapi -qp 20 -level:v 41"
-else
-	VIDEO_TRACK_ARGS="${VIDEO_TRACK_ARGS} -c:v libx265 -crf 20 -level:v 41"
-fi
-
-if [[ "${HDR:-n}" == "y" ]]; then
-	VIDEO_TRACK_ARGS="-c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10 -map 0:${VIDEO_TRACK}"
-fi
+$videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
+$videoTrackArgs = "-map 0:".getEnvWithDefault("VIDEO_TRACK", "v");
+if ( "copy" == $videoFromat ) {
+        $videoTrackArgs .= " -c:v copy";
+} else if ($hwaccel) {
+	$videoTrackArgs .= " -c:v hevc_vaapi -qp 20 -level:v 41";
+} else if ("true" == getEnvWithDefault("HDR", "false")) {
+	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 41";
+} else {
+	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
+}
 
 if [[ -f "${INPUT}" ]]; then
 	# if a file
