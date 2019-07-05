@@ -1,7 +1,7 @@
 FROM {FROM_IMAGE}
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
-ADD ripFile.sh /script
+ADD ripFile.sh /home/ripfile
 
-ENTRYPOINT /script/ripFile.sh
+ENTRYPOINT /home/ripfile/ripFile.sh
 
