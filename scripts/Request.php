@@ -3,14 +3,14 @@
 class Request {
 
 	public function __construct($filename) {
-		$this->filename = $filename;
-		if (is_dir($this->filename) || substr($this->filename, -strlen($this->filename)) === ".iso") {
+		$this->file = $filename;
+		if (is_dir($this->file) || substr($this->file, -strlen($this->file)) === ".iso") {
 			$this->prefix = "bluray:";
 		}
 		$this->hwaccel = is_dir("/dev/dri");
 	}
 
-	private $filename = NULL;
+	public $file = NULL;
 	private $prefix = NULL;
 	public $playlist = NULL;
 	public $subtitleTrack = NULL;

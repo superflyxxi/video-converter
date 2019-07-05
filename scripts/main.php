@@ -3,6 +3,7 @@
 
 include_once "Request.php";
 include_once "OutputFile.php";
+include_once "InputFile.php";
 
 function getEnvWithDefault($env, $default) {
 	if (getEnv($env)) {
@@ -12,14 +13,13 @@ function getEnvWithDefault($env, $default) {
 	}
 }
 
-$title = getEnv("TITLE");
-if (!$title) {
+if (!getEnv("TITLE")) {
 	print_r("Missing TITLE variable\n");
 	exit(1);
 }
 
 $oOutput = new OutputFile();
-$oOutput->title = $title;
+$oOutput->title = getEnv("TITLE");
 $oOutput->subtitle = getEnv("SUBTITLE");
 $oOutput->season = getEnv("SEASON");
 $oOutput->year = getEnv("YEAR");
@@ -38,14 +38,7 @@ $oRequest->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
 $oRequest->videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
-$probeCommand = "ffprobe -v quiet -print_format json -show_format -show_streams \"".$input."\"";
-
-print_r("Executing probe: ");
-print_r($probeCommand);
-print_r("\n");
-
-exec($probeCommand, $systemOut, $returnValue);
-$oInputFile = new InputFile($ffprobeJson = json_decode(implode($systemOut), true));
+$oInputFile = new InputFile($oRequest->$file);
 print_r($systemOut);
 print_r("Input file object: ");
 print_r($oInputFile);
