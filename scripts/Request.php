@@ -21,6 +21,7 @@ class Request {
 	public $audioChannelMappingTracks = NULL;
 	private $hwaccel = false;
 	public $deinterlace = false;
+	public $videoFormat = NULL;
 }
 
 ?>

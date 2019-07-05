@@ -36,17 +36,7 @@ $oRequest->audioChannelMappingTracks = explode(" ", getEnvWithDefault("AUDIO_CHA
 
 $oRequest->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
-$videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
-$videoTrackArgs = "-map 0:".getEnvWithDefault("VIDEO_TRACK", "v");
-if ( "copy" == $videoFromat ) {
-        $videoTrackArgs .= " -c:v copy";
-} else if ($hwaccel) {
-	$videoTrackArgs .= " -c:v hevc_vaapi -qp 20 -level:v 41";
-} else if ("true" == getEnvWithDefault("HDR", "false")) {
-	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
-} else {
-	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 41";
-}
+$oRequest->videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
 $probeCommand = "ffprobe -v quiet -print_format json -show_format -show_streams \"".$input."\"";
 
