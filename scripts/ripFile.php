@@ -58,7 +58,7 @@ if ("copy" != $audioFormat) {
 	$audioTrackArgs .= " -q:a ".getEnvWithDefault("AUDIO_QUALITY", "2");
 }
 
-$hwaccel = ("true" == getEnvWithDefault("HWACCEL", "true"));
+$hwaccel = is_dir("/dev/dri"); // hwaccel is true if the device is mapped
 $ffmpegHwaccelArgs = "";
 $deinterlaceArgs = "";
 if ($hwaccel) {
