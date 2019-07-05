@@ -12,17 +12,16 @@ Variable | Description | Required | Example/Default
 
 ## Examples
 
-### Using VAAPI
+### Ripping Bluray using VAAPI
 
 ```
 docker run --rm --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e TITLE=Test -e YEAR=2019 rip-video
 ```
 
-### Without VAAPI
+### Ripping specific file without VAAPI
 ```
-docker run --rm -v /mnt/bluray:/data -e HWACCEL=n -e TITLE=Test -e YEAR=2019 rip-video
+docker run --rm -v `pw`:/data -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 rip-video
 ```
 
 # ripfile
 This is the main process. This will rip a file or bluray drive into an mkv. It can optionally add a normalized track.
-
