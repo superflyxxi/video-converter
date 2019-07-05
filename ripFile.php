@@ -29,6 +29,7 @@ if (!$output) {
 	}
 }
 $outputDir = getEnvWithDefault("OUTPUT_DIR", "/data");
+$outputFile = getEnvWithDefault("OUTPUT_DIR", "/data")."/".$output.".ffmpeg.mkv";
 
 $input = "/data/".getEnvWithDefault("INPUT", ".");
 $inputPrefix = "";
@@ -75,64 +76,29 @@ if ( "copy" == $videoFromat ) {
 	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
 }
 
-if [[ -f "${INPUT}" ]]; then
-	# if a file
-	FILE_DIR=`dirname "${INPUT}"`
-	FILE_DIR=`realpath "${FILE_DIR}"`
-	CONTAINER_INPUT=/data/`basename "${INPUT}"`
-else
-	FILE_DIR=`realpath "${INPUT}"`
-	CONTAINER_INPUT="/data"
-fi
-OUTPUT_FILE="${OUTPUT_DIR}/${OUTPUT}.ffmpeg.mkv"
+$finalCommand = "ffmpeg "
+	." ".("true" == getEnvWithDefault("OVERWRITE_FILE", "true") ? "-y" : "")
+	." ".$ffmpegHwaccelArgs
+	." ".$playlistArgs
+	." -i ".$inputPrefix.$input
+	." ".$videoTrackArgs
+	." ".$deinterlaceArgs
+	." ".$audioTrackArgs
+	." ".$subtitleTrackArgs
+	//-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
+	//-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
+	." ".getEnvWithDefault("OTHER_METADATA", " ")
+	." -f matroska ".$outputFile;
 
-CONTAINER_NAME=`echo ${INPUT} | sed 's# #_#g'`
+print_r("Going to execute: ");
+print_r($finalCommand);
 
-if [[ "${DOCKER_DAEMON:-n}" == "y" ]]; then
-	DOCKER_DAEMON_ARGS="-d"
-else
-	DOCKER_DAEMON_ARGS="-it"
-	echo INPUT=${INPUT}
-	echo TITLE=${TITLE}
-	echo SUBTITLE=${SUBTITLE}
-	echo YEAR=${YEAR}
-	echo SEASON=${SEASON}
-	echo EPISODE=${EPISODE}
-	echo FFMPEG_HWACCEL_ARGS=${FFMPEG_HWACCEL_ARGS}
-	echo DEINTERLACE_ARGS=${DEINTERLACE_ARGS}
-	echo VIDEO_TRACK_ARGS=${VIDEO_TRACK_ARGS}
-	echo PLAYLIST_ARGS=${PLAYLIST_ARGS}
-	echo AUDIO_TRACK_ARGS=${AUDIO_TRACK_ARGS}
-	echo SUBTITLE_TRACK_ARGS=${SUBTITLE_TRACK_ARGS}
-	echo OTHER_METADATA=${OTHER_METADATA}
-	docker run --rm -it -v "${FILE_DIR}":/data ${FFMPEG_DOCKER} -i "${INPUT_PREFIX}${CONTAINER_INPUT}"
-	SLEEP=${SLEEP:-30s}
-	echo "Sleeping for ${SLEEP}, now's your chance to stop"
-	sleep ${SLEEP}
-fi
-
-set -ex
-docker run \
-  ${DOCKER_HWACCEL_ARGS} \
-  --name ${CONTAINER_NAME} \
-  -v "${FILE_DIR}":/data \
-  ${DOCKER_DAEMON_ARGS} \
-  ${FFMPEG_DOCKER} -${OVERWRITE_FILE:-y} \
-	${FFMPEG_HWACCEL_ARGS} \
-	${PLAYLIST_ARGS} -i "${INPUT_PREFIX}${CONTAINER_INPUT}" \
-	${VIDEO_TRACK_ARGS} ${DEINTERLACE_ARGS} \
-	${AUDIO_TRACK_ARGS} \
-	${SUBTITLE_TRACK_ARGS} \
-	-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
-	-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
-	${OTHER_METADATA} \
-	-f matroska "${OUTPUT_FILE}"
-
-if [[ "${DOCKER_DAEMON}" != "y" && "${NORMALIZE:-n}" == "y" ]]; then
+/*if [[ "${DOCKER_DAEMON}" != "y" && "${NORMALIZE:-n}" == "y" ]]; then
 	# Save an Array of Values from output for only measured values
 	NORMALIZE_SH=./normalizeAudio.sh
 	INPUT="${OUTPUT_FILE}" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
 		AUDIO_QUALITY=${AUDIO_QUALITY} ${NORMALIZE_SH}
 fi;
+*/
 ?>
 
