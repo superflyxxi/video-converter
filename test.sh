@@ -10,18 +10,24 @@ if [[ ! -f test.mpg ]]; then
 	curl -L -o test.mpg https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg
 fi
 
-
-docker run --rm -it -v `pwd`:/data -e INPUT=test.mpg -e HWACCEL=n -e TITLE="Test Title" -e YEAR=2019 ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL} 
-if [[ ! -f "./Test Title (2019).ffmpeg.mkv" ]]; then
+# Test basic scneario
+docker run --rm -it -v `pwd`:/data -e INPUT=test.mpg -e HWACCEL=false -e TITLE="Test default" -e YEAR=2019 ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL} 
+if [[ ! -f "./Test default (2019).ffmpeg.mkv" ]]; then
 	echo "File not created"
 	exit 1
-else
-	rm -v "./Test Title (2019).ffmpeg.mkv"
 fi
 
-#SLEEP=1s HWACCEL=n INPUT=test.mpg TITLE="Test Title" YEAR=2019 DOCKER_DAEMON=n ./ripFile.sh 
-#docker rm test.mpg
+# Test copy audio
+docker run --rm -it -v `pwd`:/data -e INPUT=test.mpg -e HWACCEL=false -e AUDIO_FORMAT=copy -e TITLE="Test Audio Copy" -e YEAR=2019 ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL} 
+if [[ ! -f "./Test Audio Copy (2019).ffmpeg.mkv" ]]; then
+	echo "File not created"
+	exit 1
+fi
 
-#SLEEP=1s HWACCEL=n INPUT=test.mpg TITLE="Test Title" YEAR=2019 DOCKER_DAEMON=n AUDIO_FORMAT=copy ./ripFile.sh 
-#docker rm test.mpg
+# Test copy video
+docker run --rm -it -v `pwd`:/data -e INPUT=test.mpg -e HWACCEL=false -e VIDEO_FORMAT=copy -e TITLE="Test Video Copy" -e YEAR=2019 ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL} 
+if [[ ! -f "./Test Video Copy (2019).ffmpeg.mkv" ]]; then
+	echo "File not created"
+	exit 1
+fi
 
