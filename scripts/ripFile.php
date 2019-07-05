@@ -80,7 +80,7 @@ if ( "copy" == $videoFromat ) {
 	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 41";
 }
 
-$probeCommand = "ffprobe -print_format json -show_format -show_streams \"".$input."\"";
+$probeCommand = "ffprobe -v quiet -print_format json -show_format -show_streams \"".$input."\"";
 
 print_r("Executing probe: ");
 print_r($probeCommand);
