@@ -20,8 +20,9 @@ script:
   - set -e
   - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=latest; fi
   - ./build.sh
+  - ./push.sh # Push before testing
   - ./test.sh
 
-after_success:
-  - ./push.sh
+#after_success:
+#  - ./push.sh
 
