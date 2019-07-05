@@ -29,14 +29,10 @@ $oRequest->playlist = getEnv("PLAYLIST");
 $oRequest->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
 $oRequest->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
-$audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
-$audioTrackArgs = "-map 0:".getEnvWithDefault("AUDIO_TRACK", "a")." -c:a ".$audioFormat;
-if ("copy" != $audioFormat) {
-	foreach ( explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1")) as $track ){
-		$audioTrackArgs .= " -filter:".$track." channelmap=channel_layout=".getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "5.1");
-	}
-	$audioTrackArgs .= " -q:a ".getEnvWithDefault("AUDIO_QUALITY", "2");
-}
+$oRequest->audioTrack = getEnvWithDefault("AUDIO_TRACK", "a");
+$oRequest->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
+$oRequest->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
+$oRequest->audioChannelMappingTracks = explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1"));
 
 $hwaccel = is_dir("/dev/dri"); // hwaccel is true if the device is mapped
 $ffmpegHwaccelArgs = "";

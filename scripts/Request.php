@@ -14,7 +14,10 @@ class Request {
 	public $playlist = NULL;
 	public $subtitleTrack = NULL;
 	public $subtitleFormat = NULL;
-
+	public $audioFormat = NULL;
+	public $audioTrack = NULL;
+	public $audioQuality = NULL;
+	public $audioChannelMappingTracks = NULL;
 }
 
 ?>
