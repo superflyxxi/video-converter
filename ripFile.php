@@ -44,29 +44,23 @@ $playlistArgs = (getEnv("PLAYLIST") ? "-playlist ".getEnv("PLAYLIST") : "");
 $subtitleTrackArgs = "-map 0:".getEnvWithDefault("SUBTITLE_TRACK", "s?")
 	." -c:s ".getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
-AUDIO_TRACK=${AUDIO_TRACK:-a}
-AUDIO_CHANNEL_MAPPING_TRACKS=${AUDIO_CHANNEL_MAPPING_TRACKS:-1}
-AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT:-5.1}
-AUDIO_QUALITY=${AUDIO_QUALITY:-2} # Variable Bitrate of 2 is good
-AUDIO_FORMAT=${AUDIO_FORMAT:-aac} # libfdk_aac is for aac highest quality, aac for great quality, and eac3 is Dolby Digital Ex
-AUDIO_TRACK_ARGS="-map 0:${AUDIO_TRACK} -c:a ${AUDIO_FORMAT}"
-if [[ "copy" != "${AUDIO_FORMAT}" ]]; then
-	for audioLayoutTrack in ${AUDIO_CHANNEL_MAPPING_TRACKS}; do
-		AUDIO_LAYOUT_ARGS="${AUDIO_LAYOUT_ARGS} -filter:${audioLayoutTrack} channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT}"
-	done
-	AUDIO_TRACK_ARGS="${AUDIO_TRACK_ARGS} ${AUDIO_LAYOUT_ARGS} -q:a ${AUDIO_QUALITY}"
-fi
+$audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
+$audioTrackArgs = "-map 0:".getEnvWithDefault("AUDIO_TRACK", "a")." -c:a ".$audioFormat;
+if ("copy" != $audioFormat) {
+	foreach $track in (explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1"))) {
+		$audioTrackArgs .= " -filter:".$track." channelmap=channel_layout=".getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "5.1");
+	}
+	$audioTrackArgs .= " -q:a ".getEnvWithDefault("AUDIO_QUALITY", "2");
+}
 
-HWACCEL=${HWACCEL:-y}
-if [[ "${HWACCEL}" == "y" ]]; then
-	DOCKER_HWACCEL_ARGS="--device /dev/dri:/dev/dri"
-	FFMPEG_HWACCEL_ARGS="-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
-	if [[ "${DEINTERLACE:-n}" == "y" ]]; then
-		DEINTERLACE_ARGS="-vf deinterlace_vaapi=rate=field:auto=1"
-	fi
-else
-	DOCKER_HWACCEL_ARGS="--user ${UID}"
-fi
+$ffmpegHwaccelArgs = "";
+$dinterlaceArgs = "";
+if ("true" == getEnvWithDefault("HWACCEL", "true")) {
+	$ffmpegHwaccelArgs = "-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128";
+	if ("true" == getEnvWithDefault("DEINTERLACE", "false")) {
+		$deinterlaceArgs = "-vf deinterlace_vaapi=rate=field:auto=1";
+	}
+}
 
 VIDEO_TRACK=${VIDEO_TRACK:-v}
 VIDEO_FROMAT=${VIDEO_FORMAT:-notcopy}
