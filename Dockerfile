@@ -19,5 +19,5 @@ RUN DIR=$(mktemp -d) && cd ${DIR} && \
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
 ADD scripts/* /home/ripvideo/
 
-ENTRYPOINT /home/ripvideo/ripFile.php
+ENTRYPOINT /home/ripvideo/main.php
 
