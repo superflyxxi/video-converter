@@ -2,9 +2,9 @@
 
 include_once "Stream.php";
 
-public class InputFile {
+class InputFile {
 
-	__construct($json) {
+	public function __construct($json) {
 		$this->filename = $json["filename"];
 		foreach ($json["streams"] as $stream) {
 			$oStream = new Stream($stream);
