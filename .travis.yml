@@ -20,5 +20,7 @@ script:
   - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=latest; fi
   - ./build.sh
   - ./test.sh
+
+after_success:
   - ./push.sh
 
