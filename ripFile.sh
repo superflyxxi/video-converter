@@ -113,19 +113,22 @@ else
 	echo AUDIO_TRACK_ARGS=${AUDIO_TRACK_ARGS}
 	echo SUBTITLE_TRACK_ARGS=${SUBTITLE_TRACK_ARGS}
 	echo OTHER_METADATA=${OTHER_METADATA}
-	docker run --rm -it -v "${FILE_DIR}":/data ${FFMPEG_DOCKER} -i "${INPUT_PREFIX}${CONTAINER_INPUT}"
+#	docker run --rm -it -v "${FILE_DIR}":/data ${FFMPEG_DOCKER} -i "${INPUT_PREFIX}${CONTAINER_INPUT}"
+	ffmpeg -i "${INPUT_PREFIX}${CONTAINER_INPUT}"
 	SLEEP=${SLEEP:-30s}
 	echo "Sleeping for ${SLEEP}, now's your chance to stop"
 	sleep ${SLEEP}
 fi
 
 set -ex
-docker run \
-  ${DOCKER_HWACCEL_ARGS} \
-  --name ${CONTAINER_NAME} \
-  -v "${FILE_DIR}":/data \
-  ${DOCKER_DAEMON_ARGS} \
-  ${FFMPEG_DOCKER} -${OVERWRITE_FILE:-y} \
+#docker run \
+#  ${DOCKER_HWACCEL_ARGS} \
+#  --name ${CONTAINER_NAME} \
+#  -v "${FILE_DIR}":/data \
+#  ${DOCKER_DAEMON_ARGS} \
+#  ${FFMPEG_DOCKER} \
+ffmpeg \
+	-${OVERWRITE_FILE:-y} \
 	${FFMPEG_HWACCEL_ARGS} \
 	${PLAYLIST_ARGS} -i "${INPUT_PREFIX}${CONTAINER_INPUT}" \
 	${VIDEO_TRACK_ARGS} ${DEINTERLACE_ARGS} \
