@@ -1,5 +1,6 @@
 #!/bin/php
 <?php
+
 include_once "InputFile.php";
 
 function getEnvWithDefault($env, $default) {
