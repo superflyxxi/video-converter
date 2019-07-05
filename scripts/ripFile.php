@@ -90,7 +90,7 @@ print_r("\n");
 
 exec($probeCommand, $systemOut, $returnValue);
 $oInputFile = new InputFile($ffprobeJson = json_decode(implode($systemOut), true));
-
+print_r($systemOut);
 print_r("Input file object: ");
 print_r($oInputFile);
 print_r("\n");
