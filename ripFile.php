@@ -38,10 +38,9 @@ $outputDir = getEnvWithDefault("OUTPUT_DIR", "/data");
 $outputFile = getEnvWithDefault("OUTPUT_DIR", "/data")."/".$output.".ffmpeg.mkv";
 
 $input = "/data/".getEnvWithDefault("INPUT", ".");
-$inputPrefix = "";
 if (is_dir($input) || substr($input, -strlen($input)) === ".iso") {
 	print("Using bluray directory");
-	$inputPrefix="bluray:";
+	$input = "bluray:".$input;
 } else {
 	print("Using filename");
 }
@@ -86,7 +85,7 @@ $finalCommand = "ffmpeg "
 	." ".("true" == getEnvWithDefault("OVERWRITE_FILE", "true") ? "-y" : "")
 	." ".$ffmpegHwaccelArgs
 	." ".$playlistArgs
-	." -i ".$inputPrefix.$input
+	." -i ".$input
 	." ".$videoTrackArgs
 	." ".$deinterlaceArgs
 	." ".$audioTrackArgs
