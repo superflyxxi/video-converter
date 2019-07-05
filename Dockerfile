@@ -6,7 +6,7 @@ RUN yum install -y php openjdk && yum clean all
 
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
 
-RUN yum install -y libtiff5-dev libtesseract-dev tesseract-ocr-eng build-essential cmake && yum clean all
+RUN yum install -y libtiff-devevl tesseract-devel tesseract-lanuagepack-eng tesseract-ocr-eng && yum clean all
 RUN DIR=$(mktemp -d) && cd ${DIR} && \
 	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
 	./configure --libdir=/usr/lib64 --prefix=/usr && \
