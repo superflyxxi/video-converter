@@ -30,7 +30,7 @@ if (!$output) {
 }
 $outputDir = getEnvWithDefault("OUTPUT_DIR", "/data");
 
-$input = getEnvWithDefault("INPUT", "/data");
+$input = "/data/".getEnvWithDefault("INPUT", ".");
 $inputPrefix = "";
 if (is_dir($input) || substr($input, -strlen($input)) === ".iso") {
 	print("Using bluray directory");
