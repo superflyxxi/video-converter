@@ -2,7 +2,7 @@ ARG FROM_IMAGE
 FROM ${FROM_IMAGE}
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
-RUN yum install -y php openjdk \
+RUN yum install -y php java-1.8.0-openjdk \
 # VobSub2SRT Dependencies
 	libtiff-devel tesseract-devel tesseract-lanuagepack-eng tesseract-ocr-eng \
 	&& yum clean all
