@@ -2,6 +2,8 @@ ARG FROM_IMAGE
 FROM ${FROM_IMAGE}
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
+WORKDIR /home/ripvideo/
+
 RUN yum install -y php java-1.8.0-openjdk \
 # VobSub2SRT Dependencies
 	libtiff-devel tesseract-devel tesseract-lanuagepack-eng tesseract-ocr-eng \
