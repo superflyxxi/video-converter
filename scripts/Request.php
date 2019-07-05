@@ -7,6 +7,7 @@ class Request {
 		if (is_dir($this->filename) || substr($this->filename, -strlen($this->filename)) === ".iso") {
 			$this->prefix = "bluray:";
 		}
+		$this->hwaccel = is_dir("/dev/dri");
 	}
 
 	private $filename = NULL;
@@ -18,6 +19,8 @@ class Request {
 	public $audioTrack = NULL;
 	public $audioQuality = NULL;
 	public $audioChannelMappingTracks = NULL;
+	private $hwaccel = false;
+	public $deinterlace = false;
 }
 
 ?>

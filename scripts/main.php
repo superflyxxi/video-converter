@@ -34,15 +34,7 @@ $oRequest->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
 $oRequest->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
 $oRequest->audioChannelMappingTracks = explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1"));
 
-$hwaccel = is_dir("/dev/dri"); // hwaccel is true if the device is mapped
-$ffmpegHwaccelArgs = "";
-$deinterlaceArgs = "";
-if ($hwaccel) {
-	$ffmpegHwaccelArgs = "-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128";
-	if ("true" == getEnvWithDefault("DEINTERLACE", "false")) {
-		$deinterlaceArgs = "-vf deinterlace_vaapi=rate=field:auto=1";
-	}
-}
+$oRequest->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
 $videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 $videoTrackArgs = "-map 0:".getEnvWithDefault("VIDEO_TRACK", "v");
