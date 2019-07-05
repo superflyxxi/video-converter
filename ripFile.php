@@ -34,7 +34,6 @@ if (!$output) {
 		$metadata .= "-metadata \"year=".getEnv("YEAR")."\" ";
 	}
 }
-$outputDir = getEnvWithDefault("OUTPUT_DIR", "/data");
 $outputFile = getEnvWithDefault("OUTPUT_DIR", "/data")."/".$output.".ffmpeg.mkv";
 
 $input = "/data/".getEnvWithDefault("INPUT", ".");
@@ -94,13 +93,13 @@ $finalCommand = "ffmpeg "
 	//-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
 	//-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
 	." ".getEnvWithDefault("OTHER_METADATA", " ")
-	." -f matroska ".$outputFile;
+	." -f matroska \"".$outputFile."\"";
 
 print_r("Going to execute: ");
 print_r($finalCommand);
 print_r("\n");
 
-exec("bash -c ".$finalCommand, $systemOut, $returnValue);
+exec($finalCommand, $systemOut, $returnValue);
 
 print_r("\nReturning ");
 print_r($returnValue);
