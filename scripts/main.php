@@ -24,16 +24,9 @@ $oOutput->subtitle = getEnv("SUBTITLE");
 $oOutput->season = getEnv("SEASON");
 $oOutput->year = getEnv("YEAR");
 
-$metadata = "";
-$outputFile = getEnvWithDefault("OUTPUT_DIR", "/data")."/".$output.".ffmpeg.mkv";
+$oInput = new InputFile("/data/".getEnvWithDefault("INPUT", "."));
 
-$input = "/data/".getEnvWithDefault("INPUT", ".");
-if (is_dir($input) || substr($input, -strlen($input)) === ".iso") {
-	print_r("Using bluray directory\n");
-	$input = "bluray:".$input;
-} else {
-	print_r("Using filename\n");
-}
+$metadata = "";
 
 $playlistArgs = (getEnv("PLAYLIST") ? "-playlist ".getEnv("PLAYLIST") : "");
 

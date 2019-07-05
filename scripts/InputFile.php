@@ -4,7 +4,14 @@ include_once "Stream.php";
 
 class InputFile {
 
-	public function __construct($json) {
+	public function __construct($filename) {
+		$this->filename = $filename;
+		if (is_dir($this->filename) || substr($this->filename, -strlen($this->filename)) === ".iso") {
+			$this->prefix = "bluray:";
+		}
+	}
+
+	public function readProbe($json) {
 		$this->filename = $json["format"]["filename"];
 		foreach ($json["streams"] as $stream) {
 			$oStream = new Stream($stream);
@@ -29,6 +36,7 @@ class InputFile {
 	public $videoStreams = array();
 	public $audioStreams = array();
 	public $filename = NULL;
+	private $prefix = NULL;
 
 }
 
