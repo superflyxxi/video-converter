@@ -84,16 +84,14 @@ $finalCommand = "ffmpeg "
 	." ".("true" == getEnvWithDefault("OVERWRITE_FILE", "true") ? "-y" : "")
 	." ".$ffmpegHwaccelArgs
 	." ".$playlistArgs
-	." -i ".$input
+	.' -i "'.$input.'"'
 	." ".$videoTrackArgs
 	." ".$deinterlaceArgs
 	." ".$audioTrackArgs
 	." ".$subtitleTrackArgs
 	." ".$metadata
-	//-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
-	//-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
 	." ".getEnvWithDefault("OTHER_METADATA", " ")
-	." -f matroska \"".$outputFile."\"";
+	.' -f matroska "'.$outputFile.'"';
 
 print_r("Going to execute: ");
 print_r($finalCommand);
