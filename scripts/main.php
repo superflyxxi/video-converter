@@ -1,7 +1,7 @@
 #!/bin/php
 <?php
 
-include_once "InputFile.php";
+include_once "Request.php";
 include_once "OutputFile.php";
 
 function getEnvWithDefault($env, $default) {
@@ -24,14 +24,10 @@ $oOutput->subtitle = getEnv("SUBTITLE");
 $oOutput->season = getEnv("SEASON");
 $oOutput->year = getEnv("YEAR");
 
-$oInput = new InputFile("/data/".getEnvWithDefault("INPUT", "."));
-
-$metadata = "";
-
-$playlistArgs = (getEnv("PLAYLIST") ? "-playlist ".getEnv("PLAYLIST") : "");
-
-$subtitleTrackArgs = "-map 0:".getEnvWithDefault("SUBTITLE_TRACK", "s?")
-	." -c:s ".getEnvWithDefault("SUBTITLE_FORMAT", "ass");
+$oRequest = new Request("/data/".getEnvWithDefault("INPUT", "."));
+$oRequest->playlist = getEnv("PLAYLIST");
+$oRequest->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
+$oRequest->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
 $audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
 $audioTrackArgs = "-map 0:".getEnvWithDefault("AUDIO_TRACK", "a")." -c:a ".$audioFormat;
