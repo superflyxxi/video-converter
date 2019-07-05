@@ -16,16 +16,22 @@ if (!$title) {
 }
 
 $output = getEnv("OUTPUT");
+$metadata = "";
 if (!$output) { 
 	$output = $title;
+	$metadata .= "-metadata \"title\"=\"".$title."\" ";
 	if (getEnv("SEASON")) {
 		$output .= " - s".getEnv("SEASON")."e".getEnv("EPISODE");
+		$metadata .= "-metadata \"season\"=\"".getEnv("SEASON")."\" ";
+		$metadata .= "-metadata \"episode\"=\"".getEnv("EPISODE")."\" ";
 	}
 	if (getEnv("SUBTITLE")) {
 		$output .= " - ".getEnv("SUBTITLE");
+		$metadata .= "-metadata \"subtitle\"=\"".getEnv("SUBTITLE")."\" ";
 	}
 	if (getEnv("YEAR")) {
 		$output .= " (".getEnv("YEAR").")";
+		$metadata .= "-metadata \"year\"=\"".getEnv("YEAR")."\" ";
 	}
 }
 $outputDir = getEnvWithDefault("OUTPUT_DIR", "/data");
@@ -85,6 +91,7 @@ $finalCommand = "ffmpeg "
 	." ".$deinterlaceArgs
 	." ".$audioTrackArgs
 	." ".$subtitleTrackArgs
+	." ".$metadata
 	//-metadata "title"="${TITLE}" -metadata "year"=${YEAR} -metadata "subtitle"="${SUBTITLE}" \
 	//-metadata "season"="${SEASON}" -metadata "episode"="${EPISODE}" \
 	." ".getEnvWithDefault("OTHER_METADATA", " ")
