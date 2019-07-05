@@ -100,7 +100,7 @@ print_r("Going to execute: ");
 print_r($finalCommand);
 print_r("\n");
 
-exec($finalCommand, $systemOut, $returnValue);
+exec("bash -c ".$finalCommand, $systemOut, $returnValue);
 
 print_r("\nReturning ");
 print_r($returnValue);
