@@ -61,7 +61,7 @@ if ("copy" != $audioFormat) {
 
 $hwaccel = ("true" == getEnvWithDefault("HWACCEL", "true"));
 $ffmpegHwaccelArgs = "";
-$dinterlaceArgs = "";
+$deinterlaceArgs = "";
 if ($hwaccel) {
 	$ffmpegHwaccelArgs = "-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128";
 	if ("true" == getEnvWithDefault("DEINTERLACE", "false")) {
