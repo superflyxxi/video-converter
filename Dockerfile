@@ -1,4 +1,5 @@
-FROM {FROM_IMAGE}
+ARG FROM_IMAGE
+FROM ${FROM_IMAGE}
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
 ADD ripFile.sh /home/ripvideo
