@@ -1,48 +1,48 @@
-#!/bin/bash
-if [ -z "${INPUT}" ]; then
-	echo "Need to specify INPUT";
-	exit 1;
-fi
+#!/bin/php
+<?php
 
-if [ -z "${TITLE}" ]; then
-	echo "Need to specify TITLE or YEAR";
-	exit 2;
-fi
+function getEnvWithDefault($env, $default) {
+	if (getEnv($env)) {
+		return getEnv($env);
+	} else {
+		return $default;
+	}
+}
 
-FFMPEG_DOCKER=${FFMPEG_DOCKER:-ffmpeg-vaapi}
-if [[ "y" == "${DOCKER_PULL:-y}" ]]; then
-	docker pull ${FFMPEG_DOCKER}
-fi
+$title = getEnv("TITLE");
+if (!$title) {
+	print_r("Missing TITLE variable");
+	exit(1);
+}
 
-if [ -z "${OUTPUT}" ]; then
-	OUTPUT="${TITLE}"
-	if [ ! -z "${SEASON}" ]; then
-		OUTPUT="${OUTPUT} - s${SEASON}e${EPISODE}"
-	fi
-	if [ ! -z "${SUBTITLE}" ]; then
-		OUTPUT="${OUTPUT} - ${SUBTITLE}"
-	fi
-	if [ ! -z "${YEAR}" ]; then
-		OUTPUT="${OUTPUT} (${YEAR})"
-	fi
-fi
-OUTPUT_DIR=${OUTPUT_DIR:-/data}
+$output = getEnv("OUTPUT");
+if (!$output) { 
+	$output = $title;
+	if (getEnv("SEASON")) {
+		$output .= " - s".getEnv("SEASON")."e".getEnv("EPISODE");
+	}
+	if (getEnv("SUBTITLE")) {
+		$output .= " - ".getEnv("SUBTITLE");
+	}
+	if (getEnv("YEAR")) {
+		$output .= " (".getEnv("YEAR").")";
+	}
+}
+$outputDir = getEnvWithDefault("OUTPUT_DIR", "/data");
 
-INPUT_EXT="${INPUT: -4}"
-if [[ -d ${INPUT} ]] || [[ ${INPUT_EXT,,} == ".iso" ]]; then
-	echo "Using bluray directory"
-	INPUT_PREFIX="bluray:"
-else
-	echo "Using filename"
-fi
+$input = getEnvWithDefault("INPUT", "/data");
+$inputPrefix = "";
+if (is_dir($input) || substr($input, -strlen($input)) === ".iso") {
+	print("Using bluray directory");
+	$inputPrefix="bluray:";
+} else {
+	print("Using filename");
+}
 
-if [ -v PLAYLIST ]; then
-	PLAYLIST_ARGS="-playlist ${PLAYLIST}";
-fi
+$playlistArgs = (getEnv("PLAYLIST") ? "-playlist ".getEnv("PLAYLIST") : "");
 
-SUBTITLE_TRACK=${SUBTITLE_TRACK:-s?}
-SUBTITLE_FORMAT=${SUBTITLE_FORMAT:-ass}
-SUBTITLE_TRACK_ARGS="-c:s ${SUBTITLE_FORMAT} -map 0:${SUBTITLE_TRACK}"
+$subtitleTrackArgs = "-map 0:".getEnvWithDefault("SUBTITLE_TRACK", "s?")
+	." -c:s ".getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
 AUDIO_TRACK=${AUDIO_TRACK:-a}
 AUDIO_CHANNEL_MAPPING_TRACKS=${AUDIO_CHANNEL_MAPPING_TRACKS:-1}
@@ -142,4 +142,5 @@ if [[ "${DOCKER_DAEMON}" != "y" && "${NORMALIZE:-n}" == "y" ]]; then
 	INPUT="${OUTPUT_FILE}" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
 		AUDIO_QUALITY=${AUDIO_QUALITY} ${NORMALIZE_SH}
 fi;
+?>
 
