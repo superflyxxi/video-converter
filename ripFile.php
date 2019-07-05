@@ -75,9 +75,9 @@ if ( "copy" == $videoFromat ) {
 } else if ($hwaccel) {
 	$videoTrackArgs .= " -c:v hevc_vaapi -qp 20 -level:v 41";
 } else if ("true" == getEnvWithDefault("HDR", "false")) {
-	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 41";
-} else {
 	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
+} else {
+	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 41";
 }
 
 $finalCommand = "ffmpeg "
