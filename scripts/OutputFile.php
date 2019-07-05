@@ -1,7 +1,11 @@
 <?php
 
 class OutputFile {
-	public function __construct() { }
+	
+	public function __construct() {
+		$this->envOutput = getEnv("OUTPUT");
+		$this->outputDir = getEnv("OUTPUT_DIR");
+	}
 
 	public $title = NULL;
 	public $subtitle = NULL;
@@ -9,8 +13,8 @@ class OutputFile {
 	public $searson = NULL;
 	public $episoe = NULL;
 
-	private $envOutput = getEnv("OUTPUT");
-	private $outputDir = getEnv("OUTPUT_DIR");
+	private $envOutput = NULL;
+	private $outputDir = NULL;
 
 	public function getOutputFile() {
 		if (NULL != $envOutput) {
