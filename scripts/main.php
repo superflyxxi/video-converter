@@ -2,6 +2,7 @@
 <?php
 
 include_once "InputFile.php";
+include_once "OutputFile.php";
 
 function getEnvWithDefault($env, $default) {
 	if (getEnv($env)) {
@@ -17,25 +18,13 @@ if (!$title) {
 	exit(1);
 }
 
-$output = getEnv("OUTPUT");
+$oOutput = new OutputFile();
+$oOutput->title = $title;
+$oOutput->subtitle = getEnv("SUBTITLE");
+$oOutput->season = getEnv("SEASON");
+$oOutput->year = getEnv("YEAR");
+
 $metadata = "";
-if (!$output) { 
-	$output = $title;
-	$metadata .= "-metadata \"title=".$title."\" ";
-	if (getEnv("SEASON")) {
-		$output .= " - s".getEnv("SEASON")."e".getEnv("EPISODE");
-		$metadata .= "-metadata \"season=".getEnv("SEASON")."\" ";
-		$metadata .= "-metadata \"episode=".getEnv("EPISODE")."\" ";
-	}
-	if (getEnv("SUBTITLE")) {
-		$output .= " - ".getEnv("SUBTITLE");
-		$metadata .= "-metadata \"subtitle=".getEnv("SUBTITLE")."\" ";
-	}
-	if (getEnv("YEAR")) {
-		$output .= " (".getEnv("YEAR").")";
-		$metadata .= "-metadata \"year=".getEnv("YEAR")."\" ";
-	}
-}
 $outputFile = getEnvWithDefault("OUTPUT_DIR", "/data")."/".$output.".ffmpeg.mkv";
 
 $input = "/data/".getEnvWithDefault("INPUT", ".");

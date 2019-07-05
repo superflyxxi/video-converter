@@ -9,7 +9,13 @@ class OutputFile {
 	public $searson = NULL;
 	public $episoe = NULL;
 
+	private $envOutput = getEnv("OUTPUT");
+	private $outputDir = getEnv("OUTPUT_DIR");
+
 	public function getOutputFile() {
+		if (NULL != $envOutput) {
+			return $envOutput;
+		}
 	}
 }
 
