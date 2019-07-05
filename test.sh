@@ -6,7 +6,7 @@ set -ex
 
 . common.sh
 
-USER=${UID}:`groups | awk '{print $1}'`
+USER=${UID}
 
 if [[ ! -f test.mpg ]]; then
 	curl -L -o test.mpg https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg
