@@ -80,6 +80,14 @@ if ( "copy" == $videoFromat ) {
 	$videoTrackArgs .= " -c:v libx265 -crf 20 -level:v 41";
 }
 
+$probeCommand = "ffprobe -print_format json -show_streams \"".$input."\"";
+
+print_r("Executing probe: ");
+print_r($probeCommand);
+print_r("\n");
+
+exec($probeCommand, $systemOut, $returnValue);
+
 $finalCommand = "ffmpeg "
 	." ".("true" == getEnvWithDefault("OVERWRITE_FILE", "true") ? "-y" : "")
 	." ".$ffmpegHwaccelArgs
