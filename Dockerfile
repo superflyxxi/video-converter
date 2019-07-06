@@ -4,7 +4,7 @@ MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
 WORKDIR /home/ripvideo/
 
-RUN yum install -y php java-1.8.0-openjdk \
+RUN yum install -y php wget java-1.8.0-openjdk \
 # VobSub2SRT Dependencies
 	libtiff-devel tesseract-devel tesseract-lanuagepack-eng tesseract-ocr-eng \
 	&& yum clean all
@@ -16,7 +16,7 @@ RUN DIR=$(mktemp -d) && cd ${DIR} && \
 	make install && \
 	rm -rf ${DIR}
 
-ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
+RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"
 
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}
