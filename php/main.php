@@ -31,7 +31,7 @@ $oRequest->audioChannelMappingTracks = explode(" ", getEnvWithDefault("AUDIO_CHA
 $oRequest->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
 $oRequest->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
-$oRequest->videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
+$oRequest->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
 $oRequest->prepareStreams();
 $arrRequests = SubtitleConvert::convert($oRequest);
