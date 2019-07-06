@@ -33,5 +33,5 @@ if [[ ! -f "./Test Video Copy (2019).ffmpeg.mkv" ]]; then
 	exit 1
 fi
 
-find . -name *.php | xargs -L1 php
+find . -name 'test*.php' | xargs -L1 php
 
