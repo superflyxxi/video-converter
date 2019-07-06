@@ -21,12 +21,10 @@ Variable | Description | Required | Default | Example
 `AUDIO_QUALITY` | The desired output audio quality based on the `AUDIO_FORMAT`. | No | `2` | `560`
 `AUDIO_CHANNEL_LAYOUT` | The desired output audio channel layout. | No | `5.1` | `7.1`
 `AUDIO_CHANNEL_MAPPING_TRACKS` | The space-separated list of input audio tracks that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | `1` | `1 2 3 4`
-`HWACCEL` | Boolean determining whether hardware acceleration is desired. | No | `y` | `n`
-`DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `HWACCEL=y`. | No | `n` | `y`
 `VIDEO_TRACK` | The input video tracks to convert. | No | `v` | `0`
 `VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
+`DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `HWACCEL=y`. | No | `n` | `y`
 `HDR` | The input is in HDR and the desired output should also be HDR. | No | `n` | `y`
-`DOCKER_DAEMON` | Determines whether docker container should be interactive or running in the background. | No | `n` | `y`
 
 ## Examples
 
