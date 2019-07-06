@@ -16,7 +16,7 @@ class SubtitleConvert {
 					// convert to dvd
 					//$dvdFile = getEnvWithDefault("TMP_DIR", "/tmp")."/".$filename.'-'.$subtitle->index.'.sub';
 					$pgsFile = $filename.'-'.$index.'.sup';
-					if (!file_exists($pgsFile) {
+					if (!file_exists($pgsFile)) {
 						$command = 'ffmpeg -y -i "'.$filename.'" -map 0:'.$index.' -c copy '.$pgsFile;
 						printf("Extract pgs command: %s\n", $command);
 						exec($command, $out, $return);
@@ -38,7 +38,7 @@ class SubtitleConvert {
 				} else if ("vobsub" == $codeName) {
 					// extract vobsub
 					$dvdFile = $filename.'-'.$index;
-					if (!file_exists($dvdFile.".sub") {
+					if (!file_exists($dvdFile.".sub")) {
 						$command = 'ffmpeg -y -i "'.$filename.'" -map 0:'.$index.' -c copy '.$dvdFile.'.sub';
 						printf("Extract vobsub command: %s", $command);
 						exec($command, $out, $return);
@@ -51,13 +51,15 @@ class SubtitleConvert {
 										
 				// convert to srt
 				if (NULL != $dvdFile) {
-                                        $command = 'vobsub2srt "'.$dvdFile;
-                                        printf("Convert vobsub to srt command: %s", $command);
-                                        exec($command, $out, $return);
-                                        if ($return != 0) {
-                                            printf("vobsub to srt conversion failed: %s\n", $return);
-                                            exit($return);
-                                        }
+					if (!file_exists($dvdFile.".srt")) {
+	                                        $command = 'vobsub2srt "'.$dvdFile;
+        	                                printf("Convert vobsub to srt command: %s", $command);
+                	                        exec($command, $out, $return);
+                        	                if ($return != 0) {
+                                	            printf("vobsub to srt conversion failed: %s\n", $return);
+                                        	    exit($return);
+	                                        }
+					}
 					$oNewRequest = new Request($dvdFile.".srt");
 					$oNewRequest->subtitleTrack = 0;
 					$oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
