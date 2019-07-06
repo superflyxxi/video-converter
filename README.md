@@ -23,7 +23,10 @@ Variable | Description | Required | Default | Example
 `AUDIO_CHANNEL_MAPPING_TRACKS` | The space-separated list of input audio tracks that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | `1` | `1 2 3 4`
 `HWACCEL` | Boolean determining whether hardware acceleration is desired. | No | `y` | `n`
 `DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `HWACCEL=y`. | No | `n` | `y`
-
+`VIDEO_TRACK` | The input video tracks to convert. | No | `v` | `0`
+`VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
+`HDR` | The input is in HDR and the desired output should also be HDR. | No | `n` | `y`
+`DOCKER_DAEMON` | Determines whether docker container should be interactive or running in the background. | No | `n` | `y`
 
 ## Examples
 
@@ -35,8 +38,5 @@ docker run --rm --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e TITLE=Test -e
 
 ### Ripping specific file without VAAPI
 ```
-docker run --rm -v `pw`:/data -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 rip-video
+docker run --rm -v `pw`:/data -e HWACCEL=n -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 rip-video
 ```
-
-# ripfile
-This is the main process. This will rip a file or bluray drive into an mkv. It can optionally add a normalized track.
