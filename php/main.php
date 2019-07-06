@@ -70,7 +70,7 @@ $finalCommand = FFmpegHelper::generate($allRequests, $oOutput);
 printf("ffmpeg command: %s\n", $finalCommand);
 exec($finalCommand, $systemOut, $returnValue);
 
-printf("Completed with %s return value.", $returnValue);
+printf("Completed with %s return value.\n\n", $returnValue);
 
 exit($returnValue);
 
