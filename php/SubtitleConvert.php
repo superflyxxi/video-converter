@@ -5,7 +5,9 @@ include_once "InputFile.php";
 include_once "functions.php";
 
 class SubtitleConvert {
+
 	public static function convert($oRequest) {
+		$dir = getEnvWithDefault("TMP_DIR", "/tmp");
 		$arrAdditionalRequests = array();
 		if ($oRequest->subtitleFormat != "copy") {
 			$filename = $oRequest->oInputFile->getFileName();
@@ -15,9 +17,9 @@ class SubtitleConvert {
 				if ("hdmv_pgs_subtitle" == $codecName) {
 					// convert to dvd
 					//$dvdFile = getEnvWithDefault("TMP_DIR", "/tmp")."/".$filename.'-'.$subtitle->index.'.sub';
-					$pgsFile = $filename.'-'.$index.'.sup';
+					$pgsFile = $dir."/".$filename.'-'.$index.'.sup';
 					if (!file_exists($pgsFile)) {
-						$command = 'ffmpeg -y -i "'.$filename.'" -map 0:'.$index.' -c copy '.$pgsFile;
+						$command = 'ffmpeg -y -i "'.$filename.'" -map 0:'.$index.' -c copy "'.$pgsFile.'"';
 						printf("Extract pgs command: %s\n", $command);
 						exec($command, $out, $return);
 						if ($return != 0) {
@@ -25,9 +27,9 @@ class SubtitleConvert {
 							exit($return);
 						}
 					}
-					$dvdFile = $filename.'-'.$index;
+					$dvdFile = $dir."/".$filename.'-'.$index;
 					if (!file_exists($dvdFile.".sub")) {
-						$command = "java -jar /home/ripvideo/BDSup2Sub.jar -o ".$dvdFile.".sub ".$pgsFile;
+						$command = 'java -jar /home/ripvideo/BDSup2Sub.jar -o "'.$dvdFile.'.sub" "'.$pgsFile.'"';
 						printf("Convert pgs to dvd command: %s\n", $command);
 						exec($command, $out, $return);
 						if ($return != 0) {
@@ -37,9 +39,9 @@ class SubtitleConvert {
 					}
 				} else if ("vobsub" == $codeName) {
 					// extract vobsub
-					$dvdFile = $filename.'-'.$index;
+					$dvdFile = $dir."/".$filename.'-'.$index;
 					if (!file_exists($dvdFile.".sub")) {
-						$command = 'ffmpeg -y -i "'.$filename.'" -map 0:'.$index.' -c copy '.$dvdFile.'.sub';
+						$command = 'ffmpeg -y -i "'.$filename.'" -map 0:'.$index.' -c copy "'.$dvdFile.'.sub"';
 						printf("Extract vobsub command: %s\n", $command);
 						exec($command, $out, $return);
 						if ($return != 0) {

@@ -19,7 +19,7 @@ RUN DIR=$(mktemp -d) && cd ${DIR} && \
 RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"
 
 ENV TMP_DIR=/tmp/wip
-RUN mkdir -p ${TMP_DIR}
+RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 ADD php/* /home/ripvideo/
 RUN chmod -R ugo+r /home/ripvideo
