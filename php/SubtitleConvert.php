@@ -3,7 +3,7 @@
 include_once "Request.php";
 include_once "InputFile.php";
 
-class SubtitleConver {
+class SubtitleConvert {
 	public static function convert($oRequest) {
 		if ($oRequest->subtitleFormat != "copy") {
 			foreach ($oRequest->getSubtitleStreams() as $subtitle) {

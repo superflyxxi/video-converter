@@ -4,6 +4,7 @@
 include_once "Request.php";
 include_once "OutputFile.php";
 include_once "functions.php";
+include_once "SubtitleConvert.php";
 
 if (!getEnv("TITLE")) {
 	print_r("Missing TITLE variable\n");
@@ -29,6 +30,8 @@ $oRequest->audioChannelMappingTracks = explode(" ", getEnvWithDefault("AUDIO_CHA
 $oRequest->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
 $oRequest->videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
+
+SubtitleConvert::convert($oRequest);
 
 $finalCommand = "ffmpeg "
 	." ".("true" == getEnvWithDefault("OVERWRITE_FILE", "true") ? "-y" : "")
