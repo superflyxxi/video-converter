@@ -17,6 +17,9 @@ RUN DIR=$(mktemp -d) && cd ${DIR} && \
 	rm -rf ${DIR}
 
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
+
+RUN export TMP_DIR=$(mktemp -d)
+
 ADD php/* /home/ripvideo/
 
 ENTRYPOINT /home/ripvideo/main.php
