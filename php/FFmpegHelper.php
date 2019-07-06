@@ -56,7 +56,11 @@ class FFmpegHelper {
 	}
 
 	private static function generateSubtitleArgs($fileno, $request) {
-		return " ";
+		$args = " ";
+		foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
+			$args .= " -map ".$fileno.":".$index." -c:a ".$request->subtitleFormat;
+		}
+		return $args;
 	}
 
 
