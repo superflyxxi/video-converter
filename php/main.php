@@ -41,7 +41,7 @@ print_r($oRequest);
 printf("\n\nNew Additional Requests\n");
 print_r($otherRequests);
 
-$allRequests = array_merge(array($oRequest), $arrRequests);
+$allRequests = array_merge(array($oRequest), $otherRequests);
 
 $finalCommand = "ffmpeg ";
 if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
