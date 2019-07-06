@@ -15,11 +15,12 @@ class SubtitleConvert {
 					// convert to dvd
 					$dvdFile = $filename.'-'.$subtitle->index.'.sub';
 					$dvdIndex = 0;
-					$command = 'ffmpeg -i "'
+					$command = 'ffmpeg -y -i "'
 						.$filename
 						.'" -map 0:'
 						.$subtitle->index
 						.' -c copy '.$dvdFile;
+					printf("Command: %s\n", $command);
 					exec($command, $out, $return);
 					if (!$return) {
 						print_r("pgs extract failed");
