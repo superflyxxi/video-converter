@@ -14,13 +14,14 @@ class SubtitleConvert {
 				$dvdIndex = $subtitle->index;
 				if ("hdmv_pgs_subtitle" == $codecName) {
 					// convert to dvd
-					$dvdFile = getEnvWithDefault("TMP_DIR", "/tmp")."/".$filename.'-'.$subtitle->index.'.sub';
-					$dvdIndex = 0;
+					//$dvdFile = getEnvWithDefault("TMP_DIR", "/tmp")."/".$filename.'-'.$subtitle->index.'.sub';
+					$pgsFile = $filename.'-'.$subtitle->index.'.sup';
+					$pgsIndex = 0;
 					$command = 'ffmpeg -y -i "'
 						.$filename
 						.'" -map 0:'
 						.$subtitle->index
-						.' -c copy '.$dvdFile;
+						.' -c copy '.$pgsFile;
 					printf("Command: %s\n", $command);
 					exec($command, $out, $return);
 					if (!$return) {
