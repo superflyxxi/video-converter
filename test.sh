@@ -6,7 +6,7 @@ set -ex
 
 . common.sh
 
-USER=${UID}
+cd tests/
 
 if [[ ! -f test.mpg ]]; then
 	curl -L -o test.mpg https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg
@@ -32,4 +32,6 @@ if [[ ! -f "./Test Video Copy (2019).ffmpeg.mkv" ]]; then
 	echo "File not created"
 	exit 1
 fi
+
+find . -name *.php | xargs -L1 php
 
