@@ -6,7 +6,9 @@ class InputFile {
 
 	public function __construct($filename) {
 		$this->filename = $filename;
-		exec('ffprobe -v quiet -print_format json -show_format -show_streams "'.$this->filename.'"', $out);
+		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$this->filename.'"';
+		exec($command, $out);
+		#print("\nffprobe Output: "); print_r(implode($out));
 		$json = json_decode(implode($out), true);
 		foreach ($json["streams"] as $stream) {
 			$oStream = new Stream($stream);
@@ -31,6 +33,10 @@ class InputFile {
 	private $videoStreams = array();
 	private $audioStreams = array();
 	private $filename = NULL;
+
+	public function getFileName() {
+		return $this->filename;
+	}
 
 }
 

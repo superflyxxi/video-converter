@@ -6,8 +6,8 @@ class Request {
 
 	public function __construct($filename) {
 		$this->oInputFile = new InputFile($filename);
-		if (is_dir($this->oInputFile->filename) 
-				|| substr($this->oInputFile->filename, -strlen($this->oInputFile->filename)) === ".iso") {
+		if (is_dir($this->oInputFile->getFileName()) 
+				|| substr($this->oInputFile->getFileName(), -strlen($this->oInputFile->getFileName())) === ".iso") {
 			$this->prefix = "bluray:";
 		}
 		
