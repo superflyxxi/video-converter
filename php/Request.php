@@ -43,6 +43,14 @@ class Request {
 		}
 	}
 
+	public function isHwaccel() {
+		return $this->hwaccel;
+	}
+
+	public function isHDR() {
+		return $this->videoHdr;
+	}
+
 	public $oInputFile = NULL;
 	private $prefix = NULL;
 	public $playlist = NULL;
@@ -56,7 +64,7 @@ class Request {
 	public $deinterlace = false;
 	public $videoTrack = NULL;
 	public $videoFormat = NULL;
-	public $videoHdr = false;
+	private $videoHdr = false;
 }
 
 ?>
