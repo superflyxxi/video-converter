@@ -2,6 +2,7 @@
 
 include_once "Request.php";
 include_once "InputFile.php";
+include_once "functions.php";
 
 class SubtitleConvert {
 	public static function convert($oRequest) {
@@ -13,7 +14,7 @@ class SubtitleConvert {
 				$dvdIndex = $subtitle->index;
 				if ("hdmv_pgs_subtitle" == $codecName) {
 					// convert to dvd
-					$dvdFile = $filename.'-'.$subtitle->index.'.sub';
+					$dvdFile = getEnvWithDefault("TMP_DIR", "/tmp")."/".$filename.'-'.$subtitle->index.'.sub';
 					$dvdIndex = 0;
 					$command = 'ffmpeg -y -i "'
 						.$filename
