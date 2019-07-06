@@ -5,14 +5,15 @@ Tools to convert video
 This image supports ripping a video or bluray directory into an MKV using ffmpeg.
 
 ## Environment Variables
-Variable | Description | Required | Example/Default
---- | --- | ---
-`INPUT` | The bluray directory/drive or file to convert. | Yes | `/mnt/bluray`
-`TITLE` | The title to be used in metadata and naming of the file. | Yes | `Cool Movie`
-`YEAR` | The year of the movie to be used in metadata and naming of the file. | No | `2019`
-`SEASON` | The season of the TV show. | No | `01`
-`EPISODE` | The episode within the season of the TV show. | No | `01`
-`SUBTITLE` | The episode title of the TV show. | No | `The One Where They Dance`
+Variable | Description | Required | Default | Example
+--- | --- | --- | --- | ---
+`INPUT` | The bluray directory/drive or file to convert. | Yes | | `/mnt/bluray`
+`TITLE` | The title to be used in metadata and naming of the file. | Yes | | `Cool Movie`
+`YEAR` | The year of the movie to be used in metadata and naming of the file. | No | | `2019`
+`SEASON` | The season of the TV show. | No | | `01`
+`EPISODE` | The episode within the season of the TV show. | No | | `01`
+`SUBTITLE` | The episode title of the TV show. | No | | `The One Where They Dance`
+`PLAYLIST` | If the input is bluray, override the playlist to be used. | No | | `183`
 
 ## Examples
 
