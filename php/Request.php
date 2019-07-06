@@ -14,9 +14,24 @@ class Request {
 		
 		$this->hwaccel = is_dir("/dev/dri");
 		$this->videoHdr = getEnvWithDefault("HDR", "false") == "true";
+		$this->playlist = getEnv("PLAYLIST");
+		$this->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
+		$this->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
+
+		$this->audioTrack = getEnvWithDefault("AUDIO_TRACK", "a");
+		$this->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
+		$this->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
+		$this->audioChannelMappingTracks = explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1"));
+
+		$this->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
+
+		$this->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
+		$this->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
+
+		$this->prepareStreams();
 	}
 
-	public function prepareStreams() {
+	private function prepareStreams() {
 		if (substr($this->subtitleTrack, 0, strlen("s")) !== "s") {
 			// if not s (all subtitles), then remove all track except the desired
 			foreach ($this->oInputFile->getSubtitleStreams() as $track) {

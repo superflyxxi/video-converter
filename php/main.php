@@ -19,7 +19,7 @@ $oOutput->season = getEnv("SEASON");
 $oOutput->year = getEnv("YEAR");
 
 $oRequest = new Request("/data/".getEnvWithDefault("INPUT", "."));
-$oRequest->playlist = getEnv("PLAYLIST");
+/*$oRequest->playlist = getEnv("PLAYLIST");
 $oRequest->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
 $oRequest->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
@@ -34,6 +34,7 @@ $oRequest->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
 $oRequest->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
 $oRequest->prepareStreams();
+*/
 $otherRequests = SubtitleConvert::convert($oRequest);
 
 printf("Original Request\n");
