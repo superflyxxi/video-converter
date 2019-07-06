@@ -16,18 +16,27 @@ class SubtitleConvert {
 					// convert to dvd
 					//$dvdFile = getEnvWithDefault("TMP_DIR", "/tmp")."/".$filename.'-'.$subtitle->index.'.sub';
 					$pgsFile = $filename.'-'.$subtitle->index.'.sup';
-					$pgsIndex = 0;
 					$command = 'ffmpeg -y -i "'
 						.$filename
 						.'" -map 0:'
 						.$subtitle->index
 						.' -c copy '.$pgsFile;
-					printf("Command: %s\n", $command);
+					printf("Extract pgs command: %s\n", $command);
 					exec($command, $out, $return);
 					if (!$return) {
-						print_r("pgs extract failed");
+						printf("pgs extract failed\n");
 						exit($return);
 					}
+					$dvdIndex = 0;
+					$dvdFile = $filename.'-'.$subtitle->index.'.sub';
+					$command = "java -jar /home/ripvideo/BDSup2Sub.jar -o ".$dvdFile." ".$pgsFile;
+					printf("Convert pgs to dvd command: %s", $command);
+					exec($command, $out, $return);
+					if (!$return) {
+					    printf("sub convertion failed\n");
+					    exit($return);
+					}
+					
 				}
 					
 				// convert to srt
