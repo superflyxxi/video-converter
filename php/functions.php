@@ -1,4 +1,3 @@
-#!/bin/php
 <?php
 
 function getEnvWithDefault($env, $default) {
