@@ -6,11 +6,11 @@ include_once "OutputFile.php";
 
 class FFmpegHelper {
 	
-	public static function generateHardwareAccelArgs() {
+	private static function generateHardwareAccelArgs() {
 		return " ".(file_exists("/dev/dri") ? "-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128" : " ");
 	}
 	
-	public static function generateMetadataArgs($outputFile) {
+	private static function generateMetadataArgs($outputFile) {
 		return " ".(NULL != $outputFile->title ? '-metadata "title='.$outputFile->title.'"' : " ")
 			." ".(NULL != $outputFile->subtitle ? '-metadata "subtitle='.$outputFile->subtitle.'"' : " ")
 			." ".(NULL != $outputFile->year ? '-metadata "year='.$outputFile->year.'"' : " ")
@@ -19,7 +19,7 @@ class FFmpegHelper {
 			." ".getEnvWithDefault("OTHER_METADATA", " ");
 	}
 
-	public static function generateArgs($fileno, $request) {
+	private static function generateArgs($fileno, $request) {
 		$args = " ".self::generateVideoArgs($fileno, $request);
 		$args .= " ".self::generateAudioArgs($fileno, $request);
 		$args .= " ".self::generateSubtitleArgs($fileno, $request);
@@ -57,11 +57,33 @@ class FFmpegHelper {
 	private static function generateSubtitleArgs($fileno, $request) {
 		$args = " ";
 		foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
-			$args .= " -map ".$fileno.":".$index." -c:a ".$request->subtitleFormat;
+			$args .= " -map ".$fileno.":".$index." -c:s ".$request->subtitleFormat;
 		}
 		return $args;
 	}
 
+	public static function generate($listRequests, $outputFile) {
+		$finalCommand = "ffmpeg ";
+		if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
+			$finalCommand .= "-y ";
+		}
+		$finalCommand .= self::generateHardwareAccelArgs();
+
+		// generate input args
+		foreach ($listRequests as $tmpRequest) {
+			$finalCommand .= ' -i "'.$tmpRequest->oInputFile->getFileName().'" ';
+		}
+
+		$fileno = 0;
+		foreach ($listRequests as $tmpRequest) {
+			$finalCommand .= " ".self::generateArgs($fileno++, $tmpRequest);
+		}
+
+		$finalCommand .= self::generateMetadataArgs($outputFile);
+		$finalCommand .= ' -f matroska "'.$outputFile->getOutputFile().'.mkv"';
+		
+		return $finalCommand;
+	}
 
 }
 
