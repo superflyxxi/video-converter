@@ -6,7 +6,7 @@ set -ex
 
 . common.sh
 
-cd tests/
+cd ../tests/
 
 if [[ ! -f test.mpg ]]; then
 	curl -L -o test.mpg https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg
