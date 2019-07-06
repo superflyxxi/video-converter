@@ -73,10 +73,10 @@ class FFmpegHelper {
 
 		$fileno = 0;
 		foreach ($listRequests as $tmpRequest) {
-			$finalCommand .= " ".self::generateVideoArgs($fileno, $request);
-			$finalCommand .= " ".self::generateAudioArgs($fileno, $request);
-			$finalCommand .= " ".self::generateSubtitleArgs($fileno, $request);
-			$finalCommand .= " ".self::generateMetadataArgs($fileno, $request);
+			$finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest);
+			$finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest);
+			$finalCommand .= " ".self::generateSubtitleArgs($fileno, $tmpRequest);
+			$finalCommand .= " ".self::generateMetadataArgs($fileno, $tmpRequest);
 			$fileno++;
 		}
 
