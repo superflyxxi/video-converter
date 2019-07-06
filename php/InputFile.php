@@ -34,6 +34,10 @@ class InputFile {
 	private $audioStreams = array();
 	private $filename = NULL;
 
+	public function getSubtitleStreams() {
+		return $subtitleStreams;
+	}
+
 	public function getFileName() {
 		return $this->filename;
 	}
