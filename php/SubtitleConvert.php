@@ -28,7 +28,7 @@ class SubtitleConvert {
 					$dvdFile = $filename.'-'.$index;
 					if (!file_exists($dvdFile.".sub")) {
 						$command = "java -jar /home/ripvideo/BDSup2Sub.jar -o ".$dvdFile.".sub ".$pgsFile;
-						printf("Convert pgs to dvd command: %s", $command);
+						printf("Convert pgs to dvd command: %s\n", $command);
 						exec($command, $out, $return);
 						if ($return != 0) {
 						    printf("sub convertion failed: %s\n", $return);
@@ -40,7 +40,7 @@ class SubtitleConvert {
 					$dvdFile = $filename.'-'.$index;
 					if (!file_exists($dvdFile.".sub")) {
 						$command = 'ffmpeg -y -i "'.$filename.'" -map 0:'.$index.' -c copy '.$dvdFile.'.sub';
-						printf("Extract vobsub command: %s", $command);
+						printf("Extract vobsub command: %s\n", $command);
 						exec($command, $out, $return);
 						if ($return != 0) {
 						    printf("vobsub extraction failed: %s\n", $return);
@@ -53,7 +53,7 @@ class SubtitleConvert {
 				if (NULL != $dvdFile) {
 					if (!file_exists($dvdFile.".srt")) {
 	                                        $command = 'vobsub2srt "'.$dvdFile.'"';
-        	                                printf("Convert vobsub to srt command: %s", $command);
+        	                                printf("Convert vobsub to srt command: %s\n", $command);
                 	                        exec($command, $out, $return);
                         	                if ($return != 0) {
                                 	            printf("vobsub to srt conversion failed: %s\n", $return);
