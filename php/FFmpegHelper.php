@@ -45,7 +45,14 @@ class FFmpegHelper {
 	}
 
 	private static function generateAudioArgs($fileno, $request) {
-		return " ";
+		$args = " ";
+		foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
+			$args .= " -map ".$fileno.":".$index." -c:a ".$request->audioFormat;
+			if ("copy" != $request->audioFormat) {
+				$args .= " -q:a ".$request->audioQuality;
+			}
+		}
+		return $args;
 	}
 
 	private static function generateSubtitleArgs($fileno, $request) {
