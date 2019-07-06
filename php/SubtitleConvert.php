@@ -23,8 +23,8 @@ class SubtitleConvert {
 						.' -c copy '.$pgsFile;
 					printf("Extract pgs command: %s\n", $command);
 					exec($command, $out, $return);
-					if (!$return) {
-						printf("pgs extract failed\n");
+					if ($return != 0) {
+						printf("pgs extract failed: %s\n", $return);
 						exit($return);
 					}
 					$dvdIndex = 0;
@@ -32,8 +32,8 @@ class SubtitleConvert {
 					$command = "java -jar /home/ripvideo/BDSup2Sub.jar -o ".$dvdFile." ".$pgsFile;
 					printf("Convert pgs to dvd command: %s", $command);
 					exec($command, $out, $return);
-					if (!$return) {
-					    printf("sub convertion failed\n");
+					if ($return != 0) {
+					    printf("sub convertion failed: %s\n", $return);
 					    exit($return);
 					}
 					
