@@ -1,4 +1,9 @@
-language: minimal
+language: php
+
+env:
+  global:
+    - THIS_LABEL=${TRAVIS_BRANCH}
+    - FROM_IMAGE=${FFMPEG_DOCKER}
 
 services:
   - docker
@@ -7,10 +12,12 @@ before_install:
   - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
-  - sudo apt-get install -y realpath
+  - docker pull ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:latest || true
 
 script:
   - set -e
+  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=latest; fi
   - ./build.sh
+  - ./push.sh
   - ./test.sh
 
