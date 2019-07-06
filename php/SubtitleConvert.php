@@ -52,7 +52,7 @@ class SubtitleConvert {
 				// convert to srt
 				if (NULL != $dvdFile) {
 					if (!file_exists($dvdFile.".srt")) {
-	                                        $command = 'vobsub2srt "'.$dvdFile;
+	                                        $command = 'vobsub2srt "'.$dvdFile.'"';
         	                                printf("Convert vobsub to srt command: %s", $command);
                 	                        exec($command, $out, $return);
                         	                if ($return != 0) {
