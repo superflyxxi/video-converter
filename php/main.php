@@ -29,9 +29,18 @@ $oRequest->audioChannelMappingTracks = explode(" ", getEnvWithDefault("AUDIO_CHA
 
 $oRequest->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
+$oRequest->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
 $oRequest->videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
-SubtitleConvert::convert($oRequest);
+$arrRequests = SubtitleConvert::convert($oRequest);
+
+printf("Original Request\n");
+print_r($oRequest);
+printf("\n\nNew Additional Requests\n");
+print_r($arrRequests);
+
+
+exit(1);
 
 $finalCommand = "ffmpeg "
 	." ".("true" == getEnvWithDefault("OVERWRITE_FILE", "true") ? "-y" : "")

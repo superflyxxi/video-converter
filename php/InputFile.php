@@ -42,6 +42,24 @@ class InputFile {
 		unset($this->subtitleStreams[$index]);
 		unset($this->streams[$index]);
 	}
+	
+	public function getVideoStreams() {
+		return $this->subtitleStreams;
+	}
+
+	public function removeVideoStream($index) {
+		unset($this->videoStreams[$index]);
+		unset($this->streams[$index]);
+	}
+
+	public function getAudioStreams() {
+		return $this->audioStreams;
+	}
+
+	public function removeAudioStream($index) {
+		unset($this->audioStreams[$index]);
+		unset($this->streams[$index]);
+	}
 
 	public function getFileName() {
 		return $this->filename;
