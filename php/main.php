@@ -50,39 +50,11 @@ foreach ($arrRequests as $otherRequest) {
 $finalCommand .= ' -f matroska "'.$oOutput->getOutputFile().'.mkv"';
 printf("ffmpeg command: %s\n", $finalCommand);
 
-exit(1);
-
-$finalCommand = "ffmpeg "
-	." ".("true" == getEnvWithDefault("OVERWRITE_FILE", "true") ? "-y" : "")
-	." ".$ffmpegHwaccelArgs
-	." ".$playlistArgs
-	.' -i "'.$input.'"'
-	." ".$videoTrackArgs
-	." ".$deinterlaceArgs
-	." ".$audioTrackArgs
-	." ".$subtitleTrackArgs
-	." ".$metadata
-	." ".getEnvWithDefault("OTHER_METADATA", " ")
-	.' -f matroska "'.$outputFile.'"';
-
-print_r("Going to execute: ");
-print_r($finalCommand);
-print_r("\n");
-
 exec($finalCommand, $systemOut, $returnValue);
 
-print_r("\nReturning ");
-print_r($returnValue);
-print_r("\n");
+printf("Completed with %s return value.", $returnValue);
 
 exit($returnValue);
 
-/*if [[ "${DOCKER_DAEMON}" != "y" && "${NORMALIZE:-n}" == "y" ]]; then
-	# Save an Array of Values from output for only measured values
-	NORMALIZE_SH=./normalizeAudio.sh
-	INPUT="${OUTPUT_FILE}" AUDIO_CHANNEL_LAYOUT=${AUDIO_CHANNEL_LAYOUT} AUDIO_FORMAT=${AUDIO_FORMAT} \
-		AUDIO_QUALITY=${AUDIO_QUALITY} ${NORMALIZE_SH}
-fi;
-*/
 ?>
 
