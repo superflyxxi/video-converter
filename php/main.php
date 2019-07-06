@@ -32,6 +32,7 @@ $oRequest->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 $oRequest->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
 $oRequest->videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
+$oRequest->prepareStreams();
 $arrRequests = SubtitleConvert::convert($oRequest);
 
 printf("Original Request\n");
