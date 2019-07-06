@@ -6,7 +6,7 @@ include_once "InputFile.php";
 class SubtitleConvert {
 	public static function convert($oRequest) {
 		if ($oRequest->subtitleFormat != "copy") {
-			foreach ($oRequest->getSubtitleStreams() as $subtitle) {
+			foreach ($oRequest->oInputFile->getSubtitleStreams() as $subtitle) {
 				$codecName = $subtitle->codecName;
 				$dvdFile = $subtitle->getFileName();
 				$dvdIndex = $subtitle->index;
