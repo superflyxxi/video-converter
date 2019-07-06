@@ -23,7 +23,7 @@ class Request {
 				}
 			}
 		}
-		if (substr($this->aduioTrack, 0, strlen("a")) !== "a") {
+		if (substr($this->audioTrack, 0, strlen("a")) !== "a") {
 			// if not a (all audio), then remove all track except the desired
 			foreach ($this->oInputFile->getAudioStreams() as $track) {
 				if ($this->audioTrack != $track->index) {
