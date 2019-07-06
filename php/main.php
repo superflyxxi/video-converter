@@ -34,22 +34,35 @@ $oRequest->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
 $oRequest->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
 $oRequest->prepareStreams();
-$arrRequests = SubtitleConvert::convert($oRequest);
+$otherRequests = SubtitleConvert::convert($oRequest);
 
 printf("Original Request\n");
 print_r($oRequest);
 printf("\n\nNew Additional Requests\n");
-print_r($arrRequests);
+print_r($otherRequests);
+
+$allRequests = array_merge(array($oRequest), $arrRequests);
+
+$finalCommand = "ffmpeg ";
+if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
+	$finalCommand .= "-y ";
+}
+$finalCommand .= FFmpegHelper::generateHardwareAccelArgs();
+
+// generate input args
+foreach ($allRequests as $tmpRequest) {
+	$finalCommand .= ' -i "'.$tmpRequest->oInputFile->getFileName().'" ';
+}
 
 $fileno = 0;
-$finalCommand = FFmpegHelper::generateMainArgs($oOutput)
-	." ".FFmpegHelper::generateArgs($fileno++, $oRequest);
-foreach ($arrRequests as $otherRequest) {
-	$finalCommand .= " ".FFmpegHelper::generateArgs($fileno++, $otherRequest);
+foreach ($allRequests as $tmpRequest) {
+	$finalCommand .= " ".FFmpegHelper::generateArgs($fileno++, $tmpRequest);
 }
-$finalCommand .= ' -f matroska "'.$oOutput->getOutputFile().'.mkv"';
-printf("ffmpeg command: %s\n", $finalCommand);
 
+$finalCommand .= FFmpegHelper::generateMetadataArgs($oOutput);
+$finalCommand .= ' -f matroska "'.$oOutput->getOutputFile().'.mkv"';
+
+printf("ffmpeg command: %s\n", $finalCommand);
 exec($finalCommand, $systemOut, $returnValue);
 
 printf("Completed with %s return value.", $returnValue);
