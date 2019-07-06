@@ -1,6 +1,7 @@
 <?php
 
 include_once "InputFile.php";
+include_once "functions.php";
 
 class Request {
 
@@ -12,6 +13,7 @@ class Request {
 		}
 		
 		$this->hwaccel = is_dir("/dev/dri");
+		$this->videoHdr = getEnvWithDefault("HDR", "false") == "true";
 	}
 
 	public function prepareStreams() {
@@ -54,6 +56,7 @@ class Request {
 	public $deinterlace = false;
 	public $videoTrack = NULL;
 	public $videoFormat = NULL;
+	public $videoHdr = false;
 }
 
 ?>

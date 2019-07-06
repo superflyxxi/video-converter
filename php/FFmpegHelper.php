@@ -31,6 +31,15 @@ class FFmpegHelper {
 		$args = " ";
 		foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
 			$args .= " -map ".$fileno.":".$index;
+			if ("copy" == $request->videoFormat) {
+				$args .= " -c:v copy";
+			} else if ($request->videoHdr) {
+				$args .= " -c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
+			} else if ($request->hwaccel) {
+				$args .= " -c:v hevc_vaapi -qp 20 -level:v 41";
+			} else {
+				$args .= " -c:v libx265 -crf 20 -level:v 41";
+			}	
 		}
 		return $args;
 	}
