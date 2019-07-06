@@ -80,7 +80,7 @@ class FFmpegHelper {
 		}
 
 		$finalCommand .= self::generateMetadataArgs($outputFile);
-		$finalCommand .= ' -f matroska "'.$outputFile->getOutputFile().'.mkv"';
+		$finalCommand .= ' -f matroska "'.$outputFile->getOutputFile().'.ffmpeg.mkv"';
 		
 		return $finalCommand;
 	}
