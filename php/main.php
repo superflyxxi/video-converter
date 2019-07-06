@@ -43,7 +43,7 @@ print_r($otherRequests);
 
 $allRequests = array_merge(array($oRequest), $otherRequests);
 
-$finalCommand = "ffmpeg ";
+/*$finalCommand = "ffmpeg ";
 if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
 	$finalCommand .= "-y ";
 }
@@ -61,6 +61,11 @@ foreach ($allRequests as $tmpRequest) {
 
 $finalCommand .= FFmpegHelper::generateMetadataArgs($oOutput);
 $finalCommand .= ' -f matroska "'.$oOutput->getOutputFile().'.mkv"';
+*/
+
+
+
+$finalCommand = FFmpegHelper::generate($allRequests, $oOutput);
 
 printf("ffmpeg command: %s\n", $finalCommand);
 exec($finalCommand, $systemOut, $returnValue);
