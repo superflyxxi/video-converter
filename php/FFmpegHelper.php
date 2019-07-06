@@ -20,14 +20,19 @@ class FFmpegHelper {
 	}
 
 	public static function generateArgs($fileno, $request) {
-		$args = self::generateVideoArgs($fileno, $request);
+		$args = '-i "'.$request->oInputFile->getFileName().'"';
+		$args .= " ".self::generateVideoArgs($fileno, $request);
 		$args .= " ".self::generateAudioArgs($fileno, $request);
 		$args .= " ".self::generateSubtitleArgs($fileno, $request);
 		return $args;
 	}
 
 	private static function generateVideoArgs($fileno, $request) {
-		return " ";
+		$args = " ";
+		foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
+			$args .= " -map ".$fileno.":".$index;
+		}
+		return $args;
 	}
 
 	private static function generateAudioArgs($fileno, $request) {

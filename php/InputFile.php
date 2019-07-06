@@ -44,7 +44,7 @@ class InputFile {
 	}
 	
 	public function getVideoStreams() {
-		return $this->subtitleStreams;
+		return $this->videoStreams;
 	}
 
 	public function removeVideoStream($index) {
