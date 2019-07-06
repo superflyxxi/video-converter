@@ -22,6 +22,7 @@ ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}
 
 ADD php/* /home/ripvideo/
+RUN chmod -R ugo+r /home/ripvideo
 
 ENTRYPOINT /home/ripvideo/main.php
 
