@@ -36,5 +36,7 @@ docker run --rm --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e TITLE=Test -e
 
 ### Ripping specific file without VAAPI
 ```
-docker run --rm -v `pw`:/data -e HWACCEL=n -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 rip-video
+docker run --rm -v `pwd`:/data -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 rip-video
+
 ```
+
