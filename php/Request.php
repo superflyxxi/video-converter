@@ -1,16 +1,20 @@
 <?php
 
+include_once "InputFile.php";
+
 class Request {
 
 	public function __construct($filename) {
-		$this->file = $filename;
-		if (is_dir($this->file) || substr($this->file, -strlen($this->file)) === ".iso") {
+		$this->oInputFile = new InputFile($filename);
+		if (is_dir($this->oInputFile->filename) 
+				|| substr($this->oInputFile->filename, -strlen($this->oInputFile->filename)) === ".iso") {
 			$this->prefix = "bluray:";
 		}
+		
 		$this->hwaccel = is_dir("/dev/dri");
 	}
 
-	public $file = NULL;
+	public $oInputFile = NULL;
 	private $prefix = NULL;
 	public $playlist = NULL;
 	public $subtitleTrack = NULL;

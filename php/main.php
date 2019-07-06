@@ -38,11 +38,6 @@ $oRequest->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
 $oRequest->videoFromat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
-$oInputFile = new InputFile($oRequest->file);
-print_r("Input file object: ");
-print_r($oInputFile);
-print_r("\n");
-
 $finalCommand = "ffmpeg "
 	." ".("true" == getEnvWithDefault("OVERWRITE_FILE", "true") ? "-y" : "")
 	." ".$ffmpegHwaccelArgs
