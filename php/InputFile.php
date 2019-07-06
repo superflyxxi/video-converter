@@ -35,7 +35,7 @@ class InputFile {
 	private $filename = NULL;
 
 	public function getSubtitleStreams() {
-		return $subtitleStreams;
+		return $this->subtitleStreams;
 	}
 
 	public function getFileName() {
