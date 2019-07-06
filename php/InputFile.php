@@ -38,6 +38,11 @@ class InputFile {
 		return $this->subtitleStreams;
 	}
 
+	public function removeSubtitleStream($index) {
+		unset($subtitleStreams[$index]);
+		unset($streams[$index]);
+	}
+
 	public function getFileName() {
 		return $this->filename;
 	}
