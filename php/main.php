@@ -3,15 +3,7 @@
 
 include_once "Request.php";
 include_once "OutputFile.php";
-include_once "InputFile.php";
-
-function getEnvWithDefault($env, $default) {
-	if (getEnv($env)) {
-		return getEnv($env);
-	} else {
-		return $default;
-	}
-}
+include_once "functions.php";
 
 if (!getEnv("TITLE")) {
 	print_r("Missing TITLE variable\n");
