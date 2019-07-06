@@ -10,13 +10,17 @@ class FFmpegHelper {
 		return " ".(file_exists("/dev/dri") ? "-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128" : " ");
 	}
 	
-	private static function generateMetadataArgs($outputFile) {
+	private static function generateGlobalMetadataArgs($outputFile) {
 		return " ".(NULL != $outputFile->title ? '-metadata "title='.$outputFile->title.'"' : " ")
 			." ".(NULL != $outputFile->subtitle ? '-metadata "subtitle='.$outputFile->subtitle.'"' : " ")
 			." ".(NULL != $outputFile->year ? '-metadata "year='.$outputFile->year.'"' : " ")
 			." ".(NULL != $outputFile->season ? '-metadata "season='.$outputFile->season.'"' : " ")
 			." ".(NULL != $outputFile->episode ? '-metadata "episode='.$outputFile->episode.'"' : " ")
 			." ".getEnvWithDefault("OTHER_METADATA", " ");
+	}
+	
+	private static function generateMetadataArgs($fileno, $request) {
+		return " ";
 	}
 
 	private static function generateVideoArgs($fileno, $request) {
@@ -72,10 +76,11 @@ class FFmpegHelper {
 			$finalCommand .= " ".self::generateVideoArgs($fileno, $request);
 			$finalCommand .= " ".self::generateAudioArgs($fileno, $request);
 			$finalCommand .= " ".self::generateSubtitleArgs($fileno, $request);
+			$finalCommand .= " ".self::generateMetadataArgs($fileno, $request);
 			$fileno++;
 		}
 
-		$finalCommand .= self::generateMetadataArgs($outputFile);
+		$finalCommand .= self::generateGlobalMetadataArgs($outputFile);
 		$finalCommand .= ' -f matroska "'.$outputFile->getOutputFile().'.ffmpeg.mkv"';
 		
 		return $finalCommand;
