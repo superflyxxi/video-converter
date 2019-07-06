@@ -6,16 +6,17 @@ include_once "InputFile.php";
 class SubtitleConvert {
 	public static function convert($oRequest) {
 		if ($oRequest->subtitleFormat != "copy") {
+			$filename = $oRequest->oInputFile->getFileName();
 			foreach ($oRequest->oInputFile->getSubtitleStreams() as $subtitle) {
-				$codecName = $subtitle->codecName;
-				$dvdFile = $subtitle->getFileName();
+				$codecName = $subtitle->codec_name;
+				$dvdFile = $filename;
 				$dvdIndex = $subtitle->index;
-				if ("hdmv_pgs_subtitle" == $codeName) {
+				if ("hdmv_pgs_subtitle" == $codecName) {
 					// convert to dvd
-					$dvdFile = $oRequest->getFileName().'-'.$subtitle->index.'.sub';
+					$dvdFile = $filename.'-'.$subtitle->index.'.sub';
 					$dvdIndex = 0;
 					$command = 'ffmpeg -i "'
-						.$oRequest->getFileName()
+						.$filename
 						.'" -map 0:'
 						.$subtitle->index
 						.' -c copy '.$dvdFile;
