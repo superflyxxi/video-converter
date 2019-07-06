@@ -10,16 +10,17 @@ class OutputFile {
 	public $title = NULL;
 	public $subtitle = NULL;
 	public $year = NULL;
-	public $searson = NULL;
-	public $episoe = NULL;
+	public $season = NULL;
+	public $episode = NULL;
 
 	private $envOutput = NULL;
 	private $outputDir = NULL;
 
 	public function getOutputFile() {
-		if (NULL != $envOutput) {
-			return $envOutput;
+		if (NULL != $this->envOutput) {
+			return $this->envOutput;
 		}
+		return "wip";
 	}
 }
 

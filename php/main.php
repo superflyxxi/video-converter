@@ -5,6 +5,7 @@ include_once "Request.php";
 include_once "OutputFile.php";
 include_once "functions.php";
 include_once "SubtitleConvert.php";
+include_once "FFmpegHelper.php";
 
 if (!getEnv("TITLE")) {
 	print_r("Missing TITLE variable\n");
@@ -40,6 +41,14 @@ print_r($oRequest);
 printf("\n\nNew Additional Requests\n");
 print_r($arrRequests);
 
+$fileno = 0;
+$finalCommand = FFmpegHelper::generateMainArgs($oOutput)
+	." ".FFmpegHelper::generateArgs($fileno++, $oRequest);
+foreach ($arrRequests as $otherRequest) {
+	$finalCommand .= " ".FFmpegHelper::generateArgs($fileno++, $otherRequest);
+}
+$finalCommand .= ' -f matroska "'.$oOutput->getOutputFile().'.mkv"';
+printf("ffmpeg command: %s\n", $finalCommand);
 
 exit(1);
 
