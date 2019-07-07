@@ -46,6 +46,9 @@ class FFmpegHelper {
 			$args .= " -map ".$fileno.":".$index." -c:a ".$request->audioFormat;
 			if ("copy" != $request->audioFormat) {
 				$args .= " -q:a ".$request->audioQuality;
+				if (array_key_exists($index, $request->audioChannelMapping)) {
+					$args .= " -filter:".$index." channelmap=channel_layout=".$request->audioChannelMapping[$index];
+				}
 			}
 		}
 		return $args;

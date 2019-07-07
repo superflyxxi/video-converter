@@ -17,7 +17,10 @@ class Request {
 		$this->audioTrack = getEnvWithDefault("AUDIO_TRACK", "a");
 		$this->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
 		$this->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
-		$this->audioChannelMappingTracks = explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1"));
+		$mapping = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "5.1");
+		foreach (explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1")) as $track) {
+			$this->audioChannelMapping[$track] = $mapping;
+		}
 
 		$this->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
@@ -69,7 +72,7 @@ class Request {
 	public $audioFormat = NULL;
 	public $audioTrack = NULL;
 	public $audioQuality = NULL;
-	public $audioChannelMappingTracks = NULL;
+	public $audioChannelMapping = NULL;
 	private $hwaccel = false;
 	public $deinterlace = false;
 	public $videoTrack = NULL;
