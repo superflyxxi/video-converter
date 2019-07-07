@@ -16,6 +16,7 @@ $oOutput = new OutputFile();
 $oOutput->title = getEnv("TITLE");
 $oOutput->subtitle = getEnv("SUBTITLE");
 $oOutput->season = getEnv("SEASON");
+$oOutput->episode = getEnv("EPISODE");
 $oOutput->year = getEnv("YEAR");
 
 $oRequest = new Request("/data/".getEnvWithDefault("INPUT", "."));
