@@ -18,7 +18,7 @@ class OutputFile {
 	private $envOutput = NULL;
 	private $outputDir = NULL;
 
-	public function getOutputFile() {
+	public function getFileName() {
 		if (NULL != $this->envOutput) {
 			return $this->envOutput;
 		}
