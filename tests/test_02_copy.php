@@ -16,6 +16,9 @@ test("Stream 1", "audio", $probe["streams"][1]["codec_type"]);
 test("Stream 1 codec", "ac3", $probe["streams"][1]["codec_name"]);
 test("Metadata Title", "Test copy", $probe["format"]["tags"]["title"]);
 test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"]);
+test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]));
+test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["tags"]));
+test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["tags"]));
 
 ?>
 

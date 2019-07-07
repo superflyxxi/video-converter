@@ -18,6 +18,7 @@ test("Metadata Title", "Test tv show", $probe["format"]["tags"]["title"]);
 test("Metadata SEASON", "01", $probe["format"]["tags"]["SEASON"]);
 test("Metadata EPISODE", "23", $probe["format"]["tags"]["EPISODE"]);
 test("Metadata SUBTITLE", "The One Where Things", $probe["format"]["tags"]["SUBTITLE"]);
+test("Metadata YEAR", FALSE, array_key_exists("YEAR", $probe["format"]["tags"]));
 
 ?>
 
