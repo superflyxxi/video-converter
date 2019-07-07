@@ -7,31 +7,35 @@ class Request {
 
 	public function __construct($filename) {
 		$this->oInputFile = new InputFile($filename);
-		
 		$this->hwaccel = is_dir("/dev/dri");
 		$this->videoHdr = getEnvWithDefault("HDR", "false") == "true";
-		$this->playlist = getEnv("PLAYLIST");
-		$this->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
-		$this->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
-
-		$this->audioTrack = getEnvWithDefault("AUDIO_TRACK", "a");
-		$this->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
-		$this->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
-		$this->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
-		$mapping = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "5.1");
-		foreach (explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1")) as $track) {
-			$this->audioChannelMapping[$track] = $mapping;
-		}
-
-		$this->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
-
-		$this->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
-		$this->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
-
-		$this->prepareStreams();
 	}
 
-	private function prepareStreams() {
+	public static function newInstanceFromEnv($filename) {
+		$req = new Request($filename);
+		
+		$req->playlist = getEnv("PLAYLIST");
+		$req->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
+		$req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
+
+		$req->audioTrack = getEnvWithDefault("AUDIO_TRACK", "a");
+		$req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
+		$req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
+		$req->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
+		$mapping = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "5.1");
+		foreach (explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1")) as $track) {
+			$req->audioChannelMapping[$track] = $mapping;
+		}
+
+		$req->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
+
+		$req->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
+		$req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
+
+		$req->prepareStreams();
+	}
+
+	public function prepareStreams() {
 		if (substr($this->subtitleTrack, 0, strlen("s")) !== "s") {
 			// if not s (all subtitles), then remove all track except the desired
 			foreach ($this->oInputFile->getSubtitleStreams() as $track) {

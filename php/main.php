@@ -20,7 +20,7 @@ $oOutput->season = getEnv("SEASON");
 $oOutput->episode = getEnv("EPISODE");
 $oOutput->year = getEnv("YEAR");
 
-$oRequest = new Request("/data/".getEnvWithDefault("INPUT", "."));
+$oRequest = Request::newInstanceFromEnv("/data/".getEnvWithDefault("INPUT", "."));
 $allRequests[] = $oRequest;
 $allRequests = array_merge($allRequests, SubtitleConvert::convert($oRequest));
 $allRequests = array_merge($allRequests, NormalizeAudio::normalize($oRequest));
