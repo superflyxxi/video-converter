@@ -15,7 +15,8 @@ class NormalizeAudio {
 	                $stream = $oRequest->oInputFile->getAudioStreams()[$index];
 			$origFile = $dir.$oRequest->oInputFile->getFileName().'-'.$index.'-orig.mkv';
 			$command = 'ffmpeg -i "'.$oRequest->oInputFile->getFileName().'" -map 0:'.$index
-				.' -c copy -f matroska "'.$origFile.'"';
+				.' -c:a '.$oRequest->audioFormat.' -q:a '.$oRequest->audioQuality
+				.' -f matroska "'.$origFile.'"';
 	                printf("Copying origin %s with command: %s\n", $index, $command);
         	        exec($command, $out, $return);
         	        if ($return != 0) {
@@ -24,6 +25,7 @@ class NormalizeAudio {
 	                }
                 	$oNewRequest = new Request($origFile);
 	                $oNewRequest->audioTrack = 0;
+			$oNewRequest->audioFormat= "copy";
 			$oNewRequest->normalizeAudioTracks = array();
                 	$arrAdditionalRequests[] = $oNewRequest;
 			$oRequest->oInputFile->removeAudioStream($index);
