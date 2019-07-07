@@ -6,7 +6,34 @@ include_once "OutputFile.php";
 
 class FFmpegHelper {
 	
-	private static function generateHardwareAccelArgs() {
+    public static function generate($listRequests, $outputFile) {
+        $finalCommand = "ffmpeg ";
+        if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
+            $finalCommand .= "-y ";
+        }
+        $finalCommand .= self::generateHardwareAccelArgs();
+        
+        // generate input args
+        foreach ($listRequests as $tmpRequest) {
+            $finalCommand .= ' -i "'.$tmpRequest->oInputFile->getFileName().'" ';
+        }
+        
+        $fileno = 0;
+        foreach ($listRequests as $tmpRequest) {
+            $finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest);
+            $finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest);
+            $finalCommand .= " ".self::generateSubtitleArgs($fileno, $tmpRequest);
+            $finalCommand .= " ".self::generateMetadataArgs($fileno, $tmpRequest);
+            $fileno++;
+        }
+        
+        $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
+        $finalCommand .= ' -f matroska "'.$outputFile->getOutputFile().'.ffmpeg.mkv"';
+        
+        return $finalCommand;
+    }
+    
+    private static function generateHardwareAccelArgs() {
 		return " ".(file_exists("/dev/dri") ? "-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128" : " ");
 	}
 	
@@ -60,33 +87,6 @@ class FFmpegHelper {
 			$args .= " -map ".$fileno.":".$index." -c:s ".$request->subtitleFormat;
 		}
 		return $args;
-	}
-
-	public static function generate($listRequests, $outputFile) {
-		$finalCommand = "ffmpeg ";
-		if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
-			$finalCommand .= "-y ";
-		}
-		$finalCommand .= self::generateHardwareAccelArgs();
-
-		// generate input args
-		foreach ($listRequests as $tmpRequest) {
-			$finalCommand .= ' -i "'.$tmpRequest->oInputFile->getFileName().'" ';
-		}
-
-		$fileno = 0;
-		foreach ($listRequests as $tmpRequest) {
-			$finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest);
-			$finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest);
-			$finalCommand .= " ".self::generateSubtitleArgs($fileno, $tmpRequest);
-			$finalCommand .= " ".self::generateMetadataArgs($fileno, $tmpRequest);
-			$fileno++;
-		}
-
-		$finalCommand .= self::generateGlobalMetadataArgs($outputFile);
-		$finalCommand .= ' -f matroska "'.$outputFile->getOutputFile().'.ffmpeg.mkv"';
-		
-		return $finalCommand;
 	}
 
 }
