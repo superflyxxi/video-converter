@@ -12,27 +12,25 @@ class NormalizeAudio {
             $dir = getEnvWithDefault("TMP_DIR", "/tmp");
             foreach ($oRequest->normalizeAudioTracks as $index) {
 		if (is_numeric($index)) {
+			printf("Normalizing track %s:%s\n", $oRequest->oInputFile->getFileName(), $index);
 	                $stream = $oRequest->oInputFile->getAudioStreams()[$index];
-			$origFile = $dir.$oRequest->oInputFile->getFileName().'-'.$index.'-orig.mkv';
-			$command = 'ffmpeg -i "'.$oRequest->oInputFile->getFileName().'" -map 0:'.$index
-				.' -c:a '.$oRequest->audioFormat.' -q:a '.$oRequest->audioQuality
-				.' -f matroska "'.$origFile.'"';
-	                printf("Copying origin %s with command: %s\n", $index, $command);
-        	        exec($command, $out, $return);
-        	        if ($return != 0) {
-                	    printf("Copying failed: %s\n", $return);
-	                    exit($return);
-	                }
-                	$oNewRequest = new Request($origFile);
+			$origRequest = new Request($oRequest->oInputFile->getFileName());
+			$origRequest->audioTrack = $index;
+			$origRequest->audioFormat = "copy";
+			$origRequest->prepareStreams();
+			$origFile = new OutputFile($dir.$oRequest->oInputFile->getFileName().'-'.$index.'-orig.mkv');
+			FFmpegHelper::execute(array($origRequest), $origFile);
+			
+                	$oNewRequest = new Request($origFile->getFileName());
 	                $oNewRequest->audioTrack = 0;
 			$oNewRequest->audioFormat= "copy";
-			$oNewRequest->normalizeAudioTracks = array();
+			$oNewRequest->prepareStreams();
                 	$arrAdditionalRequests[] = $oNewRequest;
 			$oRequest->oInputFile->removeAudioStream($index);
 
-	                $command = 'ffmpeg -hide_banner -i "'.$origFile
+	                $command = 'ffmpeg -hide_banner -i "'.$origFile->getFileName()
         	                .'" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
-	                printf("Measuring %s with command: %s\n", $index, $command);
+	                printf("Measuring %s:%s with command: %s\n", $oRequest->oInputFile->getFileName(), $index, $command);
         	        exec($command, $out, $return);
         	        if ($return != 0) {
                 	    printf("Normalizing failed: %s\n", $return);
@@ -42,7 +40,7 @@ class NormalizeAudio {
         	        $json = json_decode($out, true);
                 
         	        $normFile = $dir.$oRequest->oInputFile->getFileName().'-'.$index.'-norm.mkv';
-                	$command = 'ffmpeg -i "'.$origFile.'" -y -map 0'
+                	$command = 'ffmpeg -i "'.$origFile->getFileName().'" -y -map 0'
         	                .' -filter:a "loudnorm=measured_I='.$json["input_i"]
                 	        .':measured_TP='.$json["input_tp"]
                         	.':measured_LRA='.$json["input_lra"]
@@ -54,7 +52,7 @@ class NormalizeAudio {
 	                        .' -metadata:s:a:0 "title=Normalized '.$stream->language.' '.$stream->channel_layout.'"'
         	                .' -f matroska "'.$normFile.'"';
 
-	                printf("Normalizing %s with command: %s\n", $index, $command);
+	                printf("Normalizing %s:%s with command: %s\n", $oRequest->oInputFile->getFileName(), $index, $command);
         	        exec($command, $out, $return);
         	        if ($return != 0) {
                 	    printf("Normalizing failed: %s\n", $return);
