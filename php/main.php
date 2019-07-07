@@ -21,11 +21,6 @@ $oOutput->year = getEnv("YEAR");
 $oRequest = new Request("/data/".getEnvWithDefault("INPUT", "."));
 $otherRequests = SubtitleConvert::convert($oRequest);
 
-printf("Original Request\n");
-print_r($oRequest);
-printf("\n\nNew Additional Requests\n");
-print_r($otherRequests);
-
 $allRequests = array_merge(array($oRequest), $otherRequests);
 
 $finalCommand = FFmpegHelper::generate($allRequests, $oOutput);
