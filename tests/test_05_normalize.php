@@ -1,7 +1,8 @@
 <?php
+
 include_once "common.php";
 
-$command = 'docker run --rm -t -v `pwd`:/data -e INPUT=test.mpg -e TITLE="Test Normalize Track 1" -e YEAR=2019 -e NORMALIZE_AUDIO_TRACKS=1 ' . $image;
+$command = 'docker run --rm -t -v `pwd`:/data -e INPUT=test.mpg -e TITLE="Test Normalize Track 1" -e YEAR=2019 -e NORMALIZE_AUDIO_TRACKS=1 '.$image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 test("ffmpeg code", 0, $return);
@@ -27,3 +28,4 @@ test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["ta
 test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["tags"]));
 
 ?>
+

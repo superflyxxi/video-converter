@@ -1,6 +1,6 @@
 #!/bin/php
-
 <?php
+
 include_once "Request.php";
 include_once "OutputFile.php";
 include_once "functions.php";
@@ -8,9 +8,9 @@ include_once "SubtitleConvert.php";
 include_once "NormalizeAudio.php";
 include_once "FFmpegHelper.php";
 
-if (! getEnv("TITLE")) {
-    print_r("Missing TITLE variable\n");
-    exit(1);
+if (!getEnv("TITLE")) {
+	print_r("Missing TITLE variable\n");
+	exit(1);
 }
 
 $oOutput = new OutputFile();
@@ -20,7 +20,7 @@ $oOutput->season = getEnv("SEASON");
 $oOutput->episode = getEnv("EPISODE");
 $oOutput->year = getEnv("YEAR");
 
-$oRequest = new Request("/data/" . getEnvWithDefault("INPUT", "."));
+$oRequest = new Request("/data/".getEnvWithDefault("INPUT", "."));
 $allRequests[] = $oRequest;
 $allRequests = array_merge($allRequests, SubtitleConvert::convert($oRequest));
 $allRequests = array_merge($allRequests, NormalizeAudio::normalize($oRequest));
@@ -35,3 +35,4 @@ printf("Completed with %s return value.\n\n", $returnValue);
 exit($returnValue);
 
 ?>
+
