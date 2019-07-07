@@ -22,8 +22,8 @@ $oOutput->year = getEnv("YEAR");
 
 $oRequest = new Request("/data/".getEnvWithDefault("INPUT", "."));
 $allRequests[] = $oRequest;
-$allRequests = array_merge($allRequets, SubtitleConvert::convert($oRequest));
-$allRequests = array_merge($allRequets, NormalizeAudio::normalize($oRequest));
+$allRequests = array_merge($allRequests, SubtitleConvert::convert($oRequest));
+$allRequests = array_merge($allRequests, NormalizeAudio::normalize($oRequest));
 
 $finalCommand = FFmpegHelper::generate($allRequests, $oOutput);
 

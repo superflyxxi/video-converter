@@ -9,7 +9,9 @@ class Stream {
 		if (array_key_exists("tags", $json) && array_key_exists("language", $json["tags"])) {
 			$this->language = $json["tags"]["language"];
 		}
-		$this->channel_layout = $json["channel_layout"];
+		if (array_key_exists("channel_layout", $json)) {
+			$this->channel_layout = $json["channel_layout"];
+		}
 	}
 
 	public $codec_type = NULL;
