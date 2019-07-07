@@ -29,7 +29,7 @@ class OutputFile {
 			$out .= " - s".$this->season."e".$this->episode;
 		}
 		if (NULL != $this->subtitle) {
-			$out .= " ".$this->subtitle;
+			$out .= " - ".$this->subtitle;
 		}
 		return $out;
 	}
