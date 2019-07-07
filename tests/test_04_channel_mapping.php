@@ -10,8 +10,6 @@ test("ffmpeg code", 0, $return);
 $probe = probe("/data/Test Channel Mapping (2019).ffmpeg.mkv");
 $probe = json_decode($probe, true);
 
-print_r($probe);
-
 test("Stream 0", "video", $probe["streams"][0]["codec_type"]);
 test("Stream 0 codec", "hevc", $probe["streams"][0]["codec_name"]);
 test("Stream 1", "audio", $probe["streams"][1]["codec_type"]);
