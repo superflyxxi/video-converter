@@ -4,9 +4,9 @@ include_once "functions.php";
 
 class OutputFile {
 	
-	public function __construct() {
-		$this->envOutput = getEnv("OUTPUT");
-		$this->outputDir = getEnvWithDefault("OUTPUT_DIR", "/data");
+	public function __construct($out = NULL, $dir = NULL) {
+		$this->envOutput = $out == NULL ? getEnv("OUTPUT") : $out;
+		$this->outputDir = $dir == NULL ? getEnvWithDefault("OUTPUT_DIR", "/data") : $dir;
 	}
 
 	public $title = NULL;
@@ -31,6 +31,7 @@ class OutputFile {
 		if (NULL != $this->subtitle) {
 			$out .= " - ".$this->subtitle;
 		}
+		$out .= ".ffmpeg.mkv";
 		return $out;
 	}
 }

@@ -5,6 +5,18 @@ include_once "functions.php";
 include_once "OutputFile.php";
 
 class FFmpegHelper {
+
+    public static function execute($listRequests, $outputFile) {
+	$command = self::generate($listRequests, $outputFile);
+	printf("Executing ffmpeg: %s\n", $command);
+	exec($command, $out, $ret);
+	if (!$ret) {
+		print_r($out);
+		printf("Failed to execute ffmpeg with return code %s\n", $ret);
+		exit($ret);
+	}
+	return $ret;
+    }
 	
     public static function generate($listRequests, $outputFile) {
         $finalCommand = "ffmpeg ";
@@ -28,7 +40,7 @@ class FFmpegHelper {
         }
         
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
-        $finalCommand .= ' -f matroska "'.$outputFile->getOutputFile().'.ffmpeg.mkv"';
+        $finalCommand .= ' "'.$outputFile->getOutputFile().'"';
         
         return $finalCommand;
     }
