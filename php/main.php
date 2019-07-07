@@ -5,6 +5,7 @@ include_once "Request.php";
 include_once "OutputFile.php";
 include_once "functions.php";
 include_once "SubtitleConvert.php";
+include_once "NormalizeAudio.php";
 include_once "FFmpegHelper.php";
 
 if (!getEnv("TITLE")) {
@@ -20,9 +21,9 @@ $oOutput->episode = getEnv("EPISODE");
 $oOutput->year = getEnv("YEAR");
 
 $oRequest = new Request("/data/".getEnvWithDefault("INPUT", "."));
-$otherRequests = SubtitleConvert::convert($oRequest);
-
-$allRequests = array_merge(array($oRequest), $otherRequests);
+$allRequests[] = $oRequest;
+$allRequests = array_merge($allRequets, SubtitleConvert::convert($oRequest));
+$allRequests = array_merge($allRequets, NormalizeAudio::normalize($oRequest));
 
 $finalCommand = FFmpegHelper::generate($allRequests, $oOutput);
 
