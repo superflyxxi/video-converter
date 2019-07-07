@@ -14,7 +14,7 @@ function test($message, $expected, $actual) {
 function probe($file) {
 	global $user;
 	global $image;
-	$command = 'docker run --rm -it';
+	$command = 'docker run --rm -t';
 	if ($user) {
 		$command .= ' --user='.$user;
 	}

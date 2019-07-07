@@ -2,7 +2,7 @@
 
 include_once "common.php";
 
-$command = 'docker run --rm -it -v `pwd`:/data -e INPUT=test.mpg -e TITLE="Test copy" -e YEAR=2019 -e AUDIO_FORMAT=copy -e VIDEO_FORMAT=copy '.$image;
+$command = 'docker run --rm -t -v `pwd`:/data -e INPUT=test.mpg -e TITLE="Test copy" -e YEAR=2019 -e AUDIO_FORMAT=copy -e VIDEO_FORMAT=copy '.$image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 test("ffmpeg code", 0, $return);
