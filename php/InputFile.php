@@ -11,7 +11,6 @@ class InputFile {
 		}
 		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$this->getFileName().'"';
 		exec($command, $out);
-		#print("\nffprobe Output: "); print_r(implode($out));
 		$json = json_decode(implode($out), true);
 		foreach ($json["streams"] as $stream) {
 			$oStream = new Stream($stream);
