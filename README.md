@@ -2,7 +2,9 @@
 Tools to convert video
 
 # Docker Image
-This image supports ripping a video or bluray directory into an MKV using ffmpeg.
+This image supports ripping a video or bluray directory into an MKV using ffmpeg. As a result, 
+you'll see in the same directory mapped to `/data` a file with the following naming:
+`{TITLE} ({YEAR}) - s{SEASON}e{EPISODE} - {SUBTITLE}.ffmpeg.mkv`
 
 ## Environment Variables
 Variable | Description | Required | Default | Example
@@ -29,14 +31,17 @@ Variable | Description | Required | Default | Example
 ## Examples
 
 ### Ripping Bluray using VAAPI
-
 ```
-docker run --rm --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e TITLE=Test -e YEAR=2019 rip-video
+docker run --rm -it --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e TITLE=Test -e YEAR=2019 rip-video
 ```
 
 ### Ripping specific file without VAAPI
 ```
-docker run --rm -v `pwd`:/data -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 rip-video
+docker run --rm -it -v `pwd`:/data -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 rip-video
 
 ```
 
+### Find correct playlist of Bluray
+```
+docker run --rm -it -v /mnt/bluray:/data --entrypoint /home/ripvideo/scripts/find-playlist.perl rip-video /data
+```

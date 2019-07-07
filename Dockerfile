@@ -22,6 +22,7 @@ ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 ADD php/* /home/ripvideo/
+ADD scripts/* /home/ripvideo/scripts/
 RUN chmod -R ugo+r /home/ripvideo
 
 ENTRYPOINT /home/ripvideo/main.php
