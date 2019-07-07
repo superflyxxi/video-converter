@@ -22,6 +22,7 @@ class NormalizeAudio {
                 }
                 $json = json_encode(implode($out), true);
                 print_r($json);
+                
                 $stream = $oRequest->oInputFile->getAudioStreams()[$index];
                 
                 $tmpFile = $dir.$oRequest->oInputFile->getInputFileName().'-'.$index.'-norm.mkv';
@@ -31,7 +32,7 @@ class NormalizeAudio {
                         .':measured_TP='.$json["measured_TP"]
                         .':measured_LRA='.$json["measured_LRA"]
                         .':measured_thresh='.$json["measured_thresh"] 
-                        //',channelmap=channel_layout=${AUDIO_CHANNEL_LAYOUT}
+                        .' channelmap=channel_layout='.$stream->channel_layout
                         .' -c:a '.$oRequest->audioFormat
                         .' -q:a '.$oRequest->audioQuality
                         .' -metadata:s:a:0 "title=Normalized '.$stream->language.' '.$stream->channel_layout.'"'
