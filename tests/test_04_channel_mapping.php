@@ -16,6 +16,8 @@ test("Stream 0", "video", $probe["streams"][0]["codec_type"]);
 test("Stream 0 codec", "hevc", $probe["streams"][0]["codec_name"]);
 test("Stream 1", "audio", $probe["streams"][1]["codec_type"]);
 test("Stream 1 codec", "aac", $probe["streams"][1]["codec_name"]);
+test("Stream 1 channel_layout", "stereo", $probe["streams"][1]["channel_layout"]);
+test("Stream 1 channels", "2", $probe["streams"][1]["channels"]);
 test("Metadata Title", "Test Channel Mapping", $probe["format"]["tags"]["title"]);
 test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"]);
 test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]));
