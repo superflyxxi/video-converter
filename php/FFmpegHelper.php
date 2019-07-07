@@ -9,8 +9,8 @@ class FFmpegHelper {
     public static function execute($listRequests, $outputFile) {
 	$command = self::generate($listRequests, $outputFile);
 	printf("Executing ffmpeg: %s\n", $command);
-	exec($command, $out, $ret);
-	if (!$ret) {
+	exec($command." 2>&1", $out, $ret);
+	if ($ret > 0) {
 		print_r($out);
 		printf("Failed to execute ffmpeg with return code %s\n", $ret);
 		exit($ret);
