@@ -29,8 +29,8 @@ class SubtitleConvert {
 					printf("Convert pgs to dvd command: %s\n", $command);
 					exec($command, $out, $return);
 					if ($return != 0) {
-					    printf("sub convertion failed: %s\n", $return);
-					    exit($return);
+					    printf("sub convertion failed: %s\nContinuing with next subtitle.\n", $return);
+					    continue;
 					}
 				} else if ("vobsub" == $codeName) {
 					// extract vobsub
@@ -51,8 +51,8 @@ class SubtitleConvert {
         	                                printf("Convert DVD sub using command: %s\n", $command);
                 	                        exec($command, $out, $return);
                         	                if ($return != 0) {
-                                	            printf("vobsub to srt conversion failed: %s\n", $return);
-                                        	    exit($return);
+                                	            printf("vobsub to srt conversion failed: %s\nContinuing with next stream.\n", $return);
+                                        	    continue;
 	                                        }
 					}
 					$oNewRequest = new Request($dvdFile.".srt");
