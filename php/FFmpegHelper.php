@@ -31,6 +31,9 @@ class FFmpegHelper {
         }
         
         $fileno = 0;
+	$videoTrack = 0;
+	$audioTrack = 0;
+	$subtitleTrack = 0;
         foreach ($listRequests as $tmpRequest) {
             $finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest);
             $finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest);
@@ -62,19 +65,20 @@ class FFmpegHelper {
 		return " ";
 	}
 
-	private static function generateVideoArgs($fileno, $request) {
+	private static function generateVideoArgs($fileno, $request, &$videoTrack) {
 		$args = " ";
 		foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
 			$args .= " -map ".$fileno.":".$index;
 			if ("copy" == $request->videoFormat) {
-				$args .= " -c:v copy";
+				$args .= " -c:v:".$videoTrack." copy";
 			} else if ($request->isHDR()) {
-				$args .= " -c:v libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
+				$args .= " -c:v:".$videoTrack." libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
 			} else if ($request->isHwaccel()) {
-				$args .= " -c:v hevc_vaapi -qp 20 -level:v 41";
+				$args .= " -c:v:".$videoTrack." hevc_vaapi -qp 20 -level:v 41";
 			} else {
-				$args .= " -c:v libx265 -crf 20 -level:v 41";
-			}	
+				$args .= " -c:v:".$videoTrack." libx265 -crf 20 -level:v 41";
+			}
+			$videoTrack++;
 		}
 		return $args;
 	}
