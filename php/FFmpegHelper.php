@@ -36,8 +36,8 @@ class FFmpegHelper {
 	$subtitleTrack = 0;
         foreach ($listRequests as $tmpRequest) {
             $finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest, $videoTrack);
-            $finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest);
-            $finalCommand .= " ".self::generateSubtitleArgs($fileno, $tmpRequest);
+            $finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest, $audioTrack);
+            $finalCommand .= " ".self::generateSubtitleArgs($fileno, $tmpRequest, $subtitleTrack);
             $finalCommand .= " ".self::generateMetadataArgs($fileno, $tmpRequest);
             $fileno++;
         }
@@ -83,24 +83,27 @@ class FFmpegHelper {
 		return $args;
 	}
 
-	private static function generateAudioArgs($fileno, $request) {
+	private static function generateAudioArgs($fileno, $request, &$audioTrack) {
 		$args = " ";
 		foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
-			$args .= " -map ".$fileno.":".$index." -c:a ".$request->audioFormat;
+			$args .= " -map ".$fileno.":".$index;
+			$args .= " -c:a:".$audioTrack." ".$request->audioFormat;
 			if ("copy" != $request->audioFormat) {
-				$args .= " -q:a ".$request->audioQuality;
+				$args .= " -q:a:".$audioTrack." ".$request->audioQuality;
 				if (array_key_exists($index, $request->audioChannelMapping)) {
-					$args .= " -filter:".$index." channelmap=channel_layout=".$request->audioChannelMapping[$index];
+					$args .= " -filter:a:".$audioTrack." channelmap=channel_layout=".$request->audioChannelMapping[$index];
 				}
 			}
+			$audioTrack++;
 		}
 		return $args;
 	}
 
-	private static function generateSubtitleArgs($fileno, $request) {
+	private static function generateSubtitleArgs($fileno, $request, &$subtitleTrack) {
 		$args = " ";
 		foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
-			$args .= " -map ".$fileno.":".$index." -c:s ".$request->subtitleFormat;
+			$args .= " -map ".$fileno.":".$index." -c:s:".$subtitleTrack." ".$request->subtitleFormat;
+			$subtitleTrack++;
 		}
 		return $args;
 	}
