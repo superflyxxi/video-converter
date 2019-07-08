@@ -14,21 +14,26 @@ class NormalizeAudio {
 		if (is_numeric($index)) {
 			printf("Normalizing track %s:%s\n", $oRequest->oInputFile->getFileName(), $index);
 	                $stream = $oRequest->oInputFile->getAudioStreams()[$index];
-			$origRequest = new Request($oRequest->oInputFile->getFileName());
-			$origRequest->audioTrack = $index;
-			$origRequest->audioFormat = "copy";
-			$origRequest->prepareStreams();
-			$origFile = new OutputFile($dir.$oRequest->oInputFile->getFileName().'-'.$index.'-orig.mkv');
-			FFmpegHelper::execute(array($origRequest), $origFile);
+
+			$tmpRequest = new Request($oRequest->oInputFile->getFileName());
+			$tmpRequest->audioTrack = $index;
+			$tmpRequest->audioFormat = $oRequest->audioFormat;
+			$tmpRequest->audioQuality = $oRequest->audioQuality;
+			$tmpRequest->audioChannelMapping = $oRequest->audioChannelMapping;
+			$tmpRequest->prepareStreams();
+			$origOutFile = new OutputFile($dir.$oRequest->oInputFile->getFileName().'-'.$index.'-orig.mkv');
+			FFmpegHelper::execute(array($tmpRequest), $origOutFile);
 			
-                	$oNewRequest = new Request($origFile->getFileName());
+                	$oNewRequest = new Request($origOutFile->getFileName());
 	                $oNewRequest->audioTrack = 0;
 			$oNewRequest->audioFormat= "copy";
 			$oNewRequest->prepareStreams();
+			printf("%s request=", $origOutFile->getFileName());
+			print_r($oNewRequest);
                 	$arrAdditionalRequests[] = $oNewRequest;
 			$oRequest->oInputFile->removeAudioStream($index);
 
-	                $command = 'ffmpeg -hide_banner -i "'.$origFile->getFileName()
+	                $command = 'ffmpeg -hide_banner -i "'.$origOutFile->getFileName()
         	                .'" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
 	                printf("Measuring %s:%s with command: %s\n", $oRequest->oInputFile->getFileName(), $index, $command);
         	        exec($command, $out, $return);
@@ -40,7 +45,7 @@ class NormalizeAudio {
         	        $json = json_decode($out, true);
                 
         	        $normFile = $dir.$oRequest->oInputFile->getFileName().'-'.$index.'-norm.mkv';
-                	$command = 'ffmpeg -i "'.$origFile->getFileName().'" -y -map 0'
+                	$command = 'ffmpeg -i "'.$origOutFile->getFileName().'" -y -map 0'
         	                .' -filter:a "loudnorm=measured_I='.$json["input_i"]
                 	        .':measured_TP='.$json["input_tp"]
                         	.':measured_LRA='.$json["input_lra"]
