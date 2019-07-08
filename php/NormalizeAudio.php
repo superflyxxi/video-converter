@@ -28,8 +28,6 @@ class NormalizeAudio {
 	                $oNewRequest->audioTrack = 0;
 			$oNewRequest->audioFormat= "copy";
 			$oNewRequest->prepareStreams();
-			printf("%s request=", $origOutFile->getFileName());
-			print_r($oNewRequest);
                 	$arrAdditionalRequests[] = $oNewRequest;
 			$oRequest->oInputFile->removeAudioStream($index);
 
@@ -55,7 +53,7 @@ class NormalizeAudio {
                 	        .' -c:a '.$oRequest->audioFormat
                         	.' -q:a '.$oRequest->audioQuality
 	                        .' -metadata:s:a:0 "title=Normalized '.$stream->language.' '.$stream->channel_layout.'"'
-        	                .' -f matroska "'.$normFile.'"';
+        	                .' -f matroska "'.$normFile.'" 2>&1';
 
 	                printf("Normalizing %s:%s with command: %s\n", $oRequest->oInputFile->getFileName(), $index, $command);
         	        exec($command, $out, $return);
