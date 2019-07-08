@@ -43,16 +43,17 @@ class NormalizeAudio {
         	        $json = json_decode($out, true);
                 
         	        $normFile = $dir.$oRequest->oInputFile->getFileName().'-'.$index.'-norm.mkv';
+			$normChannelMap = array_key_exists($index, $oRequest->audioChannelMapping) ? $oRequest->audioChannelMapping[$index] : NULL;
                 	$command = 'ffmpeg -i "'.$origOutFile->getFileName().'" -y -map 0'
         	                .' -filter:a "loudnorm=measured_I='.$json["input_i"]
                 	        .':measured_TP='.$json["input_tp"]
                         	.':measured_LRA='.$json["input_lra"]
 	                        .':measured_thresh='.$json["input_thresh"] 
-				.(NULL != $stream->channel_layout ? ',channelmap=channel_layout='.$stream->channel_layout : ' ')
+				.(NULL != $normChannelMap ? ',channelmap=channel_layout='.$normChannelMap : ' ')
 				.'" '
                 	        .' -c:a '.$oRequest->audioFormat
                         	.' -q:a '.$oRequest->audioQuality
-	                        .' -metadata:s:a:0 "title=Normalized '.$stream->language.' '.$stream->channel_layout.'"'
+	                        .' -metadata:s:a:0 "title=Normalized '.$stream->language.' '.$normChannelMap.'"'
         	                .' -f matroska "'.$normFile.'" 2>&1';
 
 	                printf("Normalizing %s:%s with command: %s\n", $oRequest->oInputFile->getFileName(), $index, $command);
