@@ -24,7 +24,7 @@ test("Stream 2 codec", "aac", $probe["streams"][2]["codec_name"]);
 test("Stream 2 channel_layout", "5.1", $probe["streams"][2]["channel_layout"]);
 test("Stream 2 channels", 6, $probe["streams"][2]["channels"]);
 test("Stream 2 title", "Normalized  5.1", $probe["streams"][2]["tags"]["title"]);
-test("Metadata Title", "Test Channel Mapping", $probe["format"]["tags"]["title"]);
+test("Metadata Title", "Test Normalize Track 1", $probe["format"]["tags"]["title"]);
 test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"]);
 test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]));
 test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["tags"]));
