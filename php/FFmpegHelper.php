@@ -35,7 +35,7 @@ class FFmpegHelper {
 	$audioTrack = 0;
 	$subtitleTrack = 0;
         foreach ($listRequests as $tmpRequest) {
-            $finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest);
+            $finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest, $videoTrack);
             $finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest);
             $finalCommand .= " ".self::generateSubtitleArgs($fileno, $tmpRequest);
             $finalCommand .= " ".self::generateMetadataArgs($fileno, $tmpRequest);
@@ -43,7 +43,7 @@ class FFmpegHelper {
         }
         
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
-        $finalCommand .= ' "'.$outputFile->getFileName().'"';
+        $finalCommand .= ' "'.$outputFile->getFileName().'" 2>&1';
         
         return $finalCommand;
     }
