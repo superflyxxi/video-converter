@@ -40,7 +40,7 @@ class Request {
 		if (substr($this->subtitleTrack, 0, strlen("s")) !== "s") {
 			// if not s (all subtitles), then remove all track except the desired
 			foreach ($this->oInputFile->getSubtitleStreams() as $track) {
-				if ($this->subtitleTrack == NULL || $this->subtitleTrack != $track->index) {
+				if ($this->subtitleTrack != $track->index) {
 					$this->oInputFile->removeSubtitleStream($track->index);
 				}
 			}
@@ -48,7 +48,7 @@ class Request {
 		if (substr($this->audioTrack, 0, strlen("a")) !== "a") {
 			// if not a (all audio), then remove all track except the desired
 			foreach ($this->oInputFile->getAudioStreams() as $track) {
-				if ($this->audioTrack == NULL || $this->audioTrack != $track->index) {	
+				if ($this->audioTrack != $track->index) {
 					$this->oInputFile->removeAudioStream($track->index);
 				}
 			}
@@ -56,7 +56,7 @@ class Request {
 		if (substr($this->videoTrack, 0, strlen("v")) !== "v") {
 			// if not v (all videos), then remove all track except the desired
 			foreach ($this->oInputFile->getVideoStreams() as $track) {
-				if ($this->videoTrack == NULL || $this->videoTrack != $track->index) {
+				if ($this->videoTrack != $track->index) {
 					$this->oInputFile->removeVideoStream($track->index);
 				}
 			}
@@ -73,16 +73,16 @@ class Request {
 
 	public $oInputFile = NULL;
 	public $playlist = NULL;
-	public $subtitleTrack = NULL;
+	public $subtitleTrack = -1;
 	public $subtitleFormat = NULL;
+	public $audioTrack = -1;
 	public $audioFormat = NULL;
-	public $audioTrack = NULL;
 	public $audioQuality = NULL;
 	public $audioChannelMapping = NULL;
 	public $normalizeAudioTracks = NULL;
 	private $hwaccel = false;
 	public $deinterlace = false;
-	public $videoTrack = NULL;
+	public $videoTrack = -1;
 	public $videoFormat = NULL;
 	private $videoHdr = false;
 }
