@@ -63,9 +63,9 @@ class SubtitleConvert {
 					$oRequest->oInputFile->removeSubtitleStream($index);
                                 }
 			}
+			// if for some reason some couldn't be converted, copy the ones in the main input file
+			$oRequest->subtitleFormat="copy";
 		}
-		// if for some reason some couldn't be converted, copy the ones in the main input file
-		$oRequest->subtitleFormat="copy";
 		return $arrAdditionalRequests;
 	}
 }
