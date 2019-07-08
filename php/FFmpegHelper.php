@@ -43,7 +43,7 @@ class FFmpegHelper {
         }
         
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
-        $finalCommand .= ' "'.$outputFile->getFileName().'" 2>&1';
+        $finalCommand .= ' "'.$outputFile->getFileName().'"';
         
         return $finalCommand;
     }
