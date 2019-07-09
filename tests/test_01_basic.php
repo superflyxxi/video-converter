@@ -5,6 +5,7 @@ include_once "common.php";
 $command = 'docker run --rm -t -v `pwd`:/data -e INPUT=test.mpg -e TITLE="Test default" -e YEAR=2019 '.$image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
+print_r($output);
 test("ffmpeg code", 0, $return);
 
 $probe = probe("/data/Test default (2019).ffmpeg.mkv");
