@@ -6,12 +6,11 @@ include_once "OutputFile.php";
 
 class FFmpegHelper {
 
-    public static function execute($listRequests, $outputFile) {
+    public static function execute($listRequests, $outputFile, $exit = TRUE) {
 	$command = self::generate($listRequests, $outputFile);
 	printf("Executing ffmpeg: %s\n", $command);
-	exec($command." 2>&1", $out, $ret);
-	if ($ret > 0) {
-		print_r($out);
+	passthru($command." 2>&1", $ret);
+	if ($exit && $ret > 0) {
 		printf("Failed to execute ffmpeg with return code %s\n", $ret);
 		exit($ret);
 	}
