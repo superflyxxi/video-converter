@@ -77,7 +77,7 @@ class FFmpegHelper {
 			} else {
 				$args .= " -c:v:".$videoTrack." libx265 -crf 20 -level:v 41";
 			}
-			$args .= " -metdata:s:v:".$videoTrack." language=".$stream->language;
+			$args .= " -metadata:s:v:".$videoTrack." language=".$stream->language;
 			$videoTrack++;
 		}
 		return $args;
@@ -94,7 +94,7 @@ class FFmpegHelper {
 					$args .= " -filter:a:".$audioTrack." channelmap=channel_layout=".$request->audioChannelMapping[$index];
 				}
 			}
-			$args .= " -metdata:s:a:".$audioTrack." language=".$stream->language;
+			$args .= " -metadata:s:a:".$audioTrack." language=".$stream->language;
 			$audioTrack++;
 		}
 		return $args;
@@ -104,7 +104,7 @@ class FFmpegHelper {
 		$args = " ";
 		foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
 			$args .= " -map ".$fileno.":".$index." -c:s:".$subtitleTrack." ".$request->subtitleFormat;
-			$args .= " -metdata:s:s:".$subtitleTrack." language=".$stream->language;
+			$args .= " -metadata:s:s:".$subtitleTrack." language=".$stream->language;
 			$subtitleTrack++;
 		}
 		return $args;
