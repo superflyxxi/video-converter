@@ -22,7 +22,10 @@ class SubtitleConvert {
 					$pgsRequest->subtitleFormat = "copy";
 					$pgsRequest->prepareStreams();
 					printf("Generating PGS sup file for index %s of file %s.\n", $index, $filename);
-					FFmpegHelper::execute(array($pgsRequest), $pgsFile);
+					if (FFmpegHelper::execute(array($pgsRequest), $pgsFile) > 0) {
+						printf("Conversion failed... Skipping this stream.\n");
+						continue;
+					}
 
 					$dvdFile = $dir."/".$filename.'-'.$index;
 					$command = 'java -jar /home/ripvideo/BDSup2Sub.jar -o "'.$dvdFile.'.sub" "'.$pgsFile->getFileName().'"';
@@ -41,7 +44,10 @@ class SubtitleConvert {
 					$dvdRequest->subtitleFormat = "copy";
 					$dvdRequest->prepareStreams();
 					printf("Generating DVD sub file for index %s of file %s.\n", $index, $filename);
-					FFmpegHelper::execute(array($dvdRequest), $dvdOutputFile);
+					if (FFmpegHelper::execute(array($dvdRequest), $dvdOutputFile) > 0) {
+						printf("Conversion failed... Skipping this stream.\n");
+						continue;
+					}
 				}
 										
 				// convert to srt
