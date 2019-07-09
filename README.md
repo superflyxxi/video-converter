@@ -32,6 +32,7 @@ Variable | Description | Required | Default | Example
 ## Examples
 
 ### Ripping Bluray using VAAPI
+This is currently untested.
 ```
 docker run --rm -it --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e TITLE=Test -e YEAR=2019 rip-video
 ```
