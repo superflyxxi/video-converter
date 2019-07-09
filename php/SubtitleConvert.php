@@ -66,6 +66,7 @@ class SubtitleConvert {
 					$oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
 					$oNewRequest->prepareStreams();
 					$oNewRequest->oInputFile->getSubtitleStreams()[0]->language = $subtitle->language;
+					printf("Using %s language for final stream.\n", $subtitle->language);
 					$arrAdditionalRequests[] = $oNewRequest;
 					$oRequest->oInputFile->removeSubtitleStream($index);
                                 }
