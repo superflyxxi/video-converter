@@ -14,7 +14,7 @@ function test($message, $expected, $actual, $extraLogs="") {
 		printf("\n\n");
 		exit(1);
 	}
-	printf("PASS: %s. Got expected='");
+	printf("PASS: %s. Got expected='", $message);
 	print_r($exepcted);
 	printf("'\n");
 }
