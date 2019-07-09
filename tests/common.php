@@ -3,12 +3,20 @@
 $user = getEnv("UID");
 $image = getEnv("THIS_REGISTRY").'/'.getEnv("THIS_REPO").'/'.getEnv("THIS_IMAGE").':'.getEnv("THIS_LABEL");
 
-function test($message, $expected, $actual) {
+function test($message, $expected, $actual, $extraLogs="") {
 	if ($expected !== $actual) {
-		printf("FAIL: %s. Expected='%s', but got='%s'\n", $message, $expected, $actual);
+		printf("FAIL: %s. Expected='", $message);
+		print_r($expected);
+		printf("', but got '");
+		print_r($actual);
+		printf("'\n");
+		print_r($extraLogs);
+		printf("\n\n");
 		exit(1);
 	}
-	printf("PASS: %s. Got expected='%s'\n", $message, $expected, $actual);
+	printf("PASS: %s. Got expected='");
+	print_r($exepcted);
+	printf("'\n");
 }
 
 function probe($file) {
