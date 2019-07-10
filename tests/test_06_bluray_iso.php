@@ -2,7 +2,7 @@
 
 include_once "common.php";
 if (!file_exists(getEnv("TMP_DIR")."/test_bluray.iso")) {
-	file_put_contents(getEnv("TMP_DIR")."/test_bluray.iso", fopen("http://superflyxxi.dlinkddns.com/samples/Some_Trailers.iso", 'r'));
+	file_put_contents(getEnv("TMP_DIR")."/test_bluray.iso", fopen("http://superflyxxi.dlinkddns.com/samples/Some_Trailers.ISO", 'r'));
 }
 
 $command = 'docker run --rm -t -v `pwd`:/data -e INPUT=test_bluray.iso -e TITLE="Test BluRay ISO" -e YEAR=2019 '.$image;
