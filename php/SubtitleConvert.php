@@ -16,7 +16,7 @@ class SubtitleConvert {
 				$dvdFile = NULL;
 				if ("hdmv_pgs_subtitle" == $codecName) {
 					// convert to dvd
-					if (is_dir($filename)) {
+					if ($oRequest->oInputFile->getPrefix() != NULL) {
 						$dvdFile = $dir."/".realpath($filename)."/dir-".$index;
 					} else {
 						$dvdFile = $dir."/".$filename.'-'.$index;
@@ -45,7 +45,7 @@ class SubtitleConvert {
 					}
 				} else if ("vobsub" == $codeName) {
 					// extract vobsub
-					if (is_dir($filename)) {
+					if ($oRequest->oInputFile->getPrefix() != NULL) {
 						$dvdFile = $dir."/".realpath($filename)."/dir-".$index;
 					} else {
 						$dvdFile = $dir."/".$filename.'-'.$index;

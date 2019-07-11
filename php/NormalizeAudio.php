@@ -21,7 +21,7 @@ class NormalizeAudio {
 			$tmpRequest->audioQuality = $oRequest->audioQuality;
 			$tmpRequest->audioChannelMapping = $oRequest->audioChannelMapping;
 			$tmpRequest->prepareStreams();
-			if (is_dir($oRequest->oInputFile->getFileName())) {
+			if ($oRequest->oInputFile->getPrefix() != NULL) {
 				$origOutFile = new OutputFile($dir.realpath($oRequest->oInputFile->getFileName()).'/dir-'.$index.'-orig.mkv');
 			} else {
 				$origOutFile = new OutputFile($dir.$oRequest->oInputFile->getFileName().'-'.$index.'-orig.mkv');

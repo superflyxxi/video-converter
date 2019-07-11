@@ -10,7 +10,7 @@ class InputFile {
 		if (is_dir($filename) || substr($filename, -strlen($filename)) === ".iso") {
 			$this->prefix = "bluray:";
 		}
-		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$this->getFileName().'"';
+		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$this->getPrefix().$this->getFileName().'"';
 		Logger::verbose("Command to execute for ffprobe: {}", array($command));
 		exec($command, $out);
 		$json = json_decode(implode($out), true);
