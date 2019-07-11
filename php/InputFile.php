@@ -14,20 +14,22 @@ class InputFile {
 		exec($command, $out);
 		$json = json_decode(implode($out), true);
 		Logger::debug("JSON from probing {}: {}", array($this->getFileName(), $json));
-		foreach ($json["streams"] as $stream) {
-			$oStream = new Stream($stream);
-			$this->streams[$oStream->index] = $oStream;
-			switch ($oStream->codec_type) {
-				case "video":
-					$this->videoStreams[$oStream->index] = $oStream;
-					break;
-				case "audio":
-					$this->audioStreams[$oStream->index] = $oStream;
-					break;
-				case "subtitle":
-					$this->subtitleStreams[$oStream->index] = $oStream;
-					break;
-				default:
+		if (array_key_exists("streams", $json)) {
+			foreach ($json["streams"] as $stream) {
+				$oStream = new Stream($stream);
+				$this->streams[$oStream->index] = $oStream;
+				switch ($oStream->codec_type) {
+					case "video":
+						$this->videoStreams[$oStream->index] = $oStream;
+						break;
+					case "audio":
+						$this->audioStreams[$oStream->index] = $oStream;
+						break;
+					case "subtitle":
+						$this->subtitleStreams[$oStream->index] = $oStream;
+						break;
+					default:
+				}
 			}
 		}
 	}
