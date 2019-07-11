@@ -1,6 +1,7 @@
 <?php
 
 include_once "Stream.php";
+include_once "Logger.php";
 
 class InputFile {
 
@@ -12,6 +13,7 @@ class InputFile {
 		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$this->getFileName().'"';
 		exec($command, $out);
 		$json = json_decode(implode($out), true);
+		Logger::debug("JSON from probing {}: {}", array($this->getFileName(), $json));
 		foreach ($json["streams"] as $stream) {
 			$oStream = new Stream($stream);
 			$this->streams[$oStream->index] = $oStream;
