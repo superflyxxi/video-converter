@@ -26,7 +26,7 @@ function probe($file) {
 	if ($user) {
 		$command .= ' --user='.$user;
 	}
-	$command .= ' -v `pwd`:/data --entrypoint ffprobe '.$image.' -v quiet -print_format json -show_format -show_streams "'.$file.'"';
+	$command .= ' -v '.getEnd("TMP_DIR").':/data --entrypoint ffprobe '.$image.' -v quiet -print_format json -show_format -show_streams "'.$file.'"';
 #	$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$file.'"';
 	printf("Probing '%s'\n", $file);
 	exec($command, $out, $ret);
