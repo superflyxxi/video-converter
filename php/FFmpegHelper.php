@@ -26,7 +26,7 @@ class FFmpegHelper {
         
         // generate input args
         foreach ($listRequests as $tmpRequest) {
-            $finalCommand .= ' -i "'.$tmpRequest->oInputFile()->getPrefix().$tmpRequest->oInputFile->getFileName().'" ';
+            $finalCommand .= ' -i "'.$tmpRequest->oInputFile->getPrefix().$tmpRequest->oInputFile->getFileName().'" ';
         }
         
         $fileno = 0;
