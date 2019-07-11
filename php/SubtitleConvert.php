@@ -16,37 +16,51 @@ class SubtitleConvert {
 				$dvdFile = NULL;
 				if ("hdmv_pgs_subtitle" == $codecName) {
 					// convert to dvd
-					$pgsFile = new OutputFile($dir."/".$filename.'-'.$index.'.sup');
-					$pgsRequest = new Request($filename);
-					$pgsRequest->subtitleTrack = $index;
-					$pgsRequest->subtitleFormat = "copy";
-					$pgsRequest->prepareStreams();
-					printf("Generating PGS sup file for index %s of file %s.\n", $index, $filename);
-					if (FFmpegHelper::execute(array($pgsRequest), $pgsFile) > 0) {
-						printf("Conversion failed... Skipping this stream.\n");
-						continue;
+					if (is_dir($filename)) {
+						$dvdFile = $dir."/".realpath($filename)."/dir-".$index;
+					} else {
+						$dvdFile = $dir."/".$filename.'-'.$index;
+					}
+					$pgsFile = new OutputFile($dvdFile.'.sup');
+					if (!file_exists($pgsFile->getFileName())) {
+						$pgsRequest = new Request($filename);
+						$pgsRequest->subtitleTrack = $index;
+						$pgsRequest->subtitleFormat = "copy";
+						$pgsRequest->prepareStreams();
+						printf("Generating PGS sup file for index %s of file '%s'.\n", $index, $filename);
+						if (FFmpegHelper::execute(array($pgsRequest), $pgsFile) > 0) {
+							printf("Conversion failed... Skipping this stream.\n");
+							continue;
+						}
 					}
 
-					$dvdFile = $dir."/".$filename.'-'.$index;
-					$command = 'java -jar /home/ripvideo/BDSup2Sub.jar -o "'.$dvdFile.'.sub" "'.$pgsFile->getFileName().'"';
-					printf("Convert pgs to dvd command: %s\n", $command);
-					exec($command, $out, $return);
-					if ($return != 0) {
-					    printf("sub convertion failed: %s\nContinuing with next subtitle.\n", $return);
-					    continue;
+					if (!file_exists($dvdFile.'.sub')) {
+						$command = 'java -jar /home/ripvideo/BDSup2Sub.jar -o "'.$dvdFile.'.sub" "'.$pgsFile->getFileName().'"';
+						printf("Convert pgs to dvd command: %s\n", $command);
+						exec($command, $out, $return);
+						if ($return != 0) {
+						    printf("sub convertion failed: %s\nContinuing with next subtitle.\n", $return);
+						    continue;
+						}
 					}
 				} else if ("vobsub" == $codeName) {
 					// extract vobsub
-					$dvdFile = $dir."/".$filename.'-'.$index;
+					if (is_dir($filename)) {
+						$dvdFile = $dir."/".realpath($filename)."/dir-".$index;
+					} else {
+						$dvdFile = $dir."/".$filename.'-'.$index;
+					}
 					$dvdOutputFile = new OutputFile($dvdFile.".sub");
-					$dvdRequest = new Request($filename);
-					$dvdRequest->subtitleTrack = $index;
-					$dvdRequest->subtitleFormat = "copy";
-					$dvdRequest->prepareStreams();
-					printf("Generating DVD sub file for index %s of file %s.\n", $index, $filename);
-					if (FFmpegHelper::execute(array($dvdRequest), $dvdOutputFile) > 0) {
-						printf("Conversion failed... Skipping this stream.\n");
-						continue;
+					if (!file_exists($dvdOutputFile->getFileName())) {
+						$dvdRequest = new Request($filename);
+						$dvdRequest->subtitleTrack = $index;
+						$dvdRequest->subtitleFormat = "copy";
+						$dvdRequest->prepareStreams();
+						printf("Generating DVD sub file for index %s of file %s.\n", $index, $filename);
+						if (FFmpegHelper::execute(array($dvdRequest), $dvdOutputFile) > 0) {
+							printf("Conversion failed... Skipping this stream.\n");
+							continue;
+						}
 					}
 				}
 										
