@@ -2,7 +2,7 @@
 
 include_once "common.php";
 
-$command = 'docker run --rm -t -v `pwd`:/data -e INPUT=test.mpg -e TITLE="Test default" -e YEAR=2019 '.$image;
+$command = 'docker run --rm -t -v '.getEnv("TMP_DIR").':/data -e INPUT=test.mpg -e TITLE="Test default" -e YEAR=2019 '.$image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 if ($return > 0) {
