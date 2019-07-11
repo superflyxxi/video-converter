@@ -2,7 +2,7 @@
 
 include_once "common.php";
 
-$command = 'docker run --rm -t -v `pwd`:/data -e INPUT=test.mpg -e TITLE="Test tv show" -e SEASON=01 -e EPISODE=23 -e SUBTITLE="The One Where Things" '.$image;
+$command = 'docker run --rm -t -v '.getEnv("TMP_DIR").':/data -e INPUT=test.mpg -e TITLE="Test tv show" -e SEASON=01 -e EPISODE=23 -e SUBTITLE="The One Where Things" '.$image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 test("ffmpeg code", 0, $return);

@@ -2,7 +2,7 @@
 
 include_once "common.php";
 
-$command = 'docker run --rm -t -v `pwd`:/data -e INPUT=test.mpg -e TITLE="Test Channel Mapping" -e YEAR=2019 -e AUDIO_CHANNEL_LAYOUT=stereo '.$image;
+$command = 'docker run --rm -t -v '.getEnv("TMP_DIR").':/data -e INPUT=test.mpg -e TITLE="Test Channel Mapping" -e YEAR=2019 -e AUDIO_CHANNEL_LAYOUT=stereo '.$image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 test("ffmpeg code", 0, $return);
