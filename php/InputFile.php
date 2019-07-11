@@ -2,6 +2,7 @@
 
 include_once "Stream.php";
 include_once "Logger.php";
+include_once "FFmpegHelper.php";
 
 class InputFile {
 
@@ -10,9 +11,7 @@ class InputFile {
 		if (is_dir($filename) || substr($filename, -strlen($filename)) === ".iso") {
 			$this->prefix = "bluray:";
 		}
-		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$this->getPrefix().$this->getFileName().'"';
-		Logger::verbose("Command to execute for ffprobe: {}", array($command));
-		exec($command, $out);
+		$out = FFmpegHelper::probe($this);
 		$json = json_decode(implode($out), true);
 		Logger::debug("JSON from probing {}: {}", array($this->getFileName(), $json));
 		if (array_key_exists("streams", $json)) {

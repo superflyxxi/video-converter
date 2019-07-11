@@ -6,6 +6,16 @@ include_once "OutputFile.php";
 
 class FFmpegHelper {
 
+    public static function probe($inputFile) {
+	$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$inputFile->getPrefix().$inputFile->getFileName().'"';
+	exec($command, $out, $ret);
+	if ($ret > 0) {
+		printf("Failed to execute ffprobe due to %s", $ret);
+		exit ($ret);
+	}
+	return $out;
+    }
+
     public static function execute($listRequests, $outputFile, $exit = TRUE) {
 	$command = self::generate($listRequests, $outputFile);
 	printf("Executing ffmpeg: %s\n", $command);
