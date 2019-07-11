@@ -65,7 +65,11 @@ class InputFile {
 	}
 
 	public function getFileName() {
-		return $this->prefix.$this->filename;
+		return $this->filename;
+	}
+
+	public function getPrefix() {
+		return $this->prefix;
 	}
 
 }
