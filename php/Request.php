@@ -23,7 +23,7 @@ class Request {
 		$req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
 		$req->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
 		$mapping = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "5.1");
-		foreach (explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "1")) as $track) {
+		foreach (explode(" ", getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "")) as $track) {
 			$req->audioChannelMapping[$track] = $mapping;
 		}
 
