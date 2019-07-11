@@ -11,15 +11,23 @@ class Logger {
 	const dateformat = "c";
 
 	private static $loglevel = -1;
+	
+	public static function verbose($msg, array $args) {
+		self::log(self::$VERBOSE, $msg, $args);
+	}
 
 	public static function debug($msg, array $args) {
+		self::log(self::$DEBUG, $msg, $args);
+	}
+
+	public static function log($reqlevel, $msg, array $args) {
 		self::init();
-		if (self::$loglevel >= self::$DEBUG) {
+		if (self::$loglevel >= $reqlevel) {
 			$str = $msg;
 			foreach ($args as $arg) {
 				preg_replace("{}", print_r($arg, true), $str, 1);
 			}
-			printf("%s::DEBUG::%s\n", date(self::$dateformat), $str);
+			printf("%s::%s::%s\n", date(self::$dateformat), $reqlevel, $str);
 		}
 	}
 
