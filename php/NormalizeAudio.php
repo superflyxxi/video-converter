@@ -21,7 +21,11 @@ class NormalizeAudio {
 			$tmpRequest->audioQuality = $oRequest->audioQuality;
 			$tmpRequest->audioChannelMapping = $oRequest->audioChannelMapping;
 			$tmpRequest->prepareStreams();
-			$origOutFile = new OutputFile($dir.$oRequest->oInputFile->getFileName().'-'.$index.'-orig.mkv');
+			if (is_dir($oRequest->oInputFile->getFileName()) {
+				$origOutFile = new OutputFile($dir.realpath($oRequest->oInputFile->getFileName()).'/dir-'.$index.'-orig.mkv');
+			} else {
+				$origOutFile = new OutputFile($dir.$oRequest->oInputFile->getFileName().'-'.$index.'-orig.mkv');
+			}
 			FFmpegHelper::execute(array($tmpRequest), $origOutFile);
 			
                 	$oNewRequest = new Request($origOutFile->getFileName());
