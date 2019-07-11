@@ -11,6 +11,7 @@ class InputFile {
 			$this->prefix = "bluray:";
 		}
 		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$this->getFileName().'"';
+		Logger::verbose("Command to execute for ffprobe: {}", array($command));
 		exec($command, $out);
 		$json = json_decode(implode($out), true);
 		Logger::debug("JSON from probing {}: {}", array($this->getFileName(), $json));
