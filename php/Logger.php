@@ -25,7 +25,7 @@ class Logger {
 		if (self::$loglevel >= $reqlevel) {
 			$str = $msg;
 			foreach ($args as $arg) {
-				$str = preg_replace("/{}/", $arg/*print_r($arg, true)*/, $str, 1);
+				$str = preg_replace("/{}/", print_r($arg, true), $str, 1);
 			}
 			printf("%s::%s::%s\n", date(self::dateformat), $reqlevel, $str);
 		}
