@@ -33,6 +33,7 @@ class Logger {
 
 	private static function init() {
 		if (self::$loglevel == -1) {
+			date_default_timezone_set("UTC");
 			switch (getEnv("LOG_LEVEL")) {
 				case "WARN":
 					self::$loglevel = self::WARN;

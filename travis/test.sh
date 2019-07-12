@@ -3,7 +3,6 @@
 # Assuming FFMPEG_DOCKER set
 
 set -ex
-echo "date.timezone = UTC" >> /etc/php.ini
 
 . common.sh
 
