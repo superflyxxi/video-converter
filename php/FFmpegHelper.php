@@ -107,7 +107,7 @@ class FFmpegHelper {
 					$channelLayout = $stream->channel_layout;
 				}
 				if (NULL != $channelLayout) {
-					$args .= " -filter:a:".$audioTrack." channelmap=channel_layout=".$request->audioChannelMapping[$index];
+					$args .= " -filter:a:".$audioTrack." channelmap=channel_layout=".$channelLayout;
 				}
 			}
 			$args .= " -metadata:s:a:".$audioTrack." language=".$stream->language;
