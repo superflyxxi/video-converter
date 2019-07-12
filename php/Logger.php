@@ -12,6 +12,14 @@ class Logger {
 
 	private static $loglevel = -1;
 	
+	public static function info($msg, array $args = array()) {
+		self::log(self::INFO, $msg, $args);
+	}
+
+	public static function error($msg, array $args = array()) {
+		self::log(self::ERROR, $msg, $args);
+	}
+
 	public static function verbose($msg, array $args = array()) {
 		self::log(self::VERBOSE, $msg, $args);
 	}
