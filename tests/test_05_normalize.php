@@ -2,6 +2,8 @@
 
 include_once "common.php";
 
+getFile("test.mpg", "https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg");
+
 $command = 'docker run --rm -t -v '.getEnv("TMP_DIR").':/data -e INPUT=test.mpg -e TITLE="Test Normalize Track 1" -e YEAR=2019 -e NORMALIZE_AUDIO_TRACKS=1 '.$image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
