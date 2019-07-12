@@ -36,5 +36,11 @@ function probe($file) {
 	return NULL;
 }
 
+function getFile($localFilename, $URL) {
+	if (!file_exists(getEnv("TMP_DIR")."/".$localFilename)) {
+		return 0 < file_put_contents(getEnv("TMP_DIR")."/".$localFilename, fopen($URL, 'r'));
+	}
+	return TRUE;
+}
 ?>
 
