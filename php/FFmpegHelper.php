@@ -102,6 +102,11 @@ class FFmpegHelper {
 			if ("copy" != $request->audioFormat) {
 				$args .= " -q:a:".$audioTrack." ".$request->audioQuality;
 				if (array_key_exists($index, $request->audioChannelMapping)) {
+					$channelLayout = $request->audioChannelMapping[$index];
+				} else {
+					$channelLayout = $stream->channel_layout;
+				}
+				if (NULL != $channelLayout) {
 					$args .= " -filter:a:".$audioTrack." channelmap=channel_layout=".$request->audioChannelMapping[$index];
 				}
 			}
