@@ -26,9 +26,7 @@ $allRequests[] = $oRequest;
 $allRequests = array_merge($allRequests, SubtitleConvert::convert($oRequest));
 $allRequests = array_merge($allRequests, NormalizeAudio::normalize($oRequest));
 
-$finalCommand = FFmpegHelper::generate($allRequests, $oOutput);
-
-exec($finalCommand, $systemOut, $returnValue);
+$returnValue = FFmpegHelper::execute($allRequests, $oOutput);
 
 Logger::info("Completed conversion with {} as a return value.", array($returnValue));
 exit($returnValue);
