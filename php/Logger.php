@@ -12,12 +12,12 @@ class Logger {
 
 	private static $loglevel = -1;
 	
-	public static function verbose($msg, array $args) {
-		self::log(self::$VERBOSE, $msg, $args);
+	public static function verbose($msg, array $args = array()) {
+		self::log(self::VERBOSE, $msg, $args);
 	}
 
-	public static function debug($msg, array $args) {
-		self::log(self::$DEBUG, $msg, $args);
+	public static function debug($msg, array $args = array()) {
+		self::log(self::DEBUG, $msg, $args);
 	}
 
 	public static function log($reqlevel, $msg, array $args) {
@@ -25,9 +25,9 @@ class Logger {
 		if (self::$loglevel >= $reqlevel) {
 			$str = $msg;
 			foreach ($args as $arg) {
-				preg_replace("{}", print_r($arg, true), $str, 1);
+				$str = preg_replace("/{}/", $arg/*print_r($arg, true)*/, $str, 1);
 			}
-			printf("%s::%s::%s\n", date(self::$dateformat), $reqlevel, $str);
+			printf("%s::%s::%s\n", date(self::dateformat), $reqlevel, $str);
 		}
 	}
 
@@ -35,19 +35,19 @@ class Logger {
 		if (self::$loglevel == -1) {
 			switch (getEnv("LOG_LEVEL")) {
 				case "WARN":
-					self::$loglevel = self::$WARN;
+					self::$loglevel = self::WARN;
 					break;
 				case "ERROR":
-					self::$loglevel = self::$ERROR;
+					self::$loglevel = self::ERROR;
 					break;
 				case "VERBOSE":
-					self::$loglevel = self::$VERBOSE;
+					self::$loglevel = self::VERBOSE;
 					break;
 				case "DEBUG":
-					self::$loglevel = self::$DEBUG;
+					self::$loglevel = self::DEBUG;
 					break;
 				default:
-					self::$loglevel = self::$INFO;
+					self::$loglevel = self::INFO;
 			}
 		}
 	}
