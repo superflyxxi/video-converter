@@ -9,6 +9,8 @@ RUN yum install -y php wget java-1.8.0-openjdk \
 	libtiff-devel tesseract-devel tesseract-lanuagepack-eng tesseract-ocr-eng \
 	&& yum clean all
 
+RUN echo "date.timezone = UTC" >> /etc/php.ini
+
 RUN DIR=$(mktemp -d) && cd ${DIR} && \
 	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
 	./configure --libdir=/usr/lib64 --prefix=/usr && \
