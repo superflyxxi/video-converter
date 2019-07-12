@@ -3,6 +3,7 @@
 include_once "Request.php";
 include_once "functions.php";
 include_once "OutputFile.php";
+include_once "Logger.php";
 
 class FFmpegHelper {
 
@@ -10,7 +11,7 @@ class FFmpegHelper {
 	$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$inputFile->getPrefix().$inputFile->getFileName().'"';
 	exec($command, $out, $ret);
 	if ($ret > 0) {
-		printf("Failed to execute ffprobe due to %s", $ret);
+		Logger::error("Failed to execute ffprobe; returned {}", array($ret));
 		exit ($ret);
 	}
 	return $out;
@@ -18,10 +19,10 @@ class FFmpegHelper {
 
     public static function execute($listRequests, $outputFile, $exit = TRUE) {
 	$command = self::generate($listRequests, $outputFile);
-	printf("Executing ffmpeg: %s\n", $command);
+	Logger::verbose("Executing ffmpeg: {}", array($command));
 	passthru($command." 2>&1", $ret);
 	if ($exit && $ret > 0) {
-		printf("Failed to execute ffmpeg with return code %s\n", $ret);
+		Logger::error("Failed to execute ffmpeg with return code {}", array($ret));
 		exit($ret);
 	}
 	return $ret;
