@@ -15,9 +15,9 @@ before_install:
   - docker pull ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:latest || true
 
 script:
-  - set -e
   - cd travis/
   - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=latest; fi
   - ./build.sh
-  - ./push.sh
   - ./test.sh
+  - ./push.sh
+
