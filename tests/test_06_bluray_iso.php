@@ -2,7 +2,7 @@
 
 include_once "common.php";
 
-getFile("test_bluray.iso", "http://superflyxxi.dlinkddns.com/samples/Some_Trailers.ISO");
+getFile("test_bluray.iso", "http://superflyxxi.dlinkddns.com/samples/MARVEL_Trailers_BLURAY.ISO");
 
 $command = 'docker run --rm -t -v '.getEnv("TMP_DIR").':/data -e INPUT=test_bluray.iso -e TITLE="Test BluRay ISO" -e YEAR=2019 '.$image;
 printf("executing: %s\n", $command);
