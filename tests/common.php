@@ -40,7 +40,8 @@ function probe($file) {
 
 function getFile($localFilename, $URL) {
 	if (!file_exists(getEnv("TMP_DIR")."/".$localFilename)) {
-		return 0 < file_put_contents(getEnv("TMP_DIR")."/".$localFilename, fopen($URL, 'r'));
+		passthru('curl -L -o "'.getEnv("TMP_DIR").'/'.$localFilename.'" "'.$URL.'"', $ret);
+		return 0 < $ret;
 	}
 	return TRUE;
 }
