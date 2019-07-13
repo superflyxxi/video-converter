@@ -12,6 +12,7 @@ services:
   - docker
 
 before_install:
+  - echo "FFMPEG_DOCKER_LABEL=${FFMPEG_DOCKER_LABEL}"
   - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY} || true
