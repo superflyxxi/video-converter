@@ -3,6 +3,8 @@ set -ex
 
 . common.sh
 
+cd ../
+
 find . -name *.php | xargs -L1 php -l
 
 CACHE_FROM_ARGS=${CACHE_FROM_ARGS:-"--cache-from ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:latest"}
