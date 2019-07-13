@@ -1,5 +1,6 @@
 <?php
 
+include_once "Logger.php";
 include_once "functions.php";
 include_once "Request.php";
 include_once "Stream.php";
@@ -12,7 +13,7 @@ class NormalizeAudio {
             $dir = getEnvWithDefault("TMP_DIR", "/tmp");
             foreach ($oRequest->normalizeAudioTracks as $index) {
 		if (is_numeric($index)) {
-			printf("Normalizing track %s:%s\n", $oRequest->oInputFile->getFileName(), $index);
+			Logger::info("Normalizing track {}:{}", array($oRequest->oInputFile->getFileName(), $index));
 	                $stream = $oRequest->oInputFile->getAudioStreams()[$index];
 
 			$tmpRequest = new Request($oRequest->oInputFile->getFileName());
