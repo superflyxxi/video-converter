@@ -18,7 +18,7 @@ test("Stream 0", "video", $probe["streams"][0]["codec_type"], $testOutput);
 test("Stream 0 codec", "hevc", $probe["streams"][0]["codec_name"], $testOutput);
 test("Stream 1", "audio", $probe["streams"][1]["codec_type"], $testOutput);
 test("Stream 1 codec", "aac", $probe["streams"][1]["codec_name"], $testOutput);
-test("Stream 1 channel_layout", "5.1(side)", $probe["streams"][1]["channel_layout"], $testOutput);
+test("Stream 1 channel_layout", "5.1", $probe["streams"][1]["channel_layout"], $testOutput);
 test("Stream 1 channels", 6, $probe["streams"][1]["channels"], $testOutput);
 test("Metadata Title", "Test default", $probe["format"]["tags"]["title"], $testOutput);
 test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"], $testOutput);

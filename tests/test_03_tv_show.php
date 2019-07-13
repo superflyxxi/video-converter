@@ -16,7 +16,7 @@ test("Stream 0", "video", $probe["streams"][0]["codec_type"], $output);
 test("Stream 0 codec", "hevc", $probe["streams"][0]["codec_name"], $output);
 test("Stream 1", "audio", $probe["streams"][1]["codec_type"], $output);
 test("Stream 1 codec", "aac", $probe["streams"][1]["codec_name"], $output);
-test("Stream 1 channel_layout", "5.1(side)", $probe["streams"][1]["channel_layout"], $output);
+test("Stream 1 channel_layout", "5.1", $probe["streams"][1]["channel_layout"], $output);
 test("Stream 1 channels", 6, $probe["streams"][1]["channels"], $output);
 test("Metadata Title", "Test tv show", $probe["format"]["tags"]["title"], $output);
 test("Metadata SEASON", "01", $probe["format"]["tags"]["SEASON"], $output);
