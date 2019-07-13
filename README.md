@@ -1,10 +1,15 @@
 # video-converter
 Tools to convert video
 
+# Limitations
+- Channel layouts that end in `(side)` will not be supported.
+- DVD directory/ISO are not yet supported.
+
 # Docker Image
 This image supports ripping a video or bluray directory into an MKV using ffmpeg. As a result, 
 you'll see in the same directory mapped to `/data` a file with the following naming:
-`{TITLE} ({YEAR}) - s{SEASON}e{EPISODE} - {SUBTITLE}.ffmpeg.mkv`
+`{TITLE} ({YEAR}) - s{SEASON}e{EPISODE} - {SUBTITLE}.ffmpeg.mkv`. You may want to rip the bluray
+to mkv before running this tool as ffmpeg is not very good at metadata from blurays.
 
 ## Environment Variables
 Variable | Description | Required | Default | Example
@@ -22,8 +27,8 @@ Variable | Description | Required | Default | Example
 `AUDIO_FORMAT` | The desired output audio format. | No | `aac` | `eac3`
 `AUDIO_QUALITY` | The desired output audio quality based on the `AUDIO_FORMAT`. | No | `2` | `560`
 `AUDIO_CHANNEL_LAYOUT` | The desired output audio channel layout. | No | `5.1` | `7.1`
-`AUDIO_CHANNEL_MAPPING_TRACKS` | The space-separated list of input audio tracks that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | `1` | `1 2 3 4`
-`NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | ` ` | `1 2`
+`AUDIO_CHANNEL_MAPPING_TRACKS` | The space-separated list of input audio tracks that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | ` ` | `1 2 3 4`
+`NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
 `VIDEO_TRACK` | The input video tracks to convert. | No | `v` | `0`
 `VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
 `DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `--device /dev/dri:/dev/dri` is provided. | No | `n` | `y`
@@ -47,3 +52,4 @@ docker run --rm -it -v `pwd`:/data -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 
 ```
 docker run --rm -it -v /mnt/bluray:/data --entrypoint /home/ripvideo/scripts/find-playlist.perl rip-video /data
 ```
+
