@@ -40,7 +40,7 @@ class NormalizeAudio {
         	                .'" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
 	                Logger::info("Measuring {}:{} with command: {}", array($oRequest->oInputFile->getFileName(), $index, $command));
         	        exec($command, $out, $return);
-			Logger::verbose(implode($out));
+			Logger::verbose($out);
         	        if ($return != 0) {
                 	    Logger::error("Normalizing failed: {}", array($return));
 	                    exit($return);
