@@ -3,6 +3,8 @@
 $user = getEnv("UID");
 $image = getEnv("THIS_REGISTRY").'/'.getEnv("THIS_REPO").'/'.getEnv("THIS_IMAGE").':'.getEnv("THIS_LABEL");
 
+printf("TEST: %s\n", debug_backtrace()[0]['file']);
+
 function test($message, $expected, $actual, $extraLogs="") {
 	if ($expected !== $actual) {
 		printf("FAIL: %s. Expected='", $message);
