@@ -38,10 +38,11 @@ class NormalizeAudio {
 
 	                $command = 'ffmpeg -hide_banner -i "'.$origOutFile->getFileName()
         	                .'" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
-	                printf("Measuring %s:%s with command: %s\n", $oRequest->oInputFile->getFileName(), $index, $command);
+	                Logger::info("Measuring {}:{} with command: {}", array($oRequest->oInputFile->getFileName(), $index, $command));
         	        exec($command, $out, $return);
+			Logger::verbose(implode($out));
         	        if ($return != 0) {
-                	    printf("Normalizing failed: %s\n", $return);
+                	    Logger::error("Normalizing failed: {}", array($return));
 	                    exit($return);
 	                }
         	        $out = implode(array_slice($out, -12));
@@ -63,10 +64,10 @@ class NormalizeAudio {
 	                        .' -metadata:s:a:0 "title=Normalized '.$stream->language.' '.$normChannelMap.'"'
         	                .' -f matroska "'.$normFile.'" 2>&1';
 
-	                printf("Normalizing %s:%s with command: %s\n", $oRequest->oInputFile->getFileName(), $index, $command);
-        	        exec($command, $out, $return);
+	                Logger::info("Normalizing {}:{} with command: {}", array($oRequest->oInputFile->getFileName(), $index, $command));
+        	        passthru($command, $return);
         	        if ($return != 0) {
-                	    printf("Normalizing failed: %s\n", $return);
+                	    Logger::error("Normalizing failed: {}", array($return));
 	                    exit($return);
 	                }
                 	$oNewRequest = new Request($normFile);
