@@ -31,7 +31,7 @@ class Logger {
 	public static function log($reqlevel, $msg, array $args) {
 		self::init();
 		if (self::$loglevel >= $reqlevel) {
-			$str = $msg;
+			$str = print_r($msg, true);
 			foreach ($args as $arg) {
 				$str = preg_replace("/{}/", print_r($arg, true), $str, 1);
 			}
