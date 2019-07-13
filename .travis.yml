@@ -11,9 +11,6 @@ services:
 before_install:
   - export THIS_LABEL=${FFMPEG_DOCKER_LABEL}-${TRAVIS_BRANCH}
   - export FROM_IMAGE=${FFMPEG_DOCKER_IMAGE}:${FFMPEG_DOCKER_LABEL}
-  - echo "FFMPEG_DOCKER_LABEL=${FFMPEG_DOCKER_LABEL}"
-  - echo "THIS_LABEL=${THIS_LABEL}"
-  - echo "FROM_IMAGE=${FROM_IMAGE}"
   - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY} || true
