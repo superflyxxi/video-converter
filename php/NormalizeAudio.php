@@ -47,7 +47,9 @@ class NormalizeAudio {
         	        $json = json_decode($out, true);
                 
         	        $normFile = $dir.$oRequest->oInputFile->getFileName().'-'.$index.'-norm.mkv';
-			$normChannelMap = array_key_exists($index, $oRequest->audioChannelMapping) ? $oRequest->audioChannelMapping[$index] : NULL;
+			$normChannelMap = array_key_exists($index, $oRequest->audioChannelMapping) 
+				? $oRequest->audioChannelMapping[$index] 
+				: $stream->channel_layout;
                 	$command = 'ffmpeg -i "'.$origOutFile->getFileName().'" -y -map 0'
         	                .' -filter:a "loudnorm=measured_I='.$json["input_i"]
                 	        .':measured_TP='.$json["input_tp"]
