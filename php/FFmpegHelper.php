@@ -19,7 +19,7 @@ class FFmpegHelper {
     }
 
     public static function execute($listRequests, $outputFile, $exit = TRUE) {
-	$command = escapeshellcmd(self::generate($listRequests, $outputFile));
+	$command = self::generate($listRequests, $outputFile);
 	Logger::verbose("Executing ffmpeg: {}", array($command));
 	passthru($command." 2>&1", $ret);
 	if ($exit && $ret > 0) {
@@ -106,6 +106,7 @@ class FFmpegHelper {
 					$channelLayout = $stream->channel_layout;
 				}
 				if (NULL != $channelLayout) {
+					$channelLayout = preg_replace("/(/", "\(", $channelLayout);
 					$args .= " -filter:a:".$audioTrack.' channelmap=channel_layout='.$channelLayout;
 				}
 				$args .= " -c:a:".$audioTrack." ".$request->audioFormat;
