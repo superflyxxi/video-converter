@@ -106,7 +106,7 @@ class FFmpegHelper {
 					$channelLayout = $stream->channel_layout;
 				}
 				if (NULL != $channelLayout) {
-					$channelLayout = preg_replace("/(/", "\\(", $channelLayout);
+					$channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
 					$args .= " -filter:a:".$audioTrack.' channelmap=channel_layout='.$channelLayout;
 				}
 				$args .= " -c:a:".$audioTrack." ".$request->audioFormat;
