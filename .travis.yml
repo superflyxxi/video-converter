@@ -1,6 +1,9 @@
 language: php
 
 env:
+  matrix:
+    - OS=alpine
+    - OS=centos
   global:
     - THIS_LABEL=${TRAVIS_BRANCH}
     - FROM_IMAGE=${FFMPEG_DOCKER}
