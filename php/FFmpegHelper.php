@@ -9,6 +9,7 @@ class FFmpegHelper {
 
     public static function probe($inputFile) {
 	$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$inputFile->getPrefix().$inputFile->getFileName().'"';
+	Logger::verbose("Executing ffprobe: {}", array($command));
 	exec($command, $out, $ret);
 	if ($ret > 0) {
 		Logger::error("Failed to execute ffprobe; returned {}", array($ret));
@@ -18,7 +19,7 @@ class FFmpegHelper {
     }
 
     public static function execute($listRequests, $outputFile, $exit = TRUE) {
-	$command = self::generate($listRequests, $outputFile);
+	$command = escapeshellcmd(self::generate($listRequests, $outputFile));
 	Logger::verbose("Executing ffmpeg: {}", array($command));
 	passthru($command." 2>&1", $ret);
 	if ($exit && $ret > 0) {
@@ -105,7 +106,7 @@ class FFmpegHelper {
 					$channelLayout = $stream->channel_layout;
 				}
 				if (NULL != $channelLayout) {
-					$args .= " -filter:a:".$audioTrack.' "channelmap=channel_layout='.$channelLayout.'"';
+					$args .= " -filter:a:".$audioTrack.' channelmap=channel_layout='.$channelLayout;
 				}
 				$args .= " -c:a:".$audioTrack." ".$request->audioFormat;
 				$args .= " -q:a:".$audioTrack." ".$request->audioQuality;
