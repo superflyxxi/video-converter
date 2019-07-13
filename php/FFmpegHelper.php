@@ -98,9 +98,7 @@ class FFmpegHelper {
 		$args = " ";
 		foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
 			$args .= " -map ".$fileno.":".$index;
-			$args .= " -c:a:".$audioTrack." ".$request->audioFormat;
 			if ("copy" != $request->audioFormat) {
-				$args .= " -q:a:".$audioTrack." ".$request->audioQuality;
 				if (array_key_exists($index, $request->audioChannelMapping)) {
 					$channelLayout = $request->audioChannelMapping[$index];
 				} else {
@@ -109,6 +107,11 @@ class FFmpegHelper {
 				if (NULL != $channelLayout) {
 					$args .= " -filter:a:".$audioTrack.' "channelmap=channel_layout='.$channelLayout.'"';
 				}
+				$args .= " -c:a:".$audioTrack." ".$request->audioFormat;
+				$args .= " -q:a:".$audioTrack." ".$request->audioQuality;
+			} else {
+				// specify copy
+				$args .= " -c:a:".$audioTrack." copy";
 			}
 			$args .= " -metadata:s:a:".$audioTrack." language=".$stream->language;
 			$audioTrack++;
