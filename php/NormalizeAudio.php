@@ -52,13 +52,15 @@ class NormalizeAudio {
 			$normChannelMap = array_key_exists($index, $oRequest->audioChannelMapping) 
 				? $oRequest->audioChannelMapping[$index] 
 				: $stream->channel_layout;
+
+			$normChannelMap = preg_replace("/\(.+\)/", '', $normChannelMap);
                 	$command = 'ffmpeg -i "'.$origOutFile->getFileName().'" -y -map 0'
         	                .' -filter:a "loudnorm=measured_I='.$json["input_i"]
                 	        .':measured_TP='.$json["input_tp"]
                         	.':measured_LRA='.$json["input_lra"]
 	                        .':measured_thresh='.$json["input_thresh"] 
-				.(NULL != $normChannelMap ? ',channelmap=channel_layout='.$normChannelMap : ' ')
 				.'" '
+				.(NULL != $normChannelMap ? ' -filter:a channelmap=channel_layout='.$normChannelMap : ' ')
                 	        .' -c:a '.$oRequest->audioFormat
                         	.' -q:a '.$oRequest->audioQuality
 	                        .' -metadata:s:a:0 "title=Normalized '.$stream->language.' '.$normChannelMap.'"'
