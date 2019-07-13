@@ -2,11 +2,11 @@ language: php
 
 env:
   matrix:
-    - OS=alpine
-    - OS=centos
+    - FFMPEG_DOCKER_LABEL=alpine
+    - FFMPEG_DOCKER_LABEL=centos
   global:
-    - THIS_LABEL=${TRAVIS_BRANCH}
-    - FROM_IMAGE=${FFMPEG_DOCKER}
+    - THIS_LABEL=${FFMPEG_DOCKER_LABEL}-${TRAVIS_BRANCH}
+    - FROM_IMAGE=${FFMPEG_DOCKER_IMAGE}:${FFMPEG_DOCKER_LABEL}
 
 services:
   - docker
@@ -19,7 +19,7 @@ before_install:
 
 script:
   - cd travis/
-  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=latest; fi
+  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=${FFMPEG_DOCKER_LABEL}; fi
   - ./build.sh
   - ./test.sh
   - ./push.sh
