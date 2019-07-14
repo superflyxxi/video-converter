@@ -26,5 +26,5 @@ ADD php/* /home/ripvideo/
 ADD scripts/* /home/ripvideo/scripts/
 RUN chmod -R ugo+r /home/ripvideo
 
-ENTRYPOINT /home/ripvideo/main.php
+ENTRYPOINT php /home/ripvideo/main.php
 
