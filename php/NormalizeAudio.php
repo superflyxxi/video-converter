@@ -13,7 +13,7 @@ class NormalizeAudio {
 	    // only do this there are tracks to normalize
             $dir = getEnvWithDefault("TMP_DIR", "/tmp");
 	    // any track that is not needed, just copy it to its own file
-	    foreach ($oRequest->getAudioStreams() as $reqIndex => $reqStream) {
+	    foreach ($oRequest->oInputFile->getAudioStreams() as $reqIndex => $reqStream) {
 	        $stream = $reqStream;
 
 		// copy original always and add to list of additional requests
