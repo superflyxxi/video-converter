@@ -43,7 +43,7 @@ class SubtitleConvert {
 						    continue;
 						}
 					}
-				} else if ("vobsub" == $codeName) {
+				} else if ("vobsub" == $codeName || "dvd_subtitle" == $codeName ) {
 					// extract vobsub
 					if ($oRequest->oInputFile->getPrefix() != NULL) {
 						$dvdFile = $dir."/".realpath($filename)."/dir-".$index;
