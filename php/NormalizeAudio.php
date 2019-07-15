@@ -59,8 +59,8 @@ class NormalizeAudio {
                 	        .':measured_TP='.$json["input_tp"]
                         	.':measured_LRA='.$json["input_lra"]
 	                        .':measured_thresh='.$json["input_thresh"] 
+				.(NULL != $normChannelMap ? ',channelmap=channel_layout='.$normChannelMap : '')
 				.'" '
-				.(NULL != $normChannelMap ? ' -filter:a channelmap=channel_layout='.$normChannelMap : ' ')
                 	        .' -c:a '.$oRequest->audioFormat
                         	.' -q:a '.$oRequest->audioQuality
 	                        .' -metadata:s:a:0 "title=Normalized '.$stream->language.' '.$normChannelMap.'"'
