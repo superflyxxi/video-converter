@@ -54,6 +54,9 @@ class FFmpegHelper {
         }
         
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
+	if ($outputFile->format != NULL) {
+		$finalCommand .= ' -f '.$outputFile->format;
+	}
         $finalCommand .= ' "'.$outputFile->getFileName().'"';
         
         return $finalCommand;
