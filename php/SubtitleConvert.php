@@ -52,6 +52,7 @@ class SubtitleConvert {
 						$dvdFile = $dir."/".$filename.'-'.$index;
 					}
 					$dvdOutputFile = new OutputFile($dvdFile.".sub");
+					$dvdOutputFile->format = "dvdsub";
 					if (!file_exists($dvdOutputFile->getFileName())) {
 						$dvdRequest = new Request($filename);
 						$dvdRequest->subtitleTrack = $index;
