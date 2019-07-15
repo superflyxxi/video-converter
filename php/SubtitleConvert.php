@@ -3,6 +3,9 @@
 include_once "Request.php";
 include_once "InputFile.php";
 include_once "functions.php";
+include_once "Logger.php";
+include_once "FFmpegHelper.php";
+include_once "MKVExtractHelper.php";
 
 class SubtitleConvert {
 
@@ -27,38 +30,34 @@ class SubtitleConvert {
 						$pgsRequest->subtitleTrack = $index;
 						$pgsRequest->subtitleFormat = "copy";
 						$pgsRequest->prepareStreams();
-						printf("Generating PGS sup file for index %s of file '%s'.\n", $index, $filename);
+						Logger::info("Generating PGS sup file for index {} of file '{}'.", array($index, $filename));
 						if (FFmpegHelper::execute(array($pgsRequest), $pgsFile) > 0) {
-							printf("Conversion failed... Skipping this stream.\n");
+							Logger::warn("Conversion failed... Skipping this stream.");
 							continue;
 						}
 					}
 
 					if (!file_exists($dvdFile.'.sub')) {
 						$command = 'java -jar /home/ripvideo/BDSup2Sub.jar -o "'.$dvdFile.'.sub" "'.$pgsFile->getFileName().'"';
-						printf("Convert pgs to dvd command: %s\n", $command);
+						Logger::info("Convert pgs to dvd command: {}", array($command));
 						exec($command, $out, $return);
 						if ($return != 0) {
-						    printf("sub convertion failed: %s\nContinuing with next subtitle.\n", $return);
+						    Logger::warn("sub convertion failed: {}. Continuing with next subtitle.", array($return));
 						    continue;
 						}
 					}
-				} else if ("vobsub" == $codeName) {
+				} else if ("vobsub" == $codecName || "dvd_subtitle" == $codecName ) {
 					// extract vobsub
 					if ($oRequest->oInputFile->getPrefix() != NULL) {
 						$dvdFile = $dir."/".realpath($filename)."/dir-".$index;
 					} else {
 						$dvdFile = $dir."/".$filename.'-'.$index;
 					}
-					$dvdOutputFile = new OutputFile($dvdFile.".sub");
-					if (!file_exists($dvdOutputFile->getFileName())) {
-						$dvdRequest = new Request($filename);
-						$dvdRequest->subtitleTrack = $index;
-						$dvdRequest->subtitleFormat = "copy";
-						$dvdRequest->prepareStreams();
-						printf("Generating DVD sub file for index %s of file %s.\n", $index, $filename);
-						if (FFmpegHelper::execute(array($dvdRequest), $dvdOutputFile) > 0) {
-							printf("Conversion failed... Skipping this stream.\n");
+					if (!file_exists($dvdFile.".sub")) {
+						Logger::info("Generating DVD sub file for index {} of file {}.", array($index, $filename));
+						$arrOutput = array($index => $dvdFile.".sub");
+						if (MKVExtractHelper::extractTracks($oRequest->oInputFile, $arrOutput) > 0) {
+							Logger::warn("Conversion failed... Skipping this stream.");
 							continue;
 						}
 					}
@@ -68,10 +67,10 @@ class SubtitleConvert {
 				if (NULL != $dvdFile) {
 					if (!file_exists($dvdFile.".srt")) {
 	                                        $command = 'vobsub2srt "'.$dvdFile.'"';
-        	                                printf("Convert DVD sub using command: %s\n", $command);
+        	                                Logger::info("Convert DVD sub using command: {}", array($command));
                 	                        exec($command, $out, $return);
                         	                if ($return != 0) {
-                                	            printf("vobsub to srt conversion failed: %s\nContinuing with next stream.\n", $return);
+                                	            Logger::warn("vobsub to srt conversion failed: {}. Continuing with next stream.", array($return));
                                         	    continue;
 	                                        }
 					}
@@ -80,7 +79,7 @@ class SubtitleConvert {
 					$oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
 					$oNewRequest->prepareStreams();
 					$oNewRequest->oInputFile->getSubtitleStreams()[0]->language = $subtitle->language;
-					printf("Using %s language for final stream.\n", $subtitle->language);
+					Logger::debug("Using {} language for final stream.", array($subtitle->language));
 					$arrAdditionalRequests[] = $oNewRequest;
 					$oRequest->oInputFile->removeSubtitleStream($index);
                                 }

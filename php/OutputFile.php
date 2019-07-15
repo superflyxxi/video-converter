@@ -14,6 +14,7 @@ class OutputFile {
 	public $year = NULL;
 	public $season = NULL;
 	public $episode = NULL;
+	public $format = NULL;
 
 	private $envOutput = NULL;
 	private $outputDir = NULL;

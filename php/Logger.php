@@ -16,6 +16,10 @@ class Logger {
 		self::log(self::INFO, $msg, $args);
 	}
 
+	public static function warn($msg, array $args = array()) {
+		self::log(self::WARN, $msg, $args);
+	}
+
 	public static function error($msg, array $args = array()) {
 		self::log(self::ERROR, $msg, $args);
 	}
