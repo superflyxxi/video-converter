@@ -4,6 +4,8 @@ include_once "Request.php";
 include_once "InputFile.php";
 include_once "functions.php";
 include_once "Logger.php";
+include_once "FFmpegHelper.php";
+include_once "MKVExtractHelper.php";
 
 class SubtitleConvert {
 
@@ -51,15 +53,10 @@ class SubtitleConvert {
 					} else {
 						$dvdFile = $dir."/".$filename.'-'.$index;
 					}
-					$dvdOutputFile = new OutputFile($dvdFile.".sub");
-					$dvdOutputFile->format = "dvdsub";
-					if (!file_exists($dvdOutputFile->getFileName())) {
-						$dvdRequest = new Request($filename);
-						$dvdRequest->subtitleTrack = $index;
-						$dvdRequest->subtitleFormat = "copy";
-						$dvdRequest->prepareStreams();
+					if (!file_exists($dvdFile.".sub")) {
 						Logger::info("Generating DVD sub file for index {} of file {}.", array($index, $filename));
-						if (FFmpegHelper::execute(array($dvdRequest), $dvdOutputFile) > 0) {
+						$arrOutput[$index]=$dvdFile.".sub";
+						if (MKVExtractHelper::extractTracks($oRequest->oInputFile, $arrOutput) > 0) {
 							Logger::warn("Conversion failed... Skipping this stream.");
 							continue;
 						}
