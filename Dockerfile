@@ -3,6 +3,8 @@ FROM ${FROM_IMAGE}
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
 WORKDIR /home/ripvideo/
+ENV TMP_DIR=/tmp/wip
+RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 RUN yum install -y php wget java-1.8.0-openjdk \
 # VobSub2SRT Dependencies
@@ -18,12 +20,9 @@ RUN DIR=$(mktemp -d) && cd ${DIR} && \
 
 RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"
 
-ENV TMP_DIR=/tmp/wip
-RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
-
-ADD php/* /home/ripvideo/
-ADD scripts/* /home/ripvideo/scripts/
-RUN chmod -R ugo+r /home/ripvideo
-
 ENTRYPOINT /home/ripvideo/main.php
+
+ADD scripts/* /home/ripvideo/scripts/
+ADD php/* /home/ripvideo/
+RUN chmod -R ugo+r /home/ripvideo
 
