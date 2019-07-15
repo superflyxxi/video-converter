@@ -13,12 +13,10 @@ class NormalizeAudio {
 	    // only do this there are tracks to normalize
             $dir = getEnvWithDefault("TMP_DIR", "/tmp");
 	    // any track that is not needed, just copy it to its own file
-	    foreach ($oRequest->oInputFile->getAudioStreams() as $reqIndex => $reqStream) {
-	        $stream = $reqStream;
-
+	    foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
 		// copy original always and add to list of additional requests
 		$tmpRequest = new Request($oRequest->oInputFile->getFileName());
-		$tmpRequest->audioTrack = $reqIndex;
+		$tmpRequest->audioTrack = $index;
 		$tmpRequest->audioFormat = $oRequest->audioFormat;
 		$tmpRequest->audioQuality = $oRequest->audioQuality;
 		$tmpRequest->audioChannelMapping = $oRequest->audioChannelMapping;
@@ -34,9 +32,9 @@ class NormalizeAudio {
 		$oNewRequest->audioFormat= "copy";
 		$oNewRequest->prepareStreams();
                 $arrAdditionalRequests[] = $oNewRequest;
-		$oRequest->oInputFile->removeAudioStream($reqIndex);
+		$oRequest->oInputFile->removeAudioStream($index);
 
-		if (in_array($reqIndex, $oRequest->normalizeAudioTracks)) {
+		if (in_array($index, $oRequest->normalizeAudioTracks)) {
 			// if the track is to be normalized, now let's normalize it and put it in
 			Logger::info("Normalizing track {}:{}", array($oRequest->oInputFile->getFileName(), $index));
 	                $command = 'ffmpeg -hide_banner -i "'.$origOutFile->getFileName()
