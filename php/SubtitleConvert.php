@@ -55,7 +55,7 @@ class SubtitleConvert {
 					}
 					if (!file_exists($dvdFile.".sub")) {
 						Logger::info("Generating DVD sub file for index {} of file {}.", array($index, $filename));
-						$arrOutput[$index]=$dvdFile.".sub";
+						$arrOutput = array($index => $dvdFile.".sub");
 						if (MKVExtractHelper::extractTracks($oRequest->oInputFile, $arrOutput) > 0) {
 							Logger::warn("Conversion failed... Skipping this stream.");
 							continue;
