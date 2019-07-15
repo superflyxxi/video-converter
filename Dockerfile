@@ -7,6 +7,8 @@ WORKDIR /home/ripvideo/
 RUN yum install -y php wget java-1.8.0-openjdk \
 # VobSub2SRT Dependencies
 	libtiff-devel tesseract-devel tesseract-lanuagepack-eng tesseract-ocr-eng \
+# mkvextract tool
+	mkvtoolnix \
 	&& yum clean all
 
 RUN DIR=$(mktemp -d) && cd ${DIR} && \
