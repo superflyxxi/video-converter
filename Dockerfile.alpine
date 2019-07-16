@@ -4,7 +4,7 @@ MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
 WORKDIR /home/ripvideo/
 
-RUN apk --no-cache add php wget openjdk8-jre \
+RUN apk --no-cache add php php-json wget openjdk8-jre \
 # VobSub2SRT Dependencies
 	tiff-dev tesseract-ocr tesseract-ocr-dev cmake g++ automake autoconf
 
