@@ -39,11 +39,10 @@ class Request {
 
 	public function setVideoTracks($req) {
 		$this->videoTracks = explode(' ', $req);
-		$this->allVideoTracks = in_array("*", $this->videoTracks);
 	}
 
 	public function areAllVideoTracksConsidered() {
-		return $this->allVideoTracks;
+		return in_array("*", $this->videoTracks);
 	}
 
 	public function getVideoTracks() {
@@ -97,7 +96,6 @@ class Request {
 	private $hwaccel = false;
 	public $deinterlace = false;
 	private $videoTracks = array("*");
-	private $allVideoTracks = true;
 	public $videoFormat = NULL;
 	private $videoHdr = false;
 }
