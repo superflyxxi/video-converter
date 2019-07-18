@@ -14,6 +14,7 @@ class Request {
 	public static function newInstanceFromEnv($filename) {
 		$req = new Request($filename);
 		
+		$req->videoTracks = getEnvWithDefault("VIDEO_TRACKS", "*");
 		$req->playlist = getEnv("PLAYLIST");
 		$req->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
 		$req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
@@ -82,7 +83,7 @@ class Request {
 	public $normalizeAudioTracks = NULL;
 	private $hwaccel = false;
 	public $deinterlace = false;
-	public $videoTrack = -1;
+	public $videoTracks = "*";
 	public $videoFormat = NULL;
 	private $videoHdr = false;
 }
