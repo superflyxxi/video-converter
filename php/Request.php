@@ -14,7 +14,7 @@ class Request {
 	public static function newInstanceFromEnv($filename) {
 		$req = new Request($filename);
 		
-		$req->videoTracks = getEnvWithDefault("VIDEO_TRACKS", "*");
+		$req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
 		$req->playlist = getEnv("PLAYLIST");
 		$req->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
 		$req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
@@ -37,6 +37,19 @@ class Request {
 		return $req;
 	}
 
+	public function setVideoTracks($req) {
+		$this->videoTracks = explode(' ', $req);
+		$this->allVideoTracks = in_array("*", $this->videoTracks);
+	}
+
+	public function areAllVideoTracksConsidered() {
+		return $this->allVideoTracks;
+	}
+
+	public function getVideoTracks() {
+		return $this->videoTracks;
+	}
+
 	public function prepareStreams() {
 		if (substr($this->subtitleTrack, 0, strlen("s")) !== "s") {
 			// if not s (all subtitles), then remove all track except the desired
@@ -54,10 +67,10 @@ class Request {
 				}
 			}
 		}
-		if (substr($this->videoTrack, 0, strlen("v")) !== "v") {
-			// if not v (all videos), then remove all track except the desired
+		if (!$this->areAllVideoTracksConsidered()) {
+			// if not * (all videos), then remove all track except the desired
 			foreach ($this->oInputFile->getVideoStreams() as $track) {
-				if ($this->videoTrack != $track->index) {
+				if (!in_array($track->index, $this->getVideoTracks())) {
 					$this->oInputFile->removeVideoStream($track->index);
 				}
 			}
@@ -83,7 +96,8 @@ class Request {
 	public $normalizeAudioTracks = NULL;
 	private $hwaccel = false;
 	public $deinterlace = false;
-	public $videoTracks = "*";
+	private $videoTracks = array("*");
+	private $allVideoTracks = true;
 	public $videoFormat = NULL;
 	private $videoHdr = false;
 }
