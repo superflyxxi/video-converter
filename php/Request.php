@@ -19,7 +19,7 @@ class Request {
 		$req->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
 		$req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
-		$req->audioTrack = getEnvWithDefault("AUDIO_TRACK", "a");
+		$req->setAudioTracks(getEnvWithDefault("AUDIO_TRACK", "*"));
 		$req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
 		$req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
 		$req->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
@@ -35,6 +35,18 @@ class Request {
 
 		$req->prepareStreams();
 		return $req;
+	}
+
+	public function setAudioTracks($req) {
+		$this->audioTracks = explode(' ', $req);
+	}
+
+	public function areAllAudioTracksConsidered() {
+		return in_array("*", $this->audioTracks);
+	}
+
+	public function getAduioTracks() {
+		return $this->audioTracks;
 	}
 
 	public function setVideoTracks($req) {
@@ -58,7 +70,7 @@ class Request {
 				}
 			}
 		}
-		if (substr($this->audioTrack, 0, strlen("a")) !== "a") {
+		if (!$this->areAllAudioTracksConsidered()) {
 			// if not a (all audio), then remove all track except the desired
 			foreach ($this->oInputFile->getAudioStreams() as $track) {
 				if ($this->audioTrack != $track->index) {
@@ -88,7 +100,7 @@ class Request {
 	public $playlist = NULL;
 	public $subtitleTrack = -1;
 	public $subtitleFormat = NULL;
-	public $audioTrack = -1;
+	private $audioTracks = array("*");
 	public $audioFormat = NULL;
 	public $audioQuality = NULL;
 	public $audioChannelMapping = NULL;
