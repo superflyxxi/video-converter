@@ -16,7 +16,7 @@ class NormalizeAudio {
 	    foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
 		// copy original always and add to list of additional requests
 		$tmpRequest = new Request($oRequest->oInputFile->getFileName());
-		$tmpRequest->audioTrack = $index;
+		$tmpRequest->setAudioTracks($index);
 		$tmpRequest->audioFormat = $oRequest->audioFormat;
 		$tmpRequest->audioQuality = $oRequest->audioQuality;
 		$tmpRequest->audioChannelMapping = $oRequest->audioChannelMapping;
@@ -28,7 +28,7 @@ class NormalizeAudio {
 		}
 		FFmpegHelper::execute(array($tmpRequest), $origOutFile);
                 $oNewRequest = new Request($origOutFile->getFileName());
-	        $oNewRequest->audioTrack = 0;
+	        $oNewRequest->setAudioTracks("0");
 		$oNewRequest->audioFormat= "copy";
 		$oNewRequest->prepareStreams();
                 $arrAdditionalRequests[] = $oNewRequest;
@@ -74,7 +74,7 @@ class NormalizeAudio {
 	                    exit($return);
 	                }
                 	$oNewRequest = new Request($normFile);
-	                $oNewRequest->audioTrack = 0;
+	                $oNewRequest->setAudioTracks("0");
         	        $oNewRequest->audioFormat = "copy";
                 	$arrAdditionalRequests[] = $oNewRequest;
 		}
