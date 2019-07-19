@@ -61,6 +61,14 @@ class SubtitleConvert {
 							continue;
 						}
 					}
+				} else if ("subrip" == $codecName) {
+					Logger::info("Adding subrip to request for track {}", array($index));
+					$oNewRequest = new Request($oRequest->oInputFile->getFileName());
+					$oNewRequest->subtitleTrack = $index;
+					$oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
+					$oNewRequest->prepareStreams();
+					$arrAdditionalRequests[] = $oNewRequest;
+					$oRequest->oInputFile->removeSubtitleStream($index);
 				}
 										
 				// convert to srt
