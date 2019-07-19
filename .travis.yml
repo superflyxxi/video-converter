@@ -1,22 +1,25 @@
 language: php
 
 env:
-  global:
-    - THIS_LABEL=${TRAVIS_BRANCH}
-    - FROM_IMAGE=${FFMPEG_DOCKER}
+  matrix:
+    - FFMPEG_DOCKER_LABEL=alpine
+    - FFMPEG_DOCKER_LABEL=centos
 
 services:
   - docker
 
 before_install:
+  - export THIS_LABEL=${FFMPEG_DOCKER_LABEL}-${TRAVIS_BRANCH}
+  - export FROM_IMAGE=${FFMPEG_DOCKER_IMAGE}:${FFMPEG_DOCKER_LABEL}
+  - export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL}
   - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY} || true
-  - docker pull ${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:latest || true
+  - if [[ "master" != "${TRAVIS_BRANCH}" ]]; then docker pull ${CACHE_FROM_IMAGE} || true; fi
 
 script:
   - cd travis/
-  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=latest; fi
+  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=${FFMPEG_DOCKER_LABEL}; fi
   - ./build.sh
   - ./test.sh
   - ./push.sh
