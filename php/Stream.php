@@ -12,6 +12,9 @@ class Stream {
 		if (array_key_exists("channel_layout", $json)) {
 			$this->channel_layout = $json["channel_layout"];
 		}
+		if (array_key_exists("channels", $json)) {
+			$this->channels = $json["channels"];
+		}
 	}
 
 	public $codec_type = NULL;
@@ -19,5 +22,6 @@ class Stream {
 	public $index = 0;
 	public $language = NULL;
 	public $channel_layout = NULL;
+	public $channels = NULL;
 }
 
