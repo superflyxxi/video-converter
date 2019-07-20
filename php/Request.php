@@ -38,7 +38,7 @@ class Request {
 	}
 
 	public function setAudioTracks($req) {
-		$this->audioTracks = explode(' ', $req);
+		$this->audioTracks = $req == NULL ? array() : explode(' ', $req);
 	}
 
 	public function areAllAudioTracksConsidered() {
@@ -50,7 +50,7 @@ class Request {
 	}
 
 	public function setVideoTracks($req) {
-		$this->videoTracks = explode(' ', $req);
+		$this->videoTracks = $req == NULL ? array() : explode(' ', $req);
 	}
 
 	public function areAllVideoTracksConsidered() {
@@ -62,7 +62,7 @@ class Request {
 	}
 
 	public function setSubtitleTracks($req) {
-		$this->subtitleTracks = explode(' ', $req);
+		$this->subtitleTracks = $req == NULL ? array() : explode(' ', $req);
 	}
 
 	public function areAllSubtitleTracksConsidered() {
