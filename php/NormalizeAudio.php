@@ -22,7 +22,7 @@ class NormalizeAudio {
 		$tmpRequest->audioFormat = $oRequest->audioFormat;
 		$tmpRequest->audioQuality = $oRequest->audioQuality;
 		$tmpRequest->audioChannelLayout = $oRequest->audioChannelLayout;
-		$tmpRequest->audioChannelLayoutTracks = $oRequest->audioChannelLayoutTracks;
+		$tmpRequest->setAudioChannelLayoutTracks(NULL == $oRequest->audioChannelLayoutTracks ? NULL : explode($oRequest->audioChannelLayoutTracks));
 		$tmpRequest->prepareStreams();
 		if ($oRequest->oInputFile->getPrefix() != NULL) {
 			$origOutFile = new OutputFile($dir.realpath($oRequest->oInputFile->getFileName()).'/dir-'.$index.'-orig.mkv');
@@ -31,6 +31,8 @@ class NormalizeAudio {
 		}
 		FFmpegHelper::execute(array($tmpRequest), $origOutFile);
                 $oNewRequest = new Request($origOutFile->getFileName());
+		$oNewRequest->setVideoTracks(NULL);
+		$oNewRequest->setSubtitleTracks(NULL);
 	        $oNewRequest->setAudioTracks("0");
 		$oNewRequest->audioFormat= "copy";
 		$oNewRequest->prepareStreams();
@@ -53,9 +55,12 @@ class NormalizeAudio {
         	        $json = json_decode($out, true);
                 
         	        $normFile = $dir.$oRequest->oInputFile->getFileName().'-'.$index.'-norm.mkv';
-			$normChannelMap = $index == $oRequest->audioChannelLayoutTracks 
+			$normChannelMap = ($oRequest->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $oRequest->getAudioChannelLayoutTracks()))
 				? $oRequest->audioChannelLayout
 				: $stream->channel_layout;
+			if (NULL == $normChannelMap) {
+				$normChannelMap = $stream->channel_layout;
+			}
 
 			$normChannelMap = preg_replace("/\(.+\)/", '', $normChannelMap);
                 	$command = 'ffmpeg -i "'.$origOutFile->getFileName().'" -y -map 0'

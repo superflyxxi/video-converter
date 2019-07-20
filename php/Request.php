@@ -23,8 +23,8 @@ class Request {
 		$req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
 		$req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
 		$req->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
-		$req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "5.1");
-		$req->audioChannelLayoutTracks = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "");
+		$req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
+		$req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
 		$req->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
@@ -33,6 +33,18 @@ class Request {
 
 		$req->prepareStreams();
 		return $req;
+	}
+
+	public function setAudioChannelLayoutTracks($req) {
+		$this->audioChannelLayoutTracks = $req == NULL ? array() : explode(' ', $req);
+	}
+
+	public function areAllAudioChannelLayoutTracksConsidered() {
+		return in_array("*", $this->audioChannelLayoutTracks);
+	}
+
+	public function getAudioChannelLayoutTracks() {
+		return $this->audioChannelLayoutTracks;
 	}
 
 	public function setAudioTracks($req) {
@@ -114,7 +126,7 @@ class Request {
 	public $audioFormat = NULL;
 	public $audioQuality = NULL;
 	public $audioChannelLayout = NULL;
-	public $audioChannelLayoutTracks = NULL;
+	private $audioChannelLayoutTracks = NULL;
 	public $normalizeAudioTracks = NULL;
 	private $hwaccel = false;
 	public $deinterlace = false;
