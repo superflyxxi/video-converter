@@ -7,13 +7,21 @@ include_once "Logger.php";
 
 class FFmpegHelper {
 
+    private static $probeCache = array();
+
     public static function probe($inputFile) {
-	$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$inputFile->getPrefix().$inputFile->getFileName().'"';
-	Logger::verbose("Executing ffprobe: {}", array($command));
-	exec($command, $out, $ret);
-	if ($ret > 0) {
-		Logger::error("Failed to execute ffprobe; returned {}", array($ret));
-		exit ($ret);
+	if (!in_array($inputFile->getFileName())) {
+		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$inputFile->getPrefix().$inputFile->getFileName().'"';
+		Logger::verbose("Executing ffprobe: {}", array($command));
+		exec($command, $out, $ret);
+		if ($ret > 0) {
+			Logger::error("Failed to execute ffprobe; returned {}", array($ret));
+			exit ($ret);
+		}
+		$probeCache[$inputFile->getFileName()] = $out;
+	} else {
+		Logger::debug("Found {} in cache", array($inputFile->getFileName()));
+		$out = $probeCache[$inputFile->getFileName()];
 	}
 	return $out;
     }
