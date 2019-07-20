@@ -49,7 +49,6 @@ class FFmpegHelper {
             $finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest, $videoTrack);
             $finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest, $audioTrack);
             $finalCommand .= " ".self::generateSubtitleArgs($fileno, $tmpRequest, $subtitleTrack);
-            $finalCommand .= " ".self::generateMetadataArgs($fileno, $tmpRequest);
             $fileno++;
         }
         
@@ -75,10 +74,6 @@ class FFmpegHelper {
 			." ".getEnvWithDefault("OTHER_METADATA", " ");
 	}
 	
-	private static function generateMetadataArgs($fileno, $request) {
-		return " ";
-	}
-
 	private static function generateVideoArgs($fileno, $request, &$videoTrack) {
 		$args = " ";
 		foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
