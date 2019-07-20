@@ -45,7 +45,7 @@ class Request {
 		return in_array("*", $this->audioTracks);
 	}
 
-	public function getAduioTracks() {
+	public function getAudioTracks() {
 		return $this->audioTracks;
 	}
 
