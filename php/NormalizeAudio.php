@@ -21,7 +21,8 @@ class NormalizeAudio {
 		$tmpRequest->setSubtitleTracks(NULL);
 		$tmpRequest->audioFormat = $oRequest->audioFormat;
 		$tmpRequest->audioQuality = $oRequest->audioQuality;
-		$tmpRequest->audioChannelMapping = $oRequest->audioChannelMapping;
+		$tmpRequest->audioChannelLayout = $oRequest->audioChannelLayout;
+		$tmpRequest->audioChannelLayoutTracks = $oRequest->audioChannelLayoutTracks;
 		$tmpRequest->prepareStreams();
 		if ($oRequest->oInputFile->getPrefix() != NULL) {
 			$origOutFile = new OutputFile($dir.realpath($oRequest->oInputFile->getFileName()).'/dir-'.$index.'-orig.mkv');
@@ -52,8 +53,8 @@ class NormalizeAudio {
         	        $json = json_decode($out, true);
                 
         	        $normFile = $dir.$oRequest->oInputFile->getFileName().'-'.$index.'-norm.mkv';
-			$normChannelMap = array_key_exists($index, $oRequest->audioChannelMapping) 
-				? $oRequest->audioChannelMapping[$index] 
+			$normChannelMap = $index == $oRequest->audioChannelLayoutTracks 
+				? $oRequest->audioChannelLayout
 				: $stream->channel_layout;
 
 			$normChannelMap = preg_replace("/\(.+\)/", '', $normChannelMap);

@@ -49,7 +49,6 @@ class FFmpegHelper {
             $finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest, $videoTrack);
             $finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest, $audioTrack);
             $finalCommand .= " ".self::generateSubtitleArgs($fileno, $tmpRequest, $subtitleTrack);
-            $finalCommand .= " ".self::generateMetadataArgs($fileno, $tmpRequest);
             $fileno++;
         }
         
@@ -75,10 +74,6 @@ class FFmpegHelper {
 			." ".getEnvWithDefault("OTHER_METADATA", " ");
 	}
 	
-	private static function generateMetadataArgs($fileno, $request) {
-		return " ";
-	}
-
 	private static function generateVideoArgs($fileno, $request, &$videoTrack) {
 		$args = " ";
 		foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
@@ -103,12 +98,17 @@ class FFmpegHelper {
 		foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
 			$args .= " -map ".$fileno.":".$index;
 			if ("copy" != $request->audioFormat) {
-				if (array_key_exists($index, $request->audioChannelMapping)) {
-					$channelLayout = $request->audioChannelMapping[$index];
+				if ($index == $request->audioChannelLayoutTracks) {
+					$channelLayout = $request->audioChannelLayout;
+					if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
+						$channels = $matches[1] + $matches[2];
+					}
 				} else {
 					$channelLayout = $stream->channel_layout;
+					$channels = $stream->channels;
 				}
-				if (NULL != $channelLayout) {
+				if (NULL != $channelLayout && $channels <= $stream->channels) {
+					// only change the channel layout if the number of original channels is more than requested
 					$channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
 					$args .= " -filter:a:".$audioTrack.' channelmap=channel_layout='.$channelLayout;
 				}

@@ -27,7 +27,7 @@ Variable | Description | Required | Default | Example
 `AUDIO_FORMAT` | The desired output audio format. | No | `aac` | `eac3`
 `AUDIO_QUALITY` | The desired output audio quality based on the `AUDIO_FORMAT`. | No | `2` | `560`
 `AUDIO_CHANNEL_LAYOUT` | The desired output audio channel layout. | No | `5.1` | `7.1`
-`AUDIO_CHANNEL_MAPPING_TRACKS` | The space-separated list of input audio tracks that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | ` ` | `1 2 3 4`
+`AUDIO_CHANNEL_LAYOUT_TRACKS` | The input audio track that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | ` ` | `1`
 `NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
 `VIDEO_TRACKS` | The input video tracks to convert. | No | `*` | `0`
 `VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
