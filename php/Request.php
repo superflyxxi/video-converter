@@ -126,7 +126,7 @@ class Request {
 	public $audioFormat = NULL;
 	public $audioQuality = NULL;
 	public $audioChannelLayout = NULL;
-	private $audioChannelLayoutTracks = NULL;
+	private $audioChannelLayoutTracks = array();
 	public $normalizeAudioTracks = NULL;
 	private $hwaccel = false;
 	public $deinterlace = false;
