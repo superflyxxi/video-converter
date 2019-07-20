@@ -16,7 +16,7 @@ class Request {
 		
 		$req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
 		$req->playlist = getEnv("PLAYLIST");
-		$req->subtitleTrack = getEnvWithDefault("SUBTITLE_TRACK", "s?");
+		$req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
 		$req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
 		$req->setAudioTracks(getEnvWithDefault("AUDIO_TRACK", "*"));
@@ -61,17 +61,29 @@ class Request {
 		return $this->videoTracks;
 	}
 
+	public function setSubtitleTracks($req) {
+		$this->subtitleTracks = explode(' ', $req);
+	}
+
+	public function areAllSubtitleTracksConsidered() {
+		return in_array("*", $this->subtitleTracks);
+	}
+
+	public function getSubtitleTracks() {
+		return $this->subtitleTracks;
+	}
+
 	public function prepareStreams() {
-		if (substr($this->subtitleTrack, 0, strlen("s")) !== "s") {
-			// if not s (all subtitles), then remove all track except the desired
+		if (!$this->areAllSubtitleTracksConsidered()) {
+			// if not * (all subtitles), then remove all track except the desired
 			foreach ($this->oInputFile->getSubtitleStreams() as $track) {
-				if ($this->subtitleTrack != $track->index) {
+				if (!in_array($track->index, $this->getSubtitleTracks())) {
 					$this->oInputFile->removeSubtitleStream($track->index);
 				}
 			}
 		}
 		if (!$this->areAllAudioTracksConsidered()) {
-			// if not a (all audio), then remove all track except the desired
+			// if not * (all audio), then remove all track except the desired
 			foreach ($this->oInputFile->getAudioStreams() as $track) {
 				if ($this->audioTrack != $track->index) {
 					$this->oInputFile->removeAudioStream($track->index);
@@ -98,7 +110,7 @@ class Request {
 
 	public $oInputFile = NULL;
 	public $playlist = NULL;
-	public $subtitleTrack = -1;
+	private $subtitleTracks = array("*");
 	public $subtitleFormat = NULL;
 	private $audioTracks = array("*");
 	public $audioFormat = NULL;
