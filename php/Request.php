@@ -85,7 +85,7 @@ class Request {
 		if (!$this->areAllAudioTracksConsidered()) {
 			// if not * (all audio), then remove all track except the desired
 			foreach ($this->oInputFile->getAudioStreams() as $track) {
-				if ($this->audioTrack != $track->index) {
+				if (!in_array($track->index, $this->getAudioTracks())) {
 					$this->oInputFile->removeAudioStream($track->index);
 				}
 			}
