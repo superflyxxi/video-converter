@@ -16,7 +16,9 @@ class NormalizeAudio {
 	    foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
 		// copy original always and add to list of additional requests
 		$tmpRequest = new Request($oRequest->oInputFile->getFileName());
+		$tmpRequest->setVideoTracks(NULL);
 		$tmpRequest->setAudioTracks($index);
+		$tmpRequest->setSubtitleTracks(NULL);
 		$tmpRequest->audioFormat = $oRequest->audioFormat;
 		$tmpRequest->audioQuality = $oRequest->audioQuality;
 		$tmpRequest->audioChannelMapping = $oRequest->audioChannelMapping;
@@ -75,6 +77,8 @@ class NormalizeAudio {
 	                }
                 	$oNewRequest = new Request($normFile);
 	                $oNewRequest->setAudioTracks("0");
+	                $oNewRequest->setVideoTracks(NULL);
+	                $oNewRequest->setSubtitleTracks(NULL);
         	        $oNewRequest->audioFormat = "copy";
                 	$arrAdditionalRequests[] = $oNewRequest;
 		}
