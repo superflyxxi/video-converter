@@ -24,7 +24,7 @@ class Request {
 		$req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
 		$req->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
 		$req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "5.1");
-		$req->audioChannelLayoutTracks = getEnvWithDefault("AUDIO_CHANNEL_MAPPING_TRACKS", "");
+		$req->audioChannelLayoutTracks = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "");
 
 		$req->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
 
