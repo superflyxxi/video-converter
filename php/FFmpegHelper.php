@@ -100,10 +100,15 @@ class FFmpegHelper {
 			if ("copy" != $request->audioFormat) {
 				if (array_key_exists($index, $request->audioChannelMapping)) {
 					$channelLayout = $request->audioChannelMapping[$index];
+					if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
+						$channels = $matches[1] + $matches[2];
+					}
 				} else {
 					$channelLayout = $stream->channel_layout;
+					$channels = $stream->channels;
 				}
-				if (NULL != $channelLayout) {
+				if (NULL != $channelLayout && $channels <= $stream->channels) {
+					// only change the channel layout if the number of original channels is more than requested
 					$channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
 					$args .= " -filter:a:".$audioTrack.' channelmap=channel_layout='.$channelLayout;
 				}
