@@ -98,8 +98,8 @@ class FFmpegHelper {
 		foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
 			$args .= " -map ".$fileno.":".$index;
 			if ("copy" != $request->audioFormat) {
-				if (array_key_exists($index, $request->audioChannelMapping)) {
-					$channelLayout = $request->audioChannelMapping[$index];
+				if ($index == $request->audioChannelLayoutTracks) {
+					$channelLayout = $request->audioChannelLayout;
 					if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
 						$channels = $matches[1] + $matches[2];
 					}
