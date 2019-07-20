@@ -1,10 +1,9 @@
 <?php
-
 include_once "common.php";
 
 getFile("test.mpg", "https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg");
 
-$command = 'docker run --rm -t -v '.getEnv("TMP_DIR").':/data -e INPUT=test.mpg -e TITLE="Test tv show" -e SEASON=01 -e EPISODE=23 -e SUBTITLE="The One Where Things" '.$image;
+$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=test.mpg -e TITLE="Test tv show" -e SEASON=01 -e EPISODE=23 -e SUBTITLE="The One Where Things" ' . $image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 test("ffmpeg code", 0, $return, $output);
@@ -25,4 +24,3 @@ test("Metadata SUBTITLE", "The One Where Things", $probe["format"]["tags"]["SUBT
 test("Metadata YEAR", FALSE, array_key_exists("YEAR", $probe["format"]["tags"]), $output);
 
 ?>
-

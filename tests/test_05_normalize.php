@@ -1,10 +1,9 @@
 <?php
-
 include_once "common.php";
 
 getFile("test.mpg", "https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg");
 
-$command = 'docker run --rm -t -v '.getEnv("TMP_DIR").':/data -e INPUT=test.mpg -e TITLE="Test Normalize Track 1" -e YEAR=2019 -e NORMALIZE_AUDIO_TRACKS=1 '.$image;
+$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=test.mpg -e TITLE="Test Normalize Track 1" -e YEAR=2019 -e NORMALIZE_AUDIO_TRACKS=1 ' . $image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 
@@ -31,4 +30,3 @@ test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["ta
 test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["tags"]), $output);
 
 ?>
-

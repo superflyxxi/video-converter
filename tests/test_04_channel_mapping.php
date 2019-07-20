@@ -1,10 +1,9 @@
 <?php
-
 include_once "common.php";
 
 getFile("test.mpg", "https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg");
 
-$command = 'docker run --rm -t -v '.getEnv("TMP_DIR").':/data -e INPUT=test.mpg -e TITLE="Test Channel Mapping" -e YEAR=2019 -e AUDIO_CHANNEL_LAYOUT=stereo -e AUDIO_CHANNEL_MAPPING_TRACKS=1 '.$image;
+$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=test.mpg -e TITLE="Test Channel Mapping" -e YEAR=2019 -e AUDIO_CHANNEL_LAYOUT=stereo -e AUDIO_CHANNEL_MAPPING_TRACKS=1 ' . $image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 test("ffmpeg code", 0, $return, $output);
@@ -25,4 +24,3 @@ test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["ta
 test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["tags"]), $output);
 
 ?>
-
