@@ -22,7 +22,7 @@ class NormalizeAudio {
 		$tmpRequest->audioFormat = $oRequest->audioFormat;
 		$tmpRequest->audioQuality = $oRequest->audioQuality;
 		$tmpRequest->audioChannelLayout = $oRequest->audioChannelLayout;
-		$tmpRequest->setAudioChannelLayoutTracks(NULL == $oRequest->audioChannelLayoutTracks ? NULL : explode($oRequest->audioChannelLayoutTracks));
+		$tmpRequest->setAudioChannelLayoutTracks(NULL == $oRequest->getAudioChannelLayoutTracks() ? NULL : explode($oRequest->audioChannelLayoutTracks));
 		$tmpRequest->prepareStreams();
 		if ($oRequest->oInputFile->getPrefix() != NULL) {
 			$origOutFile = new OutputFile($dir.realpath($oRequest->oInputFile->getFileName()).'/dir-'.$index.'-orig.mkv');
