@@ -19,8 +19,13 @@ before_install:
 
 script:
   - cd travis/
-  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; THIS_LABEL=${FFMPEG_DOCKER_LABEL}; fi
+  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; export THIS_LABEL=${FFMPEG_DOCKER_LABEL}; fi
   - ./build.sh
   - ./test.sh
   - ./push.sh
 
+after_success:
+  - if [[ "${TRAVIS_BRANCH}" == v* ]]; then
+         export THIS_LABEL=${FFMPEG_DOCKER_LABEL}-${TRAVIS_BRANCH};
+         travis/push.sh;
+      fi
