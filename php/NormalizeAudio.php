@@ -16,11 +16,13 @@ class NormalizeAudio {
 	    foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
 		// copy original always and add to list of additional requests
 		$tmpRequest = new Request($oRequest->oInputFile->getFileName());
-		$tmpRequest->audioTrack = $index;
+		$tmpRequest->setVideoTracks(NULL);
+		$tmpRequest->setAudioTracks($index);
+		$tmpRequest->setSubtitleTracks(NULL);
 		$tmpRequest->audioFormat = $oRequest->audioFormat;
 		$tmpRequest->audioQuality = $oRequest->audioQuality;
 		$tmpRequest->audioChannelLayout = $oRequest->audioChannelLayout;
-		$tmpRequest->audioChannelLayoutTracks = $oRequest->audioChannelLayoutTracks;
+		$tmpRequest->setAudioChannelLayoutTracks(implode(" ", $oRequest->getAudioChannelLayoutTracks()));
 		$tmpRequest->prepareStreams();
 		if ($oRequest->oInputFile->getPrefix() != NULL) {
 			$origOutFile = new OutputFile($dir.realpath($oRequest->oInputFile->getFileName()).'/dir-'.$index.'-orig.mkv');
@@ -29,7 +31,9 @@ class NormalizeAudio {
 		}
 		FFmpegHelper::execute(array($tmpRequest), $origOutFile);
                 $oNewRequest = new Request($origOutFile->getFileName());
-	        $oNewRequest->audioTrack = 0;
+		$oNewRequest->setVideoTracks(NULL);
+		$oNewRequest->setSubtitleTracks(NULL);
+	        $oNewRequest->setAudioTracks("0");
 		$oNewRequest->audioFormat= "copy";
 		$oNewRequest->prepareStreams();
                 $arrAdditionalRequests[] = $oNewRequest;
@@ -51,9 +55,12 @@ class NormalizeAudio {
         	        $json = json_decode($out, true);
                 
         	        $normFile = $dir.$oRequest->oInputFile->getFileName().'-'.$index.'-norm.mkv';
-			$normChannelMap = $index == $oRequest->audioChannelLayoutTracks 
+			$normChannelMap = ($oRequest->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $oRequest->getAudioChannelLayoutTracks()))
 				? $oRequest->audioChannelLayout
 				: $stream->channel_layout;
+			if (NULL == $normChannelMap) {
+				$normChannelMap = $stream->channel_layout;
+			}
 
 			$normChannelMap = preg_replace("/\(.+\)/", '', $normChannelMap);
                 	$command = 'ffmpeg -i "'.$origOutFile->getFileName().'" -y -map 0'
@@ -75,7 +82,9 @@ class NormalizeAudio {
 	                    exit($return);
 	                }
                 	$oNewRequest = new Request($normFile);
-	                $oNewRequest->audioTrack = 0;
+	                $oNewRequest->setAudioTracks("0");
+	                $oNewRequest->setVideoTracks(NULL);
+	                $oNewRequest->setSubtitleTracks(NULL);
         	        $oNewRequest->audioFormat = "copy";
                 	$arrAdditionalRequests[] = $oNewRequest;
 		}
