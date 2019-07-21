@@ -50,7 +50,29 @@ class Logger
             foreach ($args as $arg) {
                 $str = preg_replace("/{}/", print_r($arg, true), $str, 1);
             }
-            printf("%s::%s::%s\n", date(self::dateformat), $reqlevel, $str);
+            switch ($reqlevel) {
+                case self::VERBOSE:
+                    $strlevel = "VERBOSE";
+                    break;
+                  
+                case self::DEBUG:
+                    $strlevel = "DEBUG";
+                    break;
+                    
+                case self::WARN:
+                    $strlevel = "WARN";
+                    break;
+                    
+                case self::ERROR:
+                    $strlevel = "ERROR";
+                    break;
+                    
+                default:
+                    $strlevel = "INFO";
+                    break;
+                    
+            }
+            printf("%s :: %s :: %s\n", date(self::dateformat), $strlevel, $str);
         }
     }
 
