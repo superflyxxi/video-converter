@@ -7,9 +7,7 @@ ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 RUN yum install -y php wget java-1.8.0-openjdk \
-# VobSub2SRT Dependencies
 	libtiff-devel tesseract-devel \
-# mkvextract tool
 	mkvtoolnix \
 	&& yum clean all
 

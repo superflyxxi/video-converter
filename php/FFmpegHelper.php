@@ -7,13 +7,21 @@ include_once "Logger.php";
 
 class FFmpegHelper {
 
+    private static $probeCache = array();
+
     public static function probe($inputFile) {
-	$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$inputFile->getPrefix().$inputFile->getFileName().'"';
-	Logger::verbose("Executing ffprobe: {}", array($command));
-	exec($command, $out, $ret);
-	if ($ret > 0) {
-		Logger::error("Failed to execute ffprobe; returned {}", array($ret));
-		exit ($ret);
+	if (!in_array($inputFile->getFileName())) {
+		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$inputFile->getPrefix().$inputFile->getFileName().'"';
+		Logger::verbose("Executing ffprobe: {}", array($command));
+		exec($command, $out, $ret);
+		if ($ret > 0) {
+			Logger::error("Failed to execute ffprobe; returned {}", array($ret));
+			exit ($ret);
+		}
+		$probeCache[$inputFile->getFileName()] = $out;
+	} else {
+		Logger::debug("Found {} in cache", array($inputFile->getFileName()));
+		$out = $probeCache[$inputFile->getFileName()];
 	}
 	return $out;
     }
@@ -49,7 +57,6 @@ class FFmpegHelper {
             $finalCommand .= " ".self::generateVideoArgs($fileno, $tmpRequest, $videoTrack);
             $finalCommand .= " ".self::generateAudioArgs($fileno, $tmpRequest, $audioTrack);
             $finalCommand .= " ".self::generateSubtitleArgs($fileno, $tmpRequest, $subtitleTrack);
-            $finalCommand .= " ".self::generateMetadataArgs($fileno, $tmpRequest);
             $fileno++;
         }
         
@@ -75,10 +82,6 @@ class FFmpegHelper {
 			." ".getEnvWithDefault("OTHER_METADATA", " ");
 	}
 	
-	private static function generateMetadataArgs($fileno, $request) {
-		return " ";
-	}
-
 	private static function generateVideoArgs($fileno, $request, &$videoTrack) {
 		$args = " ";
 		foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
@@ -103,12 +106,22 @@ class FFmpegHelper {
 		foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
 			$args .= " -map ".$fileno.":".$index;
 			if ("copy" != $request->audioFormat) {
-				if (array_key_exists($index, $request->audioChannelMapping)) {
-					$channelLayout = $request->audioChannelMapping[$index];
+				Logger::verbose("Audio Channel Layout Tracks {}", array($request->getAudioChannelLayoutTracks()));
+				if ($request->audioChannelLayout != NULL && 
+						($request->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $request->getAudioChannelLayoutTracks()))) {
+					Logger::debug("Taking channel layout from request");
+					$channelLayout = $request->audioChannelLayout;
+					if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
+						$channels = $matches[1] + $matches[2];
+					}
 				} else {
+					Logger::debug("Using channel layout from original stream");
 					$channelLayout = $stream->channel_layout;
+					$channels = $stream->channels;
 				}
-				if (NULL != $channelLayout) {
+				Logger::debug("{} index for file no {} has channelLayout={} and channels={}", array($index, $fileno, $channelLayout, $channels));
+				if (NULL != $channelLayout && $channels <= $stream->channels) {
+					// only change the channel layout if the number of original channels is more than requested
 					$channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
 					$args .= " -filter:a:".$audioTrack.' channelmap=channel_layout='.$channelLayout;
 				}

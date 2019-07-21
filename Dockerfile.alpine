@@ -8,7 +8,6 @@ ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 RUN apk --no-cache add php php-json wget openjdk8-jre \
-# VobSub2SRT Dependencies
 	tiff-dev tesseract-ocr tesseract-ocr-dev cmake g++ automake autoconf \
 	mkvtoolnix
 
