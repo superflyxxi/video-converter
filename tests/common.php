@@ -29,7 +29,6 @@ function probe($file) {
 		$command .= ' --user='.$user;
 	}
 	$command .= ' -v '.getEnv("TMP_DIR").':/data --entrypoint ffprobe '.$image.' -v quiet -print_format json -show_format -show_streams "'.$file.'"';
-#	$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$file.'"';
 	printf("Probing '%s'\n", $file);
 	exec($command, $out, $ret);
 	if ($ret == 0) {
