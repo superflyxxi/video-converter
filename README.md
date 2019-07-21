@@ -21,15 +21,15 @@ Variable | Description | Required | Default | Example
 `EPISODE` | The episode within the season of the TV show. | No | | `01`
 `SUBTITLE` | The episode title of the TV show. | No | | `The One Where They Dance`
 `PLAYLIST` | If the input is bluray, override the playlist to be used. | No | | `183`
-`SUBTITLE_TRACK` | The input subtitle tracks to convert. | No | `s?` | `1`
+`SUBTITLE_TRACKS` | The input subtitle tracks to convert. | No | `*` | `1`
 `SUBTITLE_FORMAT` | The desired output subtitle format. | No | `ass` | `copy`
-`AUDIO_TRACK` | The input audio tracks to convert. | No | `a` | `1`
+`AUDIO_TRACKS` | The input audio tracks to convert. | No | `*` | `1`
 `AUDIO_FORMAT` | The desired output audio format. | No | `aac` | `eac3`
 `AUDIO_QUALITY` | The desired output audio quality based on the `AUDIO_FORMAT`. | No | `2` | `560`
-`AUDIO_CHANNEL_LAYOUT` | The desired output audio channel layout. | No | `5.1` | `7.1`
-`AUDIO_CHANNEL_LAYOUT_TRACKS` | The input audio track that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | ` ` | `1`
+`AUDIO_CHANNEL_LAYOUT` | The desired output audio channel layout. | No | ` ` | `7.1`
+`AUDIO_CHANNEL_LAYOUT_TRACKS` | The space-separated list of input audio tracks that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | `*` | `1`
 `NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
-`VIDEO_TRACK` | The input video tracks to convert. | No | `v` | `0`
+`VIDEO_TRACKS` | The input video tracks to convert. | No | `*` | `0`
 `VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
 `DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `--device /dev/dri:/dev/dri` is provided. | No | `n` | `y`
 `HDR` | The input is in HDR and the desired output should also be HDR. | No | `n` | `y`
