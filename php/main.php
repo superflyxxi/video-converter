@@ -32,6 +32,7 @@ Logger::info("Completed conversion with {} as a return value.", array($returnVal
 Logger::info("Chowning new file to match existing file");
 chown($oOutput->getFileName(), fileowner($oRequest->oInputFile->getFileName()));
 chgrp($oOutput->getFileName(), filegroup($oRequest->oInputFile->getFileName()));
+chmod($oOutput->getFileName(), fileperms($oRequest->oInputFile->getFileName()));
 exit($returnValue);
 
 ?>
