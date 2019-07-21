@@ -69,7 +69,16 @@ class NormalizeAudio
                     $normChannelMap = ($oRequest->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $oRequest->getAudioChannelLayoutTracks())) ? $oRequest->audioChannelLayout : $stream->channel_layout;
                     
                     $normChannelMap = preg_replace("/\(.+\)/", '', $normChannelMap);
-                    $command = 'ffmpeg -i "' . $origOutFile->getFileName() . '" -y -map 0' . ' -filter:a "loudnorm=measured_I=' . $json["input_i"] . ':measured_TP=' . $json["input_tp"] . ':measured_LRA=' . $json["input_lra"] . ':measured_thresh=' . $json["input_thresh"] . (NULL != $normChannelMap ? ',channelmap=channel_layout=' . $normChannelMap : '') . '" ' . ' -c:a ' . $oRequest->audioFormat . ' -q:a ' . $oRequest->audioQuality . ' -metadata:s:a:0 "title=Normalized ' . $stream->language . ' ' . $normChannelMap . '"' . ' -f matroska "' . $normFile . '" 2>&1';
+                    $command = 'ffmpeg -i "' . $origOutFile->getFileName() . '" -y -map 0' 
+                            . ' -filter:a "loudnorm=measured_I=' . $json["input_i"] 
+                            . ':measured_TP=' . $json["input_tp"] 
+                            . ':measured_LRA=' . $json["input_lra"] 
+                            . ':measured_thresh=' . $json["input_thresh"] 
+                            . (NULL != $normChannelMap ? ',channelmap=channel_layout=' . $normChannelMap : '') 
+                            . '" ' 
+                            . ' -c:a ' . $oRequest->audioFormat . ' -q:a ' . $oRequest->audioQuality 
+                            . ' -metadata:s:a:0 "title=Normalized ' . $stream->language . ' ' . $normChannelMap . '"' 
+                            . ' -f matroska "' . $normFile . '" 2>&1';
                     
                     Logger::info("Normalizing {}:{} with command: {}", array(
                         $oRequest->oInputFile->getFileName(),
@@ -84,7 +93,9 @@ class NormalizeAudio
                         exit($return);
                     }
                     $oNewRequest = new Request($normFile);
-                    $oNewRequest->audioTrack = 0;
+                    $oNewRequest->setAudioTracks("0");
+                    $oNewRequest->setVideoTracks(NULL);
+                    $oNewRequest->setSubtitleTracks(NULL);
                     $oNewRequest->audioFormat = "copy";
                     $arrAdditionalRequests[] = $oNewRequest;
                 }
