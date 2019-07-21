@@ -106,15 +106,20 @@ class FFmpegHelper {
 		foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
 			$args .= " -map ".$fileno.":".$index;
 			if ("copy" != $request->audioFormat) {
-				if ($index == $request->audioChannelLayoutTracks) {
+				Logger::verbose("Audio Channel Layout Tracks {}", array($request->getAudioChannelLayoutTracks()));
+				if ($request->audioChannelLayout != NULL && 
+						($request->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $request->getAudioChannelLayoutTracks()))) {
+					Logger::debug("Taking channel layout from request");
 					$channelLayout = $request->audioChannelLayout;
 					if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
 						$channels = $matches[1] + $matches[2];
 					}
 				} else {
+					Logger::debug("Using channel layout from original stream");
 					$channelLayout = $stream->channel_layout;
 					$channels = $stream->channels;
 				}
+				Logger::debug("{} index for file no {} has channelLayout={} and channels={}", array($index, $fileno, $channelLayout, $channels));
 				if (NULL != $channelLayout && $channels <= $stream->channels) {
 					// only change the channel layout if the number of original channels is more than requested
 					$channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
