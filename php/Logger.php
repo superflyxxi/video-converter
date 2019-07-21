@@ -70,9 +70,10 @@ class Logger
                 default:
                     $strlevel = "INFO";
                     break;
-                    
             }
-            printf("%s :: %s :: %s\n", date(self::dateformat), $strlevel, $str);
+            $back = debug_backtrace(NULL, 2);
+            $caller = $back[1]["class"].'.'.$back[1]["function"];
+            printf("%s :: %s :: %s :: %s\n", date(self::dateformat), $strlevel, $caller, $str);
         }
     }
 
