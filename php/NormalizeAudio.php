@@ -66,7 +66,9 @@ class NormalizeAudio
                     $json = json_decode($out, true);
                     
                     $normFile = $dir . $oRequest->oInputFile->getFileName() . '-' . $index . '-norm.mkv';
-                    $normChannelMap = ($oRequest->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $oRequest->getAudioChannelLayoutTracks())) ? $oRequest->audioChannelLayout : $stream->channel_layout;
+                    $normChannelMap = ($oRequest->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $oRequest->getAudioChannelLayoutTracks())) 
+                            ? $oRequest->audioChannelLayout 
+                            : $stream->channel_layout;
                     
                     $normChannelMap = preg_replace("/\(.+\)/", '', $normChannelMap);
                     $command = 'ffmpeg -i "' . $origOutFile->getFileName() . '" -y -map 0' 
