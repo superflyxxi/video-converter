@@ -15,11 +15,11 @@ before_install:
   - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY} || true
-  - if [[ "master" != "${TRAVIS_BRANCH}" ]]; then docker pull ${CACHE_FROM_IMAGE} || true; fi
+  - if [[ "true" == "${USER_DOCKER_CACHE}" && "master" != "${TRAVIS_BRANCH}" ]]; then docker pull ${CACHE_FROM_IMAGE} || true; fi
 
 script:
   - cd travis/
-  - if [[ "master" == "${TRAVIS_BRANCH}" || "${TRAVIS_BRANCH} == v* ]]; then 
+  - if [[ "true" != "${USE_DOCKER_CACHE} || "master" == "${TRAVIS_BRANCH}" || "${TRAVIS_BRANCH} == v* ]]; then 
         export CACHE_FROM_ARGS="--no-cache"; 
    fi
   - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then 
