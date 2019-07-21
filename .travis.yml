@@ -24,8 +24,6 @@ script:
    fi
   - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then 
         export THIS_LABEL=${FFMPEG_DOCKER_LABEL};
-   elif [[ "${TRAVIS_BRANCH} == v* ]]; then
-        export THIS_LABEL=${FFMPEG_DOCKER_LABEL}-${TRAVIS_BRANCH};
    fi
   - ./build.sh
   - ./test.sh
