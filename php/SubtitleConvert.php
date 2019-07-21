@@ -27,7 +27,9 @@ class SubtitleConvert {
 					$pgsFile = new OutputFile($dvdFile.'.sup');
 					if (!file_exists($pgsFile->getFileName())) {
 						$pgsRequest = new Request($filename);
-						$pgsRequest->subtitleTrack = $index;
+						$pgsRequest->setSubtitleTracks($index);
+						$pgsRequest->setAudioTracks(NULL);
+						$pgsRequest->setVideoTracks(NULL);
 						$pgsRequest->subtitleFormat = "copy";
 						$pgsRequest->prepareStreams();
 						Logger::info("Generating PGS sup file for index {} of file '{}'.", array($index, $filename));
@@ -83,7 +85,9 @@ class SubtitleConvert {
 	                                        }
 					}
 					$oNewRequest = new Request($dvdFile.".srt");
-					$oNewRequest->subtitleTrack = 0;
+					$oNewRequest->setSubtitleTracks("0");
+					$oNewRequest->setAudioTracks(NULL);
+					$oNewRequest->setVideoTracks(NULL);
 					$oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
 					$oNewRequest->prepareStreams();
 					$oNewRequest->oInputFile->getSubtitleStreams()[0]->language = $subtitle->language;
