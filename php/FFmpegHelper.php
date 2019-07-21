@@ -89,7 +89,12 @@ class FFmpegHelper
 
     private static function generateGlobalMetadataArgs($outputFile)
     {
-        return " " . (NULL != $outputFile->title ? '-metadata "title=' . $outputFile->title . '"' : " ") . " " . (NULL != $outputFile->subtitle ? '-metadata "subtitle=' . $outputFile->subtitle . '"' : " ") . " " . (NULL != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") . " " . (NULL != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") . " " . (NULL != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") . " " . getEnvWithDefault("OTHER_METADATA", " ");
+        return " " . (NULL != $outputFile->title ? '-metadata "title=' . $outputFile->title . '"' : " ") 
+                . " " . (NULL != $outputFile->subtitle ? '-metadata "subtitle=' . $outputFile->subtitle . '"' : " ") 
+                . " " . (NULL != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") 
+                . " " . (NULL != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") 
+                . " " . (NULL != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") 
+                . " " . getEnvWithDefault("OTHER_METADATA", " ");
     }
 
     private static function generateVideoArgs($fileno, $request, &$videoTrack)
