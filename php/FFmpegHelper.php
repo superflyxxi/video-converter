@@ -10,7 +10,7 @@ class FFmpegHelper {
     private static $probeCache = array();
 
     public static function probe($inputFile) {
-	if (!in_array($inputFile->getFileName(), $probeCache)) {
+	if (!in_array($inputFile->getFileName(), self::$probeCache)) {
 		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "'.$inputFile->getPrefix().$inputFile->getFileName().'"';
 		Logger::verbose("Executing ffprobe: {}", array($command));
 		exec($command, $out, $ret);
@@ -18,10 +18,10 @@ class FFmpegHelper {
 			Logger::error("Failed to execute ffprobe; returned {}", array($ret));
 			exit ($ret);
 		}
-		$probeCache[$inputFile->getFileName()] = $out;
+		self::$probeCache[$inputFile->getFileName()] = $out;
 	} else {
 		Logger::debug("Found {} in cache", array($inputFile->getFileName()));
-		$out = $probeCache[$inputFile->getFileName()];
+		$out = self::$probeCache[$inputFile->getFileName()];
 	}
 	return $out;
     }
