@@ -54,25 +54,25 @@ class Logger
                 case self::VERBOSE:
                     $strlevel = "VERBOSE";
                     break;
-                  
+                
                 case self::DEBUG:
                     $strlevel = "DEBUG";
                     break;
-                    
+                
                 case self::WARN:
                     $strlevel = "WARN";
                     break;
-                    
+                
                 case self::ERROR:
                     $strlevel = "ERROR";
                     break;
-                    
+                
                 default:
                     $strlevel = "INFO";
                     break;
             }
             $back = debug_backtrace(NULL, 2);
-            $caller = $back[1]["class"].'.'.$back[1]["function"];
+            $caller = $back[1]["class"] . '.' . $back[1]["function"];
             printf("%s :: %s :: %s :: %s\n", date(self::dateformat), $strlevel, $caller, $str);
         }
     }
