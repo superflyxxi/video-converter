@@ -15,17 +15,16 @@ before_install:
   - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY} || true
-  - if [[ "master" != "${TRAVIS_BRANCH}" ]]; then docker pull ${CACHE_FROM_IMAGE} || true; fi
+  - if [[ "true" == "${USE_DOCKER_CACHE}" && "master" != "${TRAVIS_BRANCH}" ]]; then echo "Pulling ${CACHE_FROM_IMAGE}"; docker pull ${CACHE_FROM_IMAGE} || true; fi
 
 script:
   - cd travis/
-  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then export CACHE_FROM_ARGS="--no-cache"; export THIS_LABEL=${FFMPEG_DOCKER_LABEL}; fi
+  - if [[ "true" != "${USE_DOCKER_CACHE}" || "master" == "${TRAVIS_BRANCH}" || "${TRAVIS_BRANCH}" == v* ]]; then 
+        export CACHE_FROM_ARGS="--no-cache"; 
+   fi
+  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then 
+        export THIS_LABEL=${FFMPEG_DOCKER_LABEL};
+   fi
   - ./build.sh
   - ./test.sh
   - ./push.sh
-
-after_success:
-  - if [[ "${TRAVIS_BRANCH}" == v* ]]; then
-         export THIS_LABEL=${FFMPEG_DOCKER_LABEL}-${TRAVIS_BRANCH};
-         travis/push.sh;
-      fi
