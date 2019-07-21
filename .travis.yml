@@ -19,7 +19,7 @@ before_install:
 
 script:
   - cd travis/
-  - if [[ "true" != "${USE_DOCKER_CACHE} || "master" == "${TRAVIS_BRANCH}" || "${TRAVIS_BRANCH} == v* ]]; then 
+  - if [[ "true" != "${USE_DOCKER_CACHE}" || "master" == "${TRAVIS_BRANCH}" || "${TRAVIS_BRANCH} == v* ]]; then 
         export CACHE_FROM_ARGS="--no-cache"; 
    fi
   - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then 
