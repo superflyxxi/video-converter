@@ -27,9 +27,11 @@ $allRequests = array_merge($allRequests, NormalizeAudio::normalize($oRequest));
 $allRequests = array_merge($allRequests, SubtitleConvert::convert($oRequest));
 
 $returnValue = FFmpegHelper::execute($allRequests, $oOutput);
-
 Logger::info("Completed conversion with {} as a return value.", array($returnValue));
+
+Logger::info("Chowning new file to match existing file");
+chown($oOutput->getFileName(), fileowner($oRequest->oInputFile->getFileName()));
+chgrp($oOutput->getFileName(), filegroup($oRequest->oInputFile->getFileName()));
 exit($returnValue);
 
 ?>
-
