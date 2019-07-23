@@ -1,10 +1,9 @@
 <?php
-
 include_once "common.php";
 
 getFile("test.mpg", "https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg");
 
-$command = 'docker run --rm -t -v '.getEnv("TMP_DIR").':/data -e INPUT=test.mpg -e TITLE="Test default" -e YEAR=2019 '.$image;
+$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=test.mpg -e TITLE="Test default" -e YEAR=2019 ' . $image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 
@@ -13,7 +12,10 @@ test("ffmpeg code", 0, $return, $output);
 $probe = probe("/data/Test default (2019).ffmpeg.mkv");
 $probe = json_decode($probe, true);
 
-$testOutput = array($output, $probe);
+$testOutput = array(
+    $output,
+    $probe
+);
 test("Stream 0", "video", $probe["streams"][0]["codec_type"], $testOutput);
 test("Stream 0 codec", "hevc", $probe["streams"][0]["codec_name"], $testOutput);
 test("Stream 1", "audio", $probe["streams"][1]["codec_type"], $testOutput);
