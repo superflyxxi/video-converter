@@ -16,7 +16,7 @@ Logger::verbose("Files to process: {}", array(
     $arrFiles
 ));
 foreach ($arrFiles as $file) {
-    $conversion = new ConvertFile("/data/" . getEnvWithDefault("INPUT", "."), getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
+    $conversion = new ConvertFile("/data/" . $file, getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
     $result = $conversion->convert();
     if ($result != 0) {
         exit($result);
