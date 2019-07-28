@@ -8,7 +8,7 @@ if (NULL == getEnv("TITLE")) {
     exit(1);
 }
 
-$conversion = new ConvertFile(getEnvWithDefault("INPUT", "."), getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
+$conversion = new ConvertFile("/data/" . getEnvWithDefault("INPUT", "."), getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
 exit($conversion->convert());
 
 ?>
