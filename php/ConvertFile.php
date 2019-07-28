@@ -24,6 +24,7 @@ class ConvertFile
 
     public function __construct($inputFilename, $title, $year, $season, $episode, $subtitle)
     {
+        $this->inputFilename = $inputFilename;
         $this->title = $title;
         $this->year = $year;
         $this->season = $season;
