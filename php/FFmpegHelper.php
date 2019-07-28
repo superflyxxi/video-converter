@@ -13,21 +13,15 @@ class FFmpegHelper
     {
         if (! in_array($inputFile->getFileName(), self::$probeCache)) {
             $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $inputFile->getPrefix() . $inputFile->getFileName() . '"';
-            Logger::verbose("Executing ffprobe: {}", array(
-                $command
-            ));
+            Logger::verbose("Executing ffprobe: {}", $command);
             exec($command, $out, $ret);
             if ($ret > 0) {
-                Logger::error("Failed to execute ffprobe; returned {}", array(
-                    $ret
-                ));
+                Logger::error("Failed to execute ffprobe; returned {}", $ret);
                 exit($ret);
             }
             self::$probeCache[$inputFile->getFileName()] = $out;
         } else {
-            Logger::debug("Found {} in cache", array(
-                $inputFile->getFileName()
-            ));
+            Logger::debug("Found {} in cache", $inputFile->getFileName());
             $out = self::$probeCache[$inputFile->getFileName()];
         }
         return $out;
@@ -36,14 +30,10 @@ class FFmpegHelper
     public static function execute($listRequests, $outputFile, $exit = TRUE)
     {
         $command = self::generate($listRequests, $outputFile);
-        Logger::verbose("Executing ffmpeg: {}", array(
-            $command
-        ));
+        Logger::verbose("Executing ffmpeg: {}", $command);
         passthru($command . " 2>&1", $ret);
         if ($exit && $ret > 0) {
-            Logger::error("Failed to execute ffmpeg with return code {}", array(
-                $ret
-            ));
+            Logger::error("Failed to execute ffmpeg with return code {}", $ret);
             exit($ret);
         }
         return $ret;
@@ -56,12 +46,12 @@ class FFmpegHelper
             $finalCommand .= "-y ";
         }
         $finalCommand .= self::generateHardwareAccelArgs();
-        
+
         // generate input args
         foreach ($listRequests as $tmpRequest) {
             $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
         }
-        
+
         $fileno = 0;
         $videoTrack = 0;
         $audioTrack = 0;
@@ -72,13 +62,13 @@ class FFmpegHelper
             $finalCommand .= " " . self::generateSubtitleArgs($fileno, $tmpRequest, $subtitleTrack);
             $fileno ++;
         }
-        
+
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
         if ($outputFile->format != NULL) {
             $finalCommand .= ' -f ' . $outputFile->format;
         }
         $finalCommand .= ' "' . $outputFile->getFileName() . '"';
-        
+
         return $finalCommand;
     }
 
@@ -118,9 +108,7 @@ class FFmpegHelper
         foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
             $args .= " -map " . $fileno . ":" . $index;
             if ("copy" != $request->audioFormat) {
-                Logger::verbose("Audio Channel Layout Tracks {}", array(
-                    $request->getAudioChannelLayoutTracks()
-                ));
+                Logger::verbose("Audio Channel Layout Tracks {}", $request->getAudioChannelLayoutTracks());
                 if ($request->audioChannelLayout != NULL && ($request->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $request->getAudioChannelLayoutTracks()))) {
                     Logger::debug("Taking channel layout from request");
                     $channelLayout = $request->audioChannelLayout;
@@ -132,12 +120,7 @@ class FFmpegHelper
                     $channelLayout = $stream->channel_layout;
                     $channels = $stream->channels;
                 }
-                Logger::debug("{} index for file no {} has channelLayout={} and channels={}", array(
-                    $index,
-                    $fileno,
-                    $channelLayout,
-                    $channels
-                ));
+                Logger::debug("{} index for file no {} has channelLayout={} and channels={}", $index, $fileno, $channelLayout, $channels);
                 if (NULL != $channelLayout && $channels <= $stream->channels) {
                     // only change the channel layout if the number of original channels is more than requested
                     $channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
@@ -168,4 +151,3 @@ class FFmpegHelper
 }
 
 ?>
-

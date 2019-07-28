@@ -14,10 +14,7 @@ class InputFile
         }
         $out = FFmpegHelper::probe($this);
         $json = json_decode(implode($out), true);
-        Logger::debug("JSON from probing {}: {}", array(
-            $this->getFileName(),
-            $json
-        ));
+        Logger::debug("JSON from probing {}: {}", $this->getFileName(), $json);
         if (array_key_exists("streams", $json)) {
             foreach ($json["streams"] as $stream) {
                 $oStream = new Stream($stream);
