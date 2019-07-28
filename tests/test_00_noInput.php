@@ -1,4 +1,7 @@
 <?php
+/*
+ * Tests when no input is given. It should product results for the file as expected.
+ */
 include_once "common.php";
 
 getFile("test.mpg", "https://alcorn.com/wp-content/downloads/test-files/AC3AlcornTest_HD.mpg");
@@ -9,7 +12,7 @@ exec($command, $output, $return);
 
 test("ffmpeg code", 0, $return, $output);
 
-$probe = probe("/data/Test Normalize Track 1 (2019).ffmpeg.mkv");
+$probe = probe("/data/Test No Input (2019).ffmpeg.mkv");
 $probe = json_decode($probe, true);
 
 $testOutput = array(
