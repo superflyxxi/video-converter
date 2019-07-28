@@ -14,7 +14,7 @@ to mkv before running this tool as ffmpeg is not very good at metadata from blur
 ## Environment Variables
 Variable | Description | Required | Default | Example
 --- | --- | --- | --- | ---
-`INPUT` | The bluray directory/drive or file to convert. | Yes | | `/mnt/bluray`
+`INPUT` | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | No | | `/mnt/bluray`
 `TITLE` | The title to be used in metadata and naming of the file. | Yes | | `Cool Movie`
 `YEAR` | The year of the movie to be used in metadata and naming of the file. | No | | `2019`
 `SEASON` | The season of the TV show. | No | | `01`
