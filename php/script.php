@@ -7,7 +7,10 @@ if (NULL == getEnv("TITLE")) {
 }
 
 if (NULL == getEnv("INPUT")) {
-    $arrFiles = scandir("/data/");
+    $arrFiles = array_diff(scandir("/data/"), array(
+        '..',
+        '.'
+    ));
 } else {
     $arrFiles[] = getEnv("INPUT");
 }
