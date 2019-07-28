@@ -8,7 +8,7 @@ printf("executing: %s\n", $command);
 exec($command, $output, $return);
 test("ffmpeg code", 0, $return, $output);
 
-$probe = probe("/data/Test tv show - s01e23 - The One Where Things.ffmpeg.mkv");
+$probe = probe("/data/Test tv show - s01e23 - The One Where Things.test.mpg.mkv");
 $probe = json_decode($probe, true);
 
 test("Stream 0", "video", $probe["streams"][0]["codec_type"], $output);
