@@ -17,38 +17,38 @@ class Logger
 
     private static $loglevel = - 1;
 
-    public static function info($msg, array $args = array())
+    public static function info()
     {
-        self::log(self::INFO, $msg, $args);
+        self::log(self::INFO, func_get_args());
     }
 
-    public static function warn($msg, array $args = array())
+    public static function warn()
     {
-        self::log(self::WARN, $msg, $args);
+        self::log(self::WARN, func_get_args());
     }
 
-    public static function error($msg, array $args = array())
+    public static function error()
     {
-        self::log(self::ERROR, $msg, $args);
+        self::log(self::ERROR, func_get_args());
     }
 
-    public static function verbose($msg, array $args = array())
+    public static function verbose()
     {
-        self::log(self::VERBOSE, $msg, $args);
+        self::log(self::VERBOSE, func_get_args());
     }
 
-    public static function debug($msg, array $args = array())
+    public static function debug()
     {
-        self::log(self::DEBUG, $msg, $args);
+        self::log(self::DEBUG, func_get_args());
     }
 
-    public static function log($reqlevel, $msg, array $args)
+    public static function log($reqlevel, array $args)
     {
         self::init();
         if (self::$loglevel >= $reqlevel) {
-            $str = print_r($msg, true);
-            foreach ($args as $arg) {
-                $str = preg_replace("/{}/", print_r($arg, true), $str, 1);
+            $str = print_r($args[0], true);
+            for ($i = 1, $count = count($args); $i < $count; $i ++) {
+                $str = preg_replace("/{}/", print_r($arg[$i], true), $str, 1);
             }
             printf("%s::%s::%s\n", date(self::dateformat), $reqlevel, $str);
         }
