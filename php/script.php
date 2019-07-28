@@ -7,7 +7,7 @@ if (NULL == getEnv("TITLE")) {
 }
 
 if (NULL == getEnv("INPUT")) {
-    $arrFiles;
+    $arrFiles = scandir("/data/");
 } else {
     $arrFiles[] = getEnv("INPUT");
 }
