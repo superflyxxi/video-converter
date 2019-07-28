@@ -12,7 +12,7 @@ exec($command, $output, $return);
 
 test("ffmpeg code", 0, $return, $output);
 
-$probe = probe("/data/Test No Input (2019).ffmpeg.mkv");
+$probe = probe("/data/Test No Input (2019).test.mpg.mkv");
 $probe = json_decode($probe, true);
 
 $testOutput = array(
