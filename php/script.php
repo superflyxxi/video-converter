@@ -1,8 +1,6 @@
 <?php
 include_once "Logger.php";
 
-Logger::info("Starting conversion");
-
 if (NULL == getEnv("TITLE")) {
     Logger::error("TITLE env variable missing");
     exit(1);
