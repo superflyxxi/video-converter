@@ -6,7 +6,18 @@ if (NULL == getEnv("TITLE")) {
     exit(1);
 }
 
-$conversion = new ConvertFile("/data/" . getEnvWithDefault("INPUT", "."), getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
-exit($conversion->convert());
+if (NULL == getEnv("INPUT")) {
+    $arrFiles;
+} else {
+    $arrFiles[] = getEnv("INPUT");
+}
 
+foreach ($arrFiles as $file) {
+    $conversion = new ConvertFile("/data/" . getEnvWithDefault("INPUT", "."), getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
+    $result = $conversion->convert();
+    if ($result != 0) {
+        exit($result);
+    }
+}
+exit(0);
 ?>
