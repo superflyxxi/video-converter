@@ -33,7 +33,9 @@ class ConvertFile
 
     public function convert()
     {
-        Logger::info("Starting conversion");
+        Logger::info("Starting conversion for {}", array(
+            $this->inputFilename
+        ));
         $oOutput = new OutputFile();
         $oOutput->title = $this->title;
         $oOutput->subtitle = $this->subtitle;
