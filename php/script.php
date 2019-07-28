@@ -1,5 +1,5 @@
 <?php
-include_once "Logger.php";
+include_once "ConvertFile.php";
 
 if (NULL == getEnv("TITLE")) {
     Logger::error("TITLE env variable missing");
