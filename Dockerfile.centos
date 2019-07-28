@@ -25,7 +25,7 @@ RUN DIR=$(mktemp -d) && cd ${DIR} && \
 # Install BDSup2Sub
 RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"
 
-ENTRYPOINT /home/ripvideo/main.php
+ENTRYPOINT /home/ripvideo/script.php
 
 ADD scripts/* /home/ripvideo/scripts/
 ADD php/* /home/ripvideo/
