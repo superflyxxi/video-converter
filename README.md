@@ -8,8 +8,9 @@ Tools to convert video
 # Docker Image
 This image supports ripping a video or bluray directory into an MKV using ffmpeg. As a result, 
 you'll see in the same directory mapped to `/data` a file with the following naming:
-`{TITLE} ({YEAR}) - s{SEASON}e{EPISODE} - {SUBTITLE}.ffmpeg.mkv`. You may want to rip the bluray
-to mkv before running this tool as ffmpeg is not very good at metadata from blurays.
+`{TITLE} ({YEAR}) - s{SEASON}e{EPISODE} - {SUBTITLE}.{inputFileName}.mkv`. 
+You may want to rip the bluray to mkv before running this tool as ffmpeg is not very good at metadata 
+from blurays.
 
 ## Environment Variables
 Variable | Description | Required | Default | Example
