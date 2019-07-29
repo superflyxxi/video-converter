@@ -48,7 +48,7 @@ class Logger
         if (self::$loglevel >= $reqlevel) {
             $str = print_r($args[0], true);
             for ($i = 1, $count = count($args); $i < $count; $i ++) {
-                $str = preg_replace("/{}/", print_r($arg[$i], true), $str, 1);
+                $str = preg_replace("/{}/", print_r($args[$i], true), $str, 1);
             }
             printf("%s::%s::%s\n", date(self::dateformat), $reqlevel, $str);
         }
