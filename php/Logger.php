@@ -1,5 +1,4 @@
 <?php
-
 class Logger
 {
 
@@ -16,6 +15,25 @@ class Logger
     const dateformat = "c";
 
     private static $loglevel = - 1;
+
+    private static $mapLogNumToString = NULL;
+
+    private static function init()
+    {
+        if (self::$loglevel == - 1) {
+            date_default_timezone_set("UTC");
+            self::$mapLogNumToString[self::VERBOSE] = "VERBOSE";
+            self::$mapLogNumToString[self::DEBUG] = "DEBUG";
+            self::$mapLogNumToString[self::WARN] = "WARN";
+            self::$mapLogNumToString[self::ERROR] = "ERROR";
+            self::$mapLogNumToString[self::INFO] = "INFO";
+            self::$loglevel = array_search(getEnvWithDefault("LOG_LEVEL", "INFO"), self::$mapLogNumToString);
+            if (self::$loglevel === FALSE) {
+                self::$loglevel = self::INFO;
+                warn("Invalid Log Level set for logging.");
+            }
+        }
+    }
 
     public static function info()
     {
@@ -50,30 +68,7 @@ class Logger
             for ($i = 1, $count = count($args); $i < $count; $i ++) {
                 $str = preg_replace("/{}/", print_r($args[$i], true), $str, 1);
             }
-            printf("%s::%s::%s\n", date(self::dateformat), $reqlevel, $str);
-        }
-    }
-
-    private static function init()
-    {
-        if (self::$loglevel == - 1) {
-            date_default_timezone_set("UTC");
-            switch (getEnv("LOG_LEVEL")) {
-                case "WARN":
-                    self::$loglevel = self::WARN;
-                    break;
-                case "ERROR":
-                    self::$loglevel = self::ERROR;
-                    break;
-                case "VERBOSE":
-                    self::$loglevel = self::VERBOSE;
-                    break;
-                case "DEBUG":
-                    self::$loglevel = self::DEBUG;
-                    break;
-                default:
-                    self::$loglevel = self::INFO;
-            }
+            printf("%s::%s::%s\n", date(self::dateformat), self::$mapLogNumToString[$reqlevel], $str);
         }
     }
 }
