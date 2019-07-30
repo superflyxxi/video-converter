@@ -25,7 +25,7 @@ class SubtitleConvert
                     } else {
                         $dvdFile = $dir . "/" . $filename . '-' . $index;
                     }
-                    $pgsFile = new OutputFile($dvdFile . '.sup');
+                    $pgsFile = new OutputFile(NULL, $dvdFile . '.sup');
                     if (! file_exists($pgsFile->getFileName())) {
                         $pgsRequest = new Request($filename);
                         $pgsRequest->setSubtitleTracks($index);
@@ -44,7 +44,7 @@ class SubtitleConvert
                             continue;
                         }
                     }
-                    
+
                     if (! file_exists($dvdFile . '.sub')) {
                         $command = 'java -jar /home/ripvideo/BDSup2Sub.jar -o "' . $dvdFile . '.sub" "' . $pgsFile->getFileName() . '"';
                         Logger::info("Convert pgs to dvd command: {}", array(
@@ -91,7 +91,7 @@ class SubtitleConvert
                     $arrAdditionalRequests[] = $oNewRequest;
                     $oRequest->oInputFile->removeSubtitleStream($index);
                 }
-                
+
                 // convert to srt
                 if (NULL != $dvdFile) {
                     if (! file_exists($dvdFile . ".srt")) {

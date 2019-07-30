@@ -4,8 +4,9 @@ include_once "functions.php";
 class OutputFile
 {
 
-    public function __construct($out = NULL, $dir = NULL)
+    public function __construct($postfix = NULL, $out = NULL, $dir = NULL)
     {
+        $this->postfix = $postfix == NULL ? "ffmpeg" : $postfix;
         $this->envOutput = $out == NULL ? getEnv("OUTPUT") : $out;
         $this->outputDir = $dir == NULL ? getEnvWithDefault("OUTPUT_DIR", "/data") : $dir;
     }
@@ -26,6 +27,8 @@ class OutputFile
 
     private $outputDir = NULL;
 
+    private $postfix = NULL;
+
     public function getFileName()
     {
         if (NULL != $this->envOutput) {
@@ -40,7 +43,7 @@ class OutputFile
         if (NULL != $this->subtitle) {
             $out .= " - " . $this->subtitle;
         }
-        $out .= ".ffmpeg.mkv";
+        $out .= "." . $this->postfix . ".mkv";
         return $out;
     }
 }
