@@ -15,24 +15,24 @@ class Request
     public static function newInstanceFromEnv($filename)
     {
         $req = new Request($filename);
-        
+
         $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
         $req->playlist = getEnv("PLAYLIST");
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
         $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
-        
+
         $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACK", "*"));
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
         $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
         $req->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
-        
+
         $req->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
-        
+
         $req->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
         $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
-        
+
         $req->prepareStreams();
         return $req;
     }
@@ -173,4 +173,3 @@ class Request
 }
 
 ?>
-

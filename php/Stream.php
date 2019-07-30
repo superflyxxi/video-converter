@@ -31,4 +31,3 @@ class Stream
 
     public $channels = NULL;
 }
-

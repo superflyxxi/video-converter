@@ -33,10 +33,7 @@ class SubtitleConvert
                         $pgsRequest->setVideoTracks(NULL);
                         $pgsRequest->subtitleFormat = "copy";
                         $pgsRequest->prepareStreams();
-                        Logger::info("Generating PGS sup file for index {} of file '{}'.", array(
-                            $index,
-                            $filename
-                        ));
+                        Logger::info("Generating PGS sup file for index {} of file '{}'.", $index, $filename);
                         if (FFmpegHelper::execute(array(
                             $pgsRequest
                         ), $pgsFile) > 0) {
@@ -47,14 +44,10 @@ class SubtitleConvert
 
                     if (! file_exists($dvdFile . '.sub')) {
                         $command = 'java -jar /home/ripvideo/BDSup2Sub.jar -o "' . $dvdFile . '.sub" "' . $pgsFile->getFileName() . '"';
-                        Logger::info("Convert pgs to dvd command: {}", array(
-                            $command
-                        ));
+                        Logger::info("Convert pgs to dvd command: {}", $command);
                         exec($command, $out, $return);
                         if ($return != 0) {
-                            Logger::warn("sub convertion failed: {}. Continuing with next subtitle.", array(
-                                $return
-                            ));
+                            Logger::warn("sub convertion failed: {}. Continuing with next subtitle.", $return);
                             continue;
                         }
                     }
@@ -66,10 +59,7 @@ class SubtitleConvert
                         $dvdFile = $dir . "/" . $filename . '-' . $index;
                     }
                     if (! file_exists($dvdFile . ".sub")) {
-                        Logger::info("Generating DVD sub file for index {} of file {}.", array(
-                            $index,
-                            $filename
-                        ));
+                        Logger::info("Generating DVD sub file for index {} of file {}.", $index, $filename);
                         $arrOutput = array(
                             $index => $dvdFile . ".sub"
                         );
@@ -79,9 +69,7 @@ class SubtitleConvert
                         }
                     }
                 } else if ("subrip" == $codecName) {
-                    Logger::info("Adding subrip to request for track {}", array(
-                        $index
-                    ));
+                    Logger::info("Adding subrip to request for track {}", $index);
                     $oNewRequest = new Request($oRequest->oInputFile->getFileName());
                     $oNewRequest->setSubtitleTracks($index);
                     $oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
@@ -96,14 +84,10 @@ class SubtitleConvert
                 if (NULL != $dvdFile) {
                     if (! file_exists($dvdFile . ".srt")) {
                         $command = 'vobsub2srt "' . $dvdFile . '"';
-                        Logger::info("Convert DVD sub using command: {}", array(
-                            $command
-                        ));
+                        Logger::info("Convert DVD sub using command: {}", $command);
                         exec($command, $out, $return);
                         if ($return != 0) {
-                            Logger::warn("vobsub to srt conversion failed: {}. Continuing with next stream.", array(
-                                $return
-                            ));
+                            Logger::warn("vobsub to srt conversion failed: {}. Continuing with next stream.", $return);
                             continue;
                         }
                     }
@@ -114,9 +98,7 @@ class SubtitleConvert
                     $oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
                     $oNewRequest->prepareStreams();
                     $oNewRequest->oInputFile->getSubtitleStreams()[0]->language = $subtitle->language;
-                    Logger::debug("Using {} language for final stream.", array(
-                        $subtitle->language
-                    ));
+                    Logger::debug("Using {} language for final stream.", $subtitle->language);
                     $arrAdditionalRequests[] = $oNewRequest;
                     $oRequest->oInputFile->removeSubtitleStream($index);
                 }
@@ -129,4 +111,3 @@ class SubtitleConvert
 }
 
 ?>
-

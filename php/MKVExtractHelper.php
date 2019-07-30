@@ -10,14 +10,10 @@ class MKVExtractHelper
         foreach ($arrTracks as $track => $outFileName) {
             $command .= ' ' . $track . ':' . $outFileName;
         }
-        Logger::info("extracting with mkvextract with command: {}", array(
-            $command
-        ));
+        Logger::info("extracting with mkvextract with command: {}", $command);
         passthru($command, $return);
         if (0 < $return) {
-            Logger::error("Problem executing. Got {}", array(
-                $return
-            ));
+            Logger::error("Problem executing. Got {}", $return);
             if ($exit) {
                 exit($return);
             }
@@ -27,4 +23,3 @@ class MKVExtractHelper
 }
 
 ?>
-

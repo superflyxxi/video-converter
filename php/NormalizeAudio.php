@@ -44,22 +44,13 @@ class NormalizeAudio
 
                 if (in_array($index, $oRequest->normalizeAudioTracks)) {
                     // if the track is to be normalized, now let's normalize it and put it in
-                    Logger::info("Normalizing track {}:{}", array(
-                        $oRequest->oInputFile->getFileName(),
-                        $index
-                    ));
+                    Logger::info("Normalizing track {}:{}", $oRequest->oInputFile->getFileName(), $index);
                     $command = 'ffmpeg -hide_banner -i "' . $origOutFile->getFileName() . '" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
-                    Logger::info("Measuring {}:{} with command: {}", array(
-                        $oRequest->oInputFile->getFileName(),
-                        $index,
-                        $command
-                    ));
+                    Logger::info("Measuring {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
                     exec($command, $out, $return);
                     Logger::verbose($out);
                     if ($return != 0) {
-                        Logger::error("Normalizing failed: {}", array(
-                            $return
-                        ));
+                        Logger::error("Normalizing failed: {}", $return);
                         exit($return);
                     }
                     $out = implode(array_slice($out, - 12));
@@ -74,16 +65,10 @@ class NormalizeAudio
                     $normChannelMap = preg_replace("/\(.+\)/", '', $normChannelMap);
                     $command = 'ffmpeg -i "' . $origOutFile->getFileName() . '" -y -map 0' . ' -filter:a "loudnorm=measured_I=' . $json["input_i"] . ':measured_TP=' . $json["input_tp"] . ':measured_LRA=' . $json["input_lra"] . ':measured_thresh=' . $json["input_thresh"] . (NULL != $normChannelMap ? ',channelmap=channel_layout=' . $normChannelMap : '') . '" ' . ' -c:a ' . $oRequest->audioFormat . ' -q:a ' . $oRequest->audioQuality . ' -metadata:s:a:0 "title=Normalized ' . $stream->language . ' ' . $normChannelMap . '"' . ' -f matroska "' . $normFile . '" 2>&1';
 
-                    Logger::info("Normalizing {}:{} with command: {}", array(
-                        $oRequest->oInputFile->getFileName(),
-                        $index,
-                        $command
-                    ));
+                    Logger::info("Normalizing {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
                     passthru($command, $return);
                     if ($return != 0) {
-                        Logger::error("Normalizing failed: {}", array(
-                            $return
-                        ));
+                        Logger::error("Normalizing failed: {}", $return);
                         exit($return);
                     }
                     $oNewRequest = new Request($normFile);
