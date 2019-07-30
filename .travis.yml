@@ -26,4 +26,6 @@ script:
    fi
   - ./build.sh
   - ./test.sh
+
+after_success:
   - ./push.sh
