@@ -7,13 +7,19 @@ if (NULL == getEnv("TITLE")) {
 }
 
 if (NULL == getEnv("INPUT")) {
-    $arrFiles = scandir("/data/");
+    $arrFiles = array_diff(scandir("/data/"), array(
+        '..',
+        '.'
+    ));
 } else {
     $arrFiles[] = getEnv("INPUT");
 }
 
+Logger::verbose("Files to process: {}", array(
+    $arrFiles
+));
 foreach ($arrFiles as $file) {
-    $conversion = new ConvertFile("/data/" . getEnvWithDefault("INPUT", "."), getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
+    $conversion = new ConvertFile("/data/" . $file, getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
     $result = $conversion->convert();
     if ($result != 0) {
         exit($result);

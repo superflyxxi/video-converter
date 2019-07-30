@@ -25,7 +25,7 @@ class SubtitleConvert
                     } else {
                         $dvdFile = $dir . "/" . $filename . '-' . $index;
                     }
-                    $pgsFile = new OutputFile($dvdFile . '.sup');
+                    $pgsFile = new OutputFile(NULL, $dvdFile . '.sup');
                     if (! file_exists($pgsFile->getFileName())) {
                         $pgsRequest = new Request($filename);
                         $pgsRequest->setSubtitleTracks($index);

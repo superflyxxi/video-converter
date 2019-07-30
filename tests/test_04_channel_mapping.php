@@ -8,7 +8,7 @@ printf("executing: %s\n", $command);
 exec($command, $output, $return);
 test("ffmpeg code", 0, $return, $output);
 
-$probe = probe("/data/Test Channel Mapping (2019).ffmpeg.mkv");
+$probe = probe("/data/Test Channel Mapping (2019).test.mpg.mkv");
 $probe = json_decode($probe, true);
 
 test("Stream 0", "video", $probe["streams"][0]["codec_type"], $output);

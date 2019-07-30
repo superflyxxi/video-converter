@@ -24,6 +24,7 @@ class ConvertFile
 
     public function __construct($inputFilename, $title, $year, $season, $episode, $subtitle)
     {
+        $this->inputFilename = $inputFilename;
         $this->title = $title;
         $this->year = $year;
         $this->season = $season;
@@ -33,8 +34,10 @@ class ConvertFile
 
     public function convert()
     {
-        Logger::info("Starting conversion");
-        $oOutput = new OutputFile();
+        Logger::info("Starting conversion for {}", array(
+            $this->inputFilename
+        ));
+        $oOutput = new OutputFile(basename($this->inputFilename)); // use inputfile as the postfix
         $oOutput->title = $this->title;
         $oOutput->subtitle = $this->subtitle;
         $oOutput->season = $this->season;
@@ -47,7 +50,9 @@ class ConvertFile
         $allRequests = array_merge($allRequests, SubtitleConvert::convert($oRequest));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput);
-        Logger::info("Completed conversion with {} as a return value.", $returnValue);
+        Logger::info("Completed conversion with {} as a return value.", array(
+            $returnValue
+        ));
 
         Logger::info("Chowning new file to match existing file");
         chown($oOutput->getFileName(), fileowner($oRequest->oInputFile->getFileName()));

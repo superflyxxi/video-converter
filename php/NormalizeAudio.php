@@ -26,9 +26,9 @@ class NormalizeAudio
                 $tmpRequest->setAudioChannelLayoutTracks(implode(" ", $oRequest->getAudioChannelLayoutTracks()));
                 $tmpRequest->prepareStreams();
                 if ($oRequest->oInputFile->getPrefix() != NULL) {
-                    $origOutFile = new OutputFile($dir . realpath($oRequest->oInputFile->getFileName()) . '/dir-' . $index . '-orig.mkv');
+                    $origOutFile = new OutputFile(NULL, $dir . realpath($oRequest->oInputFile->getFileName()) . '/dir-' . $index . '-orig.mkv');
                 } else {
-                    $origOutFile = new OutputFile($dir . $oRequest->oInputFile->getFileName() . '-' . $index . '-orig.mkv');
+                    $origOutFile = new OutputFile(NULL, $dir . $oRequest->oInputFile->getFileName() . '-' . $index . '-orig.mkv');
                 }
                 FFmpegHelper::execute(array(
                     $tmpRequest
