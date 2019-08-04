@@ -40,7 +40,7 @@ Variable | Description | Required | Default | Example
 ### Ripping Bluray using VAAPI
 This is currently untested.
 ```
-docker run --rm -it --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e TITLE=Test -e YEAR=2019 rip-video
+docker run --rm -it --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e INPUT=. -e TITLE=Test -e YEAR=2019 rip-video
 ```
 
 ### Ripping specific file without VAAPI
