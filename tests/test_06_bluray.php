@@ -5,7 +5,7 @@ getFile("test_bluray.iso", "http://superflyxxi.dlinkddns.com/samples/MARVEL_Trai
 
 $command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=test_bluray.iso -e TITLE="Test Bluray Default" -e YEAR=2019 ' . $image;
 printf("executing: %s\n", $command);
-exec($command, $output, $return);
+passthru($command, $return);
 
 test("ffmpeg code", 0, $return, $output);
 
