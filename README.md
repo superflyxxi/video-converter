@@ -32,7 +32,7 @@ Variable | Description | Required | Default | Example
 `NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
 `VIDEO_TRACKS` | The input video tracks to convert. | No | `*` | `0`
 `VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
-`DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `--device /dev/dri:/dev/dri` is provided. | No | `n` | `y`
+`DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `--device /dev/dri:/dev/dri` is provided. | No | `false` | `true`
 `HDR` | The input is in HDR and the desired output should also be HDR. | No | `n` | `y`
 
 ## Examples

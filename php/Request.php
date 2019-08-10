@@ -29,7 +29,9 @@ class Request
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
         $req->deinterlace = getEnv("DEINTERLACE");
-	if ($req->deinterlace == NULL && $req->hwaccel) {
+	if ($req->deinterlace != NULL) {
+		$req->deinterlace = ($req->deinterlace == "true");
+	} else if ($req->deinterlace == NULL && $req->hwaccel) {
 		$req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
 	} else if ($req->deinterlace == NULL) {
 		$req->deinterlace = FALSE;
