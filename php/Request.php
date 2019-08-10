@@ -28,7 +28,12 @@ class Request
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
-        $req->deinterlace = ("true" == getEnvWithDefault("DEINTERLACE", "false"));
+        $req->deinterlace = getEnvWithDefault("DEINTERLACE");
+	if ($req->deinterlace == NULL && $req->hwaccel) {
+		$req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
+	} else if ($req->deinterlace == NULL) {
+		$req->deinterlace = FALSE;
+	}
 
         $req->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
         $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
