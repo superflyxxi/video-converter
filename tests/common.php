@@ -1,6 +1,7 @@
 <?php
 $user = getEnv("UID");
-$image = getEnv("THIS_REGISTRY") . '/' . getEnv("THIS_REPO") . '/' . getEnv("THIS_IMAGE") . ':' . getEnv("THIS_LABEL");
+#$image = getEnv("THIS_REGISTRY") . '/' . getEnv("THIS_REPO") . '/' . getEnv("THIS_IMAGE") . ':' . getEnv("THIS_LABEL");
+$image = 'rip-video:build-' . getEnv("THIS_LABEL");
 
 printf("TEST: %s\n", debug_backtrace()[0]['file']);
 
