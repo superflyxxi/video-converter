@@ -28,28 +28,24 @@ class FFmpegHelper
     }
 
     public static function isInterlaced($inputFile) {
-        $command = 'ffmpeg -i "' . $inputFile .'" -vf idet -frames:v 5000 -f rawvideo -y /dev/null';
+        $command = 'ffmpeg -i "' . $inputFile .'" -vf idet -frames:v 5000 -f rawvideo -y /dev/null 2>&1';
         Logger::info("Checking for interlacing: {}", $command);
 	exec($command, $out, $ret);
  	Logger::verbose("Output: {}", $out);
 	if ($ret > 0) {
 	    Logger::error("Failed to determine interlacing; returned {}", $ret);
-	    return FALSE;
+	    return false;
 	}
 	Logger::info("Output: {}", $out);
-	return FALSE;
-    }
-
-    public static function execute($listRequests, $outputFile, $exit = TRUE)
-    {
-        $command = self::generate($listRequests, $outputFile);
-        Logger::verbose("Executing ffmpeg: {}", $command);
-        passthru($command . " 2>&1", $ret);
-        if ($exit && $ret > 0) {
-            Logger::error("Failed to execute ffmpeg with return code {}", $ret);
-            exit($ret);
-        }
-        return $ret;
+	$out = implode($out);
+	
+	preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
+	$tff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+	preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
+	$bff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+	Logger::debug("TFF={}", $tff);
+	Logger::debug("BFF={}", $bff);
+        return ($tff!=0 || $bff!=0);
     }
 
     public static function generate($listRequests, $outputFile)
