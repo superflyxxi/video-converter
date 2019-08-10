@@ -7,25 +7,28 @@ WORKDIR /home/ripvideo/
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
-RUN apk --no-cache add php php-json wget openjdk8-jre \
-	tiff-dev tesseract-ocr tesseract-ocr-dev cmake g++ automake autoconf \
+RUN apk --no-cache add php php-json openjdk8-jre \
+	tiff-dev tesseract-ocr tesseract-ocr-dev \
 	mkvtoolnix
 
 # Install All Tesseract Language Packs
 RUN apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | xargs apk add --no-cache 
 
 # Install VobSub2SRT
-RUN DIR=$(mktemp -d) && cd ${DIR} && \
+RUN APK_ARGS="git cmake g++ automake autoconf" && \
+	apk add --no-cache ${APK_ARGS} && \
+	DIR=$(mktemp -d) && cd ${DIR} && \
 	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
 	git checkout autotools && \
 	./bootstrap && \
 	./configure CXXFLAGS="-std=gnu++11" && \
 	make && \
 	make install && \
-	rm -rf ${DIR}
+	rm -rf ${DIR} && \
+	apk del ${APK_ARGS}
 
 # Install DBSup2Sub
-RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"
+ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
 
 ENTRYPOINT php /home/ripvideo/script.php
 
