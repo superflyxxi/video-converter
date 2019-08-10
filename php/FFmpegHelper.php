@@ -48,6 +48,18 @@ class FFmpegHelper
         return ($tff!=0 || $bff!=0);
     }
 
+    public static function execute($listRequests, $outputFile, $exit = TRUE)
+    {
+        $command = self::generate($listRequests, $outputFile);
+        Logger::verbose("Executing ffmpeg: {}", $command);
+        passthru($command . " 2>&1", $ret);
+        if ($exit && $ret > 0) {
+            Logger::error("Failed to execute ffmpeg with return code {}", $ret);
+            exit($ret);
+        }
+        return $ret;
+    }
+
     public static function generate($listRequests, $outputFile)
     {
         $finalCommand = "ffmpeg ";
