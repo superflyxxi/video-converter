@@ -27,6 +27,19 @@ class FFmpegHelper
         return $out;
     }
 
+    public static function isInterlaced($inputFile) {
+        $command = 'ffmpeg -i "' . $inputFile .'" -vf idet -frames:v 5000 -f rawvideo -y /dev/null';
+        Logger::info("Checking for interlacing: {}", $command);
+	exec($command, $out, $ret);
+ 	Logger::verbose("Output: {}", $out);
+	if ($ret > 0) {
+	    Logger::error("Failed to determine interlacing; returned {}", $ret);
+	    return FALSE;
+	}
+	Logger::info("Output: {}", $out);
+	return FALSE;
+    }
+
     public static function execute($listRequests, $outputFile, $exit = TRUE)
     {
         $command = self::generate($listRequests, $outputFile);
