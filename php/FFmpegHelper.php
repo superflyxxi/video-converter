@@ -12,7 +12,7 @@ class FFmpegHelper
     public static function probe($inputFile)
     {
         if (! in_array($inputFile->getFileName(), self::$probeCache)) {
-            $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $inputFile->getPrefix() . $inputFile->getFileName() . '"';
+            $command = 'ffprobe -v quiet -print_format json -show_frames -show_format -show_streams "' . $inputFile->getPrefix() . $inputFile->getFileName() . '"';
             Logger::verbose("Executing ffprobe: {}", $command);
             exec($command, $out, $ret);
             if ($ret > 0) {
