@@ -37,7 +37,8 @@ class OutputFile
         $out = $this->outputDir . "/" . $this->title;
         if (NULL != $this->year) {
             $out .= " (" . $this->year . ")";
-        } else if (NULL != $this->season) {
+        }
+        if (NULL != $this->season) {
             $out .= " - s" . $this->season . "e" . $this->episode;
         }
         if (NULL != $this->subtitle) {
