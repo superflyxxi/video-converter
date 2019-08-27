@@ -37,7 +37,7 @@ class ConvertFile
         Logger::info("Starting conversion for {}", array(
             $this->inputFilename
         ));
-        $oOutput = new OutputFile(basename($this->inputFilename)); // use inputfile as the postfix
+        $oOutput = new OutputFile(getEnvWithDefault("APPLY_POSTFIX", "true") == "true" ? basename($this->inputFilename) : NULL); // use inputfile as the postfix only if APPLY_POSTFIX is set
         $oOutput->title = $this->title;
         $oOutput->subtitle = $this->subtitle;
         $oOutput->season = $this->season;
