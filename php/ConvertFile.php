@@ -1,7 +1,4 @@
 <?php
-use function InputFile\getFileName as chgrp;
-use function InputFile\getFileName as chmod;
-
 include_once "Logger.php";
 include_once "Request.php";
 include_once "OutputFile.php";
