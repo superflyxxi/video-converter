@@ -114,6 +114,9 @@ class FFmpegHelper
                 $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
             } else if ($request->isHwaccel()) {
                 $args .= " -c:v:" . $videoTrack . " hevc_vaapi -qp 20 -level:v 41";
+		if ($request->deinterlace) {
+			$args .= " -vf deinterlace_vaapi=rate=field:auto=1";
+		}
             } else {
                 $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 41";
             }
