@@ -24,12 +24,15 @@ before_install:
 
 script:
   - cd travis/
-  - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then 
-        export THIS_LABEL=${FFMPEG_DOCKER_LABEL};
-   fi
   - ./build.sh
   - ./test.sh
 
 after_success:
   - ./push.sh
+  - if [[ "${TRAVIS_BRANCH}" == v* ]]; then
+        export NEW_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL};
+        echo "Going to label ${THIS_FULL_IMAGE} an additional name of ${NEW_FULL_IMAGE}";
+        docker tag ${THIS_FULL_IMAGE} ${NEW_FULL_IMAGE};
+        THIS_FULL_IMAGE=${NEW_FULL_IMAGE} ./push.sh;
+    fi
 
