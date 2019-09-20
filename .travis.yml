@@ -10,18 +10,20 @@ services:
 before_install:
   - export THIS_LABEL=${FFMPEG_DOCKER_LABEL}-${TRAVIS_BRANCH}
   - export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL}
-  - export FROM_IMAGE=${FFMPEG_DOCKER_IMAGE}:${FFMPEG_DOCKER_LABEL}
   - export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL}
+  - export FROM_IMAGE=${FFMPEG_DOCKER_IMAGE}:${FFMPEG_DOCKER_LABEL}
   - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY} || true
-  - if [[ "true" == "${USE_DOCKER_CACHE}" && "master" != "${TRAVIS_BRANCH}" && "${TRAVIS_BRANCH}" != v* ]]; then echo "Pulling ${CACHE_FROM_IMAGE}"; docker pull ${CACHE_FROM_IMAGE} || true; fi
+  - if [[ "true" == "${USE_DOCKER_CACHE}" && "master" != "${TRAVIS_BRANCH}" && "${TRAVIS_BRANCH}" != v* ]]; then 
+        echo "Pulling ${CACHE_FROM_IMAGE}"; 
+        docker pull ${CACHE_FROM_IMAGE} || true; 
+    else
+        export CACHE_FROM_ARGS="--no-cache"; 
+    fi
 
 script:
   - cd travis/
-  - if [[ "true" != "${USE_DOCKER_CACHE}" || "master" == "${TRAVIS_BRANCH}" || "${TRAVIS_BRANCH}" == v* ]]; then 
-        export CACHE_FROM_ARGS="--no-cache"; 
-   fi
   - if [[ "master" == "${TRAVIS_BRANCH}" ]]; then 
         export THIS_LABEL=${FFMPEG_DOCKER_LABEL};
    fi
