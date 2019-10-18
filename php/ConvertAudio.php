@@ -72,7 +72,7 @@ class ConvertAudio
         }
         $normChannelMap = preg_replace("/\(.+\)/", '', $normChannelMap);
 
-        $sampleRate = NULL;
+        $sampleRate = $oRequest->audioSampleRate;
         if (NULL == $sampleRate) {
             $sampleRate = $stream->audio_sample_rate;
         }
