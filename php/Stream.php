@@ -18,7 +18,7 @@ class Stream
             $this->channels = $json["channels"];
         }
         if (array_key_exists("codec_time_base", $json)) {
-            $this->audio_sample_rate = 1 / $json["codec_time_base"];
+            $this->audio_sample_rate = substr($json["codec_time_base"], 2);
         }
     }
 
