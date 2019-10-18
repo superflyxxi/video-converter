@@ -70,9 +70,26 @@ class ConvertAudio
         if (NULL == $normChannelMap) {
             $normChannelMap = $stream->channel_layout;
         }
-
         $normChannelMap = preg_replace("/\(.+\)/", '', $normChannelMap);
-        $command = 'ffmpeg -i "' . $inFileName . '" -y -map 0' . ' -filter:a "loudnorm=measured_I=' . $json["input_i"] . ':measured_TP=' . $json["input_tp"] . ':measured_LRA=' . $json["input_lra"] . ':measured_thresh=' . $json["input_thresh"] . (NULL != $normChannelMap ? ',channelmap=channel_layout=' . $normChannelMap : '') . '" ' . ' -c:a ' . $oRequest->audioFormat . ' -q:a ' . $oRequest->audioQuality . ' -metadata:s:a:0 "title=Normalized ' . $stream->language . ' ' . $normChannelMap . '"' . ' -f matroska "' . $normFile . '" 2>&1';
+
+        $sampleRate = NULL;
+        if (NULL == $sampleRate) {
+            $sampleRate = $stream->audio_sample_rate;
+        }
+
+        $command = 'ffmpeg -i "' . $inFileName . '" -y -map 0';
+        $command .= ' -filter:a "loudnorm=measured_I=' . $json["input_i"] . ':measured_TP=' . $json["input_tp"] . ':measured_LRA=' . $json["input_lra"] . ':measured_thresh=' . $json["input_thresh"];
+        if (NULL != $normChannelMap) {
+            $command .= ',channelmap=channel_layout=' . $normChannelMap;
+        }
+        $command .= '" ';
+        $command .= ' -c:a ' . $oRequest->audioFormat;
+        $command .= ' -q:a ' . $oRequest->audioQuality;
+        if (NULL != $sampleRate) {
+            $command .= ' -ar ' . $sampleRate;
+        }
+        $command .= ' -metadata:s:a:0 "title=Normalized ' . $stream->language . ' ' . $normChannelMap . '"';
+        $command .= ' -f matroska "' . $normFile . '" 2>&1';
 
         Logger::info("Normalizing {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
         passthru($command, $return);
