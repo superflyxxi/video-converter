@@ -43,14 +43,14 @@ class ConvertAudio
                 $oRequest->oInputFile->removeAudioStream($index);
 
                 if (in_array($index, $oRequest->normalizeAudioTracks)) {
-                    $arrAdditionalRequests[] = self::normalize($oRequest, $index, $dir, $convOutFile->getFileName());
+                    $arrAdditionalRequests[] = self::normalize($oRequest, $index, $dir, $convOutFile->getFileName(), $stream);
                 }
             }
         }
         return $arrAdditionalRequests;
     }
 
-    private static function normalize($oRequest, $index, $dir, $inFileName)
+    private static function normalize($oRequest, $index, $dir, $inFileName, $stream)
     {
         // if the track is to be normalized, now let's normalize it and put it in
         Logger::info("Normalizing track {}:{}", $oRequest->oInputFile->getFileName(), $index);
