@@ -4,7 +4,7 @@ include_once "functions.php";
 include_once "Request.php";
 include_once "Stream.php";
 
-class NormalizeAudio
+class ConvertAudio
 {
 
     public static function normalize($oRequest)
