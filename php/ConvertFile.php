@@ -45,6 +45,8 @@ class ConvertFile
         $oOutput->year = $this->year;
 
         $oRequest = Request::newInstanceFromEnv($this->inputFilename);
+        Logger::info("Conversion output {}", $oOutput);
+        Logger::info("Request information {}", $oRequest);
         $allRequests[] = $oRequest;
         $allRequests = array_merge($allRequests, NormalizeAudio::normalize($oRequest));
         $allRequests = array_merge($allRequests, SubtitleConvert::convert($oRequest));
