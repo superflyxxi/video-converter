@@ -12,9 +12,9 @@ before_install:
   - export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL}
   - export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL}-master
   - export FROM_IMAGE=${FFMPEG_DOCKER_IMAGE}:${FFMPEG_DOCKER_LABEL}
-  - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} /g" /etc/default/docker
+  - sudo sed -i "s/\DOCKER_OPTS=\"/DOCKER_OPTS=\"--insecure-registry=${FFMPEG_REGISTRY} --insecure-registry=${THIS_REGISTRY}/g" /etc/default/docker
   - sudo service docker restart
-  - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY} || true
+  - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
   - if [[ "true" == "${USE_DOCKER_CACHE}" && "master" != "${TRAVIS_BRANCH}" && "${TRAVIS_BRANCH}" != v* ]]; then 
         echo "Pulling ${CACHE_FROM_IMAGE}"; 
         docker pull ${CACHE_FROM_IMAGE} || true; 
@@ -28,6 +28,7 @@ script:
   - ./test.sh
 
 after_success:
+  - echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
   - ./push.sh
   - if [[ "${TRAVIS_BRANCH}" == v* ]]; then
         export NEW_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL};
