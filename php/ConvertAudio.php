@@ -26,9 +26,9 @@ class ConvertAudio
                 $tmpRequest->setAudioChannelLayoutTracks(implode(" ", $oRequest->getAudioChannelLayoutTracks()));
                 $tmpRequest->prepareStreams();
                 if ($oRequest->oInputFile->getPrefix() != NULL) {
-                    $origOutFile = new OutputFile(NULL, $dir . realpath($oRequest->oInputFile->getFileName()) . '/dir-' . $index . '-orig.mkv');
+                    $origOutFile = new OutputFile(NULL, $dir . realpath($oRequest->oInputFile->getFileName()) . '/dir-' . $index . '-conv.mkv');
                 } else {
-                    $origOutFile = new OutputFile(NULL, $dir . $oRequest->oInputFile->getFileName() . '-' . $index . '-orig.mkv');
+                    $origOutFile = new OutputFile(NULL, $dir . $oRequest->oInputFile->getFileName() . '-' . $index . '-conv.mkv');
                 }
                 FFmpegHelper::execute(array(
                     $tmpRequest
