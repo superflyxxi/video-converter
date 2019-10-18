@@ -7,7 +7,7 @@ include_once "Stream.php";
 class ConvertAudio
 {
 
-    public static function normalize($oRequest)
+    public static function convert($oRequest)
     {
         $arrAdditionalRequests = array();
         if ("copy" != $oRequest->audioFormat && count($oRequest->normalizeAudioTracks)) {
