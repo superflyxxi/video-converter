@@ -3,7 +3,8 @@ include_once "ConvertFile.php";
 
 function error_handler(int $errno, string $errstr, string $errfile = NULL, int $errline = 0, array $errcontext = NULL)
 {
-    throw new ErrorException("$errstr in $errfile", $errno);
+    print_r("Error encountered!");
+    exit(1);
 }
 set_error_handler('errro_handler');
 
