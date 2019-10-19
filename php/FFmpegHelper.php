@@ -154,7 +154,7 @@ class FFmpegHelper
                 $args .= " -c:a:" . $audioTrack . " " . $request->audioFormat;
                 $args .= " -q:a:" . $audioTrack . " " . $request->audioQuality;
                 Logger::debug("Requsted sample rate vs input sample rate: {} vs {}", $request->audioSampleRate, $stream->audio_sample_rate);
-                $sampleRate = $request->audioSampleRate;
+                $audioSampleRate = $request->audioSampleRate;
                 if (NULL != $audioSampleRate) {
                     $sampleRate = $stream->audio_sample_rate;
                 }
