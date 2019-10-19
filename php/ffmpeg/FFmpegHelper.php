@@ -143,7 +143,7 @@ class FFmpegHelper
 	    Logger::verbose("File {}, Streams: {}", $tmpRequest->oInputFile->getFileName(), $streamList);
             foreach ($streamList as $index => $stream) {
                 $args .= " -map " . $fileno . ":" . $index;
-                $args .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $stream);
+                $args .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $index, $stream);
             }
             $fileno ++;
         }

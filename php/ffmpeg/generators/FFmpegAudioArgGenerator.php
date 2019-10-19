@@ -7,12 +7,12 @@ include_once "Stream.php";
 class FFmpegAudioArgGenerator implements FFmpegArgGenerator
 {
 
-    public function getAdditionalArgs($outTrack, Request $request, Stream $stream)
+    public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream)
     {
         $args = " ";
         if ("copy" != $request->audioFormat) {
             Logger::verbose("Audio Channel Layout Tracks {}", $request->getAudioChannelLayoutTracks());
-            if ($request->audioChannelLayout != NULL && ($request->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $request->getAudioChannelLayoutTracks()))) {
+            if ($request->audioChannelLayout != NULL && ($request->areAllAudioChannelLayoutTracksConsidered() || in_array($inputTrack, $request->getAudioChannelLayoutTracks()))) {
                 Logger::debug("Taking channel layout from request");
                 $channelLayout = $request->audioChannelLayout;
                 if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {

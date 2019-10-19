@@ -7,7 +7,7 @@ include_once "Stream.php";
 class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 {
 
-    public function getAdditionalArgs($outTrack, Request $request, Stream $stream)
+    public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream)
     {
 	$args = " ";
         if ("copy" == $request->videoFormat) {
