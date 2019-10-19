@@ -101,7 +101,7 @@ class FFmpegHelper
     {
         $fileno = 0;
         $videoTrack = 0;
-        foreach ($listRequests as $tmpRequest) {
+        foreach ($listRequests as $request) {
 
             $args = " ";
             foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
@@ -131,7 +131,7 @@ class FFmpegHelper
         $args = " ";
         $fileno = 0;
         $audioTrack = 0;
-        foreach ($listRequests as $tmpRequest) {
+        foreach ($listRequests as $request) {
             foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
                 $args .= " -map " . $fileno . ":" . $index;
                 if ("copy" != $request->audioFormat) {
@@ -180,7 +180,7 @@ class FFmpegHelper
         $args = " ";
         $fileno = 0;
         $subtitleTrack = 0;
-        foreach ($listRequests as $tmpRequest) {
+        foreach ($listRequests as $request) {
             foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
                 $args .= " -map " . $fileno . ":" . $index . " -c:s:" . $subtitleTrack . " " . $request->subtitleFormat;
                 $args .= " -metadata:s:s:" . $subtitleTrack . " language=" . $stream->language;
