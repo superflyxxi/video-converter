@@ -4,7 +4,7 @@ include_once "Request.php";
 include_once "OutputFile.php";
 include_once "functions.php";
 include_once "SubtitleConvert.php";
-include_once "NormalizeAudio.php";
+include_once "ConvertAudio.php";
 include_once "FFmpegHelper.php";
 
 class ConvertFile
@@ -45,8 +45,10 @@ class ConvertFile
         $oOutput->year = $this->year;
 
         $oRequest = Request::newInstanceFromEnv($this->inputFilename);
+        Logger::info("Conversion output {}", $oOutput);
+        Logger::info("Request information {}", $oRequest);
         $allRequests[] = $oRequest;
-        $allRequests = array_merge($allRequests, NormalizeAudio::normalize($oRequest));
+        $allRequests = array_merge($allRequests, ConvertAudio::convert($oRequest));
         $allRequests = array_merge($allRequests, SubtitleConvert::convert($oRequest));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput);
