@@ -9,6 +9,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 
     public function getAdditionalArgs($outTrack, Request $request, Stream $stream)
     {
+	$args = " ";
         if ("copy" == $request->videoFormat) {
             $args .= " -c:v:" . $outTrack . " copy";
         } else if ($request->isHDR()) {
