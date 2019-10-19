@@ -1,5 +1,5 @@
 <?php
-include_once "FFmpegArgGenerator.php";
+include_once "ffmpeg/FFmpegArgGenerator.php";
 
 class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 {
