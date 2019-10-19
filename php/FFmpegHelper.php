@@ -74,9 +74,9 @@ class FFmpegHelper
             $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
         }
 
-        $finalCommand .= " " . self::generateVideoArgs();
-        $finalCommand .= " " . self::generateAudioArgs();
-        $finalCommand .= " " . self::generateSubtitleArgs();
+        $finalCommand .= " " . self::generateVideoArgs($listRequests);
+        $finalCommand .= " " . self::generateAudioArgs($listRequests);
+        $finalCommand .= " " . self::generateSubtitleArgs($listRequests);
 
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
         if ($outputFile->format != NULL) {
@@ -97,7 +97,7 @@ class FFmpegHelper
         return " " . (NULL != $outputFile->title ? '-metadata "title=' . $outputFile->title . '"' : " ") . " " . (NULL != $outputFile->subtitle ? '-metadata "subtitle=' . $outputFile->subtitle . '"' : " ") . " " . (NULL != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") . " " . (NULL != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") . " " . (NULL != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") . " " . getEnvWithDefault("OTHER_METADATA", " ");
     }
 
-    private static function generateVideoArgs()
+    private static function generateVideoArgs($listRequests)
     {
         $fileno = 0;
         $videoTrack = 0;
@@ -126,7 +126,7 @@ class FFmpegHelper
         return $args;
     }
 
-    private static function generateAudioArgs()
+    private static function generateAudioArgs($listRequests)
     {
         $args = " ";
         $fileno = 0;
@@ -175,7 +175,7 @@ class FFmpegHelper
         return $args;
     }
 
-    private static function generateSubtitleArgs()
+    private static function generateSubtitleArgs($listRequests)
     {
         $args = " ";
         $fileno = 0;
