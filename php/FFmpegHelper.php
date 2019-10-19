@@ -74,16 +74,9 @@ class FFmpegHelper
             $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
         }
 
-        $fileno = 0;
-        $videoTrack = 0;
-        $audioTrack = 0;
-        $subtitleTrack = 0;
-        foreach ($listRequests as $tmpRequest) {
-            $finalCommand .= " " . self::generateVideoArgs($fileno, $tmpRequest, $videoTrack);
-            $finalCommand .= " " . self::generateAudioArgs($fileno, $tmpRequest, $audioTrack);
-            $finalCommand .= " " . self::generateSubtitleArgs($fileno, $tmpRequest, $subtitleTrack);
-            $fileno ++;
-        }
+        $finalCommand .= " " . self::generateVideoArgs($listRequests);
+        $finalCommand .= " " . self::generateAudioArgs($listRequests);
+        $finalCommand .= " " . self::generateSubtitleArgs($listRequests);
 
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
         if ($outputFile->format != NULL) {
@@ -104,80 +97,96 @@ class FFmpegHelper
         return " " . (NULL != $outputFile->title ? '-metadata "title=' . $outputFile->title . '"' : " ") . " " . (NULL != $outputFile->subtitle ? '-metadata "subtitle=' . $outputFile->subtitle . '"' : " ") . " " . (NULL != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") . " " . (NULL != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") . " " . (NULL != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") . " " . getEnvWithDefault("OTHER_METADATA", " ");
     }
 
-    private static function generateVideoArgs($fileno, $request, &$videoTrack)
+    private static function generateVideoArgs($listRequests)
     {
-        $args = " ";
-        foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
-            $args .= " -map " . $fileno . ":" . $index;
-            if ("copy" == $request->videoFormat) {
-                $args .= " -c:v:" . $videoTrack . " copy";
-            } else if ($request->isHDR()) {
-                $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
-            } else if ($request->isHwaccel()) {
-                $args .= " -c:v:" . $videoTrack . " hevc_vaapi -qp 20 -level:v 41";
-                if ($request->deinterlace) {
-                    $args .= " -vf deinterlace_vaapi=rate=field:auto=1";
-                }
-            } else {
-                $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 41";
-            }
-            $args .= " -metadata:s:v:" . $videoTrack . " language=" . $stream->language;
-            $videoTrack ++;
-        }
-        return $args;
-    }
+        $fileno = 0;
+        $videoTrack = 0;
+        foreach ($listRequests as $tmpRequest) {
 
-    private static function generateAudioArgs($fileno, $request, &$audioTrack)
-    {
-        $args = " ";
-        foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
-            $args .= " -map " . $fileno . ":" . $index;
-            if ("copy" != $request->audioFormat) {
-                Logger::verbose("Audio Channel Layout Tracks {}", $request->getAudioChannelLayoutTracks());
-                if ($request->audioChannelLayout != NULL && ($request->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $request->getAudioChannelLayoutTracks()))) {
-                    Logger::debug("Taking channel layout from request");
-                    $channelLayout = $request->audioChannelLayout;
-                    if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
-                        $channels = $matches[1] + $matches[2];
+            $args = " ";
+            foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
+                $args .= " -map " . $fileno . ":" . $index;
+                if ("copy" == $request->videoFormat) {
+                    $args .= " -c:v:" . $videoTrack . " copy";
+                } else if ($request->isHDR()) {
+                    $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
+                } else if ($request->isHwaccel()) {
+                    $args .= " -c:v:" . $videoTrack . " hevc_vaapi -qp 20 -level:v 41";
+                    if ($request->deinterlace) {
+                        $args .= " -vf deinterlace_vaapi=rate=field:auto=1";
                     }
                 } else {
-                    Logger::debug("Using channel layout from original stream");
-                    $channelLayout = $stream->channel_layout;
-                    $channels = $stream->channels;
+                    $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 41";
                 }
-                Logger::debug("{} index for file no {} has channelLayout={} and channels={}", $index, $fileno, $channelLayout, $channels);
-                if (NULL != $channelLayout && $channels <= $stream->channels) {
-                    // only change the channel layout if the number of original channels is more than requested
-                    $channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
-                    $args .= " -filter:a:" . $audioTrack . ' channelmap=channel_layout=' . $channelLayout;
-                }
-                $args .= " -c:a:" . $audioTrack . " " . $request->audioFormat;
-                $args .= " -q:a:" . $audioTrack . " " . $request->audioQuality;
-                Logger::debug("Requsted sample rate vs input sample rate: {} vs {}", $request->audioSampleRate, $stream->audio_sample_rate);
-                $audioSampleRate = $request->audioSampleRate;
-                if (NULL != $audioSampleRate) {
-                    $audioSampleRate = $stream->audio_sample_rate;
-                }
-                if (NULL != $audioSampleRate) {
-                    $args .= " -ar:" . $audioTrack . " " . $audioSampleRate;
-                }
-            } else {
-                // specify copy
-                $args .= " -c:a:" . $audioTrack . " copy";
+                $args .= " -metadata:s:v:" . $videoTrack . " language=" . $stream->language;
+                $videoTrack ++;
             }
-            $args .= " -metadata:s:a:" . $audioTrack . " language=" . $stream->language;
-            $audioTrack ++;
+            $fileno ++;
         }
         return $args;
     }
 
-    private static function generateSubtitleArgs($fileno, $request, &$subtitleTrack)
+    private static function generateAudioArgs($listRequests)
     {
         $args = " ";
-        foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
-            $args .= " -map " . $fileno . ":" . $index . " -c:s:" . $subtitleTrack . " " . $request->subtitleFormat;
-            $args .= " -metadata:s:s:" . $subtitleTrack . " language=" . $stream->language;
-            $subtitleTrack ++;
+        $fileno = 0;
+        $audioTrack = 0;
+        foreach ($listRequests as $tmpRequest) {
+            foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
+                $args .= " -map " . $fileno . ":" . $index;
+                if ("copy" != $request->audioFormat) {
+                    Logger::verbose("Audio Channel Layout Tracks {}", $request->getAudioChannelLayoutTracks());
+                    if ($request->audioChannelLayout != NULL && ($request->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $request->getAudioChannelLayoutTracks()))) {
+                        Logger::debug("Taking channel layout from request");
+                        $channelLayout = $request->audioChannelLayout;
+                        if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
+                            $channels = $matches[1] + $matches[2];
+                        }
+                    } else {
+                        Logger::debug("Using channel layout from original stream: {} and {}", $stream->channel_layout, $stream->channels);
+                        $channelLayout = $stream->channel_layout;
+                        $channels = $stream->channels;
+                    }
+                    Logger::debug("{} index for file no {} has channelLayout={} and channels={}", $index, $fileno, $channelLayout, $channels);
+                    if (NULL != $channelLayout && $channels <= $stream->channels) {
+                        // only change the channel layout if the number of original channels is more than requested
+                        $channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
+                        $args .= " -filter:a:" . $audioTrack . ' channelmap=channel_layout=' . $channelLayout;
+                    }
+                    $args .= " -c:a:" . $audioTrack . " " . $request->audioFormat;
+                    $args .= " -q:a:" . $audioTrack . " " . $request->audioQuality;
+                    Logger::debug("Requsted sample rate vs input sample rate: {} vs {}", $request->audioSampleRate, $stream->audio_sample_rate);
+                    $sampleRate = $request->audioSampleRate;
+                    if (NULL != $audioSampleRate) {
+                        $sampleRate = $stream->audio_sample_rate;
+                    }
+                    if (NULL != $audioSampleRate) {
+                        $args .= " -ar:" . $audioTrack . " " . $audioSampleRate;
+                    }
+                } else {
+                    // specify copy
+                    $args .= " -c:a:" . $audioTrack . " copy";
+                }
+                $args .= " -metadata:s:a:" . $audioTrack . " language=" . $stream->language;
+                $audioTrack ++;
+            }
+            $fileno ++;
+        }
+        return $args;
+    }
+
+    private static function generateSubtitleArgs($listRequests)
+    {
+        $args = " ";
+        $fileno = 0;
+        $subtitleTrack = 0;
+        foreach ($listRequests as $tmpRequest) {
+            foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
+                $args .= " -map " . $fileno . ":" . $index . " -c:s:" . $subtitleTrack . " " . $request->subtitleFormat;
+                $args .= " -metadata:s:s:" . $subtitleTrack . " language=" . $stream->language;
+                $subtitleTrack ++;
+            }
+            $fileno ++;
         }
         return $args;
     }
