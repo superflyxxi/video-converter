@@ -3,6 +3,8 @@ include_once "Request.php";
 include_once "functions.php";
 include_once "OutputFile.php";
 include_once "Logger.php";
+include_once "ffmpeg/FFmpegArgGenerator.php";
+include_once "ffmpeg/FFmpegVideoArgGenerator.php";
 
 class FFmpegHelper
 {
@@ -120,6 +122,21 @@ class FFmpegHelper
                 }
                 $args .= " -metadata:s:v:" . $videoTrack . " language=" . $stream->language;
                 $videoTrack ++;
+            }
+            $fileno ++;
+        }
+        return $args;
+    }
+
+    private static function generateArgs($listRequests, FFmpegArgGenerator $generator)
+    {
+        $fileno = 0;
+        $outTrack = 0;
+        foreach ($listRequests as $tmpRequest) {
+            $args = " ";
+            foreach ($generator->getStreams($tmpRequest->oInputFile) as $index => $stream) {
+                $args .= " -map " . $fileno . ":" . $index;
+                $args .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $stream);
             }
             $fileno ++;
         }
