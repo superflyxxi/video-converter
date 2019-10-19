@@ -77,7 +77,9 @@ class FFmpegHelper
             $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
         }
 
+	Logger::info("Generating video args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegVideoArgGenerator());
+	Logger::info("Generating audio args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegAudioArgGenerator());
         // $finalCommand .= " " . self::generateVideoArgs($listRequests);
         // $finalCommand .= " " . self::generateAudioArgs($listRequests);
