@@ -3,8 +3,8 @@
 interface FFmpegArgGenerator
 {
 
-    public function getStreams();
+    public function getStreams($inputFile);
 
-    public function getAdditionalArgs($outTrack, $stream);
+    public function getAdditionalArgs($outTrack, $request, $stream);
 }
 ?>
