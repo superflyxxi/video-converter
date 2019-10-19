@@ -74,11 +74,6 @@ class FFmpegHelper
             $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
         }
 
-        $videoTrack = 0;
-        $audioTrack = 0;
-        $subtitleTrack = 0;
-
-        // loop through videos, then audio, then subtitles
         $finalCommand .= " " . self::generateVideoArgs();
         $finalCommand .= " " . self::generateAudioArgs();
         $finalCommand .= " " . self::generateSubtitleArgs();
