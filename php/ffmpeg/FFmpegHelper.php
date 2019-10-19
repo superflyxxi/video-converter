@@ -5,6 +5,7 @@ include_once "OutputFile.php";
 include_once "Logger.php";
 include_once "ffmpeg/generators/FFmpegArgGenerator.php";
 include_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
+include_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
 
 class FFmpegHelper
 {
@@ -77,8 +78,9 @@ class FFmpegHelper
         }
 
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegVideoArgGenerator());
+        $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegAudioArgGenerator());
         // $finalCommand .= " " . self::generateVideoArgs($listRequests);
-        $finalCommand .= " " . self::generateAudioArgs($listRequests);
+        // $finalCommand .= " " . self::generateAudioArgs($listRequests);
         $finalCommand .= " " . self::generateSubtitleArgs($listRequests);
 
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
