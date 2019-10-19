@@ -74,15 +74,22 @@ class FFmpegHelper
             $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
         }
 
-        $fileno = 0;
         $videoTrack = 0;
         $audioTrack = 0;
         $subtitleTrack = 0;
+
+        // loop through videos, then audio, then subtitles
+        $fileno = 0;
         foreach ($listRequests as $tmpRequest) {
-            $finalCommand .= " " . self::generateVideoArgs($fileno, $tmpRequest, $videoTrack);
-            $finalCommand .= " " . self::generateAudioArgs($fileno, $tmpRequest, $audioTrack);
-            $finalCommand .= " " . self::generateSubtitleArgs($fileno, $tmpRequest, $subtitleTrack);
-            $fileno ++;
+            $finalCommand .= " " . self::generateVideoArgs($fileno ++, $tmpRequest, $videoTrack);
+        }
+        $fileno = 0;
+        foreach ($listRequests as $tmpRequest) {
+            $finalCommand .= " " . self::generateAudioArgs($fileno ++, $tmpRequest, $audioTrack);
+        }
+        $fileno = 0;
+        foreach ($listRequests as $tmpRequest) {
+            $finalCommand .= " " . self::generateSubtitleArgs($fileno ++, $tmpRequest, $subtitleTrack);
         }
 
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
