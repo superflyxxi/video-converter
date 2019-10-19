@@ -6,7 +6,7 @@ function error_handler(int $errno, string $errstr, string $errfile = NULL, int $
     print_r("Error encountered!");
     exit(1);
 }
-set_error_handler('errro_handler');
+set_error_handler('error_handler');
 
 if (NULL == getEnv("TITLE")) {
     Logger::error("TITLE env variable missing");
