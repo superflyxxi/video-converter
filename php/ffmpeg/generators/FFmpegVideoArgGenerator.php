@@ -1,10 +1,13 @@
 <?php
 include_once "ffmpeg/generators/FFmpegArgGenerator.php";
+include_once "InputFile.php";
+include_once "Request.php";
+include_once "Stream.php";
 
 class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 {
 
-    public function getAdditionalArgs($outTrack, $request, $stream)
+    public function getAdditionalArgs($outTrack, Request $request, Stream $stream)
     {
         if ("copy" == $request->videoFormat) {
             $args .= " -c:v:" . $outTrack . " copy";
@@ -22,7 +25,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
         return $args;
     }
 
-    public function getStreams($inputFile)
+    public function getStreams(InputFile $inputFile)
     {
         return $inputFile->getVideoStreams();
     }
