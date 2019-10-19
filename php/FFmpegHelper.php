@@ -157,7 +157,7 @@ class FFmpegHelper
                 $sampleRate = $request->audioSampleRate;
                 if (NULL != $audioSampleRate) {
                     $sampleRate = $stream->audio_sample_rate;
-		}
+                }
                 if (NULL != $audioSampleRate) {
                     $args .= " -ar:" . $audioTrack . " " . $audioSampleRate;
                 }
