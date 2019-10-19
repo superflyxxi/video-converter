@@ -165,7 +165,7 @@ class Request
 
     private $audioChannelLayoutTracks = array();
 
-    public $audioSampleRate;
+    public $audioSampleRate = NULL;
 
     public $normalizeAudioTracks = NULL;
 
