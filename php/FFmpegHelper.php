@@ -80,11 +80,8 @@ class FFmpegHelper
 
         // loop through videos, then audio, then subtitles
         $finalCommand .= " " . self::generateVideoArgs();
-        $finalCommand .= " " . self::generateAudioArgs($fileno ++, $tmpRequest, $audioTrack);
-        $fileno = 0;
-        foreach ($listRequests as $tmpRequest) {
-            $finalCommand .= " " . self::generateSubtitleArgs($fileno ++, $tmpRequest, $subtitleTrack);
-        }
+        $finalCommand .= " " . self::generateAudioArgs();
+        $finalCommand .= " " . self::generateSubtitleArgs();
 
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
         if ($outputFile->format != NULL) {
@@ -183,13 +180,18 @@ class FFmpegHelper
         return $args;
     }
 
-    private static function generateSubtitleArgs($fileno, $request, &$subtitleTrack)
+    private static function generateSubtitleArgs()
     {
         $args = " ";
-        foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
-            $args .= " -map " . $fileno . ":" . $index . " -c:s:" . $subtitleTrack . " " . $request->subtitleFormat;
-            $args .= " -metadata:s:s:" . $subtitleTrack . " language=" . $stream->language;
-            $subtitleTrack ++;
+        $fileno = 0;
+        $subtitleTrack = 0;
+        foreach ($listRequests as $tmpRequest) {
+            foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
+                $args .= " -map " . $fileno . ":" . $index . " -c:s:" . $subtitleTrack . " " . $request->subtitleFormat;
+                $args .= " -metadata:s:s:" . $subtitleTrack . " language=" . $stream->language;
+                $subtitleTrack ++;
+            }
+            $fileno ++;
         }
         return $args;
     }
