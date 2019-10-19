@@ -80,10 +80,7 @@ class FFmpegHelper
 
         // loop through videos, then audio, then subtitles
         $finalCommand .= " " . self::generateVideoArgs();
-        $fileno = 0;
-        foreach ($listRequests as $tmpRequest) {
-            $finalCommand .= " " . self::generateAudioArgs($fileno ++, $tmpRequest, $audioTrack);
-        }
+        $finalCommand .= " " . self::generateAudioArgs($fileno ++, $tmpRequest, $audioTrack);
         $fileno = 0;
         foreach ($listRequests as $tmpRequest) {
             $finalCommand .= " " . self::generateSubtitleArgs($fileno ++, $tmpRequest, $subtitleTrack);
@@ -137,46 +134,51 @@ class FFmpegHelper
         return $args;
     }
 
-    private static function generateAudioArgs($fileno, $request, &$audioTrack)
+    private static function generateAudioArgs()
     {
         $args = " ";
-        foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
-            $args .= " -map " . $fileno . ":" . $index;
-            if ("copy" != $request->audioFormat) {
-                Logger::verbose("Audio Channel Layout Tracks {}", $request->getAudioChannelLayoutTracks());
-                if ($request->audioChannelLayout != NULL && ($request->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $request->getAudioChannelLayoutTracks()))) {
-                    Logger::debug("Taking channel layout from request");
-                    $channelLayout = $request->audioChannelLayout;
-                    if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
-                        $channels = $matches[1] + $matches[2];
+        $fileno = 0;
+        $audioTrack = 0;
+        foreach ($listRequests as $tmpRequest) {
+            foreach ($request->oInputFile->getAudioStreams() as $index => $stream) {
+                $args .= " -map " . $fileno . ":" . $index;
+                if ("copy" != $request->audioFormat) {
+                    Logger::verbose("Audio Channel Layout Tracks {}", $request->getAudioChannelLayoutTracks());
+                    if ($request->audioChannelLayout != NULL && ($request->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $request->getAudioChannelLayoutTracks()))) {
+                        Logger::debug("Taking channel layout from request");
+                        $channelLayout = $request->audioChannelLayout;
+                        if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
+                            $channels = $matches[1] + $matches[2];
+                        }
+                    } else {
+                        Logger::debug("Using channel layout from original stream");
+                        $channelLayout = $stream->channel_layout;
+                        $channels = $stream->channels;
+                    }
+                    Logger::debug("{} index for file no {} has channelLayout={} and channels={}", $index, $fileno, $channelLayout, $channels);
+                    if (NULL != $channelLayout && $channels <= $stream->channels) {
+                        // only change the channel layout if the number of original channels is more than requested
+                        $channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
+                        $args .= " -filter:a:" . $audioTrack . ' channelmap=channel_layout=' . $channelLayout;
+                    }
+                    $args .= " -c:a:" . $audioTrack . " " . $request->audioFormat;
+                    $args .= " -q:a:" . $audioTrack . " " . $request->audioQuality;
+                    Logger::debug("Requsted sample rate vs input sample rate: {} vs {}", $request->audioSampleRate, $stream->audio_sample_rate);
+                    $sampleRate = $request->audioSampleRate;
+                    if (NULL != $audioSampleRate) {
+                        $sampleRate = $stream->audio_sample_rate;
+                    }
+                    if (NULL != $audioSampleRate) {
+                        $args .= " -ar:" . $audioTrack . " " . $audioSampleRate;
                     }
                 } else {
-                    Logger::debug("Using channel layout from original stream");
-                    $channelLayout = $stream->channel_layout;
-                    $channels = $stream->channels;
+                    // specify copy
+                    $args .= " -c:a:" . $audioTrack . " copy";
                 }
-                Logger::debug("{} index for file no {} has channelLayout={} and channels={}", $index, $fileno, $channelLayout, $channels);
-                if (NULL != $channelLayout && $channels <= $stream->channels) {
-                    // only change the channel layout if the number of original channels is more than requested
-                    $channelLayout = preg_replace("/\(.+\)/", '', $channelLayout);
-                    $args .= " -filter:a:" . $audioTrack . ' channelmap=channel_layout=' . $channelLayout;
-                }
-                $args .= " -c:a:" . $audioTrack . " " . $request->audioFormat;
-                $args .= " -q:a:" . $audioTrack . " " . $request->audioQuality;
-                Logger::debug("Requsted sample rate vs input sample rate: {} vs {}", $request->audioSampleRate, $stream->audio_sample_rate);
-                $sampleRate = $request->audioSampleRate;
-                if (NULL != $audioSampleRate) {
-                    $sampleRate = $stream->audio_sample_rate;
-                }
-                if (NULL != $audioSampleRate) {
-                    $args .= " -ar:" . $audioTrack . " " . $audioSampleRate;
-                }
-            } else {
-                // specify copy
-                $args .= " -c:a:" . $audioTrack . " copy";
+                $args .= " -metadata:s:a:" . $audioTrack . " language=" . $stream->language;
+                $audioTrack ++;
             }
-            $args .= " -metadata:s:a:" . $audioTrack . " language=" . $stream->language;
-            $audioTrack ++;
+            $fileno ++;
         }
         return $args;
     }
