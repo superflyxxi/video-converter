@@ -139,7 +139,9 @@ class FFmpegHelper
         $outTrack = 0;
         foreach ($listRequests as $tmpRequest) {
             $args = " ";
-            foreach ($generator->getStreams($tmpRequest->oInputFile) as $index => $stream) {
+	    $streamList = $generator->getStreams($tmpRequest->oInputFile);
+	    Logger::debug("Streams: {}", $streamList);
+            foreach ($streamList as $index => $stream) {
                 $args .= " -map " . $fileno . ":" . $index;
                 $args .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $stream);
             }
