@@ -3,8 +3,8 @@ include_once "Request.php";
 include_once "functions.php";
 include_once "OutputFile.php";
 include_once "Logger.php";
-include_once "ffmpeg/FFmpegArgGenerator.php";
-include_once "ffmpeg/FFmpegVideoArgGenerator.php";
+include_once "ffmpeg/generators/FFmpegArgGenerator.php";
+include_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
 
 class FFmpegHelper
 {
