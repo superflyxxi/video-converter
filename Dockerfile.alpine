@@ -29,7 +29,7 @@ RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDS
 
 ENTRYPOINT php /home/ripvideo/script.php
 
-ADD scripts/* /home/ripvideo/scripts/
-ADD php/* /home/ripvideo/
+COPY scripts/ /home/ripvideo/scripts/
+COPY php/ /home/ripvideo/
 RUN chmod -R ugo+r /home/ripvideo
 
