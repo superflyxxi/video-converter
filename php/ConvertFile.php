@@ -5,7 +5,7 @@ include_once "OutputFile.php";
 include_once "functions.php";
 include_once "SubtitleConvert.php";
 include_once "ConvertAudio.php";
-include_once "FFmpegHelper.php";
+include_once "ffmpeg/FFmpegHelper.php";
 
 class ConvertFile
 {
