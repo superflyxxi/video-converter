@@ -17,6 +17,7 @@ before_install:
   - sudo cat /etc/docker/daemon.json
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
+  - echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
   - if [[ "true" == "${USE_DOCKER_CACHE}" && "master" != "${TRAVIS_BRANCH}" && "${TRAVIS_BRANCH}" != v* ]]; then 
         echo "Pulling ${CACHE_FROM_IMAGE}"; 
         docker pull ${CACHE_FROM_IMAGE} || true; 
@@ -30,7 +31,6 @@ script:
   - ./test.sh
 
 after_success:
-  - echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
   - ./push.sh
   - if [[ "${TRAVIS_BRANCH}" == v* ]]; then
         export NEW_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL};
