@@ -27,25 +27,26 @@ class FFmpegHelper
         return $out;
     }
 
-    public static function isInterlaced($inputFile) {
-        $command = 'ffmpeg -i "' . $inputFile .'" -vf idet -frames:v 5000 -f rawvideo -y /dev/null 2>&1';
+    public static function isInterlaced($inputFile)
+    {
+        $command = 'ffmpeg -i "' . $inputFile . '" -vf idet -frames:v 5000 -f rawvideo -y /dev/null 2>&1';
         Logger::info("Checking for interlacing: {}", $command);
-	exec($command, $out, $ret);
- 	Logger::verbose("Output: {}", $out);
-	if ($ret > 0) {
-	    Logger::error("Failed to determine interlacing; returned {}", $ret);
-	    return false;
-	}
-	Logger::info("Output: {}", $out);
-	$out = implode($out);
-	
-	preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
-	$tff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
-	preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
-	$bff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
-	Logger::debug("TFF={}", $tff);
-	Logger::debug("BFF={}", $bff);
-        return ($tff!=0 || $bff!=0);
+        exec($command, $out, $ret);
+        Logger::verbose("Output: {}", $out);
+        if ($ret > 0) {
+            Logger::error("Failed to determine interlacing; returned {}", $ret);
+            return false;
+        }
+        Logger::info("Output: {}", $out);
+        $out = implode($out);
+
+        preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
+        $tff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+        preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
+        $bff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+        Logger::debug("TFF={}", $tff);
+        Logger::debug("BFF={}", $bff);
+        return ($tff != 0 || $bff != 0);
     }
 
     public static function execute($listRequests, $outputFile, $exit = TRUE)
@@ -114,9 +115,9 @@ class FFmpegHelper
                 $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
             } else if ($request->isHwaccel()) {
                 $args .= " -c:v:" . $videoTrack . " hevc_vaapi -qp 20 -level:v 41";
-		if ($request->deinterlace) {
-			$args .= " -vf deinterlace_vaapi=rate=field:auto=1";
-		}
+                if ($request->deinterlace) {
+                    $args .= " -vf deinterlace_vaapi=rate=field:auto=1";
+                }
             } else {
                 $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 41";
             }
@@ -152,6 +153,10 @@ class FFmpegHelper
                 }
                 $args .= " -c:a:" . $audioTrack . " " . $request->audioFormat;
                 $args .= " -q:a:" . $audioTrack . " " . $request->audioQuality;
+                Logger::debug("Requsted sample rate vs input sample rate: NULL vs {}", $stream->audio_sample_rate);
+                if (NULL != $stream->audio_sample_rate) {
+                    $args .= " -ar:" . $audioTrack . " " . $stream->audio_sample_rate;
+                }
             } else {
                 // specify copy
                 $args .= " -c:a:" . $audioTrack . " copy";

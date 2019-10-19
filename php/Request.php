@@ -31,13 +31,13 @@ class Request
         $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
         $req->deinterlace = getEnv("DEINTERLACE");
-	if ($req->deinterlace != NULL) {
-		$req->deinterlace = ($req->deinterlace == "true");
-	} else if ($req->deinterlace == NULL && $req->hwaccel) {
-		$req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
-	} else if ($req->deinterlace == NULL) {
-		$req->deinterlace = FALSE;
-	}
+        if ($req->deinterlace != NULL) {
+            $req->deinterlace = ($req->deinterlace == "true");
+        } else if ($req->deinterlace == NULL && $req->hwaccel && "copy" != $req->videoFormat) {
+            $req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
+        } else if ($req->deinterlace == NULL) {
+            $req->deinterlace = FALSE;
+        }
 
         $req->prepareStreams();
         return $req;
