@@ -79,10 +79,7 @@ class FFmpegHelper
         $subtitleTrack = 0;
 
         // loop through videos, then audio, then subtitles
-        $fileno = 0;
-        foreach ($listRequests as $tmpRequest) {
-            $finalCommand .= " " . self::generateVideoArgs($fileno ++, $tmpRequest, $videoTrack);
-        }
+        $finalCommand .= " " . self::generateVideoArgs();
         $fileno = 0;
         foreach ($listRequests as $tmpRequest) {
             $finalCommand .= " " . self::generateAudioArgs($fileno ++, $tmpRequest, $audioTrack);
@@ -111,25 +108,31 @@ class FFmpegHelper
         return " " . (NULL != $outputFile->title ? '-metadata "title=' . $outputFile->title . '"' : " ") . " " . (NULL != $outputFile->subtitle ? '-metadata "subtitle=' . $outputFile->subtitle . '"' : " ") . " " . (NULL != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") . " " . (NULL != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") . " " . (NULL != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") . " " . getEnvWithDefault("OTHER_METADATA", " ");
     }
 
-    private static function generateVideoArgs($fileno, $request, &$videoTrack)
+    private static function generateVideoArgs()
     {
-        $args = " ";
-        foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
-            $args .= " -map " . $fileno . ":" . $index;
-            if ("copy" == $request->videoFormat) {
-                $args .= " -c:v:" . $videoTrack . " copy";
-            } else if ($request->isHDR()) {
-                $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
-            } else if ($request->isHwaccel()) {
-                $args .= " -c:v:" . $videoTrack . " hevc_vaapi -qp 20 -level:v 41";
-                if ($request->deinterlace) {
-                    $args .= " -vf deinterlace_vaapi=rate=field:auto=1";
+        $fileno = 0;
+        $videoTrack = 0;
+        foreach ($listRequests as $tmpRequest) {
+
+            $args = " ";
+            foreach ($request->oInputFile->getVideoStreams() as $index => $stream) {
+                $args .= " -map " . $fileno . ":" . $index;
+                if ("copy" == $request->videoFormat) {
+                    $args .= " -c:v:" . $videoTrack . " copy";
+                } else if ($request->isHDR()) {
+                    $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
+                } else if ($request->isHwaccel()) {
+                    $args .= " -c:v:" . $videoTrack . " hevc_vaapi -qp 20 -level:v 41";
+                    if ($request->deinterlace) {
+                        $args .= " -vf deinterlace_vaapi=rate=field:auto=1";
+                    }
+                } else {
+                    $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 41";
                 }
-            } else {
-                $args .= " -c:v:" . $videoTrack . " libx265 -crf 20 -level:v 41";
+                $args .= " -metadata:s:v:" . $videoTrack . " language=" . $stream->language;
+                $videoTrack ++;
             }
-            $args .= " -metadata:s:v:" . $videoTrack . " language=" . $stream->language;
-            $videoTrack ++;
+            $fileno ++;
         }
         return $args;
     }
