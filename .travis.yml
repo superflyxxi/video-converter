@@ -15,7 +15,7 @@ before_install:
   - sudo apt-get install -y jq
   - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }"
   - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }" | sudo tee /etc/docker/daemon.json
-  - sudo service docker restart || systemctl status docker.service
+  - sudo service docker restart || journalctl -xe || systemctl status docker.service
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
   - if [[ "true" == "${USE_DOCKER_CACHE}" && "master" != "${TRAVIS_BRANCH}" && "${TRAVIS_BRANCH}" != v* ]]; then 
         echo "Pulling ${CACHE_FROM_IMAGE}"; 
