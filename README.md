@@ -27,6 +27,7 @@ Variable | Description | Required | Default | Example
 `AUDIO_TRACKS` | The input audio tracks to convert. | No | `*` | `1`
 `AUDIO_FORMAT` | The desired output audio format. | No | `aac` | `eac3`
 `AUDIO_QUALITY` | The desired output audio quality based on the `AUDIO_FORMAT`. | No | `2` | `560`
+`AUDIO_SAMPLE_RATE` | The desired output audio sample rate. If not provided, input sample rate will be used. | No | | `48000`
 `AUDIO_CHANNEL_LAYOUT` | The desired output audio channel layout. | No | ` ` | `7.1`
 `AUDIO_CHANNEL_LAYOUT_TRACKS` | The space-separated list of input audio tracks that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | `*` | `1`
 `NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`

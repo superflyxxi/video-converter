@@ -17,13 +17,14 @@ class Request
         $req = new Request($filename);
 
         $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
-        $req->playlist = getEnv("PLAYLIST");
+        $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
         $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
         $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACK", "*"));
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
         $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
+        $req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", NULL);
         $req->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
@@ -31,7 +32,7 @@ class Request
         $req->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
         $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
-        $req->deinterlace = getEnv("DEINTERLACE");
+        $req->deinterlace = getEnvWithDefault("DEINTERLACE", NULL);
         if ($req->deinterlace != NULL) {
             $req->deinterlace = ($req->deinterlace == "true");
         } else if ($req->deinterlace == NULL && $req->hwaccel && "copy" != $req->videoFormat) {
@@ -163,6 +164,8 @@ class Request
     public $audioChannelLayout = NULL;
 
     private $audioChannelLayoutTracks = array();
+
+    public $audioSampleRate = NULL;
 
     public $normalizeAudioTracks = NULL;
 
