@@ -16,12 +16,11 @@ class Request
     {
         $req = new Request($filename);
 
-        $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
         $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
         $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
-        $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACK", "*"));
+        $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
         $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
         $req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", NULL);
@@ -29,7 +28,7 @@ class Request
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
-        $req->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
+        $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
         $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
         $req->deinterlace = getEnvWithDefault("DEINTERLACE", NULL);
