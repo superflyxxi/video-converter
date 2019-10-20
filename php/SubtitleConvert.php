@@ -43,8 +43,9 @@ class SubtitleConvert
                     }
 
                     if (! file_exists($dvdFile . '.sub')) {
+                        Logger::info("Converting pgs to dvd subtitle.");
                         $command = 'java -jar /home/ripvideo/BDSup2Sub.jar -o "' . $dvdFile . '.sub" "' . $pgsFile->getFileName() . '"';
-                        Logger::info("Convert pgs to dvd command: {}", $command);
+                        Logger::debug("Command: {}", $command);
                         exec($command, $out, $return);
                         if ($return != 0) {
                             Logger::warn("sub convertion failed: {}. Continuing with next subtitle.", $return);
@@ -69,7 +70,7 @@ class SubtitleConvert
                         }
                     }
                 } else if ("subrip" == $codecName) {
-                    Logger::info("Adding subrip to request for track {}", $index);
+                    Logger::info("Adding subrip to request for track {} of file {}", $index, $oRequest->oInputFile->getFileName());
                     $oNewRequest = new Request($oRequest->oInputFile->getFileName());
                     $oNewRequest->setSubtitleTracks($index);
                     $oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
@@ -83,8 +84,9 @@ class SubtitleConvert
                 // convert to srt
                 if (NULL != $dvdFile) {
                     if (! file_exists($dvdFile . ".srt")) {
+                        Logger::info("Convert DVD sub to SRT.");
                         $command = 'vobsub2srt "' . $dvdFile . '"';
-                        Logger::info("Convert DVD sub using command: {}", $command);
+                        Logger::debug("Command: {}", $command);
                         exec($command, $out, $return);
                         if ($return != 0) {
                             Logger::warn("vobsub to srt conversion failed: {}. Continuing with next stream.", $return);

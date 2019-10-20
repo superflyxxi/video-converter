@@ -22,6 +22,7 @@ class FFmpegHelper
                 Logger::error("Failed to execute ffprobe; returned {}", $ret);
                 exit($ret);
             }
+            Logger::verbose("Adding to cache {}={}", $inputFile->getFileName(), $out);
             self::$probeCache[$inputFile->getFileName()] = $out;
         } else {
             Logger::debug("Found {} in cache", $inputFile->getFileName());
@@ -32,23 +33,22 @@ class FFmpegHelper
 
     public static function isInterlaced($inputFile)
     {
+        Logger::info("Checking for interlacing: {}", $inputFile);
         $command = 'ffmpeg -i "' . $inputFile . '" -vf idet -frames:v 5000 -f rawvideo -y /dev/null 2>&1';
-        Logger::info("Checking for interlacing: {}", $command);
+        Logger::debug("Command: {}", $command);
         exec($command, $out, $ret);
         Logger::verbose("Output: {}", $out);
         if ($ret > 0) {
             Logger::error("Failed to determine interlacing; returned {}", $ret);
             return false;
         }
-        Logger::info("Output: {}", $out);
         $out = implode($out);
 
         preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
         $tff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
         preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
         $bff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
-        Logger::debug("TFF={}", $tff);
-        Logger::debug("BFF={}", $bff);
+        Logger::debug("TFF={}; BFF={}", $tff, $bff);
         return ($tff != 0 || $bff != 0);
     }
 
@@ -77,9 +77,9 @@ class FFmpegHelper
             $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
         }
 
-	Logger::info("Generating video args");
+        Logger::info("Generating video args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegVideoArgGenerator());
-	Logger::info("Generating audio args");
+        Logger::info("Generating audio args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegAudioArgGenerator());
         // $finalCommand .= " " . self::generateVideoArgs($listRequests);
         // $finalCommand .= " " . self::generateAudioArgs($listRequests);
@@ -139,8 +139,8 @@ class FFmpegHelper
         $outTrack = 0;
         $args = " ";
         foreach ($listRequests as $tmpRequest) {
-	    $streamList = $generator->getStreams($tmpRequest->oInputFile);
-	    Logger::verbose("File {}, Streams: {}", $tmpRequest->oInputFile->getFileName(), $streamList);
+            $streamList = $generator->getStreams($tmpRequest->oInputFile);
+            Logger::verbose("File {}, Streams: {}", $tmpRequest->oInputFile->getFileName(), $streamList);
             foreach ($streamList as $index => $stream) {
                 $args .= " -map " . $fileno . ":" . $index;
                 $args .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $index, $stream);
