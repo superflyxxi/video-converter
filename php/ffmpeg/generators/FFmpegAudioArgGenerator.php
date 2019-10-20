@@ -18,9 +18,13 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 if (NULL != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
                     $channels = $matches[1] + $matches[2];
                 }
-            } else {
+            }
+            if (! isset($channelLayout)) {
                 Logger::debug("Using channel layout from original stream");
                 $channelLayout = $stream->channel_layout;
+            }
+            if (! isset($channels)) {
+                Logger::debug("Using channels from original stream");
                 $channels = $stream->channels;
             }
             Logger::debug("Audio {} has channelLayout={} and channels={}", $outTrack, $channelLayout, $channels);
