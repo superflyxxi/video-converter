@@ -17,28 +17,29 @@ class Request
         $req = new Request($filename);
 
         $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
-        $req->playlist = getEnv("PLAYLIST");
+        $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
         $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
         $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACK", "*"));
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
         $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
+        $req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", NULL);
         $req->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
-        $req->deinterlace = getEnv("DEINTERLACE");
-	if ($req->deinterlace != NULL) {
-		$req->deinterlace = ($req->deinterlace == "true");
-	} else if ($req->deinterlace == NULL && $req->hwaccel) {
-		$req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
-	} else if ($req->deinterlace == NULL) {
-		$req->deinterlace = FALSE;
-	}
-
         $req->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
         $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
+
+        $req->deinterlace = getEnvWithDefault("DEINTERLACE", NULL);
+        if ($req->deinterlace != NULL) {
+            $req->deinterlace = ($req->deinterlace == "true");
+        } else if ($req->deinterlace == NULL && $req->hwaccel && "copy" != $req->videoFormat) {
+            $req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
+        } else if ($req->deinterlace == NULL) {
+            $req->deinterlace = FALSE;
+        }
 
         $req->prepareStreams();
         return $req;
@@ -107,6 +108,7 @@ class Request
     public function prepareStreams()
     {
         if (! $this->areAllSubtitleTracksConsidered()) {
+	    Logger::debug("Not considering all subtitle streams");
             // if not * (all subtitles), then remove all track except the desired
             foreach ($this->oInputFile->getSubtitleStreams() as $track) {
                 if (! in_array($track->index, $this->getSubtitleTracks())) {
@@ -115,6 +117,7 @@ class Request
             }
         }
         if (! $this->areAllAudioTracksConsidered()) {
+	    Logger::debug("Not considering all audio streams");
             // if not * (all audio), then remove all track except the desired
             foreach ($this->oInputFile->getAudioStreams() as $track) {
                 if (! in_array($track->index, $this->getAudioTracks())) {
@@ -123,6 +126,7 @@ class Request
             }
         }
         if (! $this->areAllVideoTracksConsidered()) {
+	    Logger::debug("Not considering all video streams");
             // if not * (all videos), then remove all track except the desired
             foreach ($this->oInputFile->getVideoStreams() as $track) {
                 if (! in_array($track->index, $this->getVideoTracks())) {
@@ -163,6 +167,8 @@ class Request
     public $audioChannelLayout = NULL;
 
     private $audioChannelLayoutTracks = array();
+
+    public $audioSampleRate = NULL;
 
     public $normalizeAudioTracks = NULL;
 

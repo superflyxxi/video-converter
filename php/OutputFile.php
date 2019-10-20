@@ -6,7 +6,7 @@ class OutputFile
 
     public function __construct($postfix = NULL, $out = NULL, $dir = NULL)
     {
-        $this->postfix = $postfix == NULL ? "ffmpeg" : $postfix;
+        $this->postfix = $postfix;
         $this->envOutput = $out == NULL ? getEnv("OUTPUT") : $out;
         $this->outputDir = $dir == NULL ? getEnvWithDefault("OUTPUT_DIR", "/data") : $dir;
     }
@@ -37,13 +37,17 @@ class OutputFile
         $out = $this->outputDir . "/" . $this->title;
         if (NULL != $this->year) {
             $out .= " (" . $this->year . ")";
-        } else if (NULL != $this->season) {
+        }
+        if (NULL != $this->season) {
             $out .= " - s" . $this->season . "e" . $this->episode;
         }
         if (NULL != $this->subtitle) {
             $out .= " - " . $this->subtitle;
         }
-        $out .= "." . $this->postfix . ".mkv";
+        if (NULL != $this->postfix) {
+            $out .= "." . $this->postfix;
+        }
+        $out .= ".mkv";
         return $out;
     }
 }

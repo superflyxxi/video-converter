@@ -1,7 +1,6 @@
 <?php
 $user = getEnv("UID");
-#$image = getEnv("THIS_REGISTRY") . '/' . getEnv("THIS_REPO") . '/' . getEnv("THIS_IMAGE") . ':' . getEnv("THIS_LABEL");
-$image = 'rip-video:build-' . getEnv("THIS_LABEL");
+$image = getEnv("THIS_FULL_IMAGE");
 
 printf("TEST: %s\n", debug_backtrace()[0]['file']);
 
@@ -15,6 +14,7 @@ function test($message, $expected, $actual, $extraLogs = "")
         printf("'\n");
         print_r($extraLogs);
         printf("\n\n");
+        flush();
         exit(1);
     }
     printf("PASS: %s. Got expected='", $message);

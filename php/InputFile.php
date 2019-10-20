@@ -1,7 +1,7 @@
 <?php
 include_once "Stream.php";
 include_once "Logger.php";
-include_once "FFmpegHelper.php";
+include_once "ffmpeg/FFmpegHelper.php";
 
 class InputFile
 {
