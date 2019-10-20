@@ -1,15 +1,15 @@
 <?php
 include_once "common.php";
 
-getFile("test_bluray.iso", "http://superflyxxi.dlinkddns.com/samples/MARVEL_Trailers_BLURAY.ISO");
+getFile("test_bluray.mkv", "http://superflyxxi.dlinkddns.com/samples/MARVEL_Trailers_BLURAY.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=test_bluray.iso -e TITLE="Test Bluray Default" -e YEAR=2019 ' . $image;
+$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=test_bluray.mkv -e TITLE="Test Bluray Default MKV" -e YEAR=2019 -e APPLY_POSTFIX=false ' . $image;
 printf("executing: %s\n", $command);
 passthru($command, $return);
 
 test("ffmpeg code", 0, $return);
 
-$probe = probe("/data/Test Normalize Track 1 (2019).test.mpg.mkv");
+$probe = probe("/data/Test Bluray Default MKV (2019).mkv");
 $probe = json_decode($probe, true);
 
 test("Stream 0", "video", $probe["streams"][0]["codec_type"]);
