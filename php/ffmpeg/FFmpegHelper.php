@@ -6,6 +6,7 @@ include_once "Logger.php";
 include_once "ffmpeg/generators/FFmpegArgGenerator.php";
 include_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
 include_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
+include_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
 
 class FFmpegHelper
 {
@@ -81,7 +82,8 @@ class FFmpegHelper
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegVideoArgGenerator());
         Logger::info("Generating audio args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegAudioArgGenerator());
-        $finalCommand .= " " . self::generateSubtitleArgs($listRequests);
+        Logger::info("Generating subtitle args");
+        $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegSubtitleArgGenerator());
 
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
         if ($outputFile->format != NULL) {
@@ -113,22 +115,6 @@ class FFmpegHelper
             foreach ($streamList as $index => $stream) {
                 $args .= " -map " . $fileno . ":" . $index;
                 $args .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $index, $stream);
-            }
-            $fileno ++;
-        }
-        return $args;
-    }
-
-    private static function generateSubtitleArgs($listRequests)
-    {
-        $args = " ";
-        $fileno = 0;
-        $subtitleTrack = 0;
-        foreach ($listRequests as $request) {
-            foreach ($request->oInputFile->getSubtitleStreams() as $index => $stream) {
-                $args .= " -map " . $fileno . ":" . $index . " -c:s:" . $subtitleTrack . " " . $request->subtitleFormat;
-                $args .= " -metadata:s:s:" . $subtitleTrack . " language=" . $stream->language;
-                $subtitleTrack ++;
             }
             $fileno ++;
         }
