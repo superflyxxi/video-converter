@@ -3,7 +3,7 @@ include_once "Logger.php";
 include_once "Request.php";
 include_once "OutputFile.php";
 include_once "functions.php";
-include_once "SubtitleConvert.php";
+include_once "ConvertSubtitle.php";
 include_once "ConvertAudio.php";
 include_once "ffmpeg/FFmpegHelper.php";
 
@@ -47,7 +47,7 @@ class ConvertFile
         Logger::verbose("Request information {}", $oRequest);
         $allRequests[] = $oRequest;
         $allRequests = array_merge($allRequests, ConvertAudio::convert($oRequest));
-        $allRequests = array_merge($allRequests, SubtitleConvert::convert($oRequest));
+        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($oRequest));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput);
         Logger::info("Completed conversion with {} as a return value.", $returnValue);

@@ -6,7 +6,7 @@ include_once "Logger.php";
 include_once "ffmpeg/FFmpegHelper.php";
 include_once "MKVExtractHelper.php";
 
-class SubtitleConvert
+class ConvertSubtitle
 {
 
     public static function convert($oRequest)
