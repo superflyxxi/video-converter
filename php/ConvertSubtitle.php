@@ -36,7 +36,7 @@ class ConvertSubtitle
                         Logger::info("Generating PGS sup file for index {} of file '{}'.", $index, $filename);
                         if (FFmpegHelper::execute(array(
                             $pgsRequest
-                        ), $pgsFile) > 0) {
+                        ), $pgsFile, FALSE) > 0) {
                             Logger::warn("Conversion failed... Skipping this stream.");
                             continue;
                         }
