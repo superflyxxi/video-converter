@@ -14,7 +14,8 @@ before_install:
   - export FROM_IMAGE=${FFMPEG_DOCKER_IMAGE}:${FFMPEG_DOCKER_LABEL}
   - sudo apt-get install -y jq
   - sudo cat /etc/docker/daemon.json
-  - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }" | sudo tee /etc/docker/daemon.json
+#  - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }" | sudo tee /etc/docker/daemon.json
+  - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }" > /etc/docker/daemon.json
   - sudo cat /etc/docker/daemon.json
   - sudo service docker restart
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
