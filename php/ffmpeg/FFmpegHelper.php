@@ -23,7 +23,7 @@ class FFmpegHelper
                 Logger::error("Failed to execute ffprobe; returned {}", $ret);
                 exit($ret);
             }
-            Logger::verbose("Adding to cache {}={}", $inputFile->getFileName(), $out);
+            Logger::verbose("Adding to cache {}", $inputFile->getFileName());
             self::$probeCache[$inputFile->getFileName()] = $out;
         } else {
             Logger::debug("Found {} in cache", $inputFile->getFileName());
