@@ -27,13 +27,13 @@ class ConvertSubtitle
                     }
                     $pgsFile = new OutputFile(NULL, $dvdFile . '.sup');
                     if (! file_exists($pgsFile->getFileName())) {
+                        Logger::info("Generating PGS sup file for index {} of file '{}'.", $index, $filename);
                         $pgsRequest = new Request($filename);
                         $pgsRequest->setSubtitleTracks($index);
                         $pgsRequest->setAudioTracks(NULL);
                         $pgsRequest->setVideoTracks(NULL);
                         $pgsRequest->subtitleFormat = "copy";
                         $pgsRequest->prepareStreams();
-                        Logger::info("Generating PGS sup file for index {} of file '{}'.", $index, $filename);
                         if (FFmpegHelper::execute(array(
                             $pgsRequest
                         ), $pgsFile, FALSE) > 0) {
