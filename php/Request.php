@@ -112,6 +112,8 @@ class Request
             foreach ($this->oInputFile->getSubtitleStreams() as $track) {
                 if (! in_array($track->index, $this->getSubtitleTracks())) {
                     $this->oInputFile->removeSubtitleStream($track->index);
+                } else {
+                    Logger::debug("Added {} for subtitle consideration.", $track->index);
                 }
             }
         }
