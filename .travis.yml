@@ -18,7 +18,7 @@ before_install:
   - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }"
   - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }" > /tmp/docker.json
   - cat /tmp/docker.json
-  - sudo cp /tmp/docker.json /etc/docker/daemon.json
+  - sudo cp -v /tmp/docker.json /etc/docker/daemon.json
 #  - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }" | sudo tee /etc/docker/daemon.json
   - sudo cat /etc/docker/daemon.json
   - sudo service docker start
