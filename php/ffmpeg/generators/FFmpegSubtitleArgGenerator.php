@@ -16,7 +16,7 @@ class FFmpegSubtitleArgGenerator implements FFmpegArgGenerator
 
     public function getStreams(InputFile $inputFile)
     {
-        return $inputFile->getVideoStreams();
+        return $inputFile->getSubtitleStreams();
     }
 }
 ?>
