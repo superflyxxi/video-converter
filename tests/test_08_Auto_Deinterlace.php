@@ -3,7 +3,7 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://superflyxxi.dlinkddns.com/samples/DVD_Sample.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e AUDIO_TRACKS="" -e SUBTITLE_TRACKS="" -e TITLE="Test Auto Deinterlace" -e YEAR=2019 ' . $image;
+$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e AUDIO_TRACKS=" " -e SUBTITLE_TRACKS=" " -e TITLE="Test Auto Deinterlace" -e YEAR=2019 ' . $image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 
