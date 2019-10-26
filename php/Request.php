@@ -119,9 +119,13 @@ class Request
             Logger::debug("Not considering all audio streams");
             // if not * (all audio), then remove all track except the desired
             foreach ($this->oInputFile->getAudioStreams() as $track) {
+		Logger::debug("Checking if {} exists in input audio streams.", $track);
                 if (! in_array($track->index, $this->getAudioTracks())) {
+		    Logger::debug("No. It doesn't exist.");
                     $this->oInputFile->removeAudioStream($track->index);
-                }
+                } else {
+		    Logger::debug("Yes. It exists.");
+		}
             }
         }
         if (! $this->areAllVideoTracksConsidered()) {
