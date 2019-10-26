@@ -16,7 +16,7 @@ print_r($probe);
 
 test("Stream 0", "video", $probe["streams"][0]["codec_type"], $output);
 test("Stream 0 codec", "hevc", $probe["streams"][0]["codec_name"], $output);
-test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"], $output);
+test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"]), $output);
 test("Metadata Title", "Test Normalize Track 1", $probe["format"]["tags"]["title"], $output);
 test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"], $output);
 test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]), $output);
