@@ -13,7 +13,7 @@ $probe = probe("/data/Test Convert Bluray Subtitle (2019).mkv");
 $probe = json_decode($probe, true);
 
 test("Stream 0", "subtitle", $probe["streams"][3]["codec_type"], $output);
-test("Stream 0 codec", "srt", $probe["streams"][3]["codec_name"], $output);
+test("Stream 0 codec", "ass", $probe["streams"][3]["codec_name"], $output);
 test("Metadata Title", "Test Convert Bluray Subtitle", $probe["format"]["tags"]["title"], $output);
 test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"], $output);
 test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]), $output);
