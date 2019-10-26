@@ -1,9 +1,9 @@
 <?php
 include_once "common.php";
 
-getFile("movie.mkv", "https://superflyxxi.dlinkddns.com/samples/Movie_Sample.mkv");
+getFile("bluray.mkv", "https://superflyxxi.dlinkddns.com/samples/Bluray_Sample.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e APPLY_POSTFIX=false -e INPUT=movie.mkv -e TITLE="Test Convert Movie" -e YEAR=2019 ' . $image;
+$command = 'docker run -t -v ' . getEnv("TMP_DIR") . ':/data -e APPLY_POSTFIX=false -e INPUT=bluray.mkv -e TITLE="Test Convert Movie" -e YEAR=2019 ' . $image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 

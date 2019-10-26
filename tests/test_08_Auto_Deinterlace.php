@@ -1,15 +1,15 @@
 <?php
 include_once "common.php";
 
-getFile("movie.mkv", "https://superflyxxi.dlinkddns.com/samples/Movie_Sample.mkv");
+getFile("dvd.mkv", "https://superflyxxi.dlinkddns.com/samples/DVD_Sample.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=movie.mkv -e TITLE="Test Auto Deinterlace" -e YEAR=2019 ' . $image;
+$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e TITLE="Test Auto Deinterlace" -e YEAR=2019 ' . $image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 
 test("ffmpeg code", 0, $return, $output);
 
-$probe = probe("/data/Test Auto Deinterlace (2019).movie.mkv.mkv");
+$probe = probe("/data/Test Auto Deinterlace (2019).dvd.mkv.mkv");
 $probe = json_decode($probe, true);
 
 test("Stream 0", "video", $probe["streams"][0]["codec_type"], $output);
