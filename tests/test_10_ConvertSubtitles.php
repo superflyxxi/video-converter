@@ -13,7 +13,7 @@ $probe = probe("/data/Test Convert Subtitle (2019).mkv");
 $probe = json_decode($probe, true);
 
 test("Stream 3", "subtitle", $probe["streams"][3]["codec_type"], $output);
-test("Stream 3 codec", "ass", $probe["streams"][3]["codec_name"], $output);
+test("Stream 3 codec", "srt", $probe["streams"][3]["codec_name"], $output);
 test("Stream 0", "video", $probe["streams"][0]["codec_type"], $output);
 test("Stream 0 codec", "mpeg2video", $probe["streams"][0]["codec_name"], $output);
 test("Stream 1", "audio", $probe["streams"][1]["codec_type"], $output);
