@@ -27,7 +27,7 @@ test("Stream 1 channel_layout", "5.1(side)", $probe["streams"][1]["channel_layou
 test("Stream 1 channels", 6, $probe["streams"][1]["channels"], $testOutput);
 test("Stream 2", "subtitle", $probe["streams"][2]["codec_type"], $testOutput);
 test("Stream 2 codec", "dvd_subtitle", $probe["streams"][2]["codec_name"], $testOutput);
-test("Stream 3", FALSE, array_key_exists(3, $probe["streams"]), $testOutput);
+test("Stream 3 doesn't exist", FALSE, array_key_exists(3, $probe["streams"]), $testOutput);
 test("Metadata Title", "Test No Input", $probe["format"]["tags"]["title"], $testOutput);
 test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"], $testOutput);
 test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]), $testOutput);
