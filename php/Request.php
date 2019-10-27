@@ -112,7 +112,10 @@ class Request
             // if not * (all subtitles), then remove all track except the desired
             foreach ($this->oInputFile->getSubtitleStreams() as $track) {
                 if (! in_array($track->index, $this->getSubtitleTracks())) {
+                    Logger::debug("Removing subtitle track {} from input.", $track->index);
                     $this->oInputFile->removeSubtitleStream($track->index);
+                } else {
+                    Logger::debug("Keeping subtitle track {} in input.", $track->index);
                 }
             }
         }
@@ -121,7 +124,10 @@ class Request
             // if not * (all audio), then remove all track except the desired
             foreach ($this->oInputFile->getAudioStreams() as $track) {
                 if (! in_array($track->index, $this->getAudioTracks())) {
+                    Logger::debug("Removing audio track {} from input.", $track->index);
                     $this->oInputFile->removeAudioStream($track->index);
+                } else {
+                    Logger::debug("Keeping audio track {} in input.", $track->index);
                 }
             }
         }
@@ -130,7 +136,10 @@ class Request
             // if not * (all videos), then remove all track except the desired
             foreach ($this->oInputFile->getVideoStreams() as $track) {
                 if (! in_array($track->index, $this->getVideoTracks())) {
+                    Logger::debug("Removing video track {} from input.", $track->index);
                     $this->oInputFile->removeVideoStream($track->index);
+                } else {
+                    Logger::debug("Keeping video track {} in input.", $track->index);
                 }
             }
         }
