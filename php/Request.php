@@ -106,8 +106,9 @@ class Request
 
     public function prepareStreams()
     {
+        Logger::debug("Preparing streams for {}.", $this->oInputFile->getFileName());
         if (! $this->areAllSubtitleTracksConsidered()) {
-            Logger::debug("Not considering all subtitle streams");
+            Logger::debug("Not considering all subtitle streams. Requesting {}", $this->getSubtitleTracks());
             // if not * (all subtitles), then remove all track except the desired
             foreach ($this->oInputFile->getSubtitleStreams() as $track) {
                 if (! in_array($track->index, $this->getSubtitleTracks())) {
@@ -116,16 +117,16 @@ class Request
             }
         }
         if (! $this->areAllAudioTracksConsidered()) {
-            Logger::debug("Not considering all audio streams. Requested {}", $this->getAudioTracks());
+            Logger::debug("Not considering all audio streams. Requesting {}", $this->getAudioTracks());
             // if not * (all audio), then remove all track except the desired
             foreach ($this->oInputFile->getAudioStreams() as $track) {
                 if (! in_array($track->index, $this->getAudioTracks())) {
                     $this->oInputFile->removeAudioStream($track->index);
-		}
+                }
             }
         }
         if (! $this->areAllVideoTracksConsidered()) {
-            Logger::debug("Not considering all video streams");
+            Logger::debug("Not considering all video streams. Requesting {}", $this->getVideoTracks());
             // if not * (all videos), then remove all track except the desired
             foreach ($this->oInputFile->getVideoStreams() as $track) {
                 if (! in_array($track->index, $this->getVideoTracks())) {
