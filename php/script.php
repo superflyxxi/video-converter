@@ -11,6 +11,8 @@ function error_handler(int $errno, string $errstr, string $errfile = NULL, int $
     print_r($errline);
     print_r("\n");
     print_r($errcontext);
+    ob_flush();
+    flush();
     exit($errno);
 }
 set_error_handler('error_handler');

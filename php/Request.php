@@ -34,9 +34,9 @@ class Request
         $req->deinterlace = getEnvWithDefault("DEINTERLACE", NULL);
         if ($req->deinterlace != NULL) {
             $req->deinterlace = ($req->deinterlace == "true");
-        } else if ($req->deinterlace == NULL && $req->hwaccel && "copy" != $req->videoFormat) {
+        } else if ($req->hwaccel && "copy" != $req->videoFormat) {
             $req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
-        } else if ($req->deinterlace == NULL) {
+        } else {
             $req->deinterlace = FALSE;
         }
 
@@ -106,30 +106,40 @@ class Request
 
     public function prepareStreams()
     {
+        Logger::debug("Preparing streams for {}.", $this->oInputFile->getFileName());
         if (! $this->areAllSubtitleTracksConsidered()) {
-	    Logger::debug("Not considering all subtitle streams");
+            Logger::debug("Not considering all subtitle streams. Requesting {}", $this->getSubtitleTracks());
             // if not * (all subtitles), then remove all track except the desired
             foreach ($this->oInputFile->getSubtitleStreams() as $track) {
                 if (! in_array($track->index, $this->getSubtitleTracks())) {
+                    Logger::debug("Removing subtitle track {} from input.", $track->index);
                     $this->oInputFile->removeSubtitleStream($track->index);
+                } else {
+                    Logger::debug("Keeping subtitle track {} in input.", $track->index);
                 }
             }
         }
         if (! $this->areAllAudioTracksConsidered()) {
-	    Logger::debug("Not considering all audio streams");
+            Logger::debug("Not considering all audio streams. Requesting {}", $this->getAudioTracks());
             // if not * (all audio), then remove all track except the desired
             foreach ($this->oInputFile->getAudioStreams() as $track) {
                 if (! in_array($track->index, $this->getAudioTracks())) {
+                    Logger::debug("Removing audio track {} from input.", $track->index);
                     $this->oInputFile->removeAudioStream($track->index);
+                } else {
+                    Logger::debug("Keeping audio track {} in input.", $track->index);
                 }
             }
         }
         if (! $this->areAllVideoTracksConsidered()) {
-	    Logger::debug("Not considering all video streams");
+            Logger::debug("Not considering all video streams. Requesting {}", $this->getVideoTracks());
             // if not * (all videos), then remove all track except the desired
             foreach ($this->oInputFile->getVideoStreams() as $track) {
                 if (! in_array($track->index, $this->getVideoTracks())) {
+                    Logger::debug("Removing video track {} from input.", $track->index);
                     $this->oInputFile->removeVideoStream($track->index);
+                } else {
+                    Logger::debug("Keeping video track {} in input.", $track->index);
                 }
             }
         }

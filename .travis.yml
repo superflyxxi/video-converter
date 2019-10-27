@@ -13,10 +13,10 @@ before_install:
   - export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL}-master
   - export FROM_IMAGE=${FFMPEG_DOCKER_IMAGE}:${FFMPEG_DOCKER_LABEL}
   - sudo apt-get install -y jq
-  - sudo cat /etc/docker/daemon.json
-  - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }" | sudo tee /etc/docker/daemon.json
-  - sudo cat /etc/docker/daemon.json
-  - sudo service docker restart
+  - sudo service docker stop
+  - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }" > /tmp/docker.json
+  - sudo cp -v /tmp/docker.json /etc/docker/daemon.json
+  - sudo service docker start
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
   - echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
   - if [[ "true" == "${USE_DOCKER_CACHE}" && "master" != "${TRAVIS_BRANCH}" && "${TRAVIS_BRANCH}" != v* ]]; then 
