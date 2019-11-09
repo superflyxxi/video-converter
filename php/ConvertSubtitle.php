@@ -85,7 +85,11 @@ class ConvertSubtitle
                 if (NULL != $dvdFile) {
                     if (! file_exists($dvdFile . ".srt")) {
                         Logger::info("Convert DVD sub to SRT.");
-                        $command = 'vobsub2srt "' . $dvdFile . '"';
+                        $command = 'vobsub2srt ';
+                        if (isset($subtitle->language)) {
+                            $command .= ' --tesseract-lang=' . $subtitle->language . ' ';
+                        }
+                        $command .= ' "' . $dvdFile . '" ';
                         Logger::debug("Command: {}", $command);
                         exec($command, $out, $return);
                         if ($return != 0) {
