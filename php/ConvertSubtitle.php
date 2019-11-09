@@ -87,7 +87,7 @@ class ConvertSubtitle
                         Logger::info("Convert DVD sub to SRT.");
                         $command = 'vobsub2srt ';
                         if (isset($subtitle->language)) {
-                            $command .= ' --tesseract-lang=' . $subtitle->language . ' ';
+                            $command .= ' --tesseract-lang ' . $subtitle->language . ' ';
                         }
                         $command .= ' "' . $dvdFile . '" ';
                         Logger::debug("Command: {}", $command);
