@@ -3,10 +3,19 @@ include_once "ConvertFile.php";
 
 function error_handler(int $errno, string $errstr, string $errfile = NULL, int $errline = 0, array $errcontext = NULL)
 {
-    print_r("Error encountered!");
-    exit(1);
+    print_r("Error encountered! ");
+    print_r($errstr);
+    print_r(" at file ");
+    print_r($errfile);
+    print_r(":");
+    print_r($errline);
+    print_r("\n");
+    print_r($errcontext);
+    ob_flush();
+    flush();
+    exit($errno);
 }
-set_error_handler('errro_handler');
+set_error_handler('error_handler');
 
 if (NULL == getEnv("TITLE")) {
     Logger::error("TITLE env variable missing");

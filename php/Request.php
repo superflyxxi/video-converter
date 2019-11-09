@@ -16,12 +16,11 @@ class Request
     {
         $req = new Request($filename);
 
-        $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
         $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
         $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
 
-        $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACK", "*"));
+        $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
         $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
         $req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", NULL);
@@ -29,15 +28,15 @@ class Request
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
-        $req->videoTrack = getEnvWithDefault("VIDEO_TRACK", "v");
+        $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
         $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
 
         $req->deinterlace = getEnvWithDefault("DEINTERLACE", NULL);
         if ($req->deinterlace != NULL) {
             $req->deinterlace = ($req->deinterlace == "true");
-        } else if ($req->deinterlace == NULL && $req->hwaccel && "copy" != $req->videoFormat) {
+        } else if ($req->hwaccel && "copy" != $req->videoFormat) {
             $req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
-        } else if ($req->deinterlace == NULL) {
+        } else {
             $req->deinterlace = FALSE;
         }
 
@@ -107,30 +106,40 @@ class Request
 
     public function prepareStreams()
     {
+        Logger::debug("Preparing streams for {}.", $this->oInputFile->getFileName());
         if (! $this->areAllSubtitleTracksConsidered()) {
-	    Logger::debug("Not considering all subtitle streams");
+            Logger::debug("Not considering all subtitle streams. Requesting {}", $this->getSubtitleTracks());
             // if not * (all subtitles), then remove all track except the desired
             foreach ($this->oInputFile->getSubtitleStreams() as $track) {
                 if (! in_array($track->index, $this->getSubtitleTracks())) {
+                    Logger::debug("Removing subtitle track {} from input.", $track->index);
                     $this->oInputFile->removeSubtitleStream($track->index);
+                } else {
+                    Logger::debug("Keeping subtitle track {} in input.", $track->index);
                 }
             }
         }
         if (! $this->areAllAudioTracksConsidered()) {
-	    Logger::debug("Not considering all audio streams");
+            Logger::debug("Not considering all audio streams. Requesting {}", $this->getAudioTracks());
             // if not * (all audio), then remove all track except the desired
             foreach ($this->oInputFile->getAudioStreams() as $track) {
                 if (! in_array($track->index, $this->getAudioTracks())) {
+                    Logger::debug("Removing audio track {} from input.", $track->index);
                     $this->oInputFile->removeAudioStream($track->index);
+                } else {
+                    Logger::debug("Keeping audio track {} in input.", $track->index);
                 }
             }
         }
         if (! $this->areAllVideoTracksConsidered()) {
-	    Logger::debug("Not considering all video streams");
+            Logger::debug("Not considering all video streams. Requesting {}", $this->getVideoTracks());
             // if not * (all videos), then remove all track except the desired
             foreach ($this->oInputFile->getVideoStreams() as $track) {
                 if (! in_array($track->index, $this->getVideoTracks())) {
+                    Logger::debug("Removing video track {} from input.", $track->index);
                     $this->oInputFile->removeVideoStream($track->index);
+                } else {
+                    Logger::debug("Keeping video track {} in input.", $track->index);
                 }
             }
         }

@@ -30,6 +30,7 @@ class ConvertAudio
                 } else {
                     $convOutFile = new OutputFile(NULL, $dir . $oRequest->oInputFile->getFileName() . '-' . $index . '-conv.mkv');
                 }
+                Logger::info("Converting audio track {}:{}", $oRequest->oInputFile->getFileName(), $index);
                 FFmpegHelper::execute(array(
                     $tmpRequest
                 ), $convOutFile);
@@ -55,7 +56,7 @@ class ConvertAudio
         // if the track is to be normalized, now let's normalize it and put it in
         Logger::info("Normalizing track {}:{}", $oRequest->oInputFile->getFileName(), $index);
         $command = 'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
-        Logger::info("Measuring {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
+        Logger::debug("Measuring {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
         exec($command, $out, $return);
         Logger::verbose($out);
         if ($return != 0) {
@@ -91,7 +92,7 @@ class ConvertAudio
         $command .= ' -metadata:s:a:0 "title=Normalized ' . $stream->language . ' ' . $normChannelMap . '"';
         $command .= ' -f matroska "' . $normFile . '" 2>&1';
 
-        Logger::info("Normalizing {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
+        Logger::debug("Normalizing {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
         passthru($command, $return);
         if ($return != 0) {
             Logger::error("Normalizing failed: {}", $return);

@@ -15,7 +15,7 @@ from blurays.
 ## Environment Variables
 Variable | Description | Required | Default | Example
 --- | --- | --- | --- | ---
-`INPUT` | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | No | | `/mnt/bluray`
+`INPUT` | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | No | | `title_00.mkv`
 `TITLE` | The title to be used in metadata and naming of the file. | Yes | | `Cool Movie`
 `YEAR` | The year of the movie to be used in metadata and naming of the file. | No | | `2019`
 `SEASON` | The season of the TV show. | No | | `01`
@@ -33,7 +33,7 @@ Variable | Description | Required | Default | Example
 `NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
 `VIDEO_TRACKS` | The input video tracks to convert. | No | `*` | `0`
 `VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
-`DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `--device /dev/dri:/dev/dri` is provided. | No | `false` | `true`
+`DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `--device /dev/dri:/dev/dri` is provided. If not specified, deinterlacing will be enabled if the source is interlaced. | No |  | `true`
 `HDR` | The input is in HDR and the desired output should also be HDR. | No | `false` | `true`
 `APPLY_POSTFIX` | Whether to apply the input filename as a postfix to the output files. | No | `true` | `false` 
 
