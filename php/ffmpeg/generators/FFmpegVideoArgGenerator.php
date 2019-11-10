@@ -17,7 +17,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
         } else if ($request->isHwaccel()) {
             $args .= " -c:v:" . $outTrack . " hevc_vaapi -qp 20 -level:v 4";
             if ($request->deinterlace) {
-                $args .= " -vf deinterlace_vaapi=rate=field:auto=1";
+                $args .= " -vf deinterlace_vaapi";
             }
         } else {
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
