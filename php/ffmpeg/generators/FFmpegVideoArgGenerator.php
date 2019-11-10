@@ -9,7 +9,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 
     public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream)
     {
-	$args = " ";
+        $args = " ";
         if ("copy" == $request->videoFormat) {
             $args .= " -c:v:" . $outTrack . " copy";
         } else if ($request->isHDR()) {
@@ -21,6 +21,9 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
             }
         } else {
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
+            if ($request->deinterlace) {
+                $args .= " -vf yadif";
+            }
         }
         $args .= " -metadata:s:v:" . $outTrack . " language=" . $stream->language;
         return $args;
