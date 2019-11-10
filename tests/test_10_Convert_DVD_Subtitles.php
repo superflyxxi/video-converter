@@ -12,8 +12,6 @@ test("ffmpeg code", 0, $return, $output);
 $probe = probe("/data/Test Convert DVD Subtitle (2019).mkv");
 $probe = json_decode($probe, true);
 
-print_r("Probed");
-print_r($probe);
 test("Stream 0", "subtitle", $probe["streams"][0]["codec_type"], $output);
 test("Stream 0 codec", "subrip", $probe["streams"][0]["codec_name"], $output);
 test("Stream 0 language", "eng", $probe["streams"][0]["language"], $output);
