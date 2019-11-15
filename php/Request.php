@@ -34,7 +34,7 @@ class Request
         $req->deinterlace = getEnvWithDefault("DEINTERLACE", NULL);
         if ($req->deinterlace != NULL) {
             $req->deinterlace = ($req->deinterlace == "true");
-        } else if ($req->hwaccel && "copy" != $req->videoFormat) {
+        } else if ("copy" != $req->videoFormat) {
             $req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
         } else {
             $req->deinterlace = FALSE;
