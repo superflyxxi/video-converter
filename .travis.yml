@@ -12,14 +12,17 @@ before_install:
   - export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL}
   - export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL}-master
   - export FROM_IMAGE=${FFMPEG_DOCKER_IMAGE}:${FFMPEG_DOCKER_LABEL}
-  - sudo apt-get install -y jq
-  - sudo service docker stop
-  - sudo cat /etc/docker/daemon.json | jq ". + {\"insecure-registries\":[\"${FFMPEG_REGISTRY}\",\"${THIS_REGISTRY}\"] }" > /tmp/docker.json
-  - sudo cp -v /tmp/docker.json /etc/docker/daemon.json
-  - sudo service docker start
+  - sudo mkdir -p "/etc/docker/certs.d/${THIS_REGISTRY}"
+  - openssl s_client -showcerts -connect ${THIS_REGISTRY} < /dev/null 2> /dev/null | openssl x509 -outform PEM | sudo tee "/etc/docker/certs.d/${THIS_REGISTRY}/ca.crt"
+  - if [[ "${FFMPEG_REGISTRY}" != "${THIS_REGISTRY}" ]]; then
+      sudo mkdir -p "/etc/docker/certs.d/${FFMPEG_REGISTRY}";
+      openssl s_client -showcerts -connect ${FFMPEG_REGISTRY} < /dev/null 2> /dev/null | openssl x509 -outform PEM | sudo tee "/etc/docker/certs.d/${FFMPEG_REGISTRY}/ca.crt";
+    fi
+
+install:
   - echo ${FFMPEG_REGISTRY_PASSWORD} | docker login --username ${FFMPEG_REGISTRY_USERNAME} --password-stdin ${FFMPEG_REGISTRY}
   - echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
-  - if [[ "true" == "${USE_DOCKER_CACHE}" && "master" != "${TRAVIS_BRANCH}" && "${TRAVIS_BRANCH}" != v* ]]; then 
+  - if [[ ! ${TRAVIS_BRANCH} =~ (master|v.*) ]]; then 
         echo "Pulling ${CACHE_FROM_IMAGE}"; 
         docker pull ${CACHE_FROM_IMAGE} || true; 
     else
