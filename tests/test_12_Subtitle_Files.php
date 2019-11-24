@@ -20,7 +20,10 @@ test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags
 test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["tags"]), $output);
 test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["tags"]), $output);
 
-printf("Files in directory:%s\n", scandir(getEnv("TMP_DIR")));
+printf("Files in directory:\n");
+print_r(scandir(getEnv("TMP_DIR")));
+$testfile = getEnv("TMP_DIR")."/Test Subtitle Files (2019).mkv.2-eng.srt";
+test("File missing, ".$testfile, TRUE, file_exists($testfile));
 test("Incomplete test", TRUE, FALSE);
 ?>
 
