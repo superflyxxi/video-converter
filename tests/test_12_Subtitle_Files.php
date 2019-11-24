@@ -20,7 +20,7 @@ test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags
 test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["tags"]), $output);
 test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["tags"]), $output);
 
-printf("Files in directory:%s\n", scandir("/data/"));
+printf("Files in directory:%s\n", scandir(getEnv("TMP_DIR")));
 test("Incomplete test", TRUE, FALSE);
 ?>
 
