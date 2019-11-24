@@ -111,7 +111,7 @@ class ConvertSubtitle
                     } else {
                         $newFile = $oOutput->getFileName() . "." . $index . "-" . $subtitle->language . ".srt";
                         Logger::info("Keeping file, {}.srt, outside as {}", $dvdFile, $newFile);
-			rename($dvdFile, $newFile);
+                        rename($dvdFile . ".srt", $newFile);
                     }
                     $oRequest->oInputFile->removeSubtitleStream($index);
                 }
