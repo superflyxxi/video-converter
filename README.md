@@ -24,6 +24,7 @@ Variable | Description | Required | Default | Example
 `PLAYLIST` | If the input is bluray, override the playlist to be used. | No | | `183`
 `SUBTITLE_TRACKS` | The input subtitle tracks to convert. | No | `*` | `1`
 `SUBTITLE_FORMAT` | The desired output subtitle format. | No | `ass` | `copy`
+`SUBTITLE_CONVERSION_BLACKLIST` | Characters to blacklist during subtitle conversion. | No | `|\\/<>` | `|`
 `AUDIO_TRACKS` | The input audio tracks to convert. | No | `*` | `1`
 `AUDIO_FORMAT` | The desired output audio format. | No | `aac` | `eac3`
 `AUDIO_QUALITY` | The desired output audio quality based on the `AUDIO_FORMAT`. | No | `2` | `560`

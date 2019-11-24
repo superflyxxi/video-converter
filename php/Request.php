@@ -19,6 +19,7 @@ class Request
         $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
         $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
+        $req->subtitleConversionBlacklist = getEnvWIthDefault("SUBTITLE_CONVERSION_BLACKLIST", "|\\/<>");
 
         $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
@@ -164,6 +165,8 @@ class Request
     );
 
     public $subtitleFormat = NULL;
+
+    public $subtitleConversionBlacklist = NULL;
 
     private $audioTracks = array(
         "*"
