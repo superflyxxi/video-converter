@@ -21,5 +21,6 @@ test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["ta
 test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["tags"]), $output);
 
 printf("Files in directory:%s\n", scandir("/data/"));
+test("Incomplete test", TRUE, FALSE);
 ?>
 
