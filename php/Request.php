@@ -19,6 +19,7 @@ class Request
         $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
         $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
+        $req->subtitleConversionOutput = getEnvWithDefault("SUBTITLE_CONVERSION_OUTPUT", "MERGE");
         $req->subtitleConversionBlacklist = getEnvWIthDefault("SUBTITLE_CONVERSION_BLACKLIST", "|\\/<>");
 
         $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
@@ -168,6 +169,8 @@ class Request
 
     public $subtitleConversionBlacklist = NULL;
 
+    public $subtitleConversionOutput = NULL;
+
     private $audioTracks = array(
         "*"
     );
@@ -198,3 +201,4 @@ class Request
 }
 
 ?>
+
