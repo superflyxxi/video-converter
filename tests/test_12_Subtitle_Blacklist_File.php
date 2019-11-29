@@ -23,8 +23,8 @@ test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["
 $testfile = getEnv("TMP_DIR")."/Test Subtitle Files (2019).mkv.2-eng.srt";
 test("File exists, ".$testfile, TRUE, file_exists($testfile));
 $contents = file_get_contents($testfile);
-test("SRT Contains ’", FALSE, strpos($contents, "’"), $output . "\n" . $contents);
-test("SRT Contains !", FALSE, strpos($contents, "!"), $output . "\n" . $contents);
+test("SRT Contains ’", FALSE, strpos($contents, "’"), implode("\n", $output) . "\n" . $contents);
+test("SRT Contains !", FALSE, strpos($contents, "!"), implode("\n", $output) . "\n" . $contents);
 
 ?>
 
