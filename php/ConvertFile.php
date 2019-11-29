@@ -47,7 +47,7 @@ class ConvertFile
         Logger::verbose("Request information {}", $oRequest);
         $allRequests[] = $oRequest;
         $allRequests = array_merge($allRequests, ConvertAudio::convert($oRequest));
-        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($oRequest));
+        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($oRequest, $oOutput));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput);
         Logger::info("Completed conversion with {} as a return value.", $returnValue);
