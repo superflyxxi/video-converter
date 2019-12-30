@@ -1,7 +1,7 @@
 <?php
 include_once "ConvertFile.php";
 
-function error_handler(int $errno, string $errstr, string $errfile = NULL, int $errline = 0, array $errcontext = NULL)
+function error_handler(int $errno, string $errstr, string $errfile = NULL, $errline = 0, array $errcontext = NULL)
 {
     print_r("Error encountered! ");
     print_r($errstr);
