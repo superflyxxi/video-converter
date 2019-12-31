@@ -47,7 +47,7 @@ class Request
 
     public function setAudioChannelLayoutTracks($req)
     {
-        $this->audioChannelLayoutTracks = $req == NULL ? array() : explode(' ', $req);
+        $this->audioChannelLayoutTracks = $req === NULL ? array() : explode(' ', $req);
     }
 
     public function areAllAudioChannelLayoutTracksConsidered()
@@ -62,7 +62,7 @@ class Request
 
     public function setAudioTracks($req)
     {
-        $this->audioTracks = $req == NULL ? array() : explode(' ', $req);
+        $this->audioTracks = $req === NULL ? array() : explode(' ', $req);
     }
 
     public function areAllAudioTracksConsidered()
@@ -77,7 +77,7 @@ class Request
 
     public function setVideoTracks($req)
     {
-        $this->videoTracks = $req == NULL ? array() : explode(' ', $req);
+        $this->videoTracks = $req === NULL ? array() : explode(' ', $req);
     }
 
     public function areAllVideoTracksConsidered()
@@ -92,7 +92,7 @@ class Request
 
     public function setSubtitleTracks($req)
     {
-        $this->subtitleTracks = $req == NULL ? array() : explode(' ', $req);
+        $this->subtitleTracks = $req === NULL ? array() : explode(' ', $req);
     }
 
     public function areAllSubtitleTracksConsidered()
