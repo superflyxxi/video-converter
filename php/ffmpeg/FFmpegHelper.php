@@ -15,13 +15,13 @@ class FFmpegHelper
 
     public static function probe($inputFile)
     {
-        if (! in_array($inputFile->getFileName(), self::$probeCache)) {
+        if (! array_key_exists($inputFile->getFileName(), self::$probeCache)) {
             $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $inputFile->getPrefix() . $inputFile->getFileName() . '"';
             Logger::debug("Executing ffprobe: {}", $command);
             exec($command, $out, $ret);
             if ($ret > 0) {
                 Logger::error("Failed to execute ffprobe; returned {}", $ret);
-                exit($ret);
+                return FALSE;
             }
             Logger::verbose("Adding to cache {}", $inputFile->getFileName());
             self::$probeCache[$inputFile->getFileName()] = $out;
