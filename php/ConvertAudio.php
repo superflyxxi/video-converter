@@ -16,6 +16,7 @@ class ConvertAudio
             // any track that is not needed, just copy it to its own file
             foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
                 // copy original always and add to list of additional requests
+                Logger::info("Converting audio track {}:{}", $oRequest->oInputFile->getFileName(), $index);
                 $tmpRequest = new Request($oRequest->oInputFile->getFileName());
                 $tmpRequest->setVideoTracks(NULL);
                 $tmpRequest->setAudioTracks($index);
@@ -30,7 +31,6 @@ class ConvertAudio
                 } else {
                     $convOutFile = new OutputFile(NULL, $dir . $oRequest->oInputFile->getFileName() . '-' . $index . '-conv.mkv');
                 }
-                Logger::info("Converting audio track {}:{}", $oRequest->oInputFile->getFileName(), $index);
                 FFmpegHelper::execute(array(
                     $tmpRequest
                 ), $convOutFile);
