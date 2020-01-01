@@ -39,7 +39,7 @@ foreach ($arrFiles as $file) {
         $conversion = new ConvertFile("/data/" . $file, getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
         $result = $conversion->convert();
     } catch (Exception $ex) {
-        Logger::error("Got exception: {}", $ex->getMessage());
+        Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
         $result = 255;
     } finally {
         $finalResult = max($finalResult, $result);
