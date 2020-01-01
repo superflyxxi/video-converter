@@ -50,6 +50,11 @@ class Request
         return $req === NULL ? array() : explode(' ', $req);
     }
 
+    private function areAllTracksConsidered($tracks)
+    {
+        return in_array("*", $tracks);
+    }
+
     public function setAudioChannelLayoutTracks($req)
     {
         $this->audioChannelLayoutTracks = $this->setTracks($req);
@@ -57,7 +62,7 @@ class Request
 
     public function areAllAudioChannelLayoutTracksConsidered()
     {
-        return in_array("*", $this->audioChannelLayoutTracks);
+        return $this->areAllTracksConsidered($this->audioChannelLayoutTracks);
     }
 
     public function getAudioChannelLayoutTracks()
@@ -72,7 +77,7 @@ class Request
 
     public function areAllAudioTracksConsidered()
     {
-        return in_array("*", $this->audioTracks);
+        return $this->areAllTracksConsidered($this->audioTracks);
     }
 
     public function getAudioTracks()
@@ -87,7 +92,7 @@ class Request
 
     public function areAllVideoTracksConsidered()
     {
-        return in_array("*", $this->videoTracks);
+        return $this->areAllTracksConsidered($this->videoTracks);
     }
 
     public function getVideoTracks()
@@ -102,7 +107,7 @@ class Request
 
     public function areAllSubtitleTracksConsidered()
     {
-        return in_array("*", $this->subtitleTracks);
+        return $this->areAllTracksConsidered($this->subtitleTracks);
     }
 
     public function getSubtitleTracks()
