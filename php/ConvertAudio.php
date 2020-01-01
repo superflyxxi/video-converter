@@ -3,6 +3,7 @@ include_once "Logger.php";
 include_once "functions.php";
 include_once "Request.php";
 include_once "Stream.php";
+include_once "exceptions/ExecutionException.php";
 
 class ConvertAudio
 {
@@ -31,9 +32,7 @@ class ConvertAudio
                 } else {
                     $convOutFile = new OutputFile(NULL, $dir . $oRequest->oInputFile->getFileName() . '-' . $index . '-conv.mkv');
                 }
-                FFmpegHelper::execute(array(
-                    $tmpRequest
-                ), $convOutFile);
+                FFmpegHelper::execute(array($tmpRequest), $convOutFile);
                 $oNewRequest = new Request($convOutFile->getFileName());
                 $oNewRequest->setVideoTracks(NULL);
                 $oNewRequest->setSubtitleTracks(NULL);
@@ -58,11 +57,10 @@ class ConvertAudio
         $command = 'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
         Logger::debug("Measuring {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
         exec($command, $out, $return);
-        Logger::verbose($out);
         if ($return != 0) {
-            Logger::error("Normalizing failed: {}", $return);
-            exit($return);
+	    throw new ExecutionException("ffmpeg", $return, $command);
         }
+        Logger::verbose($out);
         $out = implode(array_slice($out, - 12));
         $json = json_decode($out, true);
 
@@ -95,8 +93,7 @@ class ConvertAudio
         Logger::debug("Normalizing {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
         passthru($command, $return);
         if ($return != 0) {
-            Logger::error("Normalizing failed: {}", $return);
-            exit($return);
+	    throw new ExecutionException("ffmpeg", $return, $command);
         }
         $oNewRequest = new Request($normFile);
         $oNewRequest->setAudioTracks("0");

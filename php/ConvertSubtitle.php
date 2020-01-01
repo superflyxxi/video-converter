@@ -5,6 +5,7 @@ include_once "functions.php";
 include_once "Logger.php";
 include_once "ffmpeg/FFmpegHelper.php";
 include_once "MKVExtractHelper.php";
+include_once "exceptions/ExecutionException.php";
 
 class ConvertSubtitle
 {
@@ -18,38 +19,33 @@ class ConvertSubtitle
             foreach ($oRequest->oInputFile->getSubtitleStreams() as $index => $subtitle) {
                 $codecName = $subtitle->codec_name;
                 $dvdFile = NULL;
-                if ("hdmv_pgs_subtitle" == $codecName) {
-                    // convert to dvd
-                    if ($oRequest->oInputFile->getPrefix() != NULL) {
-                        $dvdFile = $dir . "/" . realpath($filename) . "/dir-" . $index;
-                    } else {
-                        $dvdFile = $dir . "/" . $filename . '-' . $index;
-                    }
-                    $pgsFile = new OutputFile(NULL, $dvdFile . '.sup');
-                    if (! file_exists($pgsFile->getFileName())) {
-                        Logger::info("Generating PGS sup file for index {} of file '{}'.", $index, $filename);
-                        $pgsRequest = new Request($filename);
-                        $pgsRequest->setSubtitleTracks($index);
-                        $pgsRequest->setAudioTracks(NULL);
-                        $pgsRequest->setVideoTracks(NULL);
-                        $pgsRequest->subtitleFormat = "copy";
-                        $pgsRequest->prepareStreams();
-                        if (FFmpegHelper::execute(array(
-                            $pgsRequest
-                        ), $pgsFile, FALSE) > 0) {
-                            Logger::warn("Conversion failed... Skipping this stream.");
-                            continue;
+		try {
+                    if ("hdmv_pgs_subtitle" == $codecName) {
+                        // convert to dvd
+                       if ($oRequest->oInputFile->getPrefix() != NULL) {
+                           $dvdFile = $dir . "/" . realpath($filename) . "/dir-" . $index;
+                        } else {
+                            $dvdFile = $dir . "/" . $filename . '-' . $index;
                         }
-                    }
+                        $pgsFile = new OutputFile(NULL, $dvdFile . '.sup');
+                        if (! file_exists($pgsFile->getFileName())) {
+                            Logger::info("Generating PGS sup file for index {} of file '{}'.", $index, $filename);
+                            $pgsRequest = new Request($filename);
+                            $pgsRequest->setSubtitleTracks($index);
+                            $pgsRequest->setAudioTracks(NULL);
+                            $pgsRequest->setVideoTracks(NULL);
+                            $pgsRequest->subtitleFormat = "copy";
+                            $pgsRequest->prepareStreams();
+                            FFmpegHelper::execute(array($pgsRequest), $pgsFile, FALSE) > 0);
+                        }
 
-                    if (! file_exists($dvdFile . '.sub')) {
-                        Logger::info("Converting pgs to dvd subtitle.");
+                        if (! file_exists($dvdFile . '.sub')) {
+                            Logger::info("Converting pgs to dvd subtitle.");
                         $command = 'java -jar /home/ripvideo/BDSup2Sub.jar -o "' . $dvdFile . '.sub" "' . $pgsFile->getFileName() . '"';
                         Logger::debug("Command: {}", $command);
                         exec($command, $out, $return);
                         if ($return != 0) {
-                            Logger::warn("sub convertion failed: {}. Continuing with next subtitle.", $return);
-                            continue;
+                            throw new ExecutionException("java", $return, $command);
                         }
                     }
                 } else if ("vobsub" == $codecName || "dvd_subtitle" == $codecName) {
@@ -64,10 +60,7 @@ class ConvertSubtitle
                         $arrOutput = array(
                             $index => $dvdFile . ".sub"
                         );
-                        if (MKVExtractHelper::extractTracks($oRequest->oInputFile, $arrOutput) > 0) {
-                            Logger::warn("Conversion failed... Skipping this stream.");
-                            continue;
-                        }
+                        MKVExtractHelper::extractTracks($oRequest->oInputFile, $arrOutput);
                     }
                 } else if ("subrip" == $codecName) {
                     Logger::info("Adding subrip to request for track {} of file {}", $index, $oRequest->oInputFile->getFileName());
@@ -93,8 +86,7 @@ class ConvertSubtitle
                         Logger::debug("Command: {}", $command);
                         exec($command, $out, $return);
                         if ($return != 0) {
-                            Logger::warn("vobsub to srt conversion failed: {}. Continuing with next stream.", $return);
-                            continue;
+                            throw new ExecutionException("vobsub2srt", $return, $command);
                         }
                     }
                     if ($oRequest->subtitleConversionOutput == "MERGE") {
@@ -115,6 +107,9 @@ class ConvertSubtitle
                     }
                     $oRequest->oInputFile->removeSubtitleStream($index);
                 }
+            } catch (ExectionException $ex) {
+		Logger::error("Skipping track");
+	    }
             }
             // if for some reason some couldn't be converted, copy the ones in the main input file
             $oRequest->subtitleFormat = "copy";
