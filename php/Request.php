@@ -47,7 +47,7 @@ class Request
     
     private function setTracks($req)
     {
-        return $req === NULL ? array() : explode(' ', $req);
+        return ($req === NULL || trim($req) == "") ? array() : explode(' ', $req);
     }
 
     private function areAllTracksConsidered($tracks)
