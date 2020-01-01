@@ -35,9 +35,15 @@ Logger::verbose("Files to process: {}", $arrFiles);
 
 $finalResult = 0;
 foreach ($arrFiles as $file) {
-    $conversion = new ConvertFile("/data/" . $file, getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
-    $result = $conversion->convert();
-    $finalResult = max($finalResult, $result);
+    try {
+        $conversion = new ConvertFile("/data/" . $file, getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
+        $result = $conversion->convert();
+    } catch (Exception $ex) {
+        Logger::error("Got exception: {}", $ex->getMessage());
+        $result = 255;
+    } finally {
+        $finalResult = max($finalResult, $result);
+    }
 }
 exit($finalResult);
 ?>
