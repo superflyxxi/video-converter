@@ -25,7 +25,7 @@ class Request
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
         $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
         $req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", NULL);
-        $req->normalizeAudioTracks = explode(" ", getEnvWIthDefault("NORMALIZE_AUDIO_TRACKS", ""));
+        $req->normalizeAudioTracks = explode(" ", getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", ""));
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
@@ -44,10 +44,15 @@ class Request
         $req->prepareStreams();
         return $req;
     }
+    
+    private function setTracks($req)
+    {
+        return $req === NULL ? array() : explode(' ', $req);
+    }
 
     public function setAudioChannelLayoutTracks($req)
     {
-        $this->audioChannelLayoutTracks = $req === NULL ? array() : explode(' ', $req);
+        $this->audioChannelLayoutTracks = $this->setTracks($req);
     }
 
     public function areAllAudioChannelLayoutTracksConsidered()
@@ -62,7 +67,7 @@ class Request
 
     public function setAudioTracks($req)
     {
-        $this->audioTracks = $req === NULL ? array() : explode(' ', $req);
+        $this->audioTracks = $this->setTracks($req);
     }
 
     public function areAllAudioTracksConsidered()
@@ -77,7 +82,7 @@ class Request
 
     public function setVideoTracks($req)
     {
-        $this->videoTracks = $req === NULL ? array() : explode(' ', $req);
+        $this->videoTracks = $this->setTracks($req);
     }
 
     public function areAllVideoTracksConsidered()
@@ -92,7 +97,7 @@ class Request
 
     public function setSubtitleTracks($req)
     {
-        $this->subtitleTracks = $req === NULL ? array() : explode(' ', $req);
+        $this->subtitleTracks = $this->setTracks($req);
     }
 
     public function areAllSubtitleTracksConsidered()
