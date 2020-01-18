@@ -36,7 +36,7 @@ class ConvertSubtitle
                             $pgsRequest->setVideoTracks(NULL);
                             $pgsRequest->subtitleFormat = "copy";
                             $pgsRequest->prepareStreams();
-                            FFmpegHelper::execute(array($pgsRequest), $pgsFile, FALSE) > 0);
+                            FFmpegHelper::execute(array($pgsRequest), $pgsFile, FALSE);
                         }
 
                         if (! file_exists($dvdFile . '.sub')) {
@@ -108,7 +108,7 @@ class ConvertSubtitle
                     $oRequest->oInputFile->removeSubtitleStream($index);
                 }
             } catch (ExectionException $ex) {
-		Logger::error("Skipping track");
+		Logger::error("Skipping track due to error {}", $ex->getMessage());
 	    }
             }
             // if for some reason some couldn't be converted, copy the ones in the main input file
