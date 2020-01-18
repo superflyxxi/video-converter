@@ -9,7 +9,7 @@ class MKVExtractHelper
         Logger::info("Extracting {}", $oInputFile->getFileName());
         $command = 'mkvextract tracks "' . $oInputFile->getFileName() . '" ';
         foreach ($arrTracks as $track => $outFileName) {
-            $command .= ' ' . $track . ':' . $outFileName;
+            $command .= ' "' . $track . ':' . $outFileName . '"';
         }
         Logger::debug("extracting with mkvextract with command: {}", $command);
         passthru($command, $return);
