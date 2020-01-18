@@ -30,6 +30,7 @@ install:
     fi
 
 script:
+  - set -e
   - cd travis/
   - ./build.sh
   - ./test.sh
