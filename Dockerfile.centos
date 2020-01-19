@@ -14,24 +14,33 @@ RUN yum install -y 'dnf-command(config-manager)' && \
 # Enable mkvtoolnix repo
 RUN rpm -Uhv https://mkvtoolnix.download/centos/bunkus-org-repo-2-3.noarch.rpm
 
-RUN yum install -y php wget java-1.8.0-openjdk \
+ARG BUILD_SUBTITLE_CONVERT=true
+RUN yum install -y --nogpgcheck php \
 	mkvtoolnix \
-	libtiff-devel tesseract-devel \
 	&& yum clean all
 
 # Install all language packs to tesseract
-RUN yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y && yum clean all
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y tesseract && yum clean all; fi
 
 # Install VobSub2SRT
-RUN DIR=$(mktemp -d) && cd ${DIR} && \
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
+	DIR=$(mktemp -d) && cd ${DIR} && \
+	BUILD_DEPS="libtiff-devel tesseract-devel" && \
+	yum install -y ${BUILD_DEPS} && \
 	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
 	./configure --libdir=/usr/lib64 --prefix=/usr && \
 	make && \
 	make install && \
-	rm -rf ${DIR}
+	rm -rf ${DIR} && \
+	yum del ${BUILD_DEPS} && \
+	yum clean all
 
 # Install BDSup2Sub
-RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
+	yum install -y wget java-1.8.0-openjdk && \
+	wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" && \
+	yum remove wget && \
+	yum clean all; fi
 
 ENTRYPOINT /home/ripvideo/script.php
 
