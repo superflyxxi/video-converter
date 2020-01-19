@@ -7,19 +7,40 @@ WORKDIR /home/ripvideo/
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
-RUN apk --no-cache add php php-json wget openjdk8-jre \
-	tiff-dev tesseract-ocr tesseract-ocr-dev cmake g++ automake autoconf \
+RUN apk --no-cache add php php-json curl openjdk8-jre \
+	tiff-dev cmake g++ automake autoconf \
 	mkvtoolnix
 
 # Install All Tesseract Language Packs
-RUN apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | xargs apk add --no-cache 
+#RUN apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | grep -v "_old" | xargs apk add --no-cache 
+
+# Build and Install Tesseract
+RUN DEPS="libtool leptonica-dev" && apk --no-cache add ${DEPS} && \
+	DIR=/tmp/src && mkdir ${DIR} && cd ${DIR} && \
+	curl -sL "https://github.com/tesseract-ocr/tesseract/archive/4.1.0.tar.gz" | \
+	tar -zx --strip-components=1 && \
+	./autogen.sh && \
+	./configure && \
+	make && \
+	make install && \
+	ldconfig && \
+	apk del ${DEPS}
 
 # Install VobSub2SRT
 RUN DIR=$(mktemp -d) && cd ${DIR} && \
+	apk add tesseract-ocr-dev && \
 	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
-	git checkout autotools && \
-	./bootstrap && \
-	./configure CXXFLAGS="-std=gnu++11" && \
+	#git checkout autotools && \
+	#./bootstrap && \
+	#./configure CXXFLAGS="-std=gnu++11" && \
+	#./configure CXXFLAGS="-std=c++11 -llept" && \
+	#echo pkg-config && \
+	#pkg-config --cflags --libs lept && \
+	make distclean && \
+	echo conifgure && \
+	#./configure CXXFLAGS="-std=c++11 -I/usr/include/leptonica -llept" && \
+	./configure && \
+	echo make && \
 	make && \
 	make install && \
 	rm -rf ${DIR}
