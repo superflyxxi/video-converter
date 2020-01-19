@@ -7,38 +7,28 @@ WORKDIR /home/ripvideo/
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
-RUN apk --no-cache add php php-json mkvtoolnix
-#curl openjdk8-jre \
-#	tiff-dev cmake g++ automake autoconf
+ARG BUILD_SUBTITLE_CONVERT=true
+
+RUN apk --no-cache add php php-json mkvtoolnix && \
+	if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk --no-cache add curl openjdk8-jre tesseract-ocr tiff-dev cmake g++ automake autoconf; fi
 
 # Install All Tesseract Language Packs
-#RUN apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | grep -v "_old" | xargs apk add --no-cache 
-
-# Build and Install Tesseract
-#RUN DEPS="libtool leptonica-dev" && apk --no-cache add ${DEPS} && \
-#	DIR=/tmp/src && mkdir ${DIR} && cd ${DIR} && \
-#	curl -sL "https://github.com/tesseract-ocr/tesseract/archive/4.1.0.tar.gz" | \
-#	tar -zx --strip-components=1 && \
-#	./autogen.sh && \
-#	./configure && \
-#	make && \
-#	make install && \
-#	ldconfig && \
-#	apk del ${DEPS}
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | grep -v "_old" | xargs apk add --no-cache; fi
 
 # Install VobSub2SRT
-#RUN DIR=$(mktemp -d) && cd ${DIR} && \
-#	apk add tesseract-ocr-dev && \
-#	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
-#	git checkout autotools && \
-#	./bootstrap && \
-#	./configure CXXFLAGS="-std=gnu++11" && \
-#	make && \
-#	make install && \
-#	rm -rf ${DIR}
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
+	DIR=$(mktemp -d) && cd ${DIR} && \
+	apk add tesseract-ocr-dev && \
+	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
+	git checkout autotools && \
+	./bootstrap && \
+	./configure CXXFLAGS="-std=gnu++11" && \
+	make && \
+	make install && \
+	rm -rf ${DIR}; fi
 
 # Install DBSup2Sub
-#RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"; fi
 
 ENTRYPOINT php /home/ripvideo/script.php
 
