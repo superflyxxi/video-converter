@@ -3,6 +3,7 @@ language: php
 env:
   matrix:
     - FFMPEG_DOCKER_LABEL=alpine
+    - FFMPEG_DOCKER_LABEL=centos
 
 services:
   - docker
