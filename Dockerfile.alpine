@@ -10,15 +10,16 @@ RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 ARG BUILD_SUBTITLE_CONVERT=true
 
 RUN apk --no-cache add php php-json mkvtoolnix && \
-	if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk --no-cache add curl openjdk8-jre tesseract-ocr tiff-dev cmake g++ automake autoconf; fi
+	if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk --no-cache add openjdk8-jre; fi
 
-# Install All Tesseract Language Packs
-RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | grep -v "_old" | xargs apk add --no-cache; fi
+# Install Tesseract and All Language Packs
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | grep -v "_old" | xargs apk add --no-cache tesseract-ocr; fi
 
 # Install VobSub2SRT
 RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
 	DIR=$(mktemp -d) && cd ${DIR} && \
-	apk add tesseract-ocr-dev && \
+	BUILD_DEPS="git tesseract-ocr-dev tiff-dev g++ cmake automake autoconf" && \
+	apk --no-cache add ${BUILD_DEPS} && \
 	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
 	git checkout autotools && \
 	./bootstrap && \
