@@ -15,8 +15,8 @@ RUN yum install -y 'dnf-command(config-manager)' && \
 RUN rpm -Uhv https://mkvtoolnix.download/centos/bunkus-org-repo-2-3.noarch.rpm
 
 RUN yum install -y php wget java-1.8.0-openjdk \
-	libtiff-devel leptonica-devel tesseract-devel \
 	mkvtoolnix \
+	libtiff-devel tesseract-devel \
 	&& yum clean all
 
 # Install all language packs to tesseract
