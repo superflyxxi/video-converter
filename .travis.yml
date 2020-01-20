@@ -4,6 +4,8 @@ env:
   matrix:
     - FFMPEG_DOCKER_LABEL=alpine
     - FFMPEG_DOCKER_LABEL=centos
+  global:
+    - BUILD_SUBTITLE_CONVERT=false
 
 services:
   - docker
