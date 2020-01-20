@@ -44,7 +44,7 @@ RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
 	yum remove -y wget && \
 	yum clean all; fi
 
-ENTRYPOINT /home/ripvideo/script.php
+ENTRYPOINT php /home/ripvideo/script.php
 
 COPY scripts/ /home/ripvideo/scripts/
 COPY php/ /home/ripvideo/
