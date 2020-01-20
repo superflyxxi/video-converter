@@ -33,7 +33,7 @@ RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
 	make install && \
 	rm -rf ${DIR} && \
 	yum del ${BUILD_DEPS} && \
-	yum clean all
+	yum clean all; fi
 
 # Install BDSup2Sub
 RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
