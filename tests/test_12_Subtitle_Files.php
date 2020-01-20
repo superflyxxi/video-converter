@@ -7,7 +7,7 @@ $command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e APPLY_POSTF
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 
-if ( $_ENV["BUILD_SUBTITLE_CONVERT"] == "false") {
+if ( getEnv("BUILD_SUBTITLE_CONVERT") == "false") {
 	test("ffmpeg failed for a different reason", 1, $return, $output);
 } else {
 	test("ffmpeg code", 0, $return, $output);
