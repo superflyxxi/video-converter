@@ -20,26 +20,28 @@ RUN yum install -y --nogpgcheck php \
 	&& yum clean all
 
 # Install all language packs to tesseract
-RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y tesseract && yum clean all; fi
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
 
 # Install VobSub2SRT
 RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
 	DIR=$(mktemp -d) && cd ${DIR} && \
 	BUILD_DEPS="libtiff-devel tesseract-devel" && \
-	yum install -y ${BUILD_DEPS} && \
-	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
-	./configure --libdir=/usr/lib64 --prefix=/usr && \
+	yum install -y --nogpgcheck ${BUILD_DEPS} && \
+	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
+	git checkout autotools && \
+	./bootstrap && \
+	./configure --libdir=/usr/lib64 --prefix=/usr CXXFLAGS="-std=gnu++11" && \
 	make && \
 	make install && \
 	rm -rf ${DIR} && \
-	yum del ${BUILD_DEPS} && \
+	yum remove -y ${BUILD_DEPS} && \
 	yum clean all; fi
 
 # Install BDSup2Sub
 RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
-	yum install -y wget java-1.8.0-openjdk && \
+	yum install -y --nogpgcheck wget java-1.8.0-openjdk && \
 	wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" && \
-	yum remove wget && \
+	yum remove -y wget && \
 	yum clean all; fi
 
 ENTRYPOINT /home/ripvideo/script.php
