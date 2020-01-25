@@ -15,7 +15,7 @@ RUN yum install -y 'dnf-command(config-manager)' && \
 RUN rpm -Uhv https://mkvtoolnix.download/centos/bunkus-org-repo-2-3.noarch.rpm
 
 ARG BUILD_SUBTITLE_CONVERT=true
-RUN yum install -y --nogpgcheck php \
+RUN yum install -y --nogpgcheck php php-json \
 	mkvtoolnix \
 	&& yum clean all
 
