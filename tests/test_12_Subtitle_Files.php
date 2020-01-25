@@ -16,7 +16,7 @@ exec($command, $output, $return);
 	$probe = json_decode($probe, true);
 
 	test("Stream 0", "video", $probe["streams"][0]["codec_type"], $output);
-	test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"]), $output);
+	test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"]), array($probe, $output));
 	test("Metadata Title", "Test Subtitle Files", $probe["format"]["tags"]["title"], $output);
 	test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"], $output);
 	test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]), $output);
