@@ -7,9 +7,9 @@ $command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e APPLY_POSTF
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 
-if ( getEnv("BUILD_SUBTITLE_CONVERT") == "false") {
-	test("ffmpeg failed for a different reason", 1, $return, $output);
-} else {
+/*if ( getEnv("BUILD_SUBTITLE_CONVERT") == "false") {
+	test("ffmpeg failed for a different reason", 0, $return, $output);
+} else {*/
 	test("ffmpeg code", 0, $return, $output);
 
 	$probe = probe("/data/Test Subtitle Files (2019).mkv");
@@ -25,6 +25,6 @@ if ( getEnv("BUILD_SUBTITLE_CONVERT") == "false") {
 
 	$testfile = getEnv("TMP_DIR")."/Test Subtitle Files (2019).mkv.2-eng.srt";
 	test("File exists, ".$testfile, TRUE, file_exists($testfile));
-}
+//}
 ?>
 
