@@ -3,6 +3,7 @@ language: php
 env:
   matrix:
     - FFMPEG_DOCKER_LABEL=alpine BUILD_SUBTITLE_CONVERT=false
+    - FFMPEG_DOCKER_LABEL=alpine BUILD_SUBTITLE_CONVERT=true
     - FFMPEG_DOCKER_LABEL=centos BUILD_SUBTITLE_CONVERT=true
 
 services:
