@@ -19,6 +19,7 @@ class Request
         $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
         $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
+        $req->subtitleConversionOutput = getEnvWithDefault("SUBTITLE_CONVERSION_OUTPUT", "MERGE");
 
         $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
@@ -34,7 +35,7 @@ class Request
         $req->deinterlace = getEnvWithDefault("DEINTERLACE", NULL);
         if ($req->deinterlace != NULL) {
             $req->deinterlace = ($req->deinterlace == "true");
-        } else if ($req->hwaccel && "copy" != $req->videoFormat) {
+        } else if ("copy" != $req->videoFormat) {
             $req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
         } else {
             $req->deinterlace = FALSE;
@@ -164,6 +165,8 @@ class Request
     );
 
     public $subtitleFormat = NULL;
+
+    public $subtitleConversionOutput = NULL;
 
     private $audioTracks = array(
         "*"

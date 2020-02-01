@@ -9,7 +9,7 @@ include_once "MKVExtractHelper.php";
 class ConvertSubtitle
 {
 
-    public static function convert($oRequest)
+    public static function convert($oRequest, $oOutput)
     {
         $dir = getEnvWithDefault("TMP_DIR", "/tmp");
         $arrAdditionalRequests = array();
@@ -85,7 +85,11 @@ class ConvertSubtitle
                 if (NULL != $dvdFile) {
                     if (! file_exists($dvdFile . ".srt")) {
                         Logger::info("Convert DVD sub to SRT.");
-                        $command = 'vobsub2srt "' . $dvdFile . '"';
+                        $command = 'vobsub2srt ';
+                        if (isset($subtitle->language)) {
+                            $command .= ' --tesseract-lang ' . $subtitle->language . ' ';
+                        }
+                        $command .= ' "' . $dvdFile . '" ';
                         Logger::debug("Command: {}", $command);
                         exec($command, $out, $return);
                         if ($return != 0) {
@@ -93,15 +97,22 @@ class ConvertSubtitle
                             continue;
                         }
                     }
-                    $oNewRequest = new Request($dvdFile . ".srt");
-                    $oNewRequest->setSubtitleTracks("0");
-                    $oNewRequest->setAudioTracks(NULL);
-                    $oNewRequest->setVideoTracks(NULL);
-                    $oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
-                    $oNewRequest->prepareStreams();
-                    $oNewRequest->oInputFile->getSubtitleStreams()[0]->language = $subtitle->language;
-                    Logger::debug("Using {} language for final stream.", $subtitle->language);
-                    $arrAdditionalRequests[] = $oNewRequest;
+                    if ($oRequest->subtitleConversionOutput == "MERGE") {
+                        Logger::info("Merging srt, {}.srt, into mkv.", $dvdFile);
+                        $oNewRequest = new Request($dvdFile . ".srt");
+                        $oNewRequest->setSubtitleTracks("0");
+                        $oNewRequest->setAudioTracks(NULL);
+                        $oNewRequest->setVideoTracks(NULL);
+                        $oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
+                        $oNewRequest->prepareStreams();
+                        $oNewRequest->oInputFile->getSubtitleStreams()[0]->language = $subtitle->language;
+                        Logger::debug("Using {} language for final stream.", $subtitle->language);
+                        $arrAdditionalRequests[] = $oNewRequest;
+                    } else {
+                        $newFile = $oOutput->getFileName() . "." . $index . "-" . $subtitle->language . ".srt";
+                        Logger::info("Keeping file, {}.srt, outside as {}", $dvdFile, $newFile);
+                        rename($dvdFile . ".srt", $newFile);
+                    }
                     $oRequest->oInputFile->removeSubtitleStream($index);
                 }
             }
