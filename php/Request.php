@@ -18,7 +18,7 @@ class Request
 
         $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
-        $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "copy");
+        $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
         $req->subtitleConversionOutput = getEnvWithDefault("SUBTITLE_CONVERSION_OUTPUT", "MERGE");
 
         $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
