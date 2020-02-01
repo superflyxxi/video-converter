@@ -15,7 +15,7 @@ $probe = json_decode($probe, true);
 test("Stream 0", "video", $probe["streams"][0]["codec_type"], $output);
 if ( getEnv("BUILD_SUBTITLE_CONVERT") == "false") {
 	test("Stream 1 exists", TRUE, array_key_exists(1, $probe["streams"]), array($probe, $output));
-	test("Stream 1 codec", "hdmv_pgs_subtitle", $probe["streams"][1]["codec_name"], $output);
+	test("Stream 1 codec", "dvd_subtitle", $probe["streams"][1]["codec_name"], $output);
 } else {
 	test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"]), array($probe, $output));
 }
