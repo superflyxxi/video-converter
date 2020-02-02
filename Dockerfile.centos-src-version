@@ -49,7 +49,15 @@ RUN BUILD_DEPS="${MAKE_BUILD_DEPS} gcc-c++" && yum install -y ${BUILD_DEPS} && \
 	yum remove -y ${BUILD_DEPS} && yum clean all
 
 # Install all language packs to tesseract
-RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
+RUN BUILD_DEPS="git" && yum install -y ${BUILD_DEPS} && \
+	DIR=${mktemp -d) && cd ${DIR} && \
+	git clone --depth 1 https://github.com/tesseract-ocr/tessdata_best.git && \
+	cd tesseract_best && \
+	ls /usr/share/tesseract-ocr/tessdata && ls /usr/share/tessdata && ls /usr/share/tesseract-ocr/4.00/tessdata && ls /usr/share/tesseract-ocr && \\
+	find . -name "*.traineddata" -exec mv -iv {} \; && \
+	yum remove -y ${BUILD_DEPS} && yum clean all
+
+#RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
 
 # Install VobSub2SRT
 RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
