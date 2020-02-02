@@ -1,0 +1,82 @@
+ARG FROM_IMAGE
+FROM ${FROM_IMAGE}
+MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
+
+WORKDIR /home/ripvideo/
+ENV TMP_DIR=/tmp/wip
+RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
+
+# Enable Power Tools
+#RUN yum install -y 'dnf-command(config-manager)' && \
+#	yum config-manager --set-enabled PowerTools && \
+#	yum remove -y 'dnf-command(config-manager)' && \
+#	yum clean all
+# Enable mkvtoolnix repo
+#RUN rpm -Uhv https://mkvtoolnix.download/centos/bunkus-org-repo-2-3.noarch.rpm
+
+ARG BUILD_SUBTITLE_CONVERT=true
+#RUN yum install -y --nogpgcheck php php-json \
+#	mkvtoolnix \
+#	&& yum clean all
+
+
+ARG MAKE_BUILD_DEPS="make autoconf automake libtool"
+
+# Leptonica
+ARG LEPTONICA_VERSION=1.79.0
+RUN BUILD_DEPS="${MAKE_BUILD_DEPS}" && yum install -y ${BUILD_DEPS} && \
+	DIR=$(mktemp -d) && cd ${DIR} && \
+	curl -L "http://www.leptonica.org/source/leptonica-${LEPTONICA_VERSION}.tar.gz" | tar -zx && \
+	ls && cd leptonica-${LEPTONICA_VERSION} && \
+	./autogen.sh && \
+	./configure --prefix=${PREFIX} && \
+	make && \
+	make install && \
+	rm -rf ${DIR} && \
+	yum remove -y ${BUILD_DEPS} && \
+	yum clean all
+
+# Tesseract
+ARG TESSERACT_VERSION=4.1.1
+RUN BUILD_DEPS="make autoconf automake libtool gcc-c++" && yum install -y ${BUILD_DEPS}
+RUN DIR=$(mktemp -d) && cd ${DIR} && \
+	curl -L "https://github.com/tesseract-ocr/tesseract/archive/${TESSERACT_VERSION}.tar.gz" | tar -zx && \
+	ls && cd tesseract-${TESSERACT_VERSION} && \
+	./autogen.sh && \
+	./configure && \
+	make && \
+	make install && \
+	rm -rf ${DIR} && \
+	yum clean all
+
+# Install all language packs to tesseract
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
+
+# Install VobSub2SRT
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
+	DIR=$(mktemp -d) && cd ${DIR} && \
+	BUILD_DEPS="libtiff-devel tesseract-devel" && \
+	yum install -y --nogpgcheck ${BUILD_DEPS} && \
+	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
+	git checkout autotools && \
+	./bootstrap && \
+	./configure --libdir=/usr/lib64 --prefix=/usr CXXFLAGS="-std=gnu++11" && \
+	make && \
+	make install && \
+	rm -rf ${DIR} && \
+	yum remove -y ${BUILD_DEPS} && \
+	yum clean all; fi
+
+# Install BDSup2Sub
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
+	yum install -y --nogpgcheck wget java-1.8.0-openjdk && \
+	wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" && \
+	yum remove -y wget && \
+	yum clean all; fi
+
+ENTRYPOINT php /home/ripvideo/script.php
+
+COPY scripts/ /home/ripvideo/scripts/
+COPY php/ /home/ripvideo/
+RUN chmod -R ugo+r /home/ripvideo
+
