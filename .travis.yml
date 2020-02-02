@@ -5,6 +5,7 @@ env:
     - THIS_DOCKERFILE=alpine FFMPEG_DOCKER_LABEL=alpine BUILD_SUBTITLE_CONVERT=false
     - THIS_DOCKERFILE=centos FFMPEG_DOCKER_LABEL=centos BUILD_SUBTITLE_CONVERT=true
     - THIS_DOCKERFILE=centos-src-latest FFMPEG_DOCKER_LABEL=centos-src-latest-build_from_sources BUILD_SUBTITLE_CONVERT=true
+    - THIS_DOCKERFILE=centos-src-version FFMPEG_DOCKER_LABEL=centos-src-version-build_from_sources BUILD_SUBTITLE_CONVERT=true
 
 services:
   - docker
