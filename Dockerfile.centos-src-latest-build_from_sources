@@ -36,8 +36,7 @@ RUN BUILD_DEPS="${MAKE_BUILD_DEPS} git" && yum install -y ${BUILD_DEPS} && \
 	yum clean all
 
 # Tesseract
-RUN BUILD_DEPS="make autoconf automake libtool gcc-c++ git" && yum install -y ${BUILD_DEPS}
-RUN \
+RUN BUILD_DEPS="${MAKE_BUILD_DEPS} gcc-c++ git" && yum install -y ${BUILD_DEPS} && \
 	DIR=$(mktemp -d) && cd ${DIR} && \
 	git clone --depth 1 https://github.com/tesseract-ocr/tesseract.git && \
 	cd tesseract && \
@@ -50,19 +49,18 @@ RUN \
 	yum clean all
 
 # Install all language packs to tesseract
-RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
+#RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
 
 # Install VobSub2SRT
 RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
-	DIR=$(mktemp -d) && cd ${DIR} && \
-	BUILD_DEPS="libtiff-devel tesseract-devel" && \
+	BUILD_DEPS="${MAKE_BUILD_DEPS} git" && \
 	yum install -y --nogpgcheck ${BUILD_DEPS} && \
+	DIR=$(mktemp -d) && cd ${DIR} && \
 	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
 	git checkout autotools && \
 	./bootstrap && \
-	./configure --libdir=/usr/lib64 --prefix=/usr CXXFLAGS="-std=gnu++11" && \
-	make && \
-	make install && \
+	./configure --libdir=/usr/lib64 --prefix=${PREFIX} CXXFLAGS="-std=gnu++11" && \
+	make && make install && \
 	rm -rf ${DIR} && \
 	yum remove -y ${BUILD_DEPS} && \
 	yum clean all; fi
@@ -74,7 +72,8 @@ RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
 	yum remove -y wget && \
 	yum clean all; fi
 
-ENTRYPOINT php /home/ripvideo/script.php
+ENTRYPOINT php
+CMD /home/ripvideo/script.php
 
 COPY scripts/ /home/ripvideo/scripts/
 COPY php/ /home/ripvideo/
