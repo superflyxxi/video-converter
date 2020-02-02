@@ -52,14 +52,11 @@ RUN BUILD_DEPS="${MAKE_BUILD_DEPS} gcc-c++ git" && yum install -y ${BUILD_DEPS} 
 #RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
 
 # Install VobSub2SRT
-RUN \
-	BUILD_DEPS="${MAKE_BUILD_DEPS} git cmake gcc-c++ libtiff-devel" && \
-	yum install -y --nogpgcheck ${BUILD_DEPS}
 RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
+	BUILD_DEPS="${MAKE_BUILD_DEPS} git cmake gcc-c++ libtiff-devel" && \
+	yum install -y --nogpgcheck ${BUILD_DEPS} && \
 	DIR=$(mktemp -d) && cd ${DIR} && \
 	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
-#	git checkout autotools && \
-#	./bootstrap && \
 	./configure --libdir=/usr/lib64 --prefix=${PREFIX} CXXFLAGS="-std=gnu++11" && \
 	make && make install && \
 	rm -rf ${DIR} && \
