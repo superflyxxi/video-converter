@@ -6,26 +6,45 @@ WORKDIR /home/ripvideo/
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
-RUN yum install -y php wget java-1.8.0-openjdk \
-	libtiff-devel tesseract-devel \
+# Enable Power Tools
+RUN yum install -y 'dnf-command(config-manager)' && \
+	yum config-manager --set-enabled PowerTools && \
+	yum remove -y 'dnf-command(config-manager)' && \
+	yum clean all
+# Enable mkvtoolnix repo
+RUN rpm -Uhv https://mkvtoolnix.download/centos/bunkus-org-repo-2-3.noarch.rpm
+
+ARG BUILD_SUBTITLE_CONVERT=true
+RUN yum install -y --nogpgcheck php php-json \
 	mkvtoolnix \
 	&& yum clean all
 
 # Install all language packs to tesseract
-RUN yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y && yum clean all
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
 
 # Install VobSub2SRT
-RUN DIR=$(mktemp -d) && cd ${DIR} && \
-	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
-	./configure --libdir=/usr/lib64 --prefix=/usr && \
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
+	DIR=$(mktemp -d) && cd ${DIR} && \
+	BUILD_DEPS="libtiff-devel tesseract-devel" && \
+	yum install -y --nogpgcheck ${BUILD_DEPS} && \
+	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
+	git checkout autotools && \
+	./bootstrap && \
+	./configure --libdir=/usr/lib64 --prefix=/usr CXXFLAGS="-std=gnu++11" && \
 	make && \
 	make install && \
-	rm -rf ${DIR}
+	rm -rf ${DIR} && \
+	yum remove -y ${BUILD_DEPS} && \
+	yum clean all; fi
 
 # Install BDSup2Sub
-RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
+	yum install -y --nogpgcheck wget java-1.8.0-openjdk && \
+	wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" && \
+	yum remove -y wget && \
+	yum clean all; fi
 
-ENTRYPOINT /home/ripvideo/script.php
+ENTRYPOINT php /home/ripvideo/script.php
 
 COPY scripts/ /home/ripvideo/scripts/
 COPY php/ /home/ripvideo/
