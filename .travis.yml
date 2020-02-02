@@ -2,9 +2,9 @@ language: php
 
 env:
   matrix:
-    - FFMPEG_DOCKER_LABEL=alpine BUILD_SUBTITLE_CONVERT=false
-    - FFMPEG_DOCKER_LABEL=centos BUILD_SUBTITLE_CONVERT=true
-    - FFMPEG_DOCKER_LABEL=centos-src-latest-build_from_sources BUILD_SUBTITLE_CONVERT=true
+    - THIS_DOCKERFILE=alpine FFMPEG_DOCKER_LABEL=alpine BUILD_SUBTITLE_CONVERT=false
+    - THIS_DOCKERFILE=centos FFMPEG_DOCKER_LABEL=centos BUILD_SUBTITLE_CONVERT=true
+    - THIS_DOCKERFILE=centos-src-latest-build_from_sources FFMPEG_DOCKER_LABEL=centos-src-latest-build_from_sources BUILD_SUBTITLE_CONVERT=true
 
 services:
   - docker
@@ -39,8 +39,8 @@ script:
 
 after_success:
   - ./push.sh
-  - if [[ "${TRAVIS_BRANCH}" == v* ]]; then
-        export NEW_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL};
+  - if [[ "${TRAVIS_BRANCH}" == v* ] && [ "${THIS_DOCKERFILE}" == "centos" ]]; then
+        export NEW_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:latest
         echo "Going to label ${THIS_FULL_IMAGE} an additional name of ${NEW_FULL_IMAGE}";
         docker tag ${THIS_FULL_IMAGE} ${NEW_FULL_IMAGE};
         THIS_FULL_IMAGE=${NEW_FULL_IMAGE} ./push.sh;
