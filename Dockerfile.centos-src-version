@@ -38,16 +38,15 @@ RUN BUILD_DEPS="${MAKE_BUILD_DEPS}" && yum install -y ${BUILD_DEPS} && \
 
 # Tesseract
 ARG TESSERACT_VERSION=4.1.1
-RUN BUILD_DEPS="make autoconf automake libtool gcc-c++" && yum install -y ${BUILD_DEPS}
-RUN DIR=$(mktemp -d) && cd ${DIR} && \
+RUN BUILD_DEPS="${MAKE_BUILD_DEPS} gcc-c++" && yum install -y ${BUILD_DEPS} && \
+	DIR=$(mktemp -d) && cd ${DIR} && \
 	curl -L "https://github.com/tesseract-ocr/tesseract/archive/${TESSERACT_VERSION}.tar.gz" | tar -zx && \
 	ls && cd tesseract-${TESSERACT_VERSION} && \
-	./autogen.sh && \
-	./configure && \
-	make && \
-	make install && \
+	./autogen.sh --prefix=${PREFIX} && \
+	./configure --prefix=${PREFIX} && \
+	make && make install && \
 	rm -rf ${DIR} && \
-	yum clean all
+	yum remove -y ${BUILD_DEPS} && yum clean all
 
 # Install all language packs to tesseract
 RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
