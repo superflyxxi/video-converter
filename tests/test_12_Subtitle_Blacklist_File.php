@@ -3,7 +3,7 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://superflyxxi.dlinkddns.com/samples/DVD_Sample.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e APPLY_POSTFIX=false -e INPUT=dvd.mkv -e TITLE="Test Subtitle Files" -e VIDEO_FORMAT=copy -e AUDIO_TRACKS=-1 -e SUBTITLE_FORMAT=srt -e SUBTITLE_CONVERSION_OUTPUT=FILE -e YEAR=2019 ' . $image;
+$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e APPLY_POSTFIX=false -e INPUT=dvd.mkv -e TITLE="Test Subtitle Files" -e VIDEO_FORMAT=copy -e AUDIO_TRACKS=-1 -e SUBTITLE_FORMAT=srt -e SUBTITLE_CONVERSION_OUTPUT=FILE -e SUBTITLE_CONVERSION_BLACKLIST="!\’" -e YEAR=2019 ' . $image;
 printf("executing: %s\n", $command);
 exec($command, $output, $return);
 
@@ -27,5 +27,10 @@ test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["
 
 $testfile = getEnv("TMP_DIR")."/Test Subtitle Files (2019).mkv.2-eng.srt";
 test("File exists, ".$testfile, getEnv("BUILD_SUBTITLE_CONVERT") != "false", file_exists($testfile));
+if (getEnv("BUILD_SUBTITLE_CONVERT") != "false") {
+	$contents = file_get_contents($testfile);
+	test("SRT Contains ’", FALSE, strpos($contents, "’"), implode("\n", $output) . "\n" . $contents);
+	test("SRT Contains !", FALSE, strpos($contents, "!"), implode("\n", $output) . "\n" . $contents);
+}
 ?>
 
