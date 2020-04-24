@@ -20,7 +20,7 @@ class Request
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
         $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
         $req->subtitleConversionOutput = getEnvWithDefault("SUBTITLE_CONVERSION_OUTPUT", "MERGE");
-        $req->subtitleConversionBlacklist = getEnvWIthDefault("SUBTITLE_CONVERSION_BLACKLIST", "|\\/<>");
+        $req->subtitleConversionBlacklist = getEnvWIthDefault("SUBTITLE_CONVERSION_BLACKLIST", "|\\~/\`_");
 
         $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
