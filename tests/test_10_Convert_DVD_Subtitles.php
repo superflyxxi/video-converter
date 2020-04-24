@@ -13,7 +13,7 @@ $probe = probe("/data/Test Convert DVD Subtitle (2019).mkv");
 $probe = json_decode($probe, true);
 
 test("Stream 0", "subtitle", $probe["streams"][0]["codec_type"], $output);
-test("Stream 0 codec", "subrip", $probe["streams"][0]["codec_name"], $output);
+test("Stream 0 codec", getEnv("BUILD_SUBTITLE_CONVERT") == "false" ? "dvd_subtitle" : "subrip", $probe["streams"][0]["codec_name"], $output);
 test("Stream 0 language", "eng", $probe["streams"][0]["tags"]["language"], $output);
 test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"]), $output);
 test("Metadata Title", "Test Convert DVD Subtitle", $probe["format"]["tags"]["title"], $output);

@@ -7,25 +7,29 @@ WORKDIR /home/ripvideo/
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
-RUN apk --no-cache add php php-json wget openjdk8-jre \
-	tiff-dev tesseract-ocr tesseract-ocr-dev cmake g++ automake autoconf \
-	mkvtoolnix
+ARG BUILD_SUBTITLE_CONVERT=true
 
-# Install All Tesseract Language Packs
-RUN apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | xargs apk add --no-cache 
+RUN apk --no-cache add php php-json mkvtoolnix && \
+	if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk --no-cache add openjdk8-jre; fi
+
+# Install Tesseract and All Language Packs
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | grep -v "_old" | xargs apk add --no-cache tesseract-ocr; fi
 
 # Install VobSub2SRT
-RUN DIR=$(mktemp -d) && cd ${DIR} && \
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
+	DIR=$(mktemp -d) && cd ${DIR} && \
+	BUILD_DEPS="git tesseract-ocr-dev tiff-dev g++ cmake automake autoconf" && \
+	apk --no-cache add ${BUILD_DEPS} && \
 	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
 	git checkout autotools && \
 	./bootstrap && \
 	./configure CXXFLAGS="-std=gnu++11" && \
 	make && \
 	make install && \
-	rm -rf ${DIR}
+	rm -rf ${DIR}; fi
 
 # Install DBSup2Sub
-RUN wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"
+RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"; fi
 
 ENTRYPOINT php /home/ripvideo/script.php
 

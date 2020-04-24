@@ -2,7 +2,8 @@ language: php
 
 env:
   matrix:
-    - FFMPEG_DOCKER_LABEL=alpine
+    - FFMPEG_DOCKER_LABEL=alpine BUILD_SUBTITLE_CONVERT=false
+    - FFMPEG_DOCKER_LABEL=centos BUILD_SUBTITLE_CONVERT=true
 
 services:
   - docker
@@ -30,6 +31,7 @@ install:
     fi
 
 script:
+  - set -e
   - cd travis/
   - ./build.sh
   - ./test.sh
