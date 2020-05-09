@@ -1,6 +1,8 @@
 language: php
 
 env:
+  global:
+    - OFFICIAL_LABEL=centos
   matrix:
     - FFMPEG_DOCKER_LABEL=alpine BUILD_SUBTITLE_CONVERT=false
     - FFMPEG_DOCKER_LABEL=centos BUILD_SUBTITLE_CONVERT=true
@@ -38,6 +40,11 @@ script:
 
 after_success:
   - ./push.sh
+  - if [[ "${FFMPEG_DOCKER_LABEL}" == "${OFFICIAL_LABEL}" ]]; then
+        export OFFICIAL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${TRAVIS_BRANCH};
+        docker tag ${THIS_FULL_IMAGE} ${OFFICIAL_IMAGE};
+        THIS_FULL_IMAGE=${OFFICIAL_IMAGE} ./push.sh;
+    fi
   - if [[ "${TRAVIS_BRANCH}" == v* ]]; then
         export NEW_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${FFMPEG_DOCKER_LABEL};
         echo "Going to label ${THIS_FULL_IMAGE} an additional name of ${NEW_FULL_IMAGE}";
