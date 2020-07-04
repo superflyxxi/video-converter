@@ -1,6 +1,7 @@
 <?php
 $user = getEnv("UID");
 $image = getEnv("THIS_FULL_IMAGE");
+$sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
 
 printf("TEST: %s\n", debug_backtrace()[0]['file']);
 
