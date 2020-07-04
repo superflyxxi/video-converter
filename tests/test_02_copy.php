@@ -4,7 +4,7 @@
  */
 include_once "common.php";
 
-getFile("dvd.mkv", "https://superflyxxi.dlinkddns.com/samples/DVD_Sample.mkv");
+getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
 $command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e TITLE="Test Input" -e YEAR=2019 -e AUDIO_FORMAT=copy -e VIDEO_FORMAT=copy -e SUBTITLE_FORMAT=copy ' . $image;
 printf("executing: %s\n", $command);
