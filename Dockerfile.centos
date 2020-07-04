@@ -7,10 +7,11 @@ ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 # Enable Power Tools
-RUN yum install -y 'dnf-command(config-manager)' && \
-	yum config-manager --set-enabled PowerTools && \
-	yum remove -y 'dnf-command(config-manager)' && \
-	yum clean all
+#RUN yum install -y 'dnf-command(config-manager)' && \
+#RUN yum install -y dnf-plugins-core && \
+#	yum config-manager --set-enabled PowerTools && \
+#	yum remove -y 'dnf-command(config-manager)' && \
+#	yum clean all
 # Enable mkvtoolnix repo
 RUN rpm -Uhv https://mkvtoolnix.download/centos/bunkus-org-repo-2-3.noarch.rpm
 
