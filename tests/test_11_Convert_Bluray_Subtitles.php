@@ -1,7 +1,7 @@
 <?php
 include_once "common.php";
 
-getFile("bluray.mkv", "https://superflyxxi.dlinkddns.com/samples/Bluray_Sample.mkv");
+getFile("bluray.mkv", "https://".$sampleDomain."/samples/Bluray_Sample.mkv");
 
 $command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e APPLY_POSTFIX=false -e INPUT=bluray.mkv -e TITLE="Test Convert Bluray Subtitle" -e VIDEO_TRACKS=-1 -e AUDIO_TRACKS=-1 -e YEAR=2019 ' . $image;
 printf("executing: %s\n", $command);

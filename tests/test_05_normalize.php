@@ -1,7 +1,7 @@
 <?php
 include_once "common.php";
 
-getFile("dvd.mkv", "https://superflyxxi.dlinkddns.com/samples/DVD_Sample.mkv");
+getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
 $command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e TITLE="Test Normalize Track 1" -e YEAR=2019 -e NORMALIZE_AUDIO_TRACKS=1 -e VIDEO_TRACKS=-1 -e SUBTITLE_TRACKS=-1 ' . $image;
 printf("executing: %s\n", $command);

@@ -21,8 +21,8 @@ RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
 	BUILD_DEPS="git tesseract-ocr-dev tiff-dev g++ cmake automake autoconf" && \
 	apk --no-cache add ${BUILD_DEPS} && \
 	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
-	git checkout autotools && \
-	./bootstrap && \
+#	git checkout autotools && \
+#	./bootstrap && \
 	./configure CXXFLAGS="-std=gnu++11" && \
 	make && \
 	make install && \

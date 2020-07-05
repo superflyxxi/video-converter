@@ -6,18 +6,14 @@ WORKDIR /home/ripvideo/
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
-# Enable Power Tools
-RUN yum install -y 'dnf-command(config-manager)' && \
-	yum config-manager --set-enabled PowerTools && \
-	yum remove -y 'dnf-command(config-manager)' && \
-	yum clean all
 # Enable mkvtoolnix repo
 RUN rpm -Uhv https://mkvtoolnix.download/centos/bunkus-org-repo-2-3.noarch.rpm
 
-ARG BUILD_SUBTITLE_CONVERT=true
 RUN yum install -y --nogpgcheck php php-json \
 	mkvtoolnix \
 	&& yum clean all
+
+ARG BUILD_SUBTITLE_CONVERT=true
 
 # Install all language packs to tesseract
 RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
@@ -28,8 +24,6 @@ RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
 	BUILD_DEPS="libtiff-devel tesseract-devel" && \
 	yum install -y --nogpgcheck ${BUILD_DEPS} && \
 	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
-	git checkout autotools && \
-	./bootstrap && \
 	./configure --libdir=/usr/lib64 --prefix=/usr CXXFLAGS="-std=gnu++11" && \
 	make && \
 	make install && \
