@@ -10,21 +10,21 @@ include_once "ffmpeg/FFmpegHelper.php";
 class ConvertFile
 {
 
-    private $inputFilename = NULL;
+    public $inputFilename = NULL;
 
-    private $title = NULL;
+    public $title = NULL;
 
-    private $subtitle = NULL;
+    public $subtitle = NULL;
 
-    private $season = NULL;
+    public $season = NULL;
 
-    private $episode = NULL;
+    public $episode = NULL;
 
-    private $year = NULL;
+    public $year = NULL;
 
     public $oRequeset = NULL;
 
-    public function __construct($inputFilename, $title, $year, $season, $episode, $subtitle)
+    public function __construct($inputFilename=NULL, $title=NULL, $year=NULL, $season=NULL, $episode=NULL, $subtitle=NULL)
     {
         $this->inputFilename = $inputFilename;
         $this->title = $title;
