@@ -22,6 +22,8 @@ class ConvertFile
 
     private $year = NULL;
 
+    public $oRequeset = NULL;
+
     public function __construct($inputFilename, $title, $year, $season, $episode, $subtitle)
     {
         $this->inputFilename = $inputFilename;
@@ -30,6 +32,7 @@ class ConvertFile
         $this->season = $season;
         $this->episode = $episode;
         $this->subtitle = $subtitle;
+        $this->oRequest = Request::newInstanceFromEnv($this->inputFilename);
     }
 
     public function convert()
@@ -42,20 +45,19 @@ class ConvertFile
         $oOutput->episode = $this->episode;
         $oOutput->year = $this->year;
 
-        $oRequest = Request::newInstanceFromEnv($this->inputFilename);
         Logger::verbose("Conversion output {}", $oOutput);
-        Logger::verbose("Request information {}", $oRequest);
-        $allRequests[] = $oRequest;
-        $allRequests = array_merge($allRequests, ConvertAudio::convert($oRequest));
-        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($oRequest, $oOutput));
+        Logger::verbose("Request information {}", $this->oRequest);
+        $allRequests[] = $this->oRequest;
+        $allRequests = array_merge($allRequests, ConvertAudio::convert($this->oRequest));
+        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($this->oRequest, $oOutput));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput);
         Logger::info("Completed conversion with {} as a return value.", $returnValue);
 
         Logger::info("Chowning new file to match existing file.");
-        chown($oOutput->getFileName(), fileowner($oRequest->oInputFile->getFileName()));
-        chgrp($oOutput->getFileName(), filegroup($oRequest->oInputFile->getFileName()));
-        chmod($oOutput->getFileName(), fileperms($oRequest->oInputFile->getFileName()));
+        chown($oOutput->getFileName(), fileowner($this->oRequest->oInputFile->getFileName()));
+        chgrp($oOutput->getFileName(), filegroup($this->oRequest->oInputFile->getFileName()));
+        chmod($oOutput->getFileName(), fileperms($this->oRequest->oInputFile->getFileName()));
         return $returnValue;
     }
 }
