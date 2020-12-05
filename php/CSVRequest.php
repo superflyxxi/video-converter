@@ -20,6 +20,23 @@ class CSVRequest {
           case "title":
             $cf->title = $data[$key];
             break;
+
+          case "year":
+            $cf->year = $data[$key];
+            break;
+
+          case "season":
+            $cf->season = $data[$key];
+            break;
+
+          case "episode":
+            $cf->episode = $data[$key];
+            break;
+
+          case "subtitle":
+            $cf->subtitle = $data[$key];
+            break;
+
         }
       }
     }

@@ -22,7 +22,7 @@ class ConvertFile
 
     public $year = NULL;
 
-    public $oRequeset = NULL;
+    public $oRequest = NULL;
 
     public function __construct($inputFilename, $title=NULL, $year=NULL, $season=NULL, $episode=NULL, $subtitle=NULL)
     {
