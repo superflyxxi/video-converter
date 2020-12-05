@@ -1,6 +1,7 @@
 <?php
 
 include_once "Request.php";
+include_once "ConvertFile.php";
 
 class CSVRequest {
 
@@ -9,15 +10,15 @@ class CSVRequest {
     $colums = fgetcsv($f);
     while (($row = fgetcsv($f)) !== FALSE) {
       $data = self::getArrayForRow($columns, $row);
-      $req = Request::newInstanceFromEnv($data["input"]);
+      $cf = new ConvertFile($data["filename"]);
       foreach (array_keys($data) as $key) {
         switch ($key) {
-          case "input":
+          case "filename":
             // Already Processed
             break;
 
           case "title":
-            $req->setTitle($data[$key]);
+            $cf->title = $data[$key];
             break;
         }
       }
