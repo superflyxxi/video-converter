@@ -9,10 +9,10 @@ class CSVRequest {
     $colums = fgetcsv($f);
     while (($row = fgetcsv($f)) !== FALSE) {
       $data = self::getArrayForRow($columns, $row);
-      $req = Request::newInstanceFromEnv($data["filename"]);
+      $req = Request::newInstanceFromEnv($data["input"]);
       foreach (array_keys($data) as $key) {
         switch ($key) {
-          case "filename":
+          case "input":
             // Already Processed
             break;
 
