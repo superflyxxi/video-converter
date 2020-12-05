@@ -12,30 +12,48 @@ class CSVRequest {
       $data = self::getArrayForRow($columns, $row);
       $cf = new ConvertFile($data["filename"]);
       foreach (array_keys($data) as $key) {
-        switch ($key) {
-          case "filename":
-            // Already Processed
-            break;
+        $value = $data[$key];
+        if ($value != NULL) {
+          switch ($key) {
+            case "filename":
+              // Already Processed
+              break;
 
-          case "title":
-            $cf->title = $data[$key];
-            break;
+            case "title":
+              $cf->title = $value;
+              break;
 
-          case "year":
-            $cf->year = $data[$key];
-            break;
+            case "year":
+              $cf->year = $value;
+              break;
 
-          case "season":
-            $cf->season = $data[$key];
-            break;
+            case "season":
+              $cf->season = $value;
+              break;
 
-          case "episode":
-            $cf->episode = $data[$key];
-            break;
+            case "episode":
+              $cf->episode = $value;
+              break;
 
-          case "subtitle":
-            $cf->subtitle = $data[$key];
-            break;
+            case "subtitle":
+              $cf->subtitle = $value;
+              break;
+
+            case "playlist":
+              $cf->oRequest->playlist = $value;
+              break;
+
+            case "subtitleTracks":
+              $cf->oRequest->setSubtitleTracks($value);
+              break;
+
+            case "audioTracks":
+              $cf->oRequest->setAudioTracks($value);
+              break;
+
+            case "videoTracks":
+              $cf->oRequest->setVideoTracks($value);
+              break;
 
         }
       }
