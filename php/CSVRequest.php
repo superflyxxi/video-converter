@@ -5,12 +5,15 @@ include_once "ConvertFile.php";
 
 class CSVRequest {
 
+  public $arrConvertFiles = array();
+
   public function __construct($filename) {
     $f = fopen($filename, "r");
     $colums = fgetcsv($f);
     while (($row = fgetcsv($f)) !== FALSE) {
       $data = self::getArrayForRow($columns, $row);
       $cf = new ConvertFile($data["filename"]);
+      $this->arrConvertFiles[] = $cf;
       foreach (array_keys($data) as $key) {
         $value = $data[$key];
         if ($value != NULL) {
@@ -82,6 +85,7 @@ class CSVRequest {
         }
       }
     }
+    fclose($f);
   }
 
   private static function getArrayForRow($columns, $row) {
