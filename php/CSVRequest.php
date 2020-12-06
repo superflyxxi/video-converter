@@ -55,6 +55,30 @@ class CSVRequest {
               $cf->oRequest->setVideoTracks($value);
               break;
 
+            case "subtitleFormat":
+              $cf->oRequest->subtitleFormat = $value;
+              break;
+
+            case "audioFormat":
+              $cf->oRequest->audioFormat = $value;
+              break;
+
+            case "audioQuality":
+              $cf->oRequest->audioQuality = $value;
+              break;
+
+            case "audioChannelLayout":
+              $cf->oRequest->audioChannelLayout = $value;
+              break;
+
+            case "audioSampleRate":
+              $cf->oRequest->audioSampleRate = $value;
+              break;
+
+            case "videoFormat":
+              $cf->oRequest->videoFormat = $value;
+              break;
+
         }
       }
     }
