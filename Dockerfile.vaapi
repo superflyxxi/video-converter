@@ -1,0 +1,56 @@
+ARG FROM_IMAGE
+FROM ${FROM_IMAGE}
+MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
+
+WORKDIR /home/ripvideo/
+
+ENV TMP_DIR=/tmp/wip
+RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
+
+ARG BUILD_SUBTITLE_CONVERT=true
+
+#RUN apk --no-cache add php php-json mkvtoolnix && \
+#	if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk --no-cache add openjdk8-jre; fi
+RUN apt-get update -y && \
+	apt-get install -y php php-json mkvtoolnix && \
+	apt-get clean -y
+
+# install tesseract, language packs, and java
+RUN if "${BUILD_SUBTITLE_CONVERT}" == "true"; then \
+		apt-get update; \
+		apt-get install -y; \
+		apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y openjdk-9-jre ; \
+		apt-get clean -y; \
+	fi
+
+# Install Tesseract and All Language Packs
+#RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | grep -v "_old" | xargs apk add --no-cache tesseract-ocr; fi
+
+# Install VobSub2SRT
+RUN if "${BUILD_SUBTITLE_CONVERT}" == "true" ; then \
+		DIR=$(mktemp -d); cd ${DIR}; \
+		BUILD_DEPS="git tesseract-ocr-dev tiff-dev g++ cmake automake autoconf"; \
+		apt-get update; \
+		apt-get install -y ${BUILD_DEPS};  \
+		git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git; \
+		cd VobSub2SRT; \
+#		git checkout autotools && \
+#		./bootstrap && \
+		./configure CXXFLAGS="-std=gnu++11"; \
+		make; \
+		make install; \
+		apt-get remove -y ${BUILD_DEPS}; \
+		rm -rf ${DIR}; \
+	 fi
+
+# Install DBSup2Sub
+RUN if "${BUILD_SUBTITLE_CONVERT}" == "true"; then \
+		wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"; \
+	fi
+
+ENTRYPOINT php /home/ripvideo/script.php
+
+COPY scripts/ /home/ripvideo/scripts/
+COPY php/ /home/ripvideo/
+RUN chmod -R ugo+r /home/ripvideo
+
