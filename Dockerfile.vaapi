@@ -29,7 +29,7 @@ RUN if "${BUILD_SUBTITLE_CONVERT}" == "true"; then \
 # Install VobSub2SRT
 RUN if "${BUILD_SUBTITLE_CONVERT}" == "true" ; then \
 		DIR=$(mktemp -d); cd ${DIR}; \
-		BUILD_DEPS="git tesseract-ocr-dev tiff-dev g++ cmake automake autoconf"; \
+		BUILD_DEPS="git tesseract-ocr-dev libtiff5-dev g++ cmake automake autoconf"; \
 		apt-get update; \
 		apt-get install -y ${BUILD_DEPS};  \
 		git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git; \
@@ -45,7 +45,10 @@ RUN if "${BUILD_SUBTITLE_CONVERT}" == "true" ; then \
 
 # Install DBSup2Sub
 RUN if "${BUILD_SUBTITLE_CONVERT}" == "true"; then \
+		apt-get update; \
+		apt-get install -y wget; \
 		wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"; \
+		apt-get clean -y; \
 	fi
 
 ENTRYPOINT php /home/ripvideo/script.php
