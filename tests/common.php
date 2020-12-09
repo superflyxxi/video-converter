@@ -55,9 +55,10 @@ function test_ffmpeg($envVars, &$output, &$return, $timeout = "5m") {
         $command .= " -e " . $key . '="' . $value . '" ';
     }
     $command .= getEnv("THIS_FULL_IMAGE");
-    printf("executing: %s\n", $command);
+    printf("%s: executing: %s\n", date(DateTimeInterface::ISO8601), $command);
     exec($command, $output, $return);
-    exec("docker stop test");
+    exec("docker rm -f test");
+    printf("%s: Done executing\n", date(DateTimeInterface::ISO8601));
 }
 
 ?>
