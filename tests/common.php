@@ -49,12 +49,12 @@ function getFile($localFilename, $URL)
     return TRUE;
 }
 
-function test_ffmpeg($envVars, &$output, &$return, $time = "5m") {
-    $command = 'timeout -s9 ' . $timeout . ' docker run --rm -t --name test -v ' . getEnv("TMP_DIR") . ':/data ';
+function test_ffmpeg($envVars, &$output, &$return, $timeout = "5m") {
+    $command = 'timeout -s9 ' . $timeout . ' docker run --rm -t --name test -v "' . getEnv("TMP_DIR") . ':/data" ';
     foreach ($envVars as $key => $value) {
         $command .= " -e " . $key . '="' . $value . '" ';
     }
-    $command .= $image;
+    $command .= getEnv("THIS_FULL_IMAGE");
     printf("executing: %s\n", $command);
     exec($command, $output, $return);
     exec("docker stop test");
