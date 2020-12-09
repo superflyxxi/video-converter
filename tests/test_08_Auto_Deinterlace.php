@@ -5,7 +5,8 @@ getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
 $command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e AUDIO_TRACKS=-1 -e SUBTITLE_TRACKS=-1 -e TITLE="Test Auto Deinterlace" -e YEAR=2019 ' . $image;
 printf("executing: %s\n", $command);
-exec($command, $output, $return);
+//exec($command, $output, $return);
+passthru($command, $return);
 
 test("ffmpeg code", 0, $return, $output);
 
