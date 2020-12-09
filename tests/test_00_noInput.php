@@ -9,7 +9,8 @@ test_ffmpeg(array("TITLE"=>"Test No Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy"
 
 test("ffmpeg code", 0, $return, $output);
 
-$probe = json_decode(probe("/data/Test No Input (2019).dvd.mkv.mkv", true));
+$probe = probe("/data/Test No Input (2019).dvd.mkv.mkv", true);
+$probe = json_decode($probe);
 
 $testOutput = array(
     $output,
