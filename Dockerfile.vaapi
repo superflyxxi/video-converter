@@ -12,6 +12,7 @@ ARG BUILD_SUBTITLE_CONVERT=true
 #RUN apk --no-cache add php php-json mkvtoolnix && \
 #	if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk --no-cache add openjdk8-jre; fi
 RUN apt-get update -y && \
+	apt-get install -y dialog apt-utils && \
 	apt-get install -y php php-json mkvtoolnix && \
 	apt-get clean -y
 
