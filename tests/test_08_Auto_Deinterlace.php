@@ -3,10 +3,11 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
-$command = 'docker run --rm -t --name test08 -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e AUDIO_TRACKS=-1 -e SUBTITLE_TRACKS=-1 -e TITLE="Test Auto Deinterlace" -e YEAR=2019 ' . $image;
-printf("executing: %s\n", $command);
-exec("timeout -s9 5m ". $command, $output, $return);
-exec("docker stop test08");
+test_ffmpeg(array("INPUT"=>"dvd.mkv", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Auto Deinterlace", "YEAR"=>2019), $output, $return);
+//$command = 'docker run --rm -t --name test08 -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e AUDIO_TRACKS=-1 -e SUBTITLE_TRACKS=-1 -e TITLE="Test Auto Deinterlace" -e YEAR=2019 ' . $image;
+//printf("executing: %s\n", $command);
+//exec("timeout -s9 5m ". $command, $output, $return);
+//exec("docker stop test08");
 
 //test("ffmpeg code", 0, $return, $output);
 
