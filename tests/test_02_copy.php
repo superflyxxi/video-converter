@@ -6,10 +6,10 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e TITLE="Test Input" -e YEAR=2019 -e AUDIO_FORMAT=copy -e VIDEO_FORMAT=copy -e SUBTITLE_FORMAT=copy ' . $image;
+/*$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e TITLE="Test Input" -e YEAR=2019 -e AUDIO_FORMAT=copy -e VIDEO_FORMAT=copy -e SUBTITLE_FORMAT=copy ' . $image;
 printf("executing: %s\n", $command);
-exec($command, $output, $return);
-
+exec($command, $output, $return);*/
+test_ffmpeg(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"), $output, $return);
 test("ffmpeg code", 0, $return, $output);
 
 $probe = probe("/data/Test Input (2019).dvd.mkv.mkv");
