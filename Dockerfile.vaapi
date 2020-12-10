@@ -36,9 +36,8 @@ RUN DIR=$(mktemp -d) && cd ${DIR} && \
 # Install DBSup2Sub
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
 
-ENTRYPOINT php /home/ripvideo/script.php
+ENTRYPOINT /home/ripvideo/rip-video
 
-COPY scripts/ /home/ripvideo/scripts/
 COPY php/ /home/ripvideo/
 RUN chmod -R ugo+r /home/ripvideo
 
