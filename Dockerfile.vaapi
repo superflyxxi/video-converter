@@ -8,6 +8,7 @@ ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 ARG BUILD_SUBTITLE_CONVERT=true
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
