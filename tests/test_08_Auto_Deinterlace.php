@@ -5,7 +5,7 @@ getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
 test_ffmpeg(array("INPUT"=>"dvd.mkv", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Auto Deinterlace", "YEAR"=>2019), $output, $return);
 
-//test("ffmpeg code", 0, $return, $output);
+// not validating return as it can be killed; test("ffmpeg code", 0, $return, $output);
 
 $probe = probe("/data/Test Auto Deinterlace (2019).dvd.mkv.mkv");
 $probe = json_decode($probe, true);

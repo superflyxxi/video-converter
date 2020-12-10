@@ -3,9 +3,7 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e APPLY_POSTFIX=false -e INPUT=dvd.mkv -e TITLE="Test Convert DVD Subtitle" -e VIDEO_TRACKS=-1 -e AUDIO_TRACKS=-1 -e SUBTITLE_FORMAT=srt -e YEAR=2019 ' . $image;
-printf("executing: %s\n", $command);
-exec($command, $output, $return);
+test_ffmpeg(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Convert DVD Subtitle", "VIDEO_TRACKS"=>-1, "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "YEAR"=>2019), $output, $return);
 
 test("ffmpeg code", 0, $return, $output);
 

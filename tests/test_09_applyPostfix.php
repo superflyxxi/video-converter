@@ -3,10 +3,7 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e APPLY_POSTFIX=false -e INPUT=dvd.mkv -e TITLE="Test Not Applying Postfix" -e YEAR=2019 -e VIDEO_FORMAT=copy -e AUDIO_TRACKS=-1 -e SUBTITLE_TRACKS=-1 ' . $image;
-printf("executing: %s\n", $command);
-exec($command, $output, $return);
-
+test_ffmpeg(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Not Applying Postfix", "YEAR"=>2019, "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1), $output, $return);
 test("ffmpeg code", 0, $return, $output);
 
 $probe = probe("/data/Test Not Applying Postfix (2019).mkv");

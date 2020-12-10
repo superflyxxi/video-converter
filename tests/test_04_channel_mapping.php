@@ -3,9 +3,7 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e TITLE="Test Channel Mapping" -e YEAR=2019 -e AUDIO_CHANNEL_LAYOUT=stereo -e AUDIO_CHANNEL_LAYOUT_TRACKS=1 -e VIDEO_TRACKS=-1 -e SUBTITLE_TRACKS=-1 ' . $image;
-printf("executing: %s\n", $command);
-exec($command, $output, $return);
+test_ffmpeg(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Channel Mapping", "YEAR"=>"2019", "AUDIO_CHANNEL_LAYOUT"=>"stereo", "AUDIO_CHANNEL_LAYOUT_TRACKS"=>1, "VIDEO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1), $output, $return);
 test("ffmpeg code", 0, $return, $output);
 
 $probe = probe("/data/Test Channel Mapping (2019).dvd.mkv.mkv");

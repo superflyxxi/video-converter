@@ -3,10 +3,7 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e INPUT=dvd.mkv -e TITLE="Test Normalize Track 1" -e YEAR=2019 -e NORMALIZE_AUDIO_TRACKS=1 -e VIDEO_TRACKS=-1 -e SUBTITLE_TRACKS=-1 ' . $image;
-printf("executing: %s\n", $command);
-exec($command, $output, $return);
-
+test_ffmpeg(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Normalize Track 1", "YEAR"=>2019, "NORMALIZE_AUDIO_TRACKS"=>1, "VIDEO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1), $output, $return);
 test("ffmpeg code", 0, $return, $output);
 
 $probe = probe("/data/Test Normalize Track 1 (2019).dvd.mkv.mkv");
