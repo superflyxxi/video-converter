@@ -9,8 +9,6 @@ RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 ARG BUILD_SUBTITLE_CONVERT=true
 
-#RUN apk --no-cache add php php-json mkvtoolnix && \
-#	if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk --no-cache add openjdk8-jre; fi
 RUN apt-get update -y && \
 	apt-get install -y dialog apt-utils && \
 	apt-get install -y php php-json mkvtoolnix && \
@@ -24,9 +22,6 @@ RUN if "${BUILD_SUBTITLE_CONVERT}" == "true"; then \
 		apt-get clean -y; \
 	fi
 
-# Install Tesseract and All Language Packs
-#RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then apk search --no-cache tesseract-ocr-data | grep tesseract | sed 's/-[0-9]\.[0-9]\.[0-9]-[a-zA-Z0-9]*//g' | grep -v "_old" | xargs apk add --no-cache tesseract-ocr; fi
-
 # Install VobSub2SRT
 RUN if "${BUILD_SUBTITLE_CONVERT}" == "true" ; then \
 		DIR=$(mktemp -d); cd ${DIR}; \
@@ -35,8 +30,6 @@ RUN if "${BUILD_SUBTITLE_CONVERT}" == "true" ; then \
 		apt-get install -y ${BUILD_DEPS};  \
 		git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git; \
 		cd VobSub2SRT; \
-#		git checkout autotools && \
-#		./bootstrap && \
 		./configure CXXFLAGS="-std=gnu++11"; \
 		make; \
 		make install; \
