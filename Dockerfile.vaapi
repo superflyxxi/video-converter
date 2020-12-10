@@ -10,14 +10,12 @@ RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 ARG BUILD_SUBTITLE_CONVERT=true
 
 RUN apt-get update -y && \
-	apt-get install -y dialog apt-utils && \
-	apt-get install -y php php-json mkvtoolnix && \
+	apt-get install -y apt-utils php php-json mkvtoolnix && \
 	apt-get clean -y
 
 # install tesseract, language packs, and java
 RUN if "${BUILD_SUBTITLE_CONVERT}" == "true"; then \
 		apt-get update; \
-		apt-get install -y; \
 		apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y openjdk-9-jre ; \
 		apt-get clean -y; \
 	fi
@@ -34,6 +32,7 @@ RUN if "${BUILD_SUBTITLE_CONVERT}" == "true" ; then \
 		make; \
 		make install; \
 		apt-get remove -y ${BUILD_DEPS}; \
+		apt-get clean -y; \
 		rm -rf ${DIR}; \
 	 fi
 
@@ -42,6 +41,7 @@ RUN if "${BUILD_SUBTITLE_CONVERT}" == "true"; then \
 		apt-get update; \
 		apt-get install -y wget; \
 		wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"; \
+		apt-get remove -y wget; \
 		apt-get clean -y; \
 	fi
 
