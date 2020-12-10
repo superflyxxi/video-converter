@@ -2,7 +2,6 @@ language: php
 
 env:
   global:
-    - FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
   matrix:
     - DOCKERFILE=vaapi
 
@@ -10,6 +9,7 @@ services:
   - docker
 
 before_install:
+  - export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
   - export THIS_LABEL=${DOCKERFILE}-${TRAVIS_BRANCH}
   - export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL}
   - export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}
