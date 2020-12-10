@@ -7,7 +7,6 @@ WORKDIR /home/ripvideo/
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
-ARG BUILD_SUBTITLE_CONVERT=true
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y && \
@@ -16,36 +15,26 @@ RUN apt-get update -y && \
 	apt-get clean -y
 
 # install tesseract, language packs, and java
-RUN if "${BUILD_SUBTITLE_CONVERT}" == "true"; then \
-		apt-get update; \
-		apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y openjdk-9-jre ; \
-		apt-get clean -y; \
-	fi
+RUN apt-get update && \
+	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y openjdk-9-jre && \
+	apt-get clean -y
 
 # Install VobSub2SRT
-RUN if "${BUILD_SUBTITLE_CONVERT}" == "true" ; then \
-		DIR=$(mktemp -d); cd ${DIR}; \
-		BUILD_DEPS="git tesseract-ocr-dev libtiff5-dev g++ cmake automake autoconf"; \
-		apt-get update; \
-		apt-get install -y ${BUILD_DEPS};  \
-		git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git; \
-		cd VobSub2SRT; \
-		./configure CXXFLAGS="-std=gnu++11"; \
-		make; \
-		make install; \
-		apt-get purge --auto-remove -y ${BUILD_DEPS}; \
-		apt-get clean -y; \
-		rm -rf ${DIR}; \
-	 fi
+RUN DIR=$(mktemp -d) && cd ${DIR} && \
+	BUILD_DEPS="git tesseract-ocr-dev libtiff5-dev g++ cmake automake autoconf" && \
+	apt-get update && \
+	apt-get install -y ${BUILD_DEPS} &&  \
+	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && \
+	cd VobSub2SRT && \
+	./configure CXXFLAGS="-std=gnu++11" && \
+	make && \
+	make install && \
+	apt-get purge --auto-remove -y ${BUILD_DEPS} && \
+	apt-get clean -y && \
+	rm -rf ${DIR}
 
 # Install DBSup2Sub
-RUN if "${BUILD_SUBTITLE_CONVERT}" == "true"; then \
-		apt-get update; \
-		apt-get install -y wget; \
-		wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar"; \
-		apt-get purge --auto-remove -y wget; \
-		apt-get clean -y; \
-	fi
+ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
 
 ENTRYPOINT php /home/ripvideo/script.php
 
