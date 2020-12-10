@@ -51,7 +51,7 @@ function getFile($localFilename, $URL)
 }
 
 function test_ffmpeg($envVars, &$output, &$return, $timeout = "5m") {
-    $command = 'timeout -s9 ' . $timeout . ' docker run -t --rm --user ' . getEnv("UID").':'.getEnv("GID"). ' --name test -v "' . getEnv("TMP_DIR") . ':/data" ';
+    $command = 'timeout -s9 ' . $timeout . ' docker run -t --rm --user $(id -u):$(id -g) --name test -v "' . getEnv("TMP_DIR") . ':/data" ';
     foreach ($envVars as $key => $value) {
         $command .= " -e " . $key . '="' . $value . '" ';
     }
