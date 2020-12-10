@@ -36,7 +36,6 @@ function probe($file)
     exec($command, $out, $ret);
     if ($ret == 0) {
         $out = implode($out);
-        printf("Result of Probe: %s\n\n", $out);
         return $out;
     }
     return NULL;
