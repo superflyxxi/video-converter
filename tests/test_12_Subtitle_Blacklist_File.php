@@ -29,8 +29,8 @@ $testfile = getEnv("TMP_DIR")."/Test Subtitle Files (2019).mkv.2-eng.srt";
 test("File exists, ".$testfile, getEnv("BUILD_SUBTITLE_CONVERT") != "false", file_exists($testfile));
 if (getEnv("BUILD_SUBTITLE_CONVERT") != "false") {
 	$contents = file_get_contents($testfile);
-	test("SRT Contains ’", FALSE, strpos($contents, "’"), implode("\n", $testOutput) . "\n" . $contents);
-	test("SRT Contains !", FALSE, strpos($contents, "!"), implode("\n", $testOutput) . "\n" . $contents);
+	test("SRT Contains ’", FALSE, strpos($contents, "’"), array_merge($testOutput, array($contents)));
+	test("SRT Contains !", FALSE, strpos($contents, "!"), array_merge($testOutput, array($contents)));
 }
 ?>
 
