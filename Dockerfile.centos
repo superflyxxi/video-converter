@@ -13,14 +13,12 @@ RUN yum install -y --nogpgcheck php php-json \
 	mkvtoolnix \
 	&& yum clean all
 
-ARG BUILD_SUBTITLE_CONVERT=true
-
 # Install all language packs to tesseract
-RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then yum search tesseract-langpack | awk '{print $1}'|grep tesseract|  sed 's/\..*//g'| xargs yum install -y --nogpgcheck tesseract && yum clean all; fi
+RUN yum search tesseract-langpack | awk '{print $1}' | grep tesseract | sed 's/\..*//g' | xargs yum install -y --nogpgcheck tesseract \
+	&& yum clean all
 
 # Install VobSub2SRT
-RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
-	DIR=$(mktemp -d) && cd ${DIR} && \
+RUN DIR=$(mktemp -d) && cd ${DIR} && \
 	BUILD_DEPS="libtiff-devel tesseract-devel" && \
 	yum install -y --nogpgcheck ${BUILD_DEPS} && \
 	git clone https://github.com/ruediger/VobSub2SRT.git && cd VobSub2SRT && \
@@ -29,14 +27,12 @@ RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
 	make install && \
 	rm -rf ${DIR} && \
 	yum remove -y ${BUILD_DEPS} && \
-	yum clean all; fi
+	yum clean all
 
 # Install BDSup2Sub
-RUN if [[ "${BUILD_SUBTITLE_CONVERT}" == "true" ]]; then \
-	yum install -y --nogpgcheck wget java-1.8.0-openjdk && \
-	wget "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" && \
-	yum remove -y wget && \
-	yum clean all; fi
+RUN yum install -y --nogpgcheck java-1.8.0-openjdk && \
+	yum clean all
+ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
 
 ENTRYPOINT php /home/ripvideo/script.php
 
