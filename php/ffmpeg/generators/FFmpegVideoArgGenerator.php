@@ -22,7 +22,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
         } else {
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
             if ($request->deinterlace) {
-                $args .= " -vf 'yadif=mode=1:deint=1'";
+                $args .= " -vf 'yadif=mode=1'";
             }
         }
         $args .= " -metadata:s:v:" . $outTrack . " language=" . $stream->language;
