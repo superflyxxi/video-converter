@@ -4,16 +4,13 @@
  */
 include_once "common.php";
 
-getFile("dvd.mkv", "https://superflyxxi.dlinkddns.com/samples/DVD_Sample.mkv");
-
-$command = 'docker run --rm -t -v ' . getEnv("TMP_DIR") . ':/data -e TITLE="Test No Input" -e YEAR=2019 -e AUDIO_FORMAT=copy -e VIDEO_FORMAT=copy -e SUBTITLE_FORMAT=copy ' . $image;
-printf("executing: %s\n", $command);
-exec($command, $output, $return);
+getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
+test_ffmpeg(array("TITLE"=>"Test No Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"), $output, $return);
 
 test("ffmpeg code", 0, $return, $output);
 
-$probe = probe("/data/Test No Input (2019).dvd.mkv.mkv");
-$probe = json_decode($probe, true);
+$probe = probe("/data/Test No Input (2019).dvd.mkv.mkv", true);
+$probe = json_decode($probe, TRUE);
 
 $testOutput = array(
     $output,

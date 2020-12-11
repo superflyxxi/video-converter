@@ -1,6 +1,7 @@
 <?php
 $user = getEnv("UID");
 $image = getEnv("THIS_FULL_IMAGE");
+$sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
 
 printf("TEST: %s\n", debug_backtrace()[0]['file']);
 
@@ -34,7 +35,8 @@ function probe($file)
     printf("Probing '%s'\n", $file);
     exec($command, $out, $ret);
     if ($ret == 0) {
-        return implode($out);
+        $out = implode($out);
+        return $out;
     }
     return NULL;
 }
@@ -47,5 +49,17 @@ function getFile($localFilename, $URL)
     }
     return TRUE;
 }
-?>
 
+function test_ffmpeg($envVars, &$output, &$return, $timeout = "5m") {
+    $command = 'timeout -s9 ' . $timeout . ' docker run -t --rm --user $(id -u):$(id -g) --name test -v "' . getEnv("TMP_DIR") . ':/data" ';
+    foreach ($envVars as $key => $value) {
+        $command .= " -e " . $key . '="' . $value . '" ';
+    }
+    $command .= getEnv("THIS_FULL_IMAGE");
+    printf("%s: executing: %s\n", date(DateTimeInterface::ISO8601), $command);
+    exec($command, $output, $return);
+    exec("docker stop test");
+    printf("%s: Done executing\n", date(DateTimeInterface::ISO8601));
+}
+
+?>
