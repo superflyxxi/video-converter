@@ -11,6 +11,7 @@ services:
 before_install:
   - export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
   - export THIS_LABEL=${DOCKERFILE}-${TRAVIS_BRANCH}
+  - if [[ "${TRAVIS_BRANCH}" == "master" ]]; then export THIS_LABEL=${DOCKERFILE}; fi
   - export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL}
   - export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}
   - sudo mkdir -p "/etc/docker/certs.d/${THIS_REGISTRY}"
@@ -38,10 +39,3 @@ script:
 
 after_success:
   - ./push.sh
-  - if [[ "${TRAVIS_BRANCH}" == "master" ]]; then
-        export NEW_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE};
-        echo "Going to label ${THIS_FULL_IMAGE} an additional name of ${NEW_FULL_IMAGE}";
-        docker tag ${THIS_FULL_IMAGE} ${NEW_FULL_IMAGE};
-        THIS_FULL_IMAGE=${NEW_FULL_IMAGE} ./push.sh;
-    fi
-
