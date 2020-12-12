@@ -1,5 +1,6 @@
 <?php
 include_once "Logger.php";
+include_once "exceptions/ExecutionException.php";
 
 class MKVExtractHelper
 {
@@ -9,15 +10,12 @@ class MKVExtractHelper
         Logger::info("Extracting {}", $oInputFile->getFileName());
         $command = 'mkvextract tracks "' . $oInputFile->getFileName() . '" ';
         foreach ($arrTracks as $track => $outFileName) {
-            $command .= ' ' . $track . ':' . $outFileName;
+            $command .= ' "' . $track . ':' . $outFileName . '"';
         }
         Logger::debug("extracting with mkvextract with command: {}", $command);
         passthru($command, $return);
         if (0 < $return) {
-            Logger::error("Problem executing. Got {}", $return);
-            if ($exit) {
-                exit($return);
-            }
+	    throw new ExecutionException("mkvextract", $return, $command);
         }
         return $return;
     }

@@ -31,4 +31,3 @@ ENTRYPOINT php /home/ripvideo/script.php
 COPY scripts/ /home/ripvideo/scripts/
 COPY php/ /home/ripvideo/
 RUN chmod -R ugo+r /home/ripvideo
-
