@@ -81,7 +81,7 @@ class CSVRequest {
             case "videoFormat":
               $cf->oRequest->videoFormat = $value;
               break;
-
+          }
         }
       }
     }
