@@ -2,7 +2,8 @@ ARG FROM_IMAGE
 FROM ${FROM_IMAGE}
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
-WORKDIR /home/ripvideo/
+ARG INSTALL_DIR=/home/ripvideo
+WORKDIR ${INSTALL_DIR}
 
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
@@ -13,7 +14,7 @@ RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
 	apt-get install -y php php-json mkvtoolnix && \
 	apt-get clean -y
-RUN sed -i 's#^include_path = "\(.*\)"$#include_path = "\1:/home/ripvideo"#g' /etc/php7/php.ini
+RUN sed -i 's#^include_path = "\(.*\)"$#include_path = "\1:${INSTALL_DIR}"#g' /etc/php/7.0/cli/php.ini
 
 # install tesseract, language packs, and java
 RUN apt-get update && \
@@ -35,10 +36,10 @@ RUN DIR=$(mktemp -d) && cd ${DIR} && \
 	rm -rf ${DIR}
 
 # Install DBSup2Sub
-ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
+ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" ${INSTALL_DIR}/
 
-ENTRYPOINT /home/ripvideo/rip-video
+ENTRYPOINT ${INSTALL_DIR}/rip-video
 
-COPY php/ /home/ripvideo/
-RUN chmod -R ugo+r /home/ripvideo
+COPY php/ ${INSTALL_DIR}/
+RUN chmod -R ugo+r ${INSTALL_DIR}
 
