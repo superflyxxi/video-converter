@@ -95,8 +95,21 @@ class CSVRequest {
     }
     return $data;
   }
+
+  public function convert() {
+    $finalResult = 0;
+    foreach ($this->arrConvertFiles as $file) {
+        try {
+            $result = $file->convert();
+        } catch (Exception $ex) {
+            Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
+            $result = 255;
+        } finally {
+            $finalResult = max($finalResult, $result);
+        }
+    }
+    return $finalResult;
+  }
+
 }
-
-
-
 ?>

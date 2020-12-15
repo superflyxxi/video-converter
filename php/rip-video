@@ -23,28 +23,28 @@ if (NULL == getEnv("TITLE")) {
     exit(1);
 }
 
-if (NULL == getEnv("INPUT")) {
+$envInput = getEnv("INPUT");
+$csvRequest = NULL;
+if (substr($envInput, -4 ) === ".csv") {
+  $csvRequest = new CSVRequest("/data/".$envInput);
+} else {
+  if (NULL == $envInput) {
     $arrFiles = array_diff(scandir("/data/"), array(
         '..',
         '.'
     ));
-} else {
-    $arrFiles[] = getEnv("INPUT");
+  } else {
+    $arrFiles[] = $envInput;
+  }
+  //$csvFilename = getEnvWithDefault("TMP_DIR", "/tmp")."/tmp.csv"; 
+  //$csvFile = new SplFileObject($csvFilename, "w");
+  $csvFile = new SplTempFileObject();
+  $csvFile->fputcsv(array("filename"));
+  foreach ($arrFiles as $infile) {
+    $csvFile->fputcsv(array($infile));
+  }
+  $csvRequest = new CSVRequest($csvFile->getRealPath());
 }
 
-Logger::verbose("Files to process: {}", $arrFiles);
-
-$finalResult = 0;
-foreach ($arrFiles as $file) {
-    try {
-        $conversion = new ConvertFile("/data/" . $file, getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
-        $result = $conversion->convert();
-    } catch (Exception $ex) {
-        Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
-        $result = 255;
-    } finally {
-        $finalResult = max($finalResult, $result);
-    }
-}
-exit($finalResult);
+exit($csvRequest->convert());
 ?>
