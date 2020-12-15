@@ -1,0 +1,17 @@
+<?php
+
+include_once "Logger.php";
+
+class ExecutionException extends Exception {
+
+    private $args = NULL;
+
+    public function __construct(string $program, int $err, $args = NULL) {
+        parent::__construct("Program (" . $programe . " failed to execute.", $err);
+        $this->args = $args;
+	Logger::error($this->getMessage());
+    }
+
+}
+?>
+

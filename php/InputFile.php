@@ -13,8 +13,10 @@ class InputFile
             $this->prefix = "bluray:";
         }
         $out = FFmpegHelper::probe($this);
+	if ($out === FALSE) {
+	    throw new Exception("Could not probe file " . $filename);
+	}
         $json = json_decode(implode($out), true);
-        Logger::verbose("JSON from probing {}: {}", $this->getFileName(), $json);
         if (array_key_exists("streams", $json)) {
             foreach ($json["streams"] as $stream) {
                 $oStream = new Stream($stream);

@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 include_once "ConvertFile.php";
 
@@ -33,12 +34,17 @@ if (NULL == getEnv("INPUT")) {
 
 Logger::verbose("Files to process: {}", $arrFiles);
 
+$finalResult = 0;
 foreach ($arrFiles as $file) {
-    $conversion = new ConvertFile("/data/" . $file, getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
-    $result = $conversion->convert();
-    if ($result != 0) {
-        exit($result);
+    try {
+        $conversion = new ConvertFile("/data/" . $file, getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
+        $result = $conversion->convert();
+    } catch (Exception $ex) {
+        Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
+        $result = 255;
+    } finally {
+        $finalResult = max($finalResult, $result);
     }
 }
-exit(0);
+exit($finalResult);
 ?>

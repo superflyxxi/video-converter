@@ -7,6 +7,7 @@ include_once "ffmpeg/generators/FFmpegArgGenerator.php";
 include_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
 include_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
 include_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
+include_once "exceptions/ExecutionException.php";
 
 class FFmpegHelper
 {
@@ -15,15 +16,14 @@ class FFmpegHelper
 
     public static function probe($inputFile)
     {
-        if (! in_array($inputFile->getFileName(), self::$probeCache)) {
+        if (! array_key_exists($inputFile->getFileName(), self::$probeCache)) {
             $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $inputFile->getPrefix() . $inputFile->getFileName() . '"';
             Logger::debug("Executing ffprobe: {}", $command);
             exec($command, $out, $ret);
             if ($ret > 0) {
-                Logger::error("Failed to execute ffprobe; returned {}", $ret);
-                exit($ret);
+                throw new ExecutionException("ffprobe", $ret);
             }
-            Logger::verbose("Adding to cache {}", $inputFile->getFileName());
+            Logger::verbose("Adding to cache {} = {}", $inputFile->getFileName(), $out);
             self::$probeCache[$inputFile->getFileName()] = $out;
         } else {
             Logger::debug("Found {} in cache", $inputFile->getFileName());
@@ -35,14 +35,14 @@ class FFmpegHelper
     public static function isInterlaced($inputFile)
     {
         Logger::info("Checking for interlacing: {}", $inputFile);
-        $command = 'ffmpeg -i "' . $inputFile . '" -vf idet -frames:v 5000 -f rawvideo -y /dev/null 2>&1';
+        $args = '-i "' . $inputFile . '" -vf idet -frames:v 5000 -f rawvideo -y /dev/null 2>&1';
+        $command = 'ffmpeg ' . $args;
         Logger::debug("Command: {}", $command);
         exec($command, $out, $ret);
-        Logger::verbose("Output: {}", $out);
         if ($ret > 0) {
-            Logger::error("Failed to determine interlacing; returned {}", $ret);
-            return false;
+            throw new ExecutionException("ffmpeg", $ret, $args);
         }
+        Logger::verbose("Output: {}", $out);
         $out = implode($out);
 
         preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
@@ -58,11 +58,9 @@ class FFmpegHelper
         $command = self::generate($listRequests, $outputFile);
         Logger::debug("Executing ffmpeg: {}", $command);
         passthru($command . " 2>&1", $ret);
-        if ($exit && $ret > 0) {
-            Logger::error("Failed to execute ffmpeg with return code {}", $ret);
-            exit($ret);
+        if ($ret > 0) {
+            throw new ExecutionException("ffmpeg", $ret, $command);
         }
-        return $ret;
     }
 
     public static function generate($listRequests, $outputFile)
