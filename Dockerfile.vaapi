@@ -13,6 +13,7 @@ RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
 	apt-get install -y php php-json mkvtoolnix && \
 	apt-get clean -y
+RUN sed -i 's#^include_path = "\(.*\)"$#include_path = "\1:/home/ripvideo"#g' /etc/php7/php.ini
 
 # install tesseract, language packs, and java
 RUN apt-get update && \
