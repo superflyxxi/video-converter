@@ -89,7 +89,8 @@ class ConvertSubtitle
                         Logger::debug("Command: {}", $command);
                         exec($command, $out, $return);
                         if ($return != 0) {
-                            throw new ExecutionException("vobsub2srt", $return, $command);
+			    Logger::warn("Failed to convert {}. returned {}: {}", $dvdFile, $return, $out);
+			    continue;
                         }
                     }
                     if ($oRequest->subtitleConversionOutput == "MERGE") {
