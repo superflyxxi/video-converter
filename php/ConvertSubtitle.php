@@ -108,7 +108,7 @@ class ConvertSubtitle
                         }
                         $oRequest->oInputFile->removeSubtitleStream($index);
                     }
-                } catch (ExectionException $ex) {
+                } catch (ExecutionException $ex) {
 	            Logger::warn("Skipping track due to error {}", $ex->getMessage());
                 }
             }
