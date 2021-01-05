@@ -26,7 +26,7 @@ install:
   - echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
   - if [[ ! ${TRAVIS_BRANCH} =~ (master|v.*) ]]; then 
         echo "Pulling ${CACHE_FROM_IMAGE}"; 
-        docker pull ${CACHE_FROM_IMAGE} || true; 
+        timeout -s9 9m docker pull ${CACHE_FROM_IMAGE} || true; 
     else
         export CACHE_FROM_ARGS="--no-cache"; 
     fi
@@ -39,3 +39,9 @@ script:
 
 after_success:
   - ./push.sh
+  - if [[ "${TRAVIS_BRANCH}" == "master" ]]; then
+        export NEW_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE};
+        echo "Going to label ${THIS_FULL_IMAGE} an additional name of ${NEW_FULL_IMAGE}";
+        docker tag ${THIS_FULL_IMAGE} ${NEW_FULL_IMAGE};
+        THIS_FULL_IMAGE=${NEW_FULL_IMAGE} ./push.sh;
+    fi
