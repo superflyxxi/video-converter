@@ -17,12 +17,12 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
         } else if ($request->isHwaccel()) {
             $args .= " -c:v:" . $outTrack . " hevc_vaapi -qp 20 -level:v 4";
             if ($request->deinterlace) {
-                $args .= " -vf deinterlace_vaapi";
+                $args .= " -vf 'deinterlace_vaapi=rate=field:auto=1'";
             }
         } else {
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
             if ($request->deinterlace) {
-                $args .= " -vf yadif";
+                $args .= " -vf 'yadif=mode=1'";
             }
         }
         $args .= " -metadata:s:v:" . $outTrack . " language=" . $stream->language;
