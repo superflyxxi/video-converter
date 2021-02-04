@@ -26,9 +26,11 @@ jobs:
             else 
               echo 'export THIS_LABEL=${DOCKERFILE}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
+            echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${DOCKERFILE}' >> ${BASH_ENV}
             fi
+            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           docker-username: THIS_REGISTRY_USERNAME
