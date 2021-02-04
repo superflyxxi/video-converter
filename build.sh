@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-find . -name *.php | xargs -L1 php -l
+find php/ -name *.php | xargs -L1 php -l
 
 if [[ ! -z "${CACHE_FROM_IMAGE}" ]]; then
   CACHE_FROM_ARGS="--cache-from ${CACHE_FROM_IMAGE}"
