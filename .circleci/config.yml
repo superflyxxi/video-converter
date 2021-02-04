@@ -21,18 +21,25 @@ jobs:
               echo 'export THIS_LABEL=${DOCKERFILE}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
             echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
-            echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}' >> ${BASH_ENV}
-      - run:
-          name: Trust private docker registries
-          command: |
-            sudo mkdir -p "/etc/docker/certs.d/${THIS_REGISTRY}"
-            openssl s_client -showcerts -connect ${THIS_REGISTRY} < /dev/null 2> /dev/null | openssl x509 -outform PEM | sudo tee "/etc/docker/certs.d/${THIS_REGISTRY}/ca.crt"
-            echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
-      - checkout
+            if [[ ! ${CIRCLE_BRANCH} ~= (master|v.*) ]]; then
+              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}' >> ${BASH_ENV}
+            fi
+#      - run:
+#          name: Trust private docker registries
+#          command: |
+#            sudo mkdir -p "/etc/docker/certs.d/${THIS_REGISTRY}"
+#            openssl s_client -showcerts -connect ${THIS_REGISTRY} < /dev/null 2> /dev/null | openssl x509 -outform PEM | sudo tee "/etc/docker/certs.d/${THIS_REGISTRY}/ca.crt"
+#            echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
       - docker/check:
           docker-username: THIS_REGISTRY_USERNAME
           docker-password: THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
+      - checkout
+      - docker/build:
+          image: ${THIS_FULL_IMAGE}
+          dockerfile: Dockerfile.${DOCKERFILE}
+          registry: $THIS_REGISTRY
+          cache_from: ${CACHE_FROM_IMAGE}
       - run:
           name: Build docker image
           command: |
@@ -40,10 +47,5 @@ jobs:
             echo "THIS_LABEL=${THIS_LABEL}"
             echo "DOCKERFILE=${DOCKERFILE}"
             echo "CIRCLE_BRANCH=${CIRCLE_BRANCH}"
-            if [[ ! ${CIRCLE_BRANCH} ~= (master|v.*) ]]; then
-              docker pull ${CACHE_FROM_IMAGE} || true
-            else
-              export CACHE_FROM_ARGS="--no-cache"
-            fi
             cd travis
             ./build.sh
