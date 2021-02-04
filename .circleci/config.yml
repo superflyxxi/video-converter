@@ -6,7 +6,7 @@ orbs:
 jobs:
   build:
     environment:
-      - DOCKERFILE=vaapi
+      DOCKERFILE: vaapi
     machine: true
     steps:
       - checkout
