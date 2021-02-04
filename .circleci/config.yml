@@ -30,8 +30,8 @@ jobs:
             echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
       - checkout
       - docker/check:
-          docker-username: $THIS_REGISTRY_USERNAME
-          docker-password: $THIS_REGISTRY_PASSWORD
+          docker-username: THIS_REGISTRY_USERNAME
+          docker-password: THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
       - run:
           name: Build docker image
