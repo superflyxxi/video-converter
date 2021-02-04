@@ -9,10 +9,15 @@ jobs:
       DOCKERFILE: vaapi
     machine: true
     steps:
-      - run: 
+      - run:
+          name: Enviroment Variables
           command: |
             echo 'export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}' >> ${BASH_ENV}
-            echo 'export THIS_LABEL=${DOCKERFILE}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+              echo 'export THIS_LABEL=${DOCKERFILE}' >> ${BASH_ENV}
+            else 
+              echo 'export THIS_LABEL=${DOCKERFILE}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
+            fi
       - checkout
       - run:
           command: |
