@@ -12,8 +12,8 @@ jobs:
       - checkout
       - run:
           environment:
-            - FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
-            - THIS_LABEL=${DOCKERFILE}-<< pipeline.git.branch >>
+            FROM_IMAGE: jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
+            THIS_LABEL: ${DOCKERFILE}-<< pipeline.git.branch >>
           command: |
             echo "FROM_IMAGE=${FROM_IMAGE}"
             echo "THIS_LABEL=${THIS_LABEL}"
