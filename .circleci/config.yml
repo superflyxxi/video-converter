@@ -16,8 +16,8 @@ jobs:
       - run:
           name: Dependencies
           command: |
-            apt-get update
-            apt-get -y install php
+            sudo apt-get update
+            sudo apt-get -y install php
       - run:
           name: Custom enviroment variables
           command: |
