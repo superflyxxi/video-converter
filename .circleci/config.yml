@@ -2,7 +2,7 @@
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:
-    docker: circleci/docker@1.0.1
+    docker: circleci/docker@1.5.0
 
 # Orchestrate or schedule a set of jobs
 jobs:
@@ -30,6 +30,8 @@ jobs:
             echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
       - checkout
       - docker/check:
+          docker-username: $THIS_REGISTRY_USERNAME
+          docker-password: $THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
       - run:
           name: Build docker image
