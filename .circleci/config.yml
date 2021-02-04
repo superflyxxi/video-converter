@@ -28,13 +28,16 @@ jobs:
           docker-password: THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
       - checkout
-      - docker/build:
-          image: ${THIS_IMAGE}
-          tag: ${THIS_LABEL}
-          dockerfile: Dockerfile.${DOCKERFILE}
-          registry: $THIS_REGISTRY
-          cache_from: ${CACHE_FROM_IMAGE}
-          extra_build_args: --build-arg FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
+      - run:
+          name: Build
+          command: build.sh
+#      - docker/build:
+#          image: ${THIS_IMAGE}
+#          tag: ${THIS_LABEL}
+#          dockerfile: Dockerfile.${DOCKERFILE}
+#          registry: $THIS_REGISTRY
+#          cache_from: ${CACHE_FROM_IMAGE}
+#          extra_build_args: --build-arg FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
       - docker/push:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
