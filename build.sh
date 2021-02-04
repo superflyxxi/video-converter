@@ -3,6 +3,8 @@ set -ex
 
 find . -name *.php | xargs -L1 php -l
 
-CACHE_FROM_ARGS=${CACHE_FROM_ARGS:-"--cache-from ${CACHE_FROM_IMAGE}"}
+if [[ ! -z "${CACHE_FROM_IMAGE}" ]]; then
+  CACHE_FROM_ARGS="--cache-from ${CACHE_FROM_IMAGE}"
+fi
 
-docker build ${CACHE_FROM_ARGS} --build-arg BUILD_SUBTITLE_CONVERT=${BUILD_SUBTITLE_CONVERT:-true} --build-arg FROM_IMAGE=${FROM_IMAGE} --tag ${THIS_FULL_IMAGE} -f Dockerfile.${DOCKERFILE} .
+docker build ${CACHE_FROM_ARGS} --build-arg BUILD_SUBTITLE_CONVERT=${BUILD_SUBTITLE_CONVERT:-true} --build-arg FROM_IMAGE=${FROM_IMAGE:?FROM_IMAGE missing} --tag ${THIS_FULL_IMAGE:?THIS_FULL_IMAGE missing} -f Dockerfile.${DOCKERFILE:?DOCKERFILE missing} .
