@@ -30,7 +30,7 @@ jobs:
       - checkout
       - run:
           name: Build
-          command: build.sh
+          command: ./build.sh
 #      - docker/build:
 #          image: ${THIS_IMAGE}
 #          tag: ${THIS_LABEL}
