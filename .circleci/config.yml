@@ -2,6 +2,8 @@
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:
+    docker: circleci/docker@1.0.1
+
 # Orchestrate or schedule a set of jobs
 jobs:
   build:
