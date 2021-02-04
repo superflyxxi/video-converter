@@ -21,7 +21,7 @@ jobs:
               echo 'export THIS_LABEL=${DOCKERFILE}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
             echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
-            if [[ ! ${CIRCLE_BRANCH} ~= (master|v.*) ]]; then
+            if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}' >> ${BASH_ENV}
             fi
 #      - run:
