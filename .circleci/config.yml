@@ -20,7 +20,7 @@ jobs:
             else 
               echo 'export THIS_LABEL=${DOCKERFILE}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
-            echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            #echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}' >> ${BASH_ENV}
             fi
@@ -36,7 +36,8 @@ jobs:
           registry: $THIS_REGISTRY
       - checkout
       - docker/build:
-          image: ${THIS_FULL_IMAGE}
+          image: ${THIS_IMAGE}
+          tag: ${THIS_LABEL}
           dockerfile: Dockerfile.${DOCKERFILE}
           registry: $THIS_REGISTRY
           cache_from: ${CACHE_FROM_IMAGE}
