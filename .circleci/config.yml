@@ -41,7 +41,7 @@ jobs:
           dockerfile: Dockerfile.${DOCKERFILE}
           registry: $THIS_REGISTRY
           cache_from: ${CACHE_FROM_IMAGE}
-          extra_build_args: --build-arg FROM_IMAGE==jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
+          extra_build_args: --build-arg FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
       - run:
           name: Build docker image
           command: |
