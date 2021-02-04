@@ -35,9 +35,9 @@ jobs:
             echo "DOCKERFILE=${DOCKERFILE}"
             echo "CIRCLE_BRANCH=${CIRCLE_BRANCH}"
             if [[ ! "${CIRCLE_BRANCH}" ~= (master|v.*) ]]; then
-              docker pull ${CACHE_FROM_IMAGE} || true
+              docker pull ${CACHE_FROM_IMAGE} || true;
             else
-              export CACHE_FROM_ARGS="--no-cache"
+              export CACHE_FROM_ARGS="--no-cache";
             fi
             cd travis
             ./build.sh
