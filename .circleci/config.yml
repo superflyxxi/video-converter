@@ -12,8 +12,10 @@ jobs:
       - checkout
       - run:
           environment:
-            FROM_IMAGE: jrottenberg/ffmpeg:snapshot-$DOCKERFILE
-            THIS_LABEL: $DOCKERFILE-$CIRCLE_BRANCH
+            FROM_IMAGE: jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
+            THIS_LABEL: ${DOCKERFILE}-${CIRCLE_BRANCH}
           command: |
-            echo "FROM_IMAGE=$FROM_IMAGE"
-            echo "THIS_LABEL=$THIS_LABEL"
+            echo "FROM_IMAGE=${FROM_IMAGE}"
+            echo "THIS_LABEL=${THIS_LABEL}"
+            echo "DOCKERFILE=${DOCKERFILE}"
+            echo "CIRCLE_BRANCH=${CIRCLE_BRANCH}"
