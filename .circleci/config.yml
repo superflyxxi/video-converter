@@ -9,6 +9,7 @@ jobs:
   build:
     environment:
       DOCKERFILE: vaapi
+      DEBIAN_FRONTEND: noninteractive
 #    machine: true
     machine:
       image: 'ubuntu-2004:202010-01'
