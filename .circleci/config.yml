@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Trust Private Docker Registries
           command: |
-            mkdir -p "/etc/docker/certs.d/${THIS_REGISTRY}"
+            sudo mkdir -p "/etc/docker/certs.d/${THIS_REGISTRY}"
             openssl s_client -showcerts -connect ${THIS_REGISTRY} < /dev/null 2> /dev/null | openssl x509 -outform PEM | sudo tee "/etc/docker/certs.d/${THIS_REGISTRY}/ca.crt"
             echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
       - checkout
