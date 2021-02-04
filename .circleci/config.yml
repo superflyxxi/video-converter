@@ -20,7 +20,7 @@ jobs:
               echo 'export THIS_LABEL=${DOCKERFILE}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
-              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}' >> ${BASH_ENV}
+              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${DOCKERFILE}' >> ${BASH_ENV}
             fi
             cat ${BASH_ENV}
       - docker/check:
