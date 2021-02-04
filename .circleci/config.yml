@@ -10,7 +10,7 @@ jobs:
     machine: true
     steps:
       - run:
-          name: Custom Enviroment Variables
+          name: Custom enviroment variables
           command: |
             echo 'export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}' >> ${BASH_ENV}
             if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
@@ -21,14 +21,14 @@ jobs:
             echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}' >> ${BASH_ENV}
       - run:
-          name: Trust Private Docker Registries
+          name: Trust private docker registries
           command: |
             sudo mkdir -p "/etc/docker/certs.d/${THIS_REGISTRY}"
             openssl s_client -showcerts -connect ${THIS_REGISTRY} < /dev/null 2> /dev/null | openssl x509 -outform PEM | sudo tee "/etc/docker/certs.d/${THIS_REGISTRY}/ca.crt"
             echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
       - checkout
       - run:
-          name: Build Docker Image
+          name: Build docker image
           command: |
             echo "FROM_IMAGE=${FROM_IMAGE}"
             echo "THIS_LABEL=${THIS_LABEL}"
