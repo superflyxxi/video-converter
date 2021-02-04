@@ -9,11 +9,12 @@ jobs:
       DOCKERFILE: vaapi
     machine: true
     steps:
+      - run: 
+          command: |
+            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}' >> ${BASH_ENV}
+            echo 'export THIS_LABEL=${DOCKERFILE}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
       - checkout
       - run:
-          environment:
-            FROM_IMAGE: jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
-            THIS_LABEL: ${DOCKERFILE}-${CIRCLE_BRANCH}
           command: |
             echo "FROM_IMAGE=${FROM_IMAGE}"
             echo "THIS_LABEL=${THIS_LABEL}"
