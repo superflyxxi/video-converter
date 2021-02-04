@@ -14,7 +14,7 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}' >> ${BASH_ENV}
+            #echo 'export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}' >> ${BASH_ENV}
             if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
               echo 'export THIS_LABEL=${DOCKERFILE}' >> ${BASH_ENV}
             else 
@@ -41,6 +41,7 @@ jobs:
           dockerfile: Dockerfile.${DOCKERFILE}
           registry: $THIS_REGISTRY
           cache_from: ${CACHE_FROM_IMAGE}
+          extra_build_args: --build-arg FROM_IMAGE==jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
       - run:
           name: Build docker image
           command: |
