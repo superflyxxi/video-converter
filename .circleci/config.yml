@@ -36,6 +36,9 @@ jobs:
           docker-username: THIS_REGISTRY_USERNAME
           docker-password: THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
+      - docker/pull:
+          images: ${CACHE_FROM_IMAGE}
+          ignore-docker-pull-error: true
       - checkout
       - run:
           name: Build
