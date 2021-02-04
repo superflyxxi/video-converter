@@ -17,5 +17,3 @@ jobs:
           command: |
             echo "FROM_IMAGE=${FROM_IMAGE}"
             echo "THIS_LABEL=${THIS_LABEL}"
-      - setup_remote_docker:
-        version: 19.03.13
