@@ -3,13 +3,13 @@ language: php
 env:
   global:
   matrix:
-    - DOCKERFILE=vaapi
+    - DOCKERFILE=vaapi FROM_TAG=snapshot-vaapi1804
 
 services:
   - docker
 
 before_install:
-  - export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
+  - export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}
   - export THIS_LABEL=${DOCKERFILE}-${TRAVIS_BRANCH}
   - if [[ "${TRAVIS_BRANCH}" == "master" ]]; then export THIS_LABEL=${DOCKERFILE}; fi
   - export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL}
