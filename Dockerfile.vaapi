@@ -16,7 +16,7 @@ RUN apt-get update -y && \
 
 # install tesseract, language packs, and java
 RUN apt-get update && \
-	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y openjdk-9-jre && \
+	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y openjdk-14-jre && \
 	apt-get clean -y
 
 # Install VobSub2SRT
