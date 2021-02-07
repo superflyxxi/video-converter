@@ -78,7 +78,11 @@ work-flows:
           matrix:
             parameters:
               dockerfile: ["vaapi"]
-              from-tag: ["snapshot-vaapi1804"]
+              from-tag: ["snapshot-vaapi1804", "4.1-vaapi", "4.0-vaapi"]
             include:
+              - dockerfile: vaapi
+                from-tag: 4.1-vaapi
+              - dockerfile: vaapi
+                from-tag: 4.0-vaapi
               - dockerfile: vaapi
                 from-tag: snapshot-vaapi1804
