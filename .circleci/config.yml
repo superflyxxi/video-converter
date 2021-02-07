@@ -71,7 +71,7 @@ jobs:
             cd travis
             ./build.sh
 
-work-flows:
+workflows:
   default:
     jobs:
       - build:
