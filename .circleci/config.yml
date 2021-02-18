@@ -47,7 +47,7 @@ jobs:
           docker-password: THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
       - docker/pull:
-          images: ${CACHE_FROM_IMAGE}
+          images: ${FROM_IMAGE},${CACHE_FROM_IMAGE}
           ignore-docker-pull-error: true
       - checkout
       - run:
