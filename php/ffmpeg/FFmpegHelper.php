@@ -54,7 +54,7 @@ class FFmpegHelper
 	$total = $progressive + $tff + $bff;
         Logger::debug("TFF={}; BFF={}", $tff, $bff);
 	// if percentage of frames are > 1% interlaced, then de-interlace
-        return (($tff/$total > 0.01 || $bff/$total > 0.01);
+        return ($tff/$total > 0.01 || $bff/$total > 0.01);
     }
 
     public static function execute($listRequests, $outputFile, $exit = TRUE)
