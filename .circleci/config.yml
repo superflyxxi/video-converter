@@ -51,7 +51,7 @@ jobs:
 #          ignore-docker-pull-error: true
       - checkout
       - run:
-          name: Build
+          name: Build docker image
           command: ./build.sh
 #      - docker/build:
 #          image: ${THIS_IMAGE}
@@ -64,14 +64,6 @@ jobs:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
-      - run:
-          name: Build docker image
-          command: |
-            echo "FROM_IMAGE=${FROM_IMAGE}"
-            echo "THIS_LABEL=${THIS_LABEL}"
-            echo "DOCKERFILE=${DOCKERFILE}"
-            echo "CIRCLE_BRANCH=${CIRCLE_BRANCH}"
-            ./build.sh
 
 workflows:
   default:
