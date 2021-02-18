@@ -3,15 +3,15 @@ language: php
 env:
   global:
   matrix:
-    - DOCKERFILE=vaapi
+    - DOCKERFILE=vaapi FROM_TAG=4.3-vaapi1804 BUILD_SUBTITLE_SUPPORT=false
 
 services:
   - docker
 
 before_install:
-  - export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
-  - export THIS_LABEL=${DOCKERFILE}-${TRAVIS_BRANCH}
-  - if [[ "${TRAVIS_BRANCH}" == "master" ]]; then export THIS_LABEL=${DOCKERFILE}; fi
+  - export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}
+  - export THIS_LABEL=${FROM_TAG}-${TRAVIS_BRANCH}
+  - if [[ "${TRAVIS_BRANCH}" == "master" ]]; then export THIS_LABEL=${FROM_TAG}; fi
   - export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL}
   - export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}
   - sudo mkdir -p "/etc/docker/certs.d/${THIS_REGISTRY}"
