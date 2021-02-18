@@ -80,6 +80,7 @@ workflows:
           name: 4.3-vaapi-true
           dockerfile: vaapi
           build-subtitle: true
+          from-tag: 4.3-vaapi
 #          matrix:
 #            parameters:
 #              dockerfile: ["vaapi"]
