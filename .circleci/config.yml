@@ -19,9 +19,10 @@ jobs:
       FROM_TAG: << parameters.from-tag >>
       BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
       DEBIAN_FRONTEND: noninteractive
-#    machine: true
-    machine:
-      image: 'ubuntu-2004:202010-01'
+      
+    machine: true
+#    machine:
+#      image: 'ubuntu-2004:202010-01'
     steps:
       - run:
           name: Dependencies
