@@ -25,7 +25,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 
 # Install VobSub2SRT
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
-	\DIR=$(mktemp -d) && cd ${DIR} && \
+	DIR=$(mktemp -d) && cd ${DIR} && \
 	BUILD_DEPS="git tesseract-ocr-dev libtiff5-dev g++ cmake automake autoconf" && \
 	apt-get update && \
 	apt-get install -y ${BUILD_DEPS} &&  \
