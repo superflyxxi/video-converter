@@ -17,12 +17,14 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
         } else if ($request->isHwaccel()) {
             $args .= " -c:v:" . $outTrack . " hevc_vaapi -qp 20 -level:v 4";
             if ($request->deinterlace) {
-                $args .= " -vf 'deinterlace_vaapi=rate=field:auto=1'";
+                //$args .= " -vf 'deinterlace_vaapi=rate=field:auto=1'"; // each field is a frame (double framerate) https://www.mltframework.org/plugins/FilterAvfilter-deinterlace_vaapi/
+                $args .= " -vf 'fieldmatch,deinterlace_vaapi=auto=1,decimate'"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
             }
         } else {
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
             if ($request->deinterlace) {
-                $args .= " -vf 'yadif=mode=1'";
+                //$args .= " -vf 'yadif=mode=1'"; // each field is a frame (double framerate) https://ffmpeg.org/ffmpeg-filters.html#yadif-1
+                $args .= " -vf 'fieldmatch,yadif=deint=1,decimate'"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
             }
         }
         $args .= " -metadata:s:v:" . $outTrack . " language=" . $stream->language;
