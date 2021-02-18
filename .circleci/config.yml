@@ -38,7 +38,7 @@ jobs:
             fi
             echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
-              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${DOCKERFILE}' >> ${BASH_ENV}
+              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
             fi
             echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             cat ${BASH_ENV}
@@ -46,9 +46,9 @@ jobs:
           docker-username: THIS_REGISTRY_USERNAME
           docker-password: THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
-#      - docker/pull:
-#          images: ${CACHE_FROM_IMAGE}
-#          ignore-docker-pull-error: true
+      - docker/pull:
+          images: ${CACHE_FROM_IMAGE}
+          ignore-docker-pull-error: true
       - checkout
       - run:
           name: Build docker image
