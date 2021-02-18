@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 find php/ -name *.php | xargs -L1 php -l
 
