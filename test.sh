@@ -4,9 +4,7 @@
 
 set -ex
 
-. common.sh
-
-cd ../tests/
+cd tests/
 export TMP_DIR=$(mktemp -d)
 export LOG_LEVEL=VERBOSE
 
