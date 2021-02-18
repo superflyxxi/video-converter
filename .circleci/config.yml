@@ -81,9 +81,12 @@ workflows:
           matrix:
             parameters:
               dockerfile: ["vaapi"]
-              from-tag: ["snapshot", "snapshot-vaapi1804", "4.1-vaapi", "4.0-vaapi"]
-              build-subtitle: ["true", "false"]
-            include:
-              - dockerfile: vaapi
-                from-tag: snapshot
-                build-subtitle: false
+              from-tag: ["snapshot"]
+              build-subtitle: ["false"]
+#              dockerfile: ["vaapi"]
+#              from-tag: ["snapshot", "snapshot-vaapi1804", "4.1-vaapi", "4.0-vaapi"]
+#              build-subtitle: ["true", "false"]
+# Doesn't work            include:
+#              - dockerfile: vaapi
+#                from-tag: snapshot
+#                build-subtitle: false
