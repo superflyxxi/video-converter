@@ -35,7 +35,7 @@ class FFmpegHelper
     public static function isInterlaced($inputFile)
     {
         Logger::info("Checking for interlacing: {}", $inputFile);
-        $args = '-i "' . $inputFile . '" -vf idet -frames:v 5000 -f rawvideo -y /dev/null 2>&1';
+        $args = '-i "' . $inputFile . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
         $command = 'ffmpeg ' . $args;
         Logger::debug("Command: {}", $command);
         exec($command, $out, $ret);
@@ -45,12 +45,16 @@ class FFmpegHelper
         Logger::verbose("Output: {}", $out);
         $out = implode($out);
 
+        preg_match("/Progressive:[ ]+([0-9]+)/", $out, $matches);
+        $progressive = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
         preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
         $tff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
         preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
         $bff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+	$total = $progressive + $tff + $bff;
         Logger::debug("TFF={}; BFF={}", $tff, $bff);
-        return ($tff != 0 || $bff != 0);
+	// if percentage of frames are > 1% interlaced, then de-interlace
+        return (($tff/$total > 0.01 || $bff/$total > 0.01);
     }
 
     public static function execute($listRequests, $outputFile, $exit = TRUE)
