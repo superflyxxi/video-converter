@@ -56,7 +56,7 @@ class FFmpegHelper
         preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
         $bff = preg_replace("/[A-Za-z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
 	$total = $progressive + $tff + $bff;
-        Logger::debug("TFF={}; BFF={}", $tff, $bff);
+        Logger::debug("Progressive={}; TFF={}; BFF={}; Total={}", $progressive, $tff, $bff, $total);
 	// if percentage of frames are > 1% interlaced, then de-interlace
         return ($tff/$total > 0.01 || $bff/$total > 0.01);
     }
