@@ -13,7 +13,7 @@ jobs:
       dockerfile:
         type: string
       build-subtitle:
-        type: string
+        type: boolean
     environment:
       DOCKERFILE: << parameters.dockerfile >>
       FROM_TAG: << parameters.from-tag >>
