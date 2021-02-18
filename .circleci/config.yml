@@ -64,7 +64,9 @@ jobs:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
-
+      - run:
+          name: Run tests
+          command: ./test.sh
 workflows:
   default:
     jobs:
