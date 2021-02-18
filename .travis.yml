@@ -3,7 +3,7 @@ language: php
 env:
   global:
   matrix:
-    - DOCKERFILE=vaapi FROM_TAG=snapshot-vaapi1804
+    - DOCKERFILE=vaapi FROM_TAG=4.3-vaapi1804
 
 services:
   - docker

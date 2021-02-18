@@ -25,8 +25,15 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 
 # Install VobSub2SRT
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
-	\DIR=$(mktemp -d) && cd ${DIR} && \
-	BUILD_DEPS="git tesseract-ocr-dev libtiff5-dev g++ cmake automake autoconf" && \
+	DIR=$(mktemp -d) && cd ${DIR} && \
+#	BUILD_DEPS="git tesseract-ocr-dev libtiff5-dev g++ cmake automake autoconf" && \
+	BUILD_DEPS="git libtiff5-dev g++ cmake automake autoconf" && \
+	if [[ ! "${FROM_IMAGE}" == *1804 ]]; then \
+		BUILD_DEPS="${BUILD_DEPS} libtesseract-dev"; \
+	else \
+		BUILD_DEPS="${BUILD_DEPS} tesseract-ocr-dev"; \
+	fi && \
+	printf "FROM_IMAGE=${FROM_IMAGE}\nBUILD_DEPS=${BUILD_DEPS}\n" && \
 	apt-get update && \
 	apt-get install -y ${BUILD_DEPS} &&  \
 	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && \
