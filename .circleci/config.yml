@@ -53,13 +53,6 @@ jobs:
       - run:
           name: Build docker image
           command: ./build.sh
-#      - docker/build:
-#          image: ${THIS_IMAGE}
-#          tag: ${THIS_LABEL}
-#          dockerfile: Dockerfile.${DOCKERFILE}
-#          registry: $THIS_REGISTRY
-#          cache_from: ${CACHE_FROM_IMAGE}
-#          extra_build_args: --build-arg FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
       - docker/push:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
