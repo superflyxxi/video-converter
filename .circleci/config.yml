@@ -72,24 +72,12 @@ workflows:
   default:
     jobs:
       - build:
-          name: 4.3-vaapi-false
+          name: build-4.3-vaapi-nosub
           dockerfile: vaapi
           build-subtitle: false
           from-tag: 4.3-vaapi
       - build:
-          name: 4.3-vaapi-true
+          name: build-4.3-vaapi-sub
           dockerfile: vaapi
           build-subtitle: true
           from-tag: 4.3-vaapi
-#          matrix:
-#            parameters:
-#              dockerfile: ["vaapi"]
-#              from-tag: ["4.3-vaapi"]
-#              build-subtitle: ["false"]
-#              dockerfile: ["vaapi"]
-#              from-tag: ["snapshot", "snapshot-vaapi1804", "4.1-vaapi", "4.0-vaapi"]
-#              build-subtitle: ["true", "false"]
-# Doesn't work            include:
-#              - dockerfile: vaapi
-#                from-tag: snapshot
-#                build-subtitle: false
