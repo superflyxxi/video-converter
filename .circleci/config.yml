@@ -32,9 +32,9 @@ jobs:
           name: Custom enviroment variables
           command: |
             if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              echo 'export THIS_LABEL=${DOCKERFILE}' >> ${BASH_ENV}
+              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
             else 
-              echo 'export THIS_LABEL=${DOCKERFILE}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
+              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
             echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
@@ -64,7 +64,7 @@ workflows:
   default:
     jobs:
       - build:
-          name: build-vaapi
+          name: build-4.3-vaapi
           dockerfile: vaapi
           build-subtitle: false
           from-tag: 4.3-vaapi
