@@ -74,7 +74,7 @@ workflows:
           matrix:
             parameters:
               dockerfile: ["vaapi"]
-              from-tag: ["snapshot-vaapi"]
+              from-tag: ["4.3-vaapi"]
               build-subtitle: ["false"]
 #              dockerfile: ["vaapi"]
 #              from-tag: ["snapshot", "snapshot-vaapi1804", "4.1-vaapi", "4.0-vaapi"]
