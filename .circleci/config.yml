@@ -47,6 +47,7 @@ jobs:
           docker-password: THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
       - docker/pull:
+          when: << parameters.build-subtitle >>
           images: ${CACHE_FROM_IMAGE}
           ignore-docker-pull-error: true
       - checkout
