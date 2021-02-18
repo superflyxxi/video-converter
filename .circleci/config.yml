@@ -20,7 +20,6 @@ jobs:
       BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
       DEBIAN_FRONTEND: noninteractive
       
-#    machine: true
     machine:
       image: 'ubuntu-2004:202010-01'
     steps:
