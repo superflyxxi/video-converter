@@ -44,13 +44,17 @@ class FFmpegHelper
         }
         Logger::verbose("Output: {}", $out);
         $out = implode($out);
-
+	/*
+[Parsed_idet_0 @ 0x559b53b4b700] Repeated Fields: Neither: 14385 Top:     1 Bottom:     2
+[Parsed_idet_0 @ 0x559b53b4b700] Single frame detection: TFF:    10 BFF:    13 Progressive:  8535 Undetermined:  5830
+[Parsed_idet_0 @ 0x559b53b4b700] Multi frame detection: TFF:     0 BFF:     0 Progressive: 14365 Undetermined:    23
+	*/
         preg_match("/Progressive:[ ]+([0-9]+)/", $out, $matches);
-        $progressive = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+        $progressive = preg_replace("/[A-Za-z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
         preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
-        $tff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+        $tff = preg_replace("/[A-Za-z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
         preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
-        $bff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+        $bff = preg_replace("/[A-Za-z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
 	$total = $progressive + $tff + $bff;
         Logger::debug("TFF={}; BFF={}", $tff, $bff);
 	// if percentage of frames are > 1% interlaced, then de-interlace
