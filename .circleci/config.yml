@@ -1,0 +1,75 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+# Use a package of configuration called an orb.
+orbs:
+    docker: circleci/docker@1.5.0
+
+# Orchestrate or schedule a set of jobs
+jobs:
+  build:
+    parameters:
+      from-tag: 
+        type: string
+      dockerfile:
+        type: string
+      build-subtitle:
+        type: boolean
+    environment:
+      DOCKERFILE: << parameters.dockerfile >>
+      FROM_TAG: << parameters.from-tag >>
+      BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
+      DEBIAN_FRONTEND: noninteractive
+      
+    machine:
+      image: 'ubuntu-2004:202010-01'
+    steps:
+      - run:
+          name: Dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get -y install php
+      - run:
+          name: Custom enviroment variables
+          command: |
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
+            else 
+              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
+            fi
+            echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
+              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
+            fi
+            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
+            cat ${BASH_ENV}
+      - docker/check:
+          docker-username: THIS_REGISTRY_USERNAME
+          docker-password: THIS_REGISTRY_PASSWORD
+          registry: $THIS_REGISTRY
+      - docker/pull:
+          images: ${CACHE_FROM_IMAGE}
+          ignore-docker-pull-error: true
+      - checkout
+      - run:
+          name: Build docker image
+          command: ./build.sh
+      - docker/push:
+          registry: $THIS_REGISTRY
+          image: ${THIS_IMAGE}
+          tag: ${THIS_LABEL}
+      - run:
+          name: Run tests
+          command: ./test.sh
+workflows:
+  default:
+    jobs:
+      - build:
+          name: build-4.3-vaapi
+          dockerfile: vaapi
+          build-subtitle: false
+          from-tag: 4.3-vaapi
+#      - build:
+#          name: build-snapshot-vaapi
+#          dockerfile: vaapi
+#          build-subtitle: true
+#          from-tag: snapshot-vaapi
