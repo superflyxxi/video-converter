@@ -71,17 +71,12 @@ workflows:
   default:
     jobs:
       - build:
-          name: build-4.3-vaapi-nosub
+          name: build-4.3-vaapi
           dockerfile: vaapi
           build-subtitle: false
           from-tag: 4.3-vaapi
       - build:
-          name: build-4.3-vaapi-sub
+          name: build-snapshot-vaapi
           dockerfile: vaapi
           build-subtitle: true
-          from-tag: 4.3-vaapi
-      - build:
-          name: build-4.3-vaapi1804-sub
-          dockerfile: vaapi
-          build-subtitle: true
-          from-tag: 4.3-vaapi1804
+          from-tag: snapshot-vaapi
