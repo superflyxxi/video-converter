@@ -41,6 +41,7 @@ class Request
         } else {
             $req->deinterlace = FALSE;
         }
+        $req->deinterlaceMode = getEnvWithDefault("DEINTERLACE_MODE", $req->deinterlaceMode);
 
         $req->prepareStreams();
         return $req;
@@ -204,6 +205,8 @@ class Request
     private $hwaccel = false;
 
     public $deinterlace = false;
+
+    public $deinterlaceMode = "00";
 
     private $videoTracks = array(
         "*"

@@ -16,14 +16,33 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
         } else if ($request->isHwaccel()) {
             if ($request->deinterlace) {
-                //$args .= " -vf 'deinterlace_vaapi=rate=field:auto=1'"; // each field is a frame (double framerate) https://www.mltframework.org/plugins/FilterAvfilter-deinterlace_vaapi/
-                $args .= " -vf 'hwdownload,fieldmatch,yadif=deint=1,decimate,hwupload'"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                switch($request->deinterlaceMode) {
+                    default:
+                    case "00":
+                        $args .= " -vf 'hwdownload,fieldmatch,yadif=deint=1,decimate,hwupload'"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                        break;
+                    case "01":
+                        // each field is a frame (double framerate) https://www.mltframework.org/plugins/FilterAvfilter-deinterlace_vaapi/
+                        $args .= " -vf 'deinterlace_vaapi=rate=field:auto=1'"; 
+                        break;
+                    case "02":
+                        $args .= " -vf deinterlace_vaapi";
+                        break;
             }
             $args .= " -c:v:" . $outTrack . " hevc_vaapi -qp 20 -level:v 4";
         } else {
             if ($request->deinterlace) {
-                //$args .= " -vf 'yadif=mode=1'"; // each field is a frame (double framerate) https://ffmpeg.org/ffmpeg-filters.html#yadif-1
-                $args .= " -vf 'fieldmatch,yadif=deint=1,decimate'"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                switch($request->deinterlaceMode) {
+                    default:
+                    case "00":
+                        $args .= " -vf 'fieldmatch,yadif=deint=1,decimate'"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                        break;
+                    case "01":
+                        $args .= " -vf 'yadif=mode=1'"; // each field is a frame (double framerate) https://ffmpeg.org/ffmpeg-filters.html#yadif-1
+                        break;
+                    case "02":
+                        $args .= " -vf yadif"; // original
+                        break;
             }
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
         }

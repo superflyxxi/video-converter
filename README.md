@@ -35,7 +35,8 @@ Variable | Description | Required | Default | Example
 `NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
 `VIDEO_TRACKS` | The input video tracks to convert. | No | `*` | `0`
 `VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
-`DEINTERLACE` | Boolean determining whether deinterlacing should be done. Only valid if `--device /dev/dri:/dev/dri` is provided. If not specified, deinterlacing will be enabled if the source is interlaced. | No |  | `true`
+`DEINTERLACE` | Boolean determining whether deinterlacing should be done. If not specified, deinterlacing will be enabled if the source is interlaced. | No |  | `true`
+`DEINTERLACE_MODE` | Whether to use fieldmap/decimate (`00`), double framerate (`01`), or default behavior of deinterlacing (`02`). | No | `00` | `01`
 `HDR` | The input is in HDR and the desired output should also be HDR. | No | `false` | `true`
 `APPLY_POSTFIX` | Whether to apply the input filename as a postfix to the output files. | No | `true` | `false` 
 
