@@ -15,6 +15,7 @@ $testOutput = array($output, $probe);
 test("Stream 0", "video", $probe["streams"][0]["codec_type"], $testOutput);
 test("Stream 0 codec", "hevc", $probe["streams"][0]["codec_name"], $testOutput);
 test("Stream 0 field_order", "progressive", $probe["streams"][0]["field_order"], $testOutput);
+test("Stream 0 r_frame_rate", "30000/1001", $probe["streams"][0]["r_frame_rate"], $testOutput);
 test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"]), $testOutput);
 test("Metadata Title", "Test Auto Deinterlace", $probe["format"]["tags"]["title"], $testOutput);
 test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"], $testOutput);
