@@ -28,6 +28,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                     case "02":
                         $args .= " -vf deinterlace_vaapi";
                         break;
+                }
             }
             $args .= " -c:v:" . $outTrack . " hevc_vaapi -qp 20 -level:v 4";
         } else {
@@ -43,6 +44,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                     case "02":
                         $args .= " -vf yadif"; // original
                         break;
+                }
             }
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
         }
