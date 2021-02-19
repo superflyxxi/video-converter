@@ -21,7 +21,7 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
       
     machine:
-      image: 'ubuntu-2004:202010-01'
+      image: 'ubuntu-2004:202101-01'
     steps:
       - run:
           name: Dependencies
