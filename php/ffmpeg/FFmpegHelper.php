@@ -29,13 +29,36 @@ class FFmpegHelper
             Logger::debug("Found {} in cache", $inputFile->getFileName());
             $out = self::$probeCache[$inputFile->getFileName()];
         }
-        return $out;
+        if (false == $out) {
+            return false;
+        }
+        return json_decode(implode($out), true);
     }
 
     public static function isInterlaced($inputFile)
     {
-        Logger::info("Checking for interlacing: {}", $inputFile);
-        $args = '-i "' . $inputFile . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
+        switch (getEnvWithDefault("DEINTERLACE_CHECK", "probe")) {
+            case "idet": 
+                return self::isInterlacedBasedOnIdet($inputFile);
+                break;
+            case "probe":
+                return self::isInterlacedBasedOnProbe($inputFile);
+                break;
+        }
+        return false;
+    }
+
+    private static function isInterlacedBasedOnProbe($inputFile) {
+        $json = self::probe($inputFile);
+        print_r($json);
+        $stream = $json["streams"][0];
+        return array_key_exists("field_order", $stream) && $stream["field_order"] != "progressive";
+    }
+
+    private static function isInterlacedBasedOnIdet($inputFile)
+    {
+        Logger::info("Checking for interlacing: {}", $inputFile->getFileName());
+        $args = '-i "' . $inputFile->getFileName() . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
         $command = 'ffmpeg ' . $args;
         Logger::debug("Command: {}", $command);
         exec($command, $out, $ret);

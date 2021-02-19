@@ -37,7 +37,7 @@ class Request
         if ($req->deinterlace != NULL) {
             $req->deinterlace = ($req->deinterlace == "true");
         } else if ("copy" != $req->videoFormat) {
-            $req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
+            $req->deinterlace = FFmpegHelper::isInterlaced($req->oInputFile) ? TRUE : FALSE;
         } else {
             $req->deinterlace = FALSE;
         }
@@ -206,7 +206,7 @@ class Request
 
     public $deinterlace = false;
 
-    public $deinterlaceMode = "00";
+    public $deinterlaceMode = "02";
 
     private $videoTracks = array(
         "*"
