@@ -3,7 +3,7 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
-test_ffmpeg(array("INPUT"=>"dvd.mkv", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Auto Deinterlace", "YEAR"=>2019), $output, $return);
+test_ffmpeg(array("INPUT"=>"dvd.mkv", "DEINTERLACE_MODE"=>"02", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Auto Deinterlace", "YEAR"=>2019), $output, $return);
 
 // not validating return as it can be killed; test("ffmpeg code", 0, $return, $testOutput);
 
