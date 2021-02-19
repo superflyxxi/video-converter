@@ -19,7 +19,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                 switch($request->deinterlaceMode) {
                     default:
                     case "00":
-                        $args .= " -vf 'hwdownload,dejudder,fps=30000/1001,fieldmatch,yadif=deint=interlaced,decimate,hwupload'"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                        $args .= " -vf 'hwdownload,dejudder,fps=" . $stream->frame_rate .",fieldmatch,yadif=deint=interlaced,decimate,hwupload'"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
                     case "01":
                         // each field is a frame (double framerate) https://www.mltframework.org/plugins/FilterAvfilter-deinterlace_vaapi/
@@ -36,7 +36,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                 switch($request->deinterlaceMode) {
                     default:
                     case "00":
-                        $args .= " -vf 'dejudder,fps=30000/1001,fieldmatch,yadif=deint=interlaced',decimate"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                        $args .= " -vf 'dejudder,fps=" . $stream->frame_rate . ",fieldmatch,yadif=deint=interlaced',decimate"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
                     case "01":
                         $args .= " -vf 'yadif=mode=1'"; // each field is a frame (double framerate) https://ffmpeg.org/ffmpeg-filters.html#yadif-1
