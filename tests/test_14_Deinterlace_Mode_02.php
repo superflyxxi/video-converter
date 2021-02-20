@@ -3,18 +3,18 @@ include_once "common.php";
 
 getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
 
-test_ffmpeg(array("INPUT"=>"dvd.mkv", "DEINTERLACE"=>"true", "DEINTERLACE_MODE"=>"00", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Deinterlace Mode 00", "YEAR"=>2021), $output, $return);
+test_ffmpeg(array("INPUT"=>"dvd.mkv", "DEINTERLACE"=>"true", "DEINTERLACE_MODE"=>"02", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Deinterlace Mode 02", "YEAR"=>2021), $output, $return);
 
 // not validating return as it can be killed; test("ffmpeg code", 0, $return, $testOutput);
 
-$probe = probe("/data/Test Deinterlace Mode 00 (2021).dvd.mkv.mkv");
+$probe = probe("/data/Test Deinterlace Mode 02 (2021).dvd.mkv.mkv");
 $probe = json_decode($probe, true);
 
 $testOutput = array($output, $probe);
 
 test("Stream 0", "video", $probe["streams"][0]["codec_type"], $testOutput);
 test("Stream 0 codec", "hevc", $probe["streams"][0]["codec_name"], $testOutput);
-test("Stream 0 r_frame_rate", "24000/1001", $probe["streams"][0]["r_frame_rate"], $testOutput);
+test("Stream 0 r_frame_rate", "30000/1001", $probe["streams"][0]["r_frame_rate"], $testOutput);
 test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"]), $testOutput);
 test("Metadata Title", "Test Deinterlace Mode 00", $probe["format"]["tags"]["title"], $testOutput);
 test("Metadata YEAR", "2021", $probe["format"]["tags"]["YEAR"], $testOutput);
