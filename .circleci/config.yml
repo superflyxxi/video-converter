@@ -105,11 +105,11 @@ workflows:
       - build:
           name: build-4.3-vaapi
           dockerfile: vaapi
-          build-subtitle: true
+          build-subtitle: false
           from-tag: 4.3-vaapi
       - test:
           name: test-4.3-vaapi
           requires:
             - build-4.3-vaapi
           from-tag: 4.3-vaapi
-          test-subtitle: true
+          test-subtitle: false
