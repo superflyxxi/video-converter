@@ -66,7 +66,7 @@ workflows:
       - build:
           name: build-4.3-vaapi
           dockerfile: vaapi
-          build-subtitle: false
+          build-subtitle: true
           from-tag: 4.3-vaapi1804
 #      - build:
 #          name: build-snapshot-vaapi
