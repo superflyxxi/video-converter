@@ -14,9 +14,8 @@ RUN apt-get update -y && \
 	apt-get install -y php php-json mkvtoolnix && \
 	apt-get clean -y
 # install tesseract, language packs, and java
-ARG BUILD_SUBTITLE_SUPPORT
+ARG BUILD_SUBTITLE_SUPPORT=false
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	apt-get update && \
 	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y openjdk-11-jre-headless && \
