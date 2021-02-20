@@ -43,7 +43,7 @@ foreach ($arrFiles as $file) {
         Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
         $result = 255;
     } finally {
-        $finalResult = max($finalResult, $result);
+        $finalResult = isset($result) ? max($finalResult, $result) : $finalResult;
     }
 }
 exit($finalResult);

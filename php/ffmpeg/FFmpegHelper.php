@@ -29,13 +29,36 @@ class FFmpegHelper
             Logger::debug("Found {} in cache", $inputFile->getFileName());
             $out = self::$probeCache[$inputFile->getFileName()];
         }
-        return $out;
+        if (false == $out) {
+            return false;
+        }
+        return json_decode(implode($out), true);
     }
 
     public static function isInterlaced($inputFile)
     {
-        Logger::info("Checking for interlacing: {}", $inputFile);
-        $args = '-i "' . $inputFile . '" -vf idet -frames:v 5000 -f rawvideo -y /dev/null 2>&1';
+        switch (getEnvWithDefault("DEINTERLACE_CHECK", "probe")) {
+            case "idet": 
+                return self::isInterlacedBasedOnIdet($inputFile);
+                break;
+            case "probe":
+                return self::isInterlacedBasedOnProbe($inputFile);
+                break;
+        }
+        return false;
+    }
+
+    private static function isInterlacedBasedOnProbe($inputFile) {
+        $json = self::probe($inputFile);
+        print_r($json);
+        $stream = $json["streams"][0];
+        return array_key_exists("field_order", $stream) && $stream["field_order"] != "progressive";
+    }
+
+    private static function isInterlacedBasedOnIdet($inputFile)
+    {
+        Logger::info("Checking for interlacing: {}", $inputFile->getFileName());
+        $args = '-i "' . $inputFile->getFileName() . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
         $command = 'ffmpeg ' . $args;
         Logger::debug("Command: {}", $command);
         exec($command, $out, $ret);
@@ -44,13 +67,21 @@ class FFmpegHelper
         }
         Logger::verbose("Output: {}", $out);
         $out = implode($out);
-
+	/*
+[Parsed_idet_0 @ 0x559b53b4b700] Repeated Fields: Neither: 14385 Top:     1 Bottom:     2
+[Parsed_idet_0 @ 0x559b53b4b700] Single frame detection: TFF:    10 BFF:    13 Progressive:  8535 Undetermined:  5830
+[Parsed_idet_0 @ 0x559b53b4b700] Multi frame detection: TFF:     0 BFF:     0 Progressive: 14365 Undetermined:    23
+	*/
+        preg_match("/Progressive:[ ]+([0-9]+)/", $out, $matches);
+        $progressive = preg_replace("/[A-Za-z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
         preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
-        $tff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+        $tff = preg_replace("/[A-Za-z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
         preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
-        $bff = preg_replace("/[A-Z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
-        Logger::debug("TFF={}; BFF={}", $tff, $bff);
-        return ($tff != 0 || $bff != 0);
+        $bff = preg_replace("/[A-Za-z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
+	$total = $progressive + $tff + $bff;
+        Logger::debug("Progressive={}; TFF={}; BFF={}; Total={}", $progressive, $tff, $bff, $total);
+	// if percentage of frames are > 1% interlaced, then de-interlace
+        return ($tff/$total > 0.01 || $bff/$total > 0.01);
     }
 
     public static function execute($listRequests, $outputFile, $exit = TRUE)

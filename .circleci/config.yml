@@ -21,7 +21,7 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
       
     machine:
-      image: 'ubuntu-2004:202010-01'
+      image: 'ubuntu-2004:202101-01'
     steps:
       - run:
           name: Dependencies
@@ -47,7 +47,7 @@ jobs:
           docker-password: THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
       - docker/pull:
-          images: ${CACHE_FROM_IMAGE}
+          images: ${FROM_IMAGE},${CACHE_FROM_IMAGE}
           ignore-docker-pull-error: true
       - checkout
       - run:

@@ -12,11 +12,10 @@ class InputFile
         if (is_dir($filename) || substr($filename, - strlen($filename)) === ".iso") {
             $this->prefix = "bluray:";
         }
-        $out = FFmpegHelper::probe($this);
-	if ($out === FALSE) {
+        $json = FFmpegHelper::probe($this);
+	if ($json === FALSE) {
 	    throw new Exception("Could not probe file " . $filename);
 	}
-        $json = json_decode(implode($out), true);
         if (array_key_exists("streams", $json)) {
             foreach ($json["streams"] as $stream) {
                 $oStream = new Stream($stream);
