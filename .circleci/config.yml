@@ -111,5 +111,5 @@ workflows:
           name: test-4.3-vaapi
           requires:
             - build-4.3-vaapi
-          front-tag: 4.3-vaapi
+          from-tag: 4.3-vaapi
           test-subtitle: true
