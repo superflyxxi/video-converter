@@ -63,13 +63,7 @@ jobs:
 workflows:
   default:
     jobs:
-      - build:
-          name: build-4.3-vaapi
-          dockerfile: vaapi
-          build-subtitle: true
-          from-tag: 4.3-vaapi
-      - build:
-          name: build-4.3-vaapi1804
+      - build-4.3-vaapi1804:
           dockerfile: vaapi
           build-subtitle: true
           from-tag: 4.3-vaapi1804
