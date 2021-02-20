@@ -60,16 +60,54 @@ jobs:
       - run:
           name: Run tests
           command: ./test.sh
+  test:
+    parameters:
+      from-tag:
+        type: string
+      test-subtitle:
+        type: boolean
+    environment:
+      FROM_TAG: << parameters.from-tag >>
+      BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
+      
+    machine:
+      image: 'ubuntu-2004:202101-01'
+    steps:
+      - run:
+          name: Dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get -y install php
+      - run:
+          name: Custom enviroment variables
+          command: |
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
+            else 
+              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
+            fi
+            echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            cat ${BASH_ENV}
+      - docker/check:
+          docker-username: THIS_REGISTRY_USERNAME
+          docker-password: THIS_REGISTRY_PASSWORD
+          registry: $THIS_REGISTRY
+      - docker/pull:
+          images: ${THIS_FULL_IMAGE}
+          ignore-docker-pull-error: false
+      - checkout
+      - run:
+          name: Run tests
+          command: ./test.sh
 workflows:
   default:
     jobs:
-      - build:
-          name: build-4.3-vaapi
+      - build-4.3-vaapi:
           dockerfile: vaapi
-          build-subtitle: false
+          build-subtitle: true
           from-tag: 4.3-vaapi
-#      - build:
-#          name: build-snapshot-vaapi
-#          dockerfile: vaapi
-#          build-subtitle: true
-#          from-tag: snapshot-vaapi
+      - test-4.3-vaapi:
+          requires:
+            - build-4.3-vaapi
+          front-tag: 4.3-vaapi
+          test-subtitle: true
