@@ -68,7 +68,7 @@ jobs:
         type: boolean
     environment:
       FROM_TAG: << parameters.from-tag >>
-      BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
+      BUILD_SUBTITLE_SUPPORT: << parameters.test-subtitle >>
       
     machine:
       image: 'ubuntu-2004:202101-01'
