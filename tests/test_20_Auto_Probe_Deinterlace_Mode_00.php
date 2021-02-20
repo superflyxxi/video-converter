@@ -17,7 +17,7 @@ test("Stream 0 codec", "hevc", $probe["streams"][0]["codec_name"], $testOutput);
 // doesn't exist... test("Stream 0 field_order", "progressive", $probe["streams"][0]["field_order"], $testOutput);
 test("Stream 0 r_frame_rate", "24000/1001", $probe["streams"][0]["r_frame_rate"], $testOutput);
 test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"]), $testOutput);
-test("Metadata Title", "Test Auto Deinterlace", $probe["format"]["tags"]["title"], $testOutput);
+test("Metadata Title", "Test Probe Auto Deinterlace", $probe["format"]["tags"]["title"], $testOutput);
 test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"], $testOutput);
 test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]), $testOutput);
 test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["tags"]), $testOutput);
