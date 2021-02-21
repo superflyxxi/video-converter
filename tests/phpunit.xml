@@ -9,5 +9,8 @@
     <testsuite name="deinterlace">
       <directory>deinterlace</directory>
     </testsuite>
+    <testsuite name="audio">
+      <directory>audio</directory>
+    </testsuite>
   </testsuites>
 </phpunit>
