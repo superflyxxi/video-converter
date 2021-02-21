@@ -59,6 +59,7 @@ jobs:
           tag: ${THIS_LABEL}
       - docker/build:
           docker-context: tests/
+          path: tests/
           image: test
           tag: latest
       - run:
