@@ -1,36 +1,35 @@
 <?php
 include_once "common.php";
+use PHPUnit\Framework\TestCase;
 
-getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
+final class SubtitleTests extends TestCase
+{
 
-test_ffmpeg(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Subtitle Files", "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "SUBTITLE_CONVERSION_OUTPUT"=>"FILE", "SUBTITLE_CONVERSION_BLACKLIST"=>"!\�~@~", "YEAR"=>2019), $output, $return);
+    public function testBlacklist() {
+        CommonTestUtil::getInstance()->getFile("dvd.mkv", "/samples/DVD_Sample.mkv");
 
-test("ffmpeg code", 0, $return, $output);
+        test_ffmpeg(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Subtitle Files", "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "SUBTITLE_CONVERSION_OUTPUT"=>"FILE", "SUBTITLE_CONVERSION_BLACKLIST"=>"!\�~@~", "YEAR"=>2019), $output, $return);
 
-$probe = probe("/data/Test Subtitle Files (2019).mkv");
-$probe = json_decode($probe, true);
+        $this->assertEquals(0, $return, "ffmpeg code"); //test("ffmpeg code", 0, $return, $output);
 
-$testOutput = array($output, $probe);
+        $probe = probe("/data/Test Subtitle Files (2019).mkv");
+        $probe = json_decode($probe, true);
 
-test("Stream 0", "video", $probe["streams"][0]["codec_type"], $testOutput);
-if ( getEnv("BUILD_SUBTITLE_CONVERT") == "false") {
-	test("Stream 1 exists", TRUE, array_key_exists(1, $probe["streams"]), array($probe, $testOutput));
-	test("Stream 1 codec", "dvd_subtitle", $probe["streams"][1]["codec_name"], $testOutput);
-} else {
-	test("Stream 1 exists", FALSE, array_key_exists(1, $probe["streams"]), array($probe, $testOutput));
-}
-test("Metadata Title", "Test Subtitle Files", $probe["format"]["tags"]["title"], $testOutput);
-test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"], $testOutput);
-test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]), $testOutput);
-test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["tags"]), $testOutput);
-test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["tags"]), $testOutput);
+        $testOutput = array($output, $probe);
 
-$testfile = getEnv("TMP_DIR")."/Test Subtitle Files (2019).mkv.2-eng.srt";
-test("File exists, ".$testfile, getEnv("BUILD_SUBTITLE_CONVERT") != "false", file_exists($testfile));
-if (getEnv("BUILD_SUBTITLE_CONVERT") != "false") {
+        $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0");
+	$this->assertFalse(array_key_exists(1, $probe["streams"]), "Stream 1 exists");
+        $this->assertEquals("Test Subtitle Files", $probe["format"]["tags"]["title"], "Metadata Title");
+        $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata Year");
+        $this->assertFalse(array_key_exists("SEASON", $probe["format"]["tags"]), "Metadata Season exists");
+        $this->assertFalse(array_key_exists("EPISODE", $probe["format"]["tags"]), "Metadata Episode exists");
+        $this->assertFalse(array_key_exists("SUBTITLE", $probe["format"]["tags"]), "Metadata Subtitle exists");
+
+        $testfile = getEnv("TMP_DIR")."/Test Subtitle Files (2019).mkv.2-eng.srt";
+        $this->assertFileExists($testfile, "File missing");
 	$contents = file_get_contents($testfile);
-	test("SRT Contains ’", FALSE, strpos($contents, "’"), array_merge($testOutput, array($contents)));
-	test("SRT Contains !", FALSE, strpos($contents, "!"), array_merge($testOutput, array($contents)));
+	$this->assertFalse(strpos($contents, "’"), "SRT contains '");
+	$this->assertFalse(strpos($contents, "!"), "SRT contains |");
+    }
 }
 ?>
-

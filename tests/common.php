@@ -1,7 +1,6 @@
 <?php
 $user = getEnv("UID");
 $image = getEnv("THIS_FULL_IMAGE");
-$sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
 set_include_path(get_include_path() . PATH_SEPARATOR . "/home/ripvideo");
 printf("TEST: %s\n", debug_backtrace()[0]['file']);
 
@@ -23,7 +22,19 @@ function test($message, $expected, $actual, $extraLogs = "")
     printf("'\n");
 }
 
-function probe($file)
+final class CommonTestUtil {
+        private static $instance = NULL; 
+        public static function getInstance(): CommonTestUtil {
+            if (NULL == self::$instance) {
+                self::$instance = new CommonTestUtil();
+            }
+            return self::$instance;
+        }
+        private function __construct() {
+            $this->sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
+        }
+	private $sampleDomain;
+public static function probe($file)
 {
     global $user;
     global $image;
@@ -41,10 +52,10 @@ function probe($file)
     return NULL;
 }
 
-function getFile($localFilename, $URL)
+public function getFile($localFilename, $URLpath)
 {
     if (! file_exists(getEnv("TMP_DIR") . "/" . $localFilename)) {
-        passthru('curl -k -L -o "' . getEnv("TMP_DIR") . '/' . $localFilename . '" "' . $URL . '"', $ret);
+        passthru('curl -k -L -o "' . getEnv("TMP_DIR") . '/' . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"', $ret);
         return 0 < $ret;
     }
     return TRUE;
@@ -61,5 +72,5 @@ function test_ffmpeg($envVars, &$output, &$return, $timeout = "8m") {
     exec("docker stop test");
     printf("%s: Done executing\n", date(DateTimeInterface::ISO8601));
 }
-
+}
 ?>
