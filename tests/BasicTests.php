@@ -4,32 +4,34 @@
  */
 include_once "common.php";
 
-getFile("dvd.mkv", "https://".$sampleDomain."/samples/DVD_Sample.mkv");
-test_ffmpeg(array("TITLE"=>"Test No Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"), $output, $return);
+final class BasicTests extends Test
+{
 
-test("ffmpeg code", 0, $return, $output);
+    public function testBlacklist() {
+        $this->getFile("dvd");
+	$this->ripvideo(array("TITLE"=>"Test No Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"), $output, $return);
 
-$probe = probe("/data/Test No Input (2019).dvd.mkv.mkv", true);
-$probe = json_decode($probe, TRUE);
+        $this->assertEquals(0, $return, "Exit status not expected");
 
-$testOutput = array(
-    $output,
-    $probe
-);
-test("Stream 0", "video", $probe["streams"][0]["codec_type"], $testOutput);
-test("Stream 0 codec", "mpeg2video", $probe["streams"][0]["codec_name"], $testOutput);
-test("Stream 1", "audio", $probe["streams"][1]["codec_type"], $testOutput);
-test("Stream 1 codec", "ac3", $probe["streams"][1]["codec_name"], $testOutput);
-test("Stream 1 channel_layout", "5.1(side)", $probe["streams"][1]["channel_layout"], $testOutput);
-test("Stream 1 channels", 6, $probe["streams"][1]["channels"], $testOutput);
-test("Stream 2", "subtitle", $probe["streams"][2]["codec_type"], $testOutput);
-test("Stream 2 codec", "dvd_subtitle", $probe["streams"][2]["codec_name"], $testOutput);
-test("Stream 3 doesn't exist", FALSE, array_key_exists(3, $probe["streams"]), $testOutput);
-test("Metadata Title", "Test No Input", $probe["format"]["tags"]["title"], $testOutput);
-test("Metadata YEAR", "2019", $probe["format"]["tags"]["YEAR"], $testOutput);
-test("Metadata SEASON", FALSE, array_key_exists("SEASON", $probe["format"]["tags"]), $testOutput);
-test("Metadata EPISODE", FALSE, array_key_exists("EPISODE", $probe["format"]["tags"]), $testOutput);
-test("Metadata SUBTITLE", FALSE, array_key_exists("SUBTITLE", $probe["format"]["tags"]), $testOutput);
+        $probe = $this->probe("Test No Input (2019).dvd.mkv.mkv", true);
+        $probe = json_decode($probe, TRUE);
+        print_r($probe);
 
+        $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 code_type");
+        $this->assertEquals("mpeg2video", $probe["streams"][0]["codec_name"], "Stream 0 codec");
+        $this->assertEquals("audio", $probe["streams"][1]["codec_type"], "Stream 1 codec type");
+        $this->assertEquals("ac3", $probe["streams"][1]["codec_name"], "Stream 1 codec");
+        $this->assertEquals("5.1(side)", $probe["streams"][1]["channel_layout"], "Stream 1 channel_layout");
+        $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
+        $this->assertEquals("subtitle", $probe["streams"][2]["codec_type"], "Stream 2 codec_type");
+        $this->assertEquals("dvd_subtitle", $probe["streams"][2]["codec_name"], "Stream 2 codec");
+        $this->assertFalse(array_key_exists(3, $probe["streams"]), "Stream 3 exists");
+        $this->assertEquals("Test No Input", $probe["format"]["tags"]["title"], "Metadata title");
+        $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
+        $this->assertFalse(array_key_exists("SEASON", $probe["format"]["tags"]), "Metadata SEASON exists");
+        $this->assertFalse(array_key_exists("EPISODE", $probe["format"]["tags"]), "Metadata EPISODE exists");
+        $this->assertFalse(array_key_exists("SUBTITLE", $probe["format"]["tags"]), "Metadata SUBTITLE exists");
+    }
+}
 ?>
 
