@@ -6,5 +6,8 @@
     <testsuite name="subtitles">
       <directory>subtitles</directory>
     </testsuite>
+    <testsuite name="deinterlace">
+      <directory>deinterlace</directory>
+    </testsuite>
   </testsuites>
 </phpunit>
