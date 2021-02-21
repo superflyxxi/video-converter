@@ -7,5 +7,5 @@ RUN DEBIAN_FRONTEND=noninteractive \
 ADD "https://phar.phpunit.de/phpunit-8.phar" /usr/bin/phpunit
 RUN chmod ugo+xr /usr/bin/phpunit
 ENTRYPOINT [ "/usr/bin/phpunit", "-c", "/tests/phpunit.xml" ]
-CMD [ "./" ]
+CMD [ "--testsuite" , "basic,subtitle" ]
 ADD ./ /tests
