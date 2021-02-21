@@ -43,7 +43,7 @@ class Test extends TestCase {
         //}
         //$command .= ' -v ' . getEnv("TMP_DIR") . ':/data --entrypoint ffprobe ' . $image . ' -v quiet -print_format json -show_format -show_streams "' . $file . '"';
         $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $this->tmpDir . DIRECTORY_SEPARATOR . $file . '"';
-        printf("Probing '%s'\nCommand: %s\n", $file, $command);
+        //printf("Probing '%s'\nCommand: %s\n", $file, $command);
         exec($command, $out, $ret);
         if ($ret == 0) {
             $out = implode($out);
@@ -79,11 +79,11 @@ class Test extends TestCase {
         }
         $command .= 'timeout -s9 ' . $timeout . ' /home/ripvideo/rip-video ';
         //$command .= getEnv("THIS_FULL_IMAGE");
-        printf("%s: executing: %s\n", date(DateTimeInterface::ISO8601), $command);
+        //printf("%s: executing: %s\n", date(DateTimeInterface::ISO8601), $command);
         //passthru($command, $return);
         exec($command, $output, $return);
         //exec("docker stop test");
-        printf("%s: Done executing\n", date(DateTimeInterface::ISO8601));
+        //printf("%s: Done executing\n", date(DateTimeInterface::ISO8601));
 }
 }
 ?>

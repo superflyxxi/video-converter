@@ -7,7 +7,7 @@ include_once "common.php";
 final class BasicTests extends Test
 {
 
-    public function testBlacklist() {
+    public function testNoInputSpecified() {
         $this->getFile("dvd");
 	$this->ripvideo(array("TITLE"=>"Test No Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"), $output, $return);
 
@@ -15,7 +15,6 @@ final class BasicTests extends Test
 
         $probe = $this->probe("Test No Input (2019).dvd.mkv.mkv", true);
         $probe = json_decode($probe, TRUE);
-        print_r($probe);
 
         $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 code_type");
         $this->assertEquals("mpeg2video", $probe["streams"][0]["codec_name"], "Stream 0 codec");
