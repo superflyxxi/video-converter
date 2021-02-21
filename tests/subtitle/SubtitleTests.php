@@ -8,7 +8,7 @@ final class SubtitleTests extends TestCase
     public function testBlacklist() {
         CommonTestUtil::getInstance()->getFile("dvd.mkv", "/samples/DVD_Sample.mkv");
 
-        test_ffmpeg(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Subtitle Files", "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "SUBTITLE_CONVERSION_OUTPUT"=>"FILE", "SUBTITLE_CONVERSION_BLACKLIST"=>"!\�~@~", "YEAR"=>2019), $output, $return);
+        CommonTestUtil::getInstance()->test_ffmpeg(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Subtitle Files", "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "SUBTITLE_CONVERSION_OUTPUT"=>"FILE", "SUBTITLE_CONVERSION_BLACKLIST"=>"!\�~@~", "YEAR"=>2019), $output, $return);
 
         $this->assertEquals(0, $return, "ffmpeg code"); //test("ffmpeg code", 0, $return, $output);
 

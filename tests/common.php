@@ -1,7 +1,7 @@
 <?php
 $user = getEnv("UID");
 $image = getEnv("THIS_FULL_IMAGE");
-set_include_path(get_include_path() . PATH_SEPARATOR . "/home/ripvideo");
+//set_include_path(get_include_path() . PATH_SEPARATOR . "/home/ripvideo");
 printf("TEST: %s\n", debug_backtrace()[0]['file']);
 
 function test($message, $expected, $actual, $extraLogs = "")
@@ -61,16 +61,19 @@ public function getFile($localFilename, $URLpath)
     return TRUE;
 }
 
-function test_ffmpeg($envVars, &$output, &$return, $timeout = "8m") {
-    $command = 'timeout -s9 ' . $timeout . ' docker run -t --rm --user $(id -u):$(id -g) --name test -v "' . getEnv("TMP_DIR") . ':/data" ';
-    foreach ($envVars as $key => $value) {
-        $command .= " -e " . $key . '="' . $value . '" ';
-    }
-    $command .= getEnv("THIS_FULL_IMAGE");
-    printf("%s: executing: %s\n", date(DateTimeInterface::ISO8601), $command);
-    exec($command, $output, $return);
-    exec("docker stop test");
-    printf("%s: Done executing\n", date(DateTimeInterface::ISO8601));
+    public function test_ffmpeg($envVars, &$output, &$return, $timeout = "8m") {
+        //$command = 'timeout -s9 ' . $timeout . ' docker run -t --rm --user $(id -u):$(id -g) --name test -v "' . getEnv("TMP_DIR") . ':/data" ';
+        $command = "";
+        foreach ($envVars as $key => $value) {
+            $command .= $key . '="' . $value . '" ';
+        }
+        $command .= 'timeout -s9 ' . $timeout . ' /home/ripvideo/rip-video ';
+        //$command .= getEnv("THIS_FULL_IMAGE");
+        printf("%s: executing: %s\n", date(DateTimeInterface::ISO8601), $command);
+        passthru($command, $return);
+        //exec($command, $output, $return);
+        //exec("docker stop test");
+        printf("%s: Done executing\n", date(DateTimeInterface::ISO8601));
 }
 }
 ?>
