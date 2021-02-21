@@ -14,6 +14,7 @@ final class LoggingTest extends TestCase
         Logger::debug("Testing multiple things {}, {}, {}", "one", "two", "three");
         Logger::debug("Testing an array {}", array("something","somethingelse"));
         Logger::debug("Testing an integer={} and float={}", 1, 2.35);
+        $this->assertTrue(true, "Test ran without error");
     }
 }
 ?>
