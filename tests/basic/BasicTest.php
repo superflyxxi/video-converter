@@ -63,5 +63,30 @@ final class BasicTest extends Test
         $this->assertFalse(array_key_exists("EPISODE", $probe["format"]["tags"]), "Metadata EPISODE exists");
         $this->assertFalse(array_key_exists("SUBTITLE", $probe["format"]["tags"]), "Metadata SUBTITLE exists");
     }
+
+    public function testTvShowMetadata() {
+        $this->getFile("dvd");
+
+        $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test tv show", "YEAR"=>2019, "SEASON"=>"01", "EPISODE"=>"23", "SUBTITLE"=>"The One Where Things", "VIDEO_FORMAT"=>"copy", "AUDIO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"), $output, $return);
+        $this->assertEquals(0, $return, "rip-video exit code");
+
+        $probe = $this->probe("Test tv show (2019) - s01e23 - The One Where Things.dvd.mkv.mkv");
+
+        $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
+        $this->assertEquals("mpeg2video", $probe["streams"][0]["codec_name"], "Stream 0 codec");
+        $this->assertEquals("audio", $probe["streams"][1]["codec_type"], "Stream 1 codec_type");
+        $this->assertEquals("ac3", $probe["streams"][1]["codec_name"], "Steram 1 codec");
+        $this->assertEquals("5.1(side)", $probe["streams"][1]["channel_layout"], "Stream 1 channel_layout");
+        $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
+        $this->assertEquals("subtitle", $probe["streams"][2]["codec_type"], "Stream 2 codec_type");
+        $this->assertEquals("dvd_subtitle", $probe["streams"][2]["codec_name"], "Stream 2 codec");
+        $this->assertFalse(array_key_exists(3, $probe["streams"]), "Stream 3 exists");
+        $this->assertEquals("Test tv show", $probe["format"]["tags"]["title"], "Metadata title");
+        $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
+        $this->assertEquals("01", $probe["format"]["tags"]["SEASON"], "Metadata SEASON");
+        $this->assertEquals("23", $probe["format"]["tags"]["EPISODE"], "Metadata EPISODE");
+        $this->assertEquals("The One Where Things", $probe["format"]["tags"]["SUBTITLE"], "Metadata SUBTITLE");
+    }
+
 }
 ?>
