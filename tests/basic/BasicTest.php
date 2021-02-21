@@ -88,5 +88,22 @@ final class BasicTest extends Test
         $this->assertEquals("The One Where Things", $probe["format"]["tags"]["SUBTITLE"], "Metadata SUBTITLE");
     }
 
+    public function testNotApplyingPostfix() {
+        $this->getFile("dvd");
+
+        $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Not Applying Postfix", "YEAR"=>2019, "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1), $output, $return);
+        $this->assertEquals(0, $return, "ripvideo exit code");
+
+        $probe = $this->probe("Test Not Applying Postfix (2019).mkv");
+
+        $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
+        $this->assertEquals("mpeg2video", $probe["streams"][0]["codec_name"], "Stream 0 codec");
+        $this->assertFalse(array_key_exists(1, $probe["streams"]), "Stream 1 exists");
+        $this->assertEquals("Test Not Applying Postfix", $probe["format"]["tags"]["title"], "Metadata title");
+        $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
+        $this->assertFalse(array_key_exists("SEASON", $probe["format"]["tags"]), "Metadata SEASON");
+        $this->assertFalse(array_key_exists("EPISODE", $probe["format"]["tags"]), "Metadata EPISODE");
+        $this->assertFalse(array_key_exists("SUBTITLE", $probe["format"]["tags"]), "Metadata SUBTITLE");
+    }
 }
 ?>
