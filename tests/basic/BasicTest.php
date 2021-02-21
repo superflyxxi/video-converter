@@ -2,8 +2,8 @@
 /*
  * Tests when no input is given. It should product results for the file as expected.
  */
-include_once "common.php";
-include_once "Logger.php";
+require_once "common.php";
+require_once "Logger.php";
 
 final class BasicTests extends Test
 {
