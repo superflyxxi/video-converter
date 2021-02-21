@@ -53,12 +53,13 @@ class Test extends TestCase {
 
     public function getFile($file) {
         switch ($file) {
+            case "dvd.mkv":
             case "dvd":
                 $URLpath = "/samples/DVD_Sample.mkv";
                 $localFilename = "dvd.mkv";
                 break;
 
-            case "bluray":
+            case "bluray.mkv":
                 $URLpath = "/samples/Bluray_Sample.mkv";
                 $localFilename = "bluray.mkv";
                 break;
