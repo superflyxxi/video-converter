@@ -81,7 +81,7 @@ class ConvertSubtitle
                                 $command .= ' --tesseract-lang ' . $subtitle->language . ' ';
                             }
                             if (NULL != $oRequest->subtitleConversionBlacklist) {
-                                $command .= ' --blacklist "' . $oRequest->subtitleConversionBlacklist . '"';
+                                $command .= ' --blacklist "' . str_replace("`", "\\`", $oRequest->subtitleConversionBlacklist) . '"';
                             }
                             $command .= ' "' . $dvdFile . '" ';
                             Logger::debug("Command: {}", $command);
