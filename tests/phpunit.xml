@@ -1,1 +1,10 @@
-<phpunit testdox="true" noInteraction="true" />
+<phpunit testdox="true" noInteraction="true" >
+  <testsuites>
+    <testsuite name="Basic Tests">
+      <directory>./basic</directory>
+    </testsuite>
+    <testsuite name="Subtitle Tests">
+      <directory>./subtitle</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
