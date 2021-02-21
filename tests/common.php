@@ -46,7 +46,7 @@ class Test extends TestCase {
         exec($command, $out, $ret);
         if ($ret == 0) {
             $out = implode($out);
-            return $out;
+            return json_decode($out, true);
         }
         return NULL;
     }
