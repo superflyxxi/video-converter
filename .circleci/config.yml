@@ -57,6 +57,10 @@ jobs:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
+      - docker/build:
+          docker-context: tests/
+          image: test
+          tag: latest
       - run:
           name: Run tests
           command: ./test.sh
