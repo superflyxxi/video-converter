@@ -19,7 +19,6 @@ jobs:
       FROM_TAG: << parameters.from-tag >>
       BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
       DEBIAN_FRONTEND: noninteractive
-      
     machine:
       image: 'ubuntu-2004:202101-01'
     steps:
@@ -57,9 +56,6 @@ jobs:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
-      - run:
-          name: Run tests
-          command: ./test.sh
   test:
     parameters:
       from-tag:
@@ -69,7 +65,6 @@ jobs:
     environment:
       FROM_TAG: << parameters.from-tag >>
       BUILD_SUBTITLE_SUPPORT: << parameters.test-subtitle >>
-      
     machine:
       image: 'ubuntu-2004:202101-01'
     steps:
