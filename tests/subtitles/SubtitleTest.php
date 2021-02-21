@@ -4,6 +4,22 @@ require_once "common.php";
 final class SubtitleTests extends Test
 {
 
+    public function testDvdSubtitleConversion() {
+        $this->getFile("dvd");
+
+        $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Convert DVD Subtitle", "VIDEO_TRACKS"=>-1, "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "YEAR"=>2019), $output, $return);
+
+        $this->assertEquals("ffmpeg code", 0, $return, "ripvideo exit code");
+
+        $probe = $this->probe("/data/Test Convert DVD Subtitle (2019).mkv");
+
+        $this->assertEquals("subtitle", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
+        $this->assertEquals("subrip", $probe["streams"][0]["codec_name"], "Stream 0 codec");
+        $this->assertEquals("eng", $probe["streams"][0]["tags"]["language"], "Stream 0 language");
+        $this->assertFalse(array_key_exists(1, $probe["streams"]), "Stream 1 exists");
+        $this->assertEquals("Test Convert DVD Subtitle", $probe["format"]["tags"]["title"], "Metadata title");
+    }
+
     public function testBlacklist() {
         $this->getFile("dvd");
 
