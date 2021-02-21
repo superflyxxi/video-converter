@@ -5,7 +5,7 @@
 include_once "common.php";
 include_once "Logger.php";
 
-final class BasicTest extends Test
+final class BasicTests extends Test
 {
     public function testLoggingProducesNoErrors() {
         Logger::debug("Testing");
