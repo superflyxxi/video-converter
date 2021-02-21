@@ -1,5 +1,6 @@
 <?php
-include_once "../php/Logger.php";
+include_once "common.php";
+include_once "Logger.php";
 
 Logger::debug("Testing");
 Logger::debug("Testing nothing", "blah");

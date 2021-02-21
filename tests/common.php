@@ -2,7 +2,7 @@
 $user = getEnv("UID");
 $image = getEnv("THIS_FULL_IMAGE");
 $sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
-
+set_include_path(get_include_path() . PATH_SEPARATOR . "/home/ripvideo");
 printf("TEST: %s\n", debug_backtrace()[0]['file']);
 
 function test($message, $expected, $actual, $extraLogs = "")
