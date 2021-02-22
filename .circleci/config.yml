@@ -27,7 +27,7 @@ jobs:
           name: Dependencies
           command: |
             sudo apt-get update
-            sudo apt-get -y install php
+            sudo apt-get -y install php-cli
       - run:
           name: Custom enviroment variables
           command: |
