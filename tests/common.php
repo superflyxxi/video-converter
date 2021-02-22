@@ -1,5 +1,4 @@
 <?php
-set_include_path(get_include_path() . PATH_SEPARATOR . "/home/ripvideo");
 
 use PHPUnit\Framework\TestCase;
 class Test extends TestCase {
