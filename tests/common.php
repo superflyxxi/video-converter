@@ -1,20 +1,22 @@
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . "/home/ripvideo");
 
+require_once "Logger.php";
+
 use PHPUnit\Framework\TestCase;
 class Test extends TestCase {
         
     public function __construct() {
         parent::__construct();
         $this->sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
-        $this->tmpDir = getEnv("TMP_DIR");
+        $this->dataDir = getEnv("DATA_DIR");
     }
     private $sampleDomain;
-    private $tmpDir;
+    private $dataDir;
 
     public function probe($file)
     {
-        $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $this->tmpDir . DIRECTORY_SEPARATOR . $file . '"';
+        $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $this->dataDir . DIRECTORY_SEPARATOR . $file . '"';
         exec($command, $out, $ret);
         if ($ret == 0) {
             $out = implode($out);
@@ -36,8 +38,11 @@ class Test extends TestCase {
                 $localFilename = "bluray.mkv";
                 break;
         }
-        if (! file_exists($this->tmpDir . DIRECTORY_SEPARATOR . $localFilename)) {
-            passthru('curl -k -L -o "' . $this->tmpDir . DIRECTORY_SEPARATOR . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"', $ret);
+        if (! file_exists($this->dataDir . DIRECTORY_SEPARATOR . $localFilename)) {
+            $command = 'curl -k -L -o "' . $this->dataDir . DIRECTORY_SEPARATOR . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"';
+            //Logger::debug("Executing %s\n", $command);
+            print_r($command . "\n");
+            passthru($command, $ret);
             return 0 < $ret;
         }
         return TRUE;
