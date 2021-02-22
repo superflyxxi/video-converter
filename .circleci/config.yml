@@ -63,6 +63,7 @@ jobs:
           image: test
           tag: latest
           extra_build_args: --build-arg BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
+          step-name: Build test image
       - run:
           name: Run tests
           command: ./test.sh
