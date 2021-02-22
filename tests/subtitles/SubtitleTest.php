@@ -11,7 +11,7 @@ final class SubtitleTests extends Test
 
         $this->assertEquals(0, $return, "ripvideo exit code");
 
-        $probe = $this->probe("/data/Test Convert DVD Subtitle (2019).mkv");
+        $probe = $this->probe("Test Convert DVD Subtitle (2019).mkv");
 
         $this->assertEquals("subtitle", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("subrip", $probe["streams"][0]["codec_name"], "Stream 0 codec");
