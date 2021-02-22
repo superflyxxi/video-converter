@@ -20,7 +20,7 @@ final class SubtitleTests extends Test
         $this->assertEquals("Test Convert DVD Subtitle", $probe["format"]["tags"]["title"], "Metadata title");
     }
 
-    public function skiptestBlacklist() {
+    public function testBlacklist() {
         $this->getFile("dvd");
 
         $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Subtitle Files", "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "SUBTITLE_CONVERSION_OUTPUT"=>"FILE", "SUBTITLE_CONVERSION_BLACKLIST"=>"!\�~@~", "YEAR"=>2019), $output, $return);
@@ -41,7 +41,7 @@ final class SubtitleTests extends Test
 	$this->assertFalse(strpos($contents, "!"), "SRT contains |");
     }
 
-    public function skiptestBluraySubtitles() {
+    public function testBluraySubtitles() {
         $this->getFile("bluray.mkv");
 
         $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"bluray.mkv", "TITLE"=>"Test Convert Bluray Subtitle", "VIDEO_TRACKS"=>-1, "AUDIO_TRACKS"=>-1, "YEAR"=>2019), $output, $return);
