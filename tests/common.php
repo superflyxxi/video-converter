@@ -1,7 +1,7 @@
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . "/home/ripvideo");
 
-require_once "Logger.php";
+//require_once "Logger.php";
 
 use PHPUnit\Framework\TestCase;
 class Test extends TestCase {
@@ -41,7 +41,7 @@ class Test extends TestCase {
         if (! file_exists($this->dataDir . DIRECTORY_SEPARATOR . $localFilename)) {
             $command = 'curl -k -L -o "' . $this->dataDir . DIRECTORY_SEPARATOR . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"';
             //Logger::debug("Executing %s\n", $command);
-            print_r($command . "\n");
+            //print_r($command . "\n");
             passthru($command, $ret);
             return 0 < $ret;
         }
