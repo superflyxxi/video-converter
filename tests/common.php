@@ -11,6 +11,13 @@ class Test extends TestCase {
     private $sampleDomain;
     private $dataDir;
 
+    protected function setUp(): void {
+        parent::setUp();
+        $tmpDir = exec("mktemp -d");
+        exec("mkdir -p " . $tmpDir . DIRECTORY_SEPARATOR . "data");
+        putenv("TMP_DIR=" . $tmpDir ); 
+    }
+
     public function probe($file)
     {
         $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $this->dataDir . DIRECTORY_SEPARATOR . $file . '"';
