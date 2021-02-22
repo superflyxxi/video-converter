@@ -1,4 +1,8 @@
 <phpunit testdox="true" noInteraction="true" >
+  <logging>
+    <log type="testdox-html" target="/testResults/testdox.html"/>
+    <log type="testdox-text" target="/testResults/testdox.txt"/>
+  </logging>
   <testsuites>
     <testsuite name="basic">
       <directory>basic</directory>
