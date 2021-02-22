@@ -23,26 +23,8 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	apt-get clean -y ; \
     fi
 
-# Install VobSub2SRT
-#RUN apt-get install -y software-properties-common
-#RUN BUILD_DEPS="git libtesseract-dev libtiff5-dev build-essential cmake pkg-config" && \
-#	if [[ ! "${FROM_IMAGE}" == *1804 ]]; then \
-#		BUILD_DEPS="${BUILD_DEPS} libtesseract-dev"; \
-#	else \
-#		BUILD_DEPS="${BUILD_DEPS} tesseract-ocr-dev"; \
-#	fi && \
-#        apt-get update && apt-get install -y ${BUILD_DEPS}
-#RUN mkdir -p ${DIR} && cd ${DIR} && \
-#	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git
-#	git clone --depth 1 https://github.com/bubonic/VobSub2SRT.git
-#RUN cd ${DIR}/VobSub2SRT && \
-#	./configure && \
-#	make && \
-#	make install 
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	DIR=$(mktemp -d) && cd ${DIR} && \
-#	BUILD_DEPS="git tesseract-ocr-dev libtiff5-dev g++ cmake automake autoconf" && \
-#	BUILD_DEPS="git libtiff5-dev g++ cmake automake autoconf" && \
         BUILD_DEPS="git libleptonica-dev libtiff5-dev build-essential cmake pkg-config" && \
 	if [[ ! "${FROM_IMAGE}" == *1804 ]]; then \
 		BUILD_DEPS="${BUILD_DEPS} libtesseract-dev"; \
