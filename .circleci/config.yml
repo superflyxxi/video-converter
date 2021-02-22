@@ -20,8 +20,8 @@ jobs:
       BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
       DEBIAN_FRONTEND: noninteractive
       
-    machine:
-      image: 'ubuntu-2004:202101-01'
+    machine: true
+#      image: 'ubuntu-2004:202101-01'
     steps:
       - run:
           name: Custom enviroment variables
