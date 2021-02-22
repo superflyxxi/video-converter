@@ -10,7 +10,7 @@ final class AudioTests extends Test
         $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Channel Mapping", "AUDIO_CHANNEL_LAYOUT"=>"stereo", "AUDIO_CHANNEL_LAYOUT_TRACKS"=>1, "VIDEO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1), $output, $return);
         $this->assertEquals(0, $return, "ripvideo exit code");
 
-        $probe = $this->probe("Test Channel Mapping (2019).dvd.mkv.mkv");
+        $probe = $this->probe("Test Channel Mapping.dvd.mkv.mkv");
 
         $this->assertEquals("audio", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("aac", $probe["streams"][0]["codec_name"], "Steram 0 codec");
