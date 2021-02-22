@@ -36,8 +36,8 @@ class Test extends TestCase {
                 $localFilename = "bluray.mkv";
                 break;
         }
-        if (! file_exists(getEnv("TMP_DIR") . "/" . $localFilename)) {
-            passthru('curl -k -L -o "' . getEnv("TMP_DIR") . '/' . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"', $ret);
+        if (! file_exists($this->tmpDir . DIRECTORY_SEPARATOR . $localFilename)) {
+            passthru('curl -k -L -o "' . $tmpDir . DIRECTORY_SEPARATOR . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"', $ret);
             return 0 < $ret;
         }
         return TRUE;
@@ -49,7 +49,8 @@ class Test extends TestCase {
             $command .= $key . '="' . $value . '" ';
         }
         $command .= 'timeout -s9 ' . $timeout . ' /home/ripvideo/rip-video ';
-        exec($command, $output, $return);
+        passthru($command, $return);
+        //exec($command, $output, $return);
     }
 }
 ?>

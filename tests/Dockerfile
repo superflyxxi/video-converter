@@ -8,6 +8,6 @@ ADD "https://phar.phpunit.de/phpunit-8.phar" /usr/bin/phpunit
 RUN chmod ugo+xr /usr/bin/phpunit
 ENTRYPOINT [ "/usr/bin/phpunit", "-c", "/tests/phpunit.xml" ]
 CMD [ "/tests" ]
-ENV TMP_DIR=/data
-RUN mkdir -m 777 -p ${TMP_DIR}
+ENV DATA_DIR=/data
+RUN mkdir -m 777 -p ${DATA_DIR}
 ADD ./ /tests

@@ -34,7 +34,7 @@ final class SubtitleTests extends Test
         $this->assertEquals("Test Subtitle Files", $probe["format"]["tags"]["title"], "Metadata Title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata Year");
 
-        $testfile = getEnv("TMP_DIR")."/Test Subtitle Files (2019).mkv.2-eng.srt";
+        $testfile = getEnv("DATA_DIR")."/Test Subtitle Files (2019).mkv.2-eng.srt";
         $this->assertFileExists($testfile, "File missing");
 	$contents = file_get_contents($testfile);
 	$this->assertFalse(strpos($contents, "’"), "SRT contains '");
