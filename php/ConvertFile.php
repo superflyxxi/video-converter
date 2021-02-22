@@ -32,7 +32,7 @@ class ConvertFile
         $this->subtitle = $subtitle;
     }
 
-    public function convert()
+    public function convert($oRequest)
     {
         Logger::info("Starting conversion for {}", $this->inputFilename);
         $oOutput = new OutputFile(getEnvWithDefault("APPLY_POSTFIX", "true") == "true" ? basename($this->inputFilename) : NULL); // use inputfile as the postfix only if APPLY_POSTFIX is set
@@ -42,7 +42,6 @@ class ConvertFile
         $oOutput->episode = $this->episode;
         $oOutput->year = $this->year;
 
-        $oRequest = Request::newInstanceFromEnv($this->inputFilename);
         Logger::verbose("Conversion output {}", $oOutput);
         Logger::verbose("Request information {}", $oRequest);
         $allRequests[] = $oRequest;

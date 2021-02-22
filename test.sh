@@ -1,18 +1,11 @@
 #!/bin/bash
 
-# Assuming FFMPEG_DOCKER set
+#docker build --tag test --build-arg BUILD_IMAGE=${THIS_FULL_IMAGE:?Missing THIS_FULL_IMAGE} tests/
 
-set -e
-
-THIS_FULL_IMAGE=${THIS_FULL_IMAGE:?Missing THIS_FULL_IMAGE}
-TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN:?Missing TEST_SAMPLE_DOMAIN}
-
-cd tests/
-export TMP_DIR=$(mktemp -d)
-export LOG_LEVEL="VERBOSE"
-export GREP_IGNORE="*"
-if [[ ! "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then
-	GREP_IGNORE="\(test_10\|test_11\|test_12\)"
+TESTSUITES="basic,deinterlace,audio"
+if [[ "${BUILD_SUBTITLE_SUPPORT}" = "true" ]]; then
+	TESTSUITES="${TESTSUITES},subtitles"
 fi
-
-find . -name 'test*.php' | grep -v "${GREP_IGNORE}" | sort | xargs -L1 php
+mkdir testResults
+docker run --rm -v "$(pwd)/testResults:/testResults" --user $(id -u):$(id -g) -e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} test --testsuite ${TESTSUITES}
+cat testResults/testdox.txt

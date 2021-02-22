@@ -27,7 +27,7 @@ jobs:
           name: Dependencies
           command: |
             sudo apt-get update
-            sudo apt-get -y install php
+            sudo apt-get -y install php-cli
       - run:
           name: Custom enviroment variables
           command: |
@@ -57,6 +57,13 @@ jobs:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
+      - docker/build:
+          docker-context: tests/
+          path: tests/
+          image: test
+          tag: latest
+          extra_build_args: --build-arg BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
+          step-name: Build test image
       - run:
           name: Run tests
           command: ./test.sh
