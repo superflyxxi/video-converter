@@ -1,4 +1,4 @@
-<phpunit testdox="true" noInteraction="true" >
+<phpunit testdox="true" noInteraction="true" cacheResult="false">
   <logging>
     <log type="testdox-html" target="/testResults/testdox.html"/>
     <log type="testdox-text" target="/testResults/testdox.txt"/>
