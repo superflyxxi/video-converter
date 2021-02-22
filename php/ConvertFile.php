@@ -32,7 +32,7 @@ class ConvertFile
         $this->subtitle = $subtitle;
     }
 
-    public function convert()
+    public function convert($oRequest)
     {
         Logger::info("Starting conversion for {}", $this->inputFilename);
         $oOutput = new OutputFile(getEnvWithDefault("APPLY_POSTFIX", "true") == "true" ? basename($this->inputFilename) : NULL); // use inputfile as the postfix only if APPLY_POSTFIX is set
@@ -42,7 +42,6 @@ class ConvertFile
         $oOutput->episode = $this->episode;
         $oOutput->year = $this->year;
 
-        $oRequest = Request::newInstanceFromEnv($this->inputFilename);
         Logger::verbose("Conversion output {}", $oOutput);
         Logger::verbose("Request information {}", $oRequest);
         $allRequests[] = $oRequest;
@@ -50,13 +49,7 @@ class ConvertFile
         $allRequests = array_merge($allRequests, ConvertSubtitle::convert($oRequest, $oOutput));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput, FALSE);
-        Logger::info("Completed conversion with {} as a return value.", $returnValue);
-	if ($returnValue  == 0) {
-	        Logger::info("Chowning new file to match existing file.");
-        	chown($oOutput->getFileName(), fileowner($oRequest->oInputFile->getFileName()));
-	        chgrp($oOutput->getFileName(), filegroup($oRequest->oInputFile->getFileName()));
-        	chmod($oOutput->getFileName(), fileperms($oRequest->oInputFile->getFileName()));
-	}
+        Logger::info("Completed conversion.");
         return $returnValue;
     }
 }

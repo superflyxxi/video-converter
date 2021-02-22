@@ -13,21 +13,22 @@ RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
 	apt-get install -y php php-json mkvtoolnix && \
 	apt-get clean -y
-# install tesseract, language packs, and java
-ARG BUILD_SUBTITLE_SUPPORT
+ARG BUILD_SUBTITLE_SUPPORT=false
+
+# Support bash as the deafult shell
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
+# install tesseract, language packs, and java
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	apt-get update && \
-	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y openjdk-11-jre-headless && \
+	apt-get install -y libtesseract4 openjdk-11-jre-headless && \
+	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y && \
 	apt-get clean -y ; \
     fi
 
-# Install VobSub2SRT
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	DIR=$(mktemp -d) && cd ${DIR} && \
-#	BUILD_DEPS="git tesseract-ocr-dev libtiff5-dev g++ cmake automake autoconf" && \
-	BUILD_DEPS="git libtiff5-dev g++ cmake automake autoconf" && \
+        BUILD_DEPS="git libleptonica-dev libtiff5-dev build-essential cmake pkg-config" && \
 	if [[ ! "${FROM_IMAGE}" == *1804 ]]; then \
 		BUILD_DEPS="${BUILD_DEPS} libtesseract-dev"; \
 	else \
@@ -36,12 +37,13 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	printf "FROM_IMAGE=${FROM_IMAGE}\nBUILD_DEPS=${BUILD_DEPS}\n" && \
 	apt-get update && \
 	apt-get install -y ${BUILD_DEPS} &&  \
-	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && \
+#	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && \
+	git clone --depth 1 https://github.com/bubonic/VobSub2SRT.git && \
 	cd VobSub2SRT && \
-	./configure CXXFLAGS="-std=gnu++11" && \
+	./configure && \
 	make && \
 	make install && \
-	apt-get purge --auto-remove -y ${BUILD_DEPS} && \
+	apt-get purge -y ${BUILD_DEPS} && \
 	apt-get clean -y && \
 	rm -rf ${DIR} ; \
    fi
@@ -52,5 +54,5 @@ ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Su
 ENTRYPOINT /home/ripvideo/rip-video
 
 COPY php/ /home/ripvideo/
-RUN chmod -R ugo+r /home/ripvideo
-
+RUN find /home/ripvideo/ -name "*.php" -exec php -l {} \; && \
+	chmod -R ugo+r /home/ripvideo

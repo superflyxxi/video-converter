@@ -23,16 +23,17 @@ class FFmpegHelper
             if ($ret > 0) {
                 throw new ExecutionException("ffprobe", $ret);
             }
-            Logger::verbose("Adding to cache {} = {}", $inputFile->getFileName(), $out);
-            self::$probeCache[$inputFile->getFileName()] = $out;
+            $json = json_decode(implode($out), true);
+            Logger::verbose("Adding to probe cache {} = {}", $inputFile->getFileName(), $json);
+            self::$probeCache[$inputFile->getFileName()] = $json;
         } else {
-            Logger::debug("Found {} in cache", $inputFile->getFileName());
-            $out = self::$probeCache[$inputFile->getFileName()];
+            Logger::debug("Found {} in probe cache", $inputFile->getFileName());
+            $json = self::$probeCache[$inputFile->getFileName()];
         }
-        if (false == $out) {
+        if (false == $json) {
             return false;
         }
-        return json_decode(implode($out), true);
+        return $json; //json_decode(implode($out), true);
     }
 
     public static function isInterlaced($inputFile)

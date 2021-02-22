@@ -65,7 +65,7 @@ class Logger
     public static function log($reqlevel, array $args)
     {
         self::init();
-        if (self::$loglevel >= $reqlevel) {
+        if (self::$loglevel <= $reqlevel) {
             $str = print_r($args[0], true);
             for ($i = 1, $count = count($args); $i < $count; $i ++) {
                 $str = preg_replace("/{}/", print_r($args[$i], true), $str, 1);

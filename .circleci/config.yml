@@ -19,14 +19,8 @@ jobs:
       FROM_TAG: << parameters.from-tag >>
       BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
       DEBIAN_FRONTEND: noninteractive
-    machine:
-      image: 'ubuntu-2004:202101-01'
+    machine: true
     steps:
-      - run:
-          name: Dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get -y install php
       - run:
           name: Custom enviroment variables
           command: |
@@ -52,6 +46,13 @@ jobs:
       - run:
           name: Build docker image
           command: ./build.sh
+      - docker/build:
+          docker-context: tests/
+          path: tests/
+          image: test
+          tag: latest
+          extra_build_args: --build-arg BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
+          step-name: Build test image
       - docker/push:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
@@ -65,9 +66,9 @@ jobs:
     environment:
       FROM_TAG: << parameters.from-tag >>
       BUILD_SUBTITLE_SUPPORT: << parameters.test-subtitle >>
-    machine:
-      image: 'ubuntu-2004:202101-01'
+    machine: true
     steps:
+      - checkout
       - run:
           name: Dependencies
           command: |
@@ -94,17 +95,21 @@ jobs:
       - run:
           name: Run tests
           command: ./test.sh
+      - store_test_results:
+          path: testResults
+      - store_artifacts:
+          path: testResults
 workflows:
   default:
     jobs:
       - build:
-          name: build-4.3-vaapi
+          name: build-4.3-vaapi1804
           dockerfile: vaapi
-          build-subtitle: false
-          from-tag: 4.3-vaapi
+          build-subtitle: true
+          from-tag: 4.3-vaapi1804
       - test:
-          name: test-4.3-vaapi
+          name: test-4.3-vaapi1804
           requires:
-            - build-4.3-vaapi
-          from-tag: 4.3-vaapi
-          test-subtitle: false
+            - build-4.3-vaapi1804
+          from-tag: 4.3-vaapi1804
+          test-subtitle: true
