@@ -21,7 +21,6 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
       
     machine: true
-#      image: 'ubuntu-2004:202101-01'
     steps:
       - run:
           name: Custom enviroment variables
