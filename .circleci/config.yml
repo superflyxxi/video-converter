@@ -57,6 +57,10 @@ jobs:
       - run:
           name: Run tests
           command: ./test.sh
+      - store_test_results:
+          path: testResults
+      - store_artifacts:
+          path: testResults
       - docker/push:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
