@@ -37,7 +37,7 @@ class Test extends TestCase {
                 break;
         }
         if (! file_exists($this->tmpDir . DIRECTORY_SEPARATOR . $localFilename)) {
-            passthru('curl -k -L -o "' . $tmpDir . DIRECTORY_SEPARATOR . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"', $ret);
+            passthru('curl -k -L -o "' . $this->tmpDir . DIRECTORY_SEPARATOR . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"', $ret);
             return 0 < $ret;
         }
         return TRUE;
