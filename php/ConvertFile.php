@@ -49,7 +49,7 @@ class ConvertFile
         $allRequests = array_merge($allRequests, ConvertSubtitle::convert($oRequest, $oOutput));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput, FALSE);
-        Logger::info("Completed conversion with {} as a return value.", $returnValue);
+        Logger::info("Completed conversion.");
         return $returnValue;
     }
 }
