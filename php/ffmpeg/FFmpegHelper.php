@@ -24,10 +24,10 @@ class FFmpegHelper
                 throw new ExecutionException("ffprobe", $ret);
             }
             $json = json_decode(implode($out), true);
-            Logger::verbose("Adding to cache {} = {}", $inputFile->getFileName(), $json);
+            Logger::verbose("Adding to probe cache {} = {}", $inputFile->getFileName(), $json);
             self::$probeCache[$inputFile->getFileName()] = $json;
         } else {
-            Logger::debug("Found {} in cache", $inputFile->getFileName());
+            Logger::debug("Found {} in probe cache", $inputFile->getFileName());
             $json = self::$probeCache[$inputFile->getFileName()];
         }
         if (false == $json) {
