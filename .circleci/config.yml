@@ -53,10 +53,6 @@ jobs:
       - run:
           name: Build docker image
           command: ./build.sh
-      - docker/push:
-          registry: $THIS_REGISTRY
-          image: ${THIS_IMAGE}
-          tag: ${THIS_LABEL}
       - docker/build:
           docker-context: tests/
           path: tests/
@@ -67,6 +63,10 @@ jobs:
       - run:
           name: Run tests
           command: ./test.sh
+      - docker/push:
+          registry: $THIS_REGISTRY
+          image: ${THIS_IMAGE}
+          tag: ${THIS_LABEL}
 workflows:
   default:
     jobs:
