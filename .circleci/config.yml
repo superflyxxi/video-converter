@@ -68,13 +68,14 @@ jobs:
               echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
             echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           docker-username: THIS_REGISTRY_USERNAME
           docker-password: THIS_REGISTRY_PASSWORD
           registry: $THIS_REGISTRY
       - docker/pull:
-          images: ${BUILD_IMAGE}
+          images: ${FROM_IMAGE},${BUILD_IMAGE}
           ignore-docker-pull-error: false
       - checkout
       - docker/build:
