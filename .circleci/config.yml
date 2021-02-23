@@ -116,6 +116,7 @@ jobs:
             fi
             echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
             cat ${BASH_ENV}
+      - checkout
       - run:
           name: Run tests
           command: ./test.sh
