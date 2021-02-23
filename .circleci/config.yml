@@ -18,8 +18,6 @@ jobs:
       DOCKERFILE: << parameters.dockerfile >>
       FROM_TAG: << parameters.from-tag >>
       BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
-      DEBIAN_FRONTEND: noninteractive
-      THIS_FULL_IMAGE: rip-video:build
     machine: true
     steps:
       - run:
@@ -30,6 +28,8 @@ jobs:
             #else 
             #  echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             #fi
+            echo 'export BUILD_IMAGE=${THIS_IMAGE}:build' >> ${BASH_ENV}
+            #echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
             fi
@@ -99,6 +99,7 @@ jobs:
           #extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
           extra_build_args: --build-arg BUILD_IMAGE=${THIS_IMAGE}:build
 #          registry: ${THIS_REGISTRY}
+          registry:
           step-name: Build test image
 #      - docker/push:
 #          registry: $THIS_REGISTRY
