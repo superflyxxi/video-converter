@@ -80,9 +80,10 @@ jobs:
       - docker/build:
           docker-context: tests/
           path: tests/
-          image: ${THIS_REGISTRY}/${THIS_IMAGE}-test
+          image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
           extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
+          registry: ${THIS_REGISTRY}
           step-name: Build test image
       - docker/push:
           registry: $THIS_REGISTRY
