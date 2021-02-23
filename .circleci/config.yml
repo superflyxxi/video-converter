@@ -58,26 +58,25 @@ jobs:
 #          tag: ${THIS_LABEL}
 
   build-test:
-    parameters:
-      from-tag:
-        type: string
-    environment:
-      FROM_TAG: << parameters.from-tag >>
-      TEST_IMAGE: rip-video-test:build
+#    parameters:
+#      from-tag:
+#        type: string
+#    environment:
+#      FROM_TAG: << parameters.from-tag >>
     machine: true
     steps:
-      - run:
-          name: Custom enviroment variables
-          command: |
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
-            else 
-              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
-            fi
+#      - run:
+#          name: Custom enviroment variables
+#          command: |
+            #if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+            #  echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
+            #else 
+            #  echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
+            #fi
             #echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
-            echo 'export BUILD_IMAGE=rip-video:build' >> ${BASH_ENV}
-            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
-            cat ${BASH_ENV}
+            #echo 'export BUILD_IMAGE=rip-video:build' >> ${BASH_ENV}
+            #echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
+            #cat ${BASH_ENV}
 #      - docker/check:
 #          docker-username: THIS_REGISTRY_USERNAME
 #          docker-password: THIS_REGISTRY_PASSWORD
@@ -96,8 +95,9 @@ jobs:
           path: tests/
           image: ${THIS_IMAGE}-test
  #         tag: ${THIS_LABEL}
-#         tag: build
-          extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
+         tag: build
+          #extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
+          extra_build_args: --build-arg BUILD_IMAGE=${THIS_IMAGE}:build
 #          registry: ${THIS_REGISTRY}
           step-name: Build test image
 #      - docker/push:
@@ -106,7 +106,7 @@ jobs:
 #          tag: ${THIS_LABEL}
       - run:
          name: Extract test image
-         command: docker save -o rip-video-test.tar ${THIS_IMAGE}-test
+         command: docker save -o rip-video-test.tar ${THIS_IMAGE}-test:build
       - persist_to_workspace:
           root: .
           paths:
@@ -114,12 +114,12 @@ jobs:
 
   run-test:
     parameters:
-      from-tag:
-        type: string
+#      from-tag:
+#        type: string
       testsuites:
         type: string
     environment:
-      FROM_TAG: << parameters.from-tag >>
+#      FROM_TAG: << parameters.from-tag >>
       TESTSUITES: << parameters.testsuites >>
       TEST_IMAGE: rip-video-test:build
     machine: true
@@ -128,16 +128,16 @@ jobs:
 #          docker-username: THIS_REGISTRY_USERNAME
 #          docker-password: THIS_REGISTRY_PASSWORD
 #          registry: $THIS_REGISTRY
-      - run:
-          name: Custom enviroment variables
-          command: |
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
-            else 
-              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
-            fi
-            #echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
-            cat ${BASH_ENV}
+#      - run:
+#          name: Custom enviroment variables
+#          command: |
+#            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+#              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
+#            else 
+#              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
+#            fi
+#            #echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
+#            cat ${BASH_ENV}
       - checkout
       - attach_workspace:
          at: .
@@ -202,12 +202,12 @@ workflows:
           name: build-test-4.3-vaapi1804
           requires:
             - build-ripvideo-4.3-vaapi1804
-          from-tag: 4.3-vaapi1804
+ #         from-tag: 4.3-vaapi1804
       - run-test:
           name: run-test-4.3-vaapi1804
           requires:
             - build-test-4.3-vaapi1804
-          from-tag: 4.3-vaapi1804
+#          from-tag: 4.3-vaapi1804
           testsuites: basic,deinterlace,audio,subtitles
       - push-images:
           requires:
