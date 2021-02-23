@@ -209,7 +209,7 @@ workflows:
             - build-test-4.3-vaapi1804
           from-tag: 4.3-vaapi1804
           testsuites: basic,deinterlace,audio,subtitles
-       - push-images:
+      - push-images:
           requires:
             - run-test-4.3-vaapi1804
           from-tag: 4.3-vaapi1804
