@@ -142,4 +142,4 @@ workflows:
           requires:
             - build-test-4.3-vaapi1804
           from-tag: 4.3-vaapi1804
-          testsuites: basic,deinterlace,audio
+          testsuites: basic,deinterlace,audio,subtitles
