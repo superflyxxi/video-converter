@@ -50,7 +50,8 @@ jobs:
             docker save -o rip-video.tar ${THIS_FULL_IMAGE}
       - persist_to_workspace:
           root: /tmp/docker-images
-          path: rip-video.tar
+          paths: 
+            - rip-video.tar
 #      - docker/push:
 #          registry: $THIS_REGISTRY
 #          image: ${THIS_IMAGE}
@@ -72,7 +73,7 @@ jobs:
             else 
               echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
-#            echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            #echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             echo 'export BUILD_IMAGE=rip-video:build' >> ${BASH_ENV}
             echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             cat ${BASH_ENV}
@@ -107,7 +108,8 @@ jobs:
          command: docker save -o rip-video-test.tar
       - persist_to_workspace:
           root: /tmp/docker-images
-          path: rip-video-test.tar
+          paths:
+            - rip-video-test.tar
 
   run-test:
     parameters:
@@ -135,7 +137,7 @@ jobs:
             else 
               echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
-#            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
+            #echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - checkout
       - run:
