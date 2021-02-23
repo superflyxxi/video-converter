@@ -28,8 +28,7 @@ jobs:
             #else 
             #  echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             #fi
-            echo 'export BUILD_IMAGE=${THIS_IMAGE}:build' >> ${BASH_ENV}
-            #echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build' >> ${BASH_ENV}
+            echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
             fi
@@ -65,16 +64,17 @@ jobs:
 #      FROM_TAG: << parameters.from-tag >>
     machine: true
     steps:
-#      - run:
-#          name: Custom enviroment variables
-#          command: |
+      - run:
+          name: Custom enviroment variables
+          command: |
             #if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
             #  echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
             #else 
             #  echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             #fi
             #echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
-            #echo 'export BUILD_IMAGE=rip-video:build' >> ${BASH_ENV}
+            echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build' >> ${BASH_ENV}
+            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:build' >> ${BASH_ENV}
             #echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             #cat ${BASH_ENV}
 #      - docker/check:
@@ -97,9 +97,8 @@ jobs:
  #         tag: ${THIS_LABEL}
           tag: build
           #extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
-          extra_build_args: --build-arg BUILD_IMAGE=${THIS_IMAGE}:build
-#          registry: ${THIS_REGISTRY}
-          registry:
+          extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
+          registry: ${THIS_REGISTRY}
           step-name: Build test image
 #      - docker/push:
 #          registry: $THIS_REGISTRY
@@ -107,7 +106,7 @@ jobs:
 #          tag: ${THIS_LABEL}
       - run:
          name: Extract test image
-         command: docker save -o rip-video-test.tar ${THIS_IMAGE}-test:build
+         command: docker save -o rip-video-test.tar ${TEST_IMAGE}
       - persist_to_workspace:
           root: .
           paths:
@@ -122,22 +121,21 @@ jobs:
     environment:
 #      FROM_TAG: << parameters.from-tag >>
       TESTSUITES: << parameters.testsuites >>
-      TEST_IMAGE: rip-video-test:build
     machine: true
     steps:
 #      - docker/check:
 #          docker-username: THIS_REGISTRY_USERNAME
 #          docker-password: THIS_REGISTRY_PASSWORD
 #          registry: $THIS_REGISTRY
-#      - run:
-#          name: Custom enviroment variables
-#          command: |
+      - run:
+          name: Custom enviroment variables
+          command: |
 #            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
 #              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
 #            else 
 #              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
 #            fi
-#            #echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
+            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:build' >> ${BASH_ENV}
 #            cat ${BASH_ENV}
       - checkout
       - attach_workspace:
@@ -165,6 +163,8 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
+            export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build
+            export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:build
             if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
               #echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
               export THIS_LABEL=${FROM_TAG}
@@ -173,9 +173,9 @@ jobs:
               export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}
             fi
             docker load -i rip-video.tar
-            docker tag rip-video:build ${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
+            docker tag ${BUILD_IMAGE} ${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
             docker load -i rip-video-test.tar
-            docker tag rip-video-test:build ${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
+            docker tag ${TEST_IMAGE ${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
       - docker/check:
           docker-username: THIS_REGISTRY_USERNAME
           docker-password: THIS_REGISTRY_PASSWORD
