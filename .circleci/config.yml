@@ -150,6 +150,45 @@ jobs:
       - store_artifacts:
           path: testResults
 
+  push-images:
+    parameters:
+      from-tag: 
+        type: string
+    environment:
+      FROM_TAG: << parameters.from-tag >>
+    machine: true
+    steps:
+      - attach_workspace:
+         at: .
+      - run:
+          name: Custom enviroment variables
+          command: |
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+              #echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
+              export THIS_LABEL=${FROM_TAG}
+            else 
+              #echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
+              export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}
+            fi
+            docker load -i rip-video.tar
+            docker tag rip-video:build ${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
+            docker load -i rip-video-test.tar
+            docker tag rip-video-test:build ${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
+      - docker/check:
+          docker-username: THIS_REGISTRY_USERNAME
+          docker-password: THIS_REGISTRY_PASSWORD
+          registry: $THIS_REGISTRY
+      - docker/push:
+          step-name: Push build image
+          registry: $THIS_REGISTRY
+          image: ${THIS_IMAGE}
+          tag: ${THIS_LABEL}
+      - docker/push:
+          step-name: Push test image
+          registry: $THIS_REGISTRY
+          image: ${THIS_IMAGE}-test
+          tag: ${THIS_LABEL}
+
 workflows:
   default:
     jobs:
@@ -169,3 +208,7 @@ workflows:
             - build-test-4.3-vaapi1804
           from-tag: 4.3-vaapi1804
           testsuites: basic,deinterlace,audio,subtitles
+       - push-images:
+          requires:
+            - run-test-4.3-vaapi1804
+          from-tag: 4.3-vaapi1804
