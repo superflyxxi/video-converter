@@ -49,7 +49,7 @@ jobs:
             ./build.sh
             docker save -o rip-video.tar ${THIS_FULL_IMAGE}
       - persist_to_workspace:
-          root: /tmp/docker-images
+          root: .
           paths: 
             - rip-video.tar
 #      - docker/push:
@@ -85,7 +85,7 @@ jobs:
 #          images: ${FROM_IMAGE},${BUILD_IMAGE}
 #          ignore-docker-pull-error: false
       - attach_workspace:
-         at: /tmp/docker-images
+         at: .
       - run:
          name: Load build image
          command: docker load -i rip-video.tar
@@ -107,7 +107,7 @@ jobs:
          name: Extract test image
          command: docker save -o rip-video-test.tar
       - persist_to_workspace:
-          root: /tmp/docker-images
+          root: .
           paths:
             - rip-video-test.tar
 
@@ -128,7 +128,7 @@ jobs:
 #          docker-password: THIS_REGISTRY_PASSWORD
 #          registry: $THIS_REGISTRY
       - attach_workspace:
-         at: /tmp/docker-images
+         at: .
       - run:
           name: Custom enviroment variables
           command: |
