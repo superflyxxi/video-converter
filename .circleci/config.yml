@@ -19,6 +19,7 @@ jobs:
       FROM_TAG: << parameters.from-tag >>
       BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
       DEBIAN_FRONTEND: noninteractive
+      THIS_FULL_IMAGE: rip-video:build
     machine: true
     steps:
       - run:
@@ -29,7 +30,6 @@ jobs:
             else 
               echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
-            echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
             fi
@@ -45,11 +45,16 @@ jobs:
       - checkout
       - run:
           name: Build docker image
-          command: ./build.sh
-      - docker/push:
-          registry: $THIS_REGISTRY
-          image: ${THIS_IMAGE}
-          tag: ${THIS_LABEL}
+          command: |
+            ./build.sh
+            docker save -o rip-video.tar ${THIS_FULL_IMAGE}
+      - persist_to_workspace:
+          root: /tmp/docker-images
+          path: rip-video.tar
+#      - docker/push:
+#          registry: $THIS_REGISTRY
+#          image: ${THIS_IMAGE}
+#          tag: ${THIS_LABEL}
 
   build-test:
     parameters:
@@ -67,29 +72,42 @@ jobs:
             else 
               echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
-            echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+#            echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            echo 'export BUILD_IMAGE=rip-video:build' >> ${BASH_ENV}
             echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             cat ${BASH_ENV}
-      - docker/check:
-          docker-username: THIS_REGISTRY_USERNAME
-          docker-password: THIS_REGISTRY_PASSWORD
-          registry: $THIS_REGISTRY
-      - docker/pull:
-          images: ${FROM_IMAGE},${BUILD_IMAGE}
-          ignore-docker-pull-error: false
+#      - docker/check:
+#          docker-username: THIS_REGISTRY_USERNAME
+#          docker-password: THIS_REGISTRY_PASSWORD
+#          registry: $THIS_REGISTRY
+#      - docker/pull:
+#          images: ${FROM_IMAGE},${BUILD_IMAGE}
+#          ignore-docker-pull-error: false
+      - attach_workspace:
+         at: /tmp/docker-images
+      - run:
+         name: Load build image
+         command: docker load -i rip-video.tar
       - checkout
       - docker/build:
           docker-context: tests/
           path: tests/
           image: ${THIS_IMAGE}-test
-          tag: ${THIS_LABEL}
+ #         tag: ${THIS_LABEL}
+#         tag: build
           extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
-          registry: ${THIS_REGISTRY}
+#          registry: ${THIS_REGISTRY}
           step-name: Build test image
-      - docker/push:
-          registry: $THIS_REGISTRY
-          image: ${THIS_IMAGE}-test
-          tag: ${THIS_LABEL}
+#      - docker/push:
+#          registry: $THIS_REGISTRY
+#          image: ${THIS_IMAGE}-test
+#          tag: ${THIS_LABEL}
+      - run:
+         name: Extract test image
+         command: docker save -o rip-video-test.tar
+      - persist_to_workspace:
+          root: /tmp/docker-images
+          path: rip-video-test.tar
 
   run-test:
     parameters:
@@ -100,12 +118,15 @@ jobs:
     environment:
       FROM_TAG: << parameters.from-tag >>
       TESTSUITES: << parameters.testsuites >>
+      TEST_IMAGE: rip-video-test:build
     machine: true
     steps:
-      - docker/check:
-          docker-username: THIS_REGISTRY_USERNAME
-          docker-password: THIS_REGISTRY_PASSWORD
-          registry: $THIS_REGISTRY
+#      - docker/check:
+#          docker-username: THIS_REGISTRY_USERNAME
+#          docker-password: THIS_REGISTRY_PASSWORD
+#          registry: $THIS_REGISTRY
+      - attach_workspace:
+         at: /tmp/docker-images
       - run:
           name: Custom enviroment variables
           command: |
@@ -114,32 +135,35 @@ jobs:
             else 
               echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
-            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
+#            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - checkout
       - run:
           name: Run tests
-          command: ./test.sh
+          command: |
+            docker load -i rip-video-test.tar
+            ./test.sh
       - store_test_results:
           path: testResults
       - store_artifacts:
           path: testResults
+
 workflows:
   default:
     jobs:
-#      - build-ripvideo:
-#          name: build-ripvideo-4.3-vaapi1804
-#          dockerfile: vaapi
-#          build-subtitle: true
-#          from-tag: 4.3-vaapi1804
-#      - build-test:
-#          name: build-test-4.3-vaapi1804
-#          requires:
-#            - build-ripvideo-4.3-vaapi1804
-#          from-tag: 4.3-vaapi1804
+      - build-ripvideo:
+          name: build-ripvideo-4.3-vaapi1804
+          dockerfile: vaapi
+          build-subtitle: true
+          from-tag: 4.3-vaapi1804
+      - build-test:
+          name: build-test-4.3-vaapi1804
+          requires:
+            - build-ripvideo-4.3-vaapi1804
+          from-tag: 4.3-vaapi1804
       - run-test:
           name: run-test-4.3-vaapi1804
-#          requires:
-#            - build-test-4.3-vaapi1804
+          requires:
+            - build-test-4.3-vaapi1804
           from-tag: 4.3-vaapi1804
           testsuites: basic,deinterlace,audio,subtitles
