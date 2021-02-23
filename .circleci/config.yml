@@ -25,11 +25,11 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
-            else 
-              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
-            fi
+            #if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+            #  echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
+            #else 
+            #  echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
+            #fi
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
             fi
