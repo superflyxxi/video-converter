@@ -105,7 +105,7 @@ jobs:
 #          tag: ${THIS_LABEL}
       - run:
          name: Extract test image
-         command: docker save -o rip-video-test.tar
+         command: docker save -o rip-video-test.tar ${THIS_IMAGE}-test
       - persist_to_workspace:
           root: .
           paths:
