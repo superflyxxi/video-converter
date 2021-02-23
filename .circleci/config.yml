@@ -125,15 +125,15 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-ripvideo:
-          name: build-ripvideo-4.3-vaapi1804
-          dockerfile: vaapi
-          build-subtitle: true
-          from-tag: 4.3-vaapi1804
+#      - build-ripvideo:
+#          name: build-ripvideo-4.3-vaapi1804
+#          dockerfile: vaapi
+#          build-subtitle: true
+#          from-tag: 4.3-vaapi1804
       - build-test:
           name: build-test-4.3-vaapi1804
-          requires:
-            - build-ripvideo-4.3-vaapi1804
+#          requires:
+#            - build-ripvideo-4.3-vaapi1804
           from-tag: 4.3-vaapi1804
       - run-test:
           name: run-test-4.3-vaapi1804
