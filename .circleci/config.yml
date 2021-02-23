@@ -63,6 +63,7 @@ jobs:
         type: string
     environment:
       FROM_TAG: << parameters.from-tag >>
+      TEST_IMAGE: rip-video-test:build
     machine: true
     steps:
       - run:
