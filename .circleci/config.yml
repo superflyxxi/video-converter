@@ -95,7 +95,7 @@ jobs:
           path: tests/
           image: ${THIS_IMAGE}-test
  #         tag: ${THIS_LABEL}
-         tag: build
+          tag: build
           #extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
           extra_build_args: --build-arg BUILD_IMAGE=${THIS_IMAGE}:build
 #          registry: ${THIS_REGISTRY}
