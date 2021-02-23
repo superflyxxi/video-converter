@@ -47,7 +47,7 @@ jobs:
           name: Build docker image
           command: |
             ./build.sh
-            docker save -o rip-video.tar ${THIS_FULL_IMAGE}
+            docker save -o rip-video.tar ${BUILD_IMAGE}
       - persist_to_workspace:
           root: .
           paths: 
