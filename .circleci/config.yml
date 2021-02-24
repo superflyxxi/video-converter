@@ -94,10 +94,11 @@ jobs:
       - attach_workspace:
          at: .
       - run:
-          name: Run tests
-          command: |
-            docker load -i images.tar
-            ./test.sh
+          name: Restore images
+          command: docker load -i images.tar
+      - run:
+          name: Run testsuite
+          command: ./test.sh
       - store_test_results:
           path: testResults
       - store_artifacts:
@@ -123,6 +124,9 @@ jobs:
             else 
               export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}
             fi
+      - run:
+          name: Restore images and tag
+          command: |
             docker load -i images.tar
             docker tag ${BUILD_IMAGE} ${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
             docker tag ${TEST_IMAGE} ${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
