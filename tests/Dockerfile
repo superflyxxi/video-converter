@@ -11,6 +11,7 @@ CMD [ "/tests" ]
 ENV DATA_DIR=/data
 RUN mkdir -m 777 -p ${DATA_DIR}
 ARG TEST_SAMPLE_DOMAIN
-ADD "https://${TEST_SAMPLE_DOMAIN}/samples/DVD_Sample.mkv" "/data/dvd.mkv"
-ADD "https://${TEST_SAMPLE_DOMAIN}/samples/Bluray_Sample.mkv" "/data/bluray.mkv"
+RUN curl -L -o /data/dvd.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/DVD_Sample.mkv" && \
+	curl -L -o /data/bluray.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/Bluray_Sample.mkv" && \
+	chmod ugo+r /data/*
 ADD ./ /tests
