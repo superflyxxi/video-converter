@@ -1,11 +1,16 @@
 <?php
 
+require_once "Logger.php";
+
 use PHPUnit\Framework\TestCase;
 class Test extends TestCase {
         
     public function __construct() {
         parent::__construct();
         $this->sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
+        if ($this->sampleDomain == NULL) {
+            Logger::warn("Missing TEST_SAMPLE_DOMAIN");
+        }
         $this->dataDir = getEnv("DATA_DIR");
     }
     private $sampleDomain;
