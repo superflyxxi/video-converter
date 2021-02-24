@@ -2,14 +2,12 @@
 
 # Build beforehand
 # docker build --tag test --build-arg BUILD_IMAGE=${THIS_FULL_IMAGE:?Missing THIS_FULL_IMAGE} tests/
-# docker volume create samples
-# Should have dvd.mkv and bluray.mkv
 
 set -e
 TEST_IMAGE=${TEST_IMAGE:-test}
 TESTSUITES=${TESTSUITES:-basic,deinterlace,audio,sutitles}
 mkdir testResults || true
-docker run --name test -d -v "$(pwd)/testResults:/testResults" --user $(id -u):$(id -g) ${TEST_IMAGE} --testsuite ${TESTSUITES}
+docker run --name test -d -v "${SAMPLES_DIR?Missing SAMPLES_DIR}:/data" -v "$(pwd)/testResults:/testResults" --user $(id -u):$(id -g) ${TEST_IMAGE} --testsuite ${TESTSUITES}
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}

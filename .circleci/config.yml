@@ -41,6 +41,13 @@ jobs:
       - run:
           name: Build image
           command: ./build.sh
+      - run:
+          name: Download sample files
+          command: |
+            mkdir samples
+            curl -L -o samples/dvd.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/DVD_Sample.mkv"
+            curl -L -o samples/bluray.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/Bluray_Sample.mkv"
+            chmod ugo+r samples/*
       - docker/build:
           docker-context: tests/
           path: tests/
@@ -56,6 +63,7 @@ jobs:
           root: .
           paths: 
             - images.tar
+            - ./samples/
 
   build-test:
     machine: true
@@ -93,6 +101,7 @@ jobs:
         type: string
     environment:
       TESTSUITES: << parameters.testsuites >>
+      SAMPLES_DIR: ./samples
     machine: true
     steps:
       - run:
