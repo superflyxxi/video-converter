@@ -63,7 +63,7 @@ jobs:
           root: .
           paths: 
             - images.tar
-            - ./samples/
+            - ./downloaded/
 
   build-test:
     machine: true
