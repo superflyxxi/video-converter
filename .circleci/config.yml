@@ -135,13 +135,14 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build
-            export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:build
+            echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build' >> ${BASH_ENV}
+            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:build' >> ${BASH_ENV}
             if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              export THIS_LABEL=${FROM_TAG}
+              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
             else 
-              export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}
+              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
+            cat ${BASH_ENV}
       - run:
           name: Restore images and tag
           command: |
