@@ -137,6 +137,7 @@ jobs:
       - run:
           name: Restore images and tag
           command: |
+            set -x
             docker load -i images.tar
             docker tag ${BUILD_IMAGE} ${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
             docker tag ${TEST_IMAGE} ${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
