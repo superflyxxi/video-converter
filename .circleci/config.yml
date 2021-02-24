@@ -101,7 +101,6 @@ jobs:
         type: string
     environment:
       TESTSUITES: << parameters.testsuites >>
-      SAMPLES_DIR: ./downloaded
     machine: true
     steps:
       - run:
@@ -117,7 +116,7 @@ jobs:
           command: docker load -i images.tar
       - run:
           name: Run testsuite
-          command: ./test.sh
+          command: SAMPLES_DIR=$(pwd)/downloaded ./test.sh
       - store_test_results:
           path: testResults
       - store_artifacts:
