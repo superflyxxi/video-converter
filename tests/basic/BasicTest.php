@@ -39,6 +39,8 @@ final class BasicTests extends Test
         $this->assertFalse(array_key_exists("SEASON", $probe["format"]["tags"]), "Metadata SEASON exists");
         $this->assertFalse(array_key_exists("EPISODE", $probe["format"]["tags"]), "Metadata EPISODE exists");
         $this->assertFalse(array_key_exists("SUBTITLE", $probe["format"]["tags"]), "Metadata SUBTITLE exists");
+
+        $this->assertFileExists($this->getDataDir() . DIRECTORY_SEPARATOR . "Test No Input (2019).bluray.mkv.mkv", "bluray file missing");
     }
 
     public function testInputWithCopy() {
