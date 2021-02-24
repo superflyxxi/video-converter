@@ -6,7 +6,7 @@ orbs:
 
 # Orchestrate or schedule a set of jobs
 jobs:
-  build-ripvideo:
+  build-images:
     parameters:
       from-tag: 
         type: string
@@ -28,6 +28,7 @@ jobs:
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
             fi
             echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
+            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:build' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           docker-username: THIS_REGISTRY_USERNAME
@@ -38,10 +39,19 @@ jobs:
           ignore-docker-pull-error: true
       - checkout
       - run:
-          name: Build docker image
-          command: |
-            ./build.sh
-            docker save -o images.tar ${BUILD_IMAGE}
+          name: Build image
+          command: ./build.sh
+      - docker/build:
+          docker-context: tests/
+          path: tests/
+          image: ${THIS_IMAGE}-test
+          tag: build
+          extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
+          registry: ${THIS_REGISTRY}
+          step-name: Build test image
+      - run:
+         name: Export images to tar
+         command: docker save -o images.tar ${TEST_IMAGE} ${BUILD_IMAGE}
       - persist_to_workspace:
           root: .
           paths: 
@@ -148,34 +158,34 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-ripvideo:
-          name: build-ripvideo-4.3-vaapi1804
+      - build-images:
+          name: build-images-4.3-vaapi1804
           dockerfile: vaapi
           build-subtitle: true
           from-tag: 4.3-vaapi1804
-      - build-test:
-          name: build-test-4.3-vaapi1804
-          requires:
-            - build-ripvideo-4.3-vaapi1804
+#      - build-test:
+#          name: build-test-4.3-vaapi1804
+#          requires:
+#            - build-ripvideo-4.3-vaapi1804
       - run-test:
           name: test-basic-4.3-vaapi1804
           requires:
-            - build-test-4.3-vaapi1804
+            - build-images-4.3-vaapi1804
           testsuites: basic
       - run-test:
           name: test-deinterlace-4.3-vaapi1804
           requires:
-            - build-test-4.3-vaapi1804
+            - build-images-4.3-vaapi1804
           testsuites: deinterlace
       - run-test:
           name: test-audio-4.3-vaapi1804
           requires:
-            - build-test-4.3-vaapi1804
+            - build-images-4.3-vaapi1804
           testsuites: audio,subtitles
       - run-test:
           name: test-subtitles-4.3-vaapi1804
           requires:
-            - build-test-4.3-vaapi1804
+            - build-images-4.3-vaapi1804
           testsuites: subtitles
       - push-images:
           requires:
