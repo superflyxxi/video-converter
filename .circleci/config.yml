@@ -46,7 +46,7 @@ jobs:
           path: tests/
           image: ${THIS_IMAGE}-test
           tag: build
-          extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
+          extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE} --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
           registry: ${THIS_REGISTRY}
           step-name: Build test image
       - run:
