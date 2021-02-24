@@ -44,7 +44,7 @@ jobs:
       - run:
           name: Download sample files
           command: |
-            mkdir samples
+            mkdir samples || true
             curl -L -o samples/dvd.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/DVD_Sample.mkv"
             curl -L -o samples/bluray.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/Bluray_Sample.mkv"
             chmod ugo+r samples/*
