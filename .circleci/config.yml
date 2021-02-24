@@ -23,11 +23,6 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            #if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-            #  echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
-            #else 
-            #  echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
-            #fi
             echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
@@ -51,39 +46,15 @@ jobs:
           root: .
           paths: 
             - images.tar
-#      - docker/push:
-#          registry: $THIS_REGISTRY
-#          image: ${THIS_IMAGE}
-#          tag: ${THIS_LABEL}
 
   build-test:
-#    parameters:
-#      from-tag:
-#        type: string
-#    environment:
-#      FROM_TAG: << parameters.from-tag >>
     machine: true
     steps:
       - run:
           name: Custom enviroment variables
           command: |
-            #if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-            #  echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
-            #else 
-            #  echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
-            #fi
-            #echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             echo 'export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build' >> ${BASH_ENV}
             echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:build' >> ${BASH_ENV}
-            #echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
-            #cat ${BASH_ENV}
-#      - docker/check:
-#          docker-username: THIS_REGISTRY_USERNAME
-#          docker-password: THIS_REGISTRY_PASSWORD
-#          registry: $THIS_REGISTRY
-#      - docker/pull:
-#          images: ${FROM_IMAGE},${BUILD_IMAGE}
-#          ignore-docker-pull-error: false
       - checkout
       - attach_workspace:
          at: .
@@ -94,16 +65,10 @@ jobs:
           docker-context: tests/
           path: tests/
           image: ${THIS_IMAGE}-test
- #         tag: ${THIS_LABEL}
           tag: build
-          #extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
           extra_build_args: --build-arg BUILD_IMAGE=${BUILD_IMAGE}
           registry: ${THIS_REGISTRY}
           step-name: Build test image
-#      - docker/push:
-#          registry: $THIS_REGISTRY
-#          image: ${THIS_IMAGE}-test
-#          tag: ${THIS_LABEL}
       - run:
          name: Extract test image
          command: docker save -o images.tar ${TEST_IMAGE} ${BUILD_IMAGE}
@@ -114,27 +79,15 @@ jobs:
 
   run-test:
     parameters:
-#      from-tag:
-#        type: string
       testsuites:
         type: string
     environment:
-#      FROM_TAG: << parameters.from-tag >>
       TESTSUITES: << parameters.testsuites >>
     machine: true
     steps:
-#      - docker/check:
-#          docker-username: THIS_REGISTRY_USERNAME
-#          docker-password: THIS_REGISTRY_PASSWORD
-#          registry: $THIS_REGISTRY
       - run:
           name: Custom enviroment variables
           command: |
-            #if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-            #  echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
-            #else 
-            #  echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
-            #fi
             echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:build' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - checkout
@@ -166,10 +119,8 @@ jobs:
             export BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:build
             export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:build
             if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              #echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
               export THIS_LABEL=${FROM_TAG}
             else 
-              #echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
               export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}
             fi
             docker load -i images.tar
