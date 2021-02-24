@@ -46,11 +46,11 @@ jobs:
           name: Build docker image
           command: |
             ./build.sh
-            docker save -o rip-video.tar ${BUILD_IMAGE}
+            docker save -o images.tar ${BUILD_IMAGE}
       - persist_to_workspace:
           root: .
           paths: 
-            - rip-video.tar
+            - images.tar
 #      - docker/push:
 #          registry: $THIS_REGISTRY
 #          image: ${THIS_IMAGE}
@@ -89,7 +89,7 @@ jobs:
          at: .
       - run:
          name: Load build image
-         command: docker load -i rip-video.tar
+         command: docker load -i images.tar
       - docker/build:
           docker-context: tests/
           path: tests/
@@ -106,11 +106,11 @@ jobs:
 #          tag: ${THIS_LABEL}
       - run:
          name: Extract test image
-         command: docker save -o rip-video-test.tar ${TEST_IMAGE}
+         command: docker save -o images.tar ${TEST_IMAGE} ${BUILD_IMAGE}
       - persist_to_workspace:
           root: .
           paths:
-            - rip-video-test.tar
+            - images.tar
 
   run-test:
     parameters:
@@ -143,7 +143,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            docker load -i rip-video-test.tar
+            docker load -i images.tar
             ./test.sh
       - store_test_results:
           path: testResults
@@ -172,9 +172,8 @@ jobs:
               #echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
               export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}
             fi
-            docker load -i rip-video.tar
+            docker load -i images.tar
             docker tag ${BUILD_IMAGE} ${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
-            docker load -i rip-video-test.tar
             docker tag ${TEST_IMAGE ${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
       - docker/check:
           docker-username: THIS_REGISTRY_USERNAME
