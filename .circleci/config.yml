@@ -174,7 +174,7 @@ jobs:
             fi
             docker load -i images.tar
             docker tag ${BUILD_IMAGE} ${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
-            docker tag ${TEST_IMAGE ${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
+            docker tag ${TEST_IMAGE} ${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
       - docker/check:
           docker-username: THIS_REGISTRY_USERNAME
           docker-password: THIS_REGISTRY_PASSWORD
