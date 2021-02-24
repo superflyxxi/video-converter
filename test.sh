@@ -2,6 +2,8 @@
 
 # Build beforehand
 # docker build --tag test --build-arg BUILD_IMAGE=${THIS_FULL_IMAGE:?Missing THIS_FULL_IMAGE} tests/
+# docker volume create samples
+# Should have dvd.mkv and bluray.mkv
 
 set -e
 TEST_IMAGE=${TEST_IMAGE:-test}
