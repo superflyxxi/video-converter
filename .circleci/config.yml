@@ -44,10 +44,10 @@ jobs:
       - run:
           name: Download sample files
           command: |
-            mkdir samples || true
-            curl -L -o samples/dvd.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/DVD_Sample.mkv"
-            curl -L -o samples/bluray.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/Bluray_Sample.mkv"
-            chmod ugo+r samples/*
+            mkdir downloaded
+            curl -L -o downloaded/dvd.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/DVD_Sample.mkv"
+            curl -L -o downloaded/bluray.mkv "https://${TEST_SAMPLE_DOMAIN}/samples/Bluray_Sample.mkv"
+            chmod ugo+r downloaded/*
       - docker/build:
           docker-context: tests/
           path: tests/
@@ -101,7 +101,7 @@ jobs:
         type: string
     environment:
       TESTSUITES: << parameters.testsuites >>
-      SAMPLES_DIR: ./samples
+      SAMPLES_DIR: ./downloaded
     machine: true
     steps:
       - run:
