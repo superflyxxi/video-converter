@@ -57,5 +57,11 @@ final class LoggingTests extends Test
         $this->expectOutputRegex("/.*INFO::Testing an integer=1 and float=2.35\n/");
         Logger::info("Testing an integer={} and float={}", 1, 2.35);
     }
+    
+    public function testDateFormat() {
+        // 2021-02-25T17:34:40+00:00
+        $this->expectOutputRegex("/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9][+-][0-9][0-9]:[0-9][0-9]::INFO::Test Date Format\n/");
+        Logger::info("Test Date Format");
+    }
 }
 ?>
