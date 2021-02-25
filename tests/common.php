@@ -44,6 +44,7 @@ class Test extends TestCase {
                 break;
 
             case "bluray.mkv":
+            case "bluray":
                 $URLpath = "/samples/Bluray_Sample.mkv";
                 $localFilename = "bluray.mkv";
                 break;
