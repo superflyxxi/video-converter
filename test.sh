@@ -5,7 +5,7 @@
 
 set -e
 TEST_IMAGE=${TEST_IMAGE:-test}
-TESTSUITES=${TESTSUITES:-basic,deinterlace,audio,sutitles}
+TESTSUITES=${TESTSUITES:-basic,deinterlace-detection,deinterlace-mode,audio,sutitles}
 mkdir testResults || true
 docker run --name test -d -v "${SAMPLES_DIR?Missing SAMPLES_DIR}:/data" -v "$(pwd)/testResults:/testResults" --user $(id -u):$(id -g) ${TEST_IMAGE} --testsuite ${TESTSUITES}
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')

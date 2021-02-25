@@ -183,15 +183,20 @@ workflows:
             - build-images-4.3-vaapi1804
           testsuites: basic
       - run-test:
-          name: test-deinterlace-4.3-vaapi1804
+          name: test-deinterlace-detection-4.3-vaapi1804
           requires:
             - build-images-4.3-vaapi1804
-          testsuites: deinterlace
+          testsuites: deinterlace-detection
+      - run-test:
+          name: test-deinterlace-mode-4.3-vaapi1804
+          requires:
+            - build-images-4.3-vaapi1804
+          testsuites: deinterlace-mode
       - run-test:
           name: test-audio-4.3-vaapi1804
           requires:
             - build-images-4.3-vaapi1804
-          testsuites: audio,subtitles
+          testsuites: audio
       - run-test:
           name: test-subtitles-4.3-vaapi1804
           requires:
@@ -200,7 +205,8 @@ workflows:
       - push-images:
           requires:
             - test-basic-4.3-vaapi1804
-            - test-deinterlace-4.3-vaapi1804
+            - test-deinterlace-detection-4.3-vaapi1804
+            - test-deinterlace-mode-4.3-vaapi1804
             - test-audio-4.3-vaapi1804
             - test-subtitles-4.3-vaapi1804
           from-tag: 4.3-vaapi1804

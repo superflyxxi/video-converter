@@ -15,8 +15,11 @@
     <testsuite name="subtitles">
       <directory>subtitles</directory>
     </testsuite>
-    <testsuite name="deinterlace">
-      <directory>deinterlace</directory>
+    <testsuite name="deinterlace-detection">
+      <file>deinterlace/DeinterlaceDetectionTest.php</file>
+    </testsuite>
+    <testsuite name="deinterlace-mode">
+      <file>deinterlace/DeinterlaceModeTest.php</file>
     </testsuite>
     <testsuite name="audio">
       <directory>audio</directory>
