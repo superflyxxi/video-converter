@@ -16,7 +16,7 @@ final class AudioTests extends Test
         $this->assertEquals("aac", $probe["streams"][0]["codec_name"], "Steram 0 codec");
         $this->assertEquals("stereo", $probe["streams"][0]["channel_layout"], "Stream 0 channel_layout");
         $this->assertEquals(2, $probe["streams"][0]["channels"], "Stream 0 channels");
-        $this->assertFalse(array_key_exists(1, $probe["streams"]), "Stream 1 exists");
+        $this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
         $this->assertEquals("Test Channel Mapping", $probe["format"]["tags"]["title"], "Metadata title");
     }
 
@@ -37,7 +37,7 @@ final class AudioTests extends Test
         $this->assertEquals("5.1", $probe["streams"][1]["channel_layout"], "Stream 1 channel_layout");
         $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("Normalized eng 5.1", $probe["streams"][1]["tags"]["title"], "Stream 1 title");
-        $this->assertFalse(array_key_exists(2, $probe["streams"]), "Stream 2 exists");
+        $this->assertArrayNotHasKey(2, $probe["streams"], "Stream 2 exists");
         $this->assertEquals("Test Normalize Track 1", $probe["format"]["tags"]["title"], "Metadata title");
     }
 

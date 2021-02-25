@@ -27,9 +27,11 @@ class Test extends TestCase {
         putenv("TMP_DIR=" . $tmpDir ); 
     }
 
-    public function probe($file)
+    public function probe($filename)
     {
-        $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $this->dataDir . DIRECTORY_SEPARATOR . $file . '"';
+        $file = $this->getDataDir() . DIRECTORY_SEPARATOR . $filename;
+        $this->assertFileExists($file, "File missing, cannot probe");
+        $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $file . '"';
         exec($command, $out, $ret);
         if ($ret == 0) {
             $out = implode($out);
@@ -47,6 +49,7 @@ class Test extends TestCase {
                 break;
 
             case "bluray.mkv":
+            case "bluray":
                 $URLpath = "/samples/Bluray_Sample.mkv";
                 $localFilename = "bluray.mkv";
                 break;
