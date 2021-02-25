@@ -12,7 +12,7 @@ if [[ "${BUILD_SUBTITLE_SUPPORT}" = "true" ]]; then
 fi
 mkdir testResults || true
 docker run --name test -d -v "$(pwd)/testResults:/testResults" --user $(id -u):$(id -g) -e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN?Missing TEST_SAMPLE_DOMAIN} ${TEST_IMAGE} --testsuite ${TESTSUITES}
-PID=$(docker inspect ${TEST_IMAGE} | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
+PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}
 	printf "%s Executing... " "$(date)"
