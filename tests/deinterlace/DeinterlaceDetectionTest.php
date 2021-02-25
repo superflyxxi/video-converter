@@ -7,10 +7,10 @@ final class DeinterlaceDetectionTests extends Test
     public function testProbeAutoDeinterlace() {
         $this->getFile("dvd");
 
-        $return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "DEINTERLACE_MODE"=>"00", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Probe Auto Deinterlace", "YEAR"=>2019));
+        $return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "DEINTERLACE_MODE"=>"00", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Probe Auto Deinterlace", "YEAR"=>2019), "1m");
 
 // not validating return as it can be killed; test("ffmpeg code", 0, $return, $testOutput);
-        $this->assertEquals(0, $return, "ripvideo exit code");
+//        $this->assertEquals(0, $return, "ripvideo exit code");
 
         $probe = $this->probe("Test Probe Auto Deinterlace (2019).dvd.mkv.mkv");
 
@@ -29,10 +29,10 @@ final class DeinterlaceDetectionTests extends Test
     public function testIdetAutoDeinterlace() {
         $this->getFile("dvd");
 
-        $return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "DEINTERLACE_MODE"=>"00", "DEINTERLACE_CHECK"=>"idet", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Idet Auto Deinterlace", "YEAR"=>2021));
+        $return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "DEINTERLACE_MODE"=>"00", "DEINTERLACE_CHECK"=>"idet", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "TITLE"=>"Test Idet Auto Deinterlace", "YEAR"=>2021), "1m");
 
 // not validating return as it can be killed; test("ffmpeg code", 0, $return, $testOutput);
-        $this->assertEquals(0, $return, "ripvideo exit code");
+//        $this->assertEquals(0, $return, "ripvideo exit code");
 
         $probe = $this->probe("Test Idet Auto Deinterlace (2021).dvd.mkv.mkv");
 
