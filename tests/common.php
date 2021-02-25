@@ -11,6 +11,10 @@ class Test extends TestCase {
     private $sampleDomain;
     private $dataDir;
 
+    protected function getDataDir() {
+        return $this->dataDir;
+    }
+
     protected function setUp(): void {
         parent::setUp();
         $tmpDir = exec("mktemp -d");
