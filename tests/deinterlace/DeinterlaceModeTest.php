@@ -21,7 +21,7 @@ final class DeinterlaceModeTests extends Test
         $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("hevc", $probe["streams"][0]["codec_name"], "Stream 0 codec");
         $this->assertEquals("19001/317", $probe["streams"][0]["r_frame_rate"], "Stream 0 r_frame_rate");
-        $this->assertArrayNotHasKey(1, $probe["streams"]), "Stream 1 exists");
+        $this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
         $this->assertEquals("Test Deinterlace Mode 01", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2021", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
     }
@@ -39,7 +39,7 @@ final class DeinterlaceModeTests extends Test
         $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("hevc", $probe["streams"][0]["codec_name"], "Stream 0 codec");
         $this->assertEquals("30000/1001", $probe["streams"][0]["r_frame_rate"], "Stream 0 r_frame_rate");
-        $this->assertArrayNotHasKey(1, $probe["streams"]), "Stream 1 exists");
+        $this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
         $this->assertEquals("Test Deinterlace Mode 02", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2021", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
     }
