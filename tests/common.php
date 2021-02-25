@@ -50,14 +50,14 @@ class Test extends TestCase {
         return TRUE;
     }
 
-    public function ripvideo($envVars, &$output, &$return, $timeout = "8m") {
+    public function ripvideo($envVars, $timeout = "8m") {
         $command = "";
         foreach ($envVars as $key => $value) {
             $command .= $key . '="' . $value . '" ';
         }
         $command .= 'timeout -s9 ' . $timeout . ' /home/ripvideo/rip-video ';
         passthru($command, $return);
-        //exec($command, $output, $return);
+        return $return;
     }
 }
 ?>

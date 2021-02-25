@@ -7,7 +7,7 @@ final class SubtitleTests extends Test
     public function testDvdSubtitleConversion() {
         $this->getFile("dvd");
 
-        $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Convert DVD Subtitle", "VIDEO_TRACKS"=>-1, "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "YEAR"=>2019), $output, $return);
+        $return = $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Convert DVD Subtitle", "VIDEO_TRACKS"=>-1, "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "YEAR"=>2019));
 
         $this->assertEquals(0, $return, "ripvideo exit code");
 
@@ -24,7 +24,7 @@ final class SubtitleTests extends Test
         $this->markTestIncomplete("Blacklist doesn't work the way you think it should.");
         $this->getFile("dvd");
 
-        $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Subtitle Files", "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "SUBTITLE_CONVERSION_OUTPUT"=>"FILE", "SUBTITLE_CONVERSION_BLACKLIST"=>"’!\�~@~", "YEAR"=>2019), $output, $return);
+        $return = $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Subtitle Files", "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_FORMAT"=>"srt", "SUBTITLE_CONVERSION_OUTPUT"=>"FILE", "SUBTITLE_CONVERSION_BLACKLIST"=>"’!\�~@~", "YEAR"=>2019));
 
         $this->assertEquals(0, $return, "ripvideo exit code"); //test("ffmpeg code", 0, $return, $output);
 
@@ -45,7 +45,7 @@ final class SubtitleTests extends Test
     public function testBluraySubtitles() {
         $this->getFile("bluray.mkv");
 
-        $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"bluray.mkv", "TITLE"=>"Test Convert Bluray Subtitle", "VIDEO_TRACKS"=>-1, "AUDIO_TRACKS"=>-1, "YEAR"=>2019), $output, $return);
+        $return = $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"bluray.mkv", "TITLE"=>"Test Convert Bluray Subtitle", "VIDEO_TRACKS"=>-1, "AUDIO_TRACKS"=>-1, "YEAR"=>2019));
 
         $this->assertEquals(0, $return, "ripvideo exit code");
 

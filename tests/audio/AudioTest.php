@@ -7,7 +7,7 @@ final class AudioTests extends Test
     public function testChannelMappingOverrideToLowerValue() {
         $this->getFile("dvd");
 
-        $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Channel Mapping", "AUDIO_CHANNEL_LAYOUT"=>"stereo", "AUDIO_CHANNEL_LAYOUT_TRACKS"=>1, "VIDEO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1), $output, $return);
+        $return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Channel Mapping", "AUDIO_CHANNEL_LAYOUT"=>"stereo", "AUDIO_CHANNEL_LAYOUT_TRACKS"=>1, "VIDEO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1));
         $this->assertEquals(0, $return, "ripvideo exit code");
 
         $probe = $this->probe("Test Channel Mapping.dvd.mkv.mkv");
@@ -23,7 +23,7 @@ final class AudioTests extends Test
     public function testNormalizing() {
         $this->getFile("dvd");
 
-        $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Normalize Track 1", "YEAR"=>2019, "NORMALIZE_AUDIO_TRACKS"=>1, "VIDEO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1), $output, $return);
+        $return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Normalize Track 1", "YEAR"=>2019, "NORMALIZE_AUDIO_TRACKS"=>1, "VIDEO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1));
         $this->assertEquals(0, $return, "ripvideo exit code");
 
         $probe = $this->probe("Test Normalize Track 1 (2019).dvd.mkv.mkv");
