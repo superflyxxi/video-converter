@@ -6,7 +6,7 @@ require_once "common.php";
 
 final class BasicTests extends Test
 {
-    public function testNoInputSpecified() {
+    public function testNoInputSpecifiedWithOnlyOneFile() {
         $this->getFile("dvd");
 	$return = $this->ripvideo(array("TITLE"=>"Test No Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"));
 
