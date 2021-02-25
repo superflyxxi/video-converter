@@ -16,7 +16,7 @@ final class SubtitleTests extends Test
         $this->assertEquals("subtitle", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("subrip", $probe["streams"][0]["codec_name"], "Stream 0 codec");
         $this->assertEquals("eng", $probe["streams"][0]["tags"]["language"], "Stream 0 language");
-        $this->assertFalse(array_key_exists(1, $probe["streams"]), "Stream 1 exists");
+        $this->assertArrayNotHasKey(1, $probe["streams"]), "Stream 1 exists");
         $this->assertEquals("Test Convert DVD Subtitle", $probe["format"]["tags"]["title"], "Metadata title");
     }
 
@@ -31,7 +31,7 @@ final class SubtitleTests extends Test
         $probe = $this->probe("Test Subtitle Files (2019).mkv");
 
         $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0");
-	$this->assertFalse(array_key_exists(1, $probe["streams"]), "Stream 1 exists");
+	$this->assertArrayNotHasKey(1, $probe["streams"]), "Stream 1 exists");
         $this->assertEquals("Test Subtitle Files", $probe["format"]["tags"]["title"], "Metadata Title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata Year");
 
@@ -54,7 +54,7 @@ final class SubtitleTests extends Test
         $this->assertEquals("subtitle", $probe["streams"][0]["codec_type"], "Stream 0 code_type");
         $this->assertEquals("ass", $probe["streams"][0]["codec_name"], "Stream 0 codec");
         $this->assertEquals("eng", $probe["streams"][0]["tags"]["language"], "Stream 0 language");
-        $this->assertFalse(array_key_exists(1, $probe["streams"]), "Stream 1 exists");
+        $this->assertArrayNotHasKey(1, $probe["streams"]), "Stream 1 exists");
         $this->assertEquals("Test Convert Bluray Subtitle", $probe["format"]["tags"]["title"], "Metadata title");
     }
 }
