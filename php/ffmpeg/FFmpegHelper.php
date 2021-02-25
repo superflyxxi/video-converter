@@ -1,13 +1,13 @@
 <?php
-include_once "Request.php";
-include_once "functions.php";
-include_once "OutputFile.php";
-include_once "Logger.php";
-include_once "ffmpeg/generators/FFmpegArgGenerator.php";
-include_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
-include_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
-include_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
-include_once "exceptions/ExecutionException.php";
+require_once "Request.php";
+require_once "functions.php";
+require_once "OutputFile.php";
+require_once "Logger.php";
+require_once "ffmpeg/generators/FFmpegArgGenerator.php";
+require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
+require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
+require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
+require_once "exceptions/ExecutionException.php";
 
 class FFmpegHelper
 {
