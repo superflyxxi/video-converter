@@ -48,10 +48,14 @@ final class LoggingTests extends Test
         Logger::info("Test {} multiple {} args {}", "one", "two", "three");
     }
 
-    public function testLoggingProducesNoErrors() {
-        Logger::debug("Testing an array {}", array("something","somethingelse"));
-        Logger::debug("Testing an integer={} and float={}", 1, 2.35);
-        $this->markTestIncomplete("Need to convert to individual tests.");
+    public function testPassingArray() {
+        $this->expectOutputRegex("/.*INFO::Test array arg Array\s*\(\s*\[0\] => something\s*\[1\] => somethingelse\s*\)\s*/");
+        Logger::info("Test array arg {}", array("something", "somethingelse"));
+    }
+
+    public function testNumbers() {
+        $this->expectOutputRegex("/.*INFO::Testing an integer=1 and float=2.35\n/");
+        Logger::info("Testing an integer={} and float={}", 1, 2.35);
     }
 }
 ?>
