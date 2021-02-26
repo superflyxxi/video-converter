@@ -11,6 +11,10 @@ class Test extends TestCase {
     private $sampleDomain;
     private $dataDir;
 
+    protected function getDataDir() {
+        return $this->dataDir;
+    }
+
     protected function setUp(): void {
         parent::setUp();
         $tmpDir = exec("mktemp -d");
@@ -18,9 +22,11 @@ class Test extends TestCase {
         putenv("TMP_DIR=" . $tmpDir ); 
     }
 
-    public function probe($file)
+    public function probe($filename)
     {
-        $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $this->dataDir . DIRECTORY_SEPARATOR . $file . '"';
+        $file = $this->getDataDir() . DIRECTORY_SEPARATOR . $filename;
+        $this->assertFileExists($file, "File missing, cannot probe");
+        $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $file . '"';
         exec($command, $out, $ret);
         if ($ret == 0) {
             $out = implode($out);
@@ -38,6 +44,7 @@ class Test extends TestCase {
                 break;
 
             case "bluray.mkv":
+            case "bluray":
                 $URLpath = "/samples/Bluray_Sample.mkv";
                 $localFilename = "bluray.mkv";
                 break;
@@ -50,14 +57,14 @@ class Test extends TestCase {
         return TRUE;
     }
 
-    public function ripvideo($envVars, &$output, &$return, $timeout = "8m") {
+    public function ripvideo($envVars, $timeout = "8m") {
         $command = "";
         foreach ($envVars as $key => $value) {
             $command .= $key . '="' . $value . '" ';
         }
         $command .= 'timeout -s9 ' . $timeout . ' /home/ripvideo/rip-video ';
         passthru($command, $return);
-        //exec($command, $output, $return);
+        return $return;
     }
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-include_once "functions.php";
+require_once "functions.php";
 
 class Logger
 {

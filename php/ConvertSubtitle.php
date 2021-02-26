@@ -1,11 +1,11 @@
 <?php
-include_once "Request.php";
-include_once "InputFile.php";
-include_once "functions.php";
-include_once "Logger.php";
-include_once "ffmpeg/FFmpegHelper.php";
-include_once "MKVExtractHelper.php";
-include_once "exceptions/ExecutionException.php";
+require_once "Request.php";
+require_once "InputFile.php";
+require_once "functions.php";
+require_once "Logger.php";
+require_once "ffmpeg/FFmpegHelper.php";
+require_once "MKVExtractHelper.php";
+require_once "exceptions/ExecutionException.php";
 
 class ConvertSubtitle
 {

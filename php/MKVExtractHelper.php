@@ -1,6 +1,6 @@
 <?php
-include_once "Logger.php";
-include_once "exceptions/ExecutionException.php";
+require_once "Logger.php";
+require_once "exceptions/ExecutionException.php";
 
 class MKVExtractHelper
 {

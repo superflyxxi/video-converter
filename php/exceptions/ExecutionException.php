@@ -1,6 +1,6 @@
 <?php
 
-include_once "Logger.php";
+require_once "Logger.php";
 
 class ExecutionException extends Exception {
 

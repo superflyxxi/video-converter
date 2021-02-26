@@ -31,6 +31,7 @@ jobs:
               echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
             fi
             echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
             fi
@@ -50,21 +51,29 @@ jobs:
       - docker/build:
           docker-context: tests/
           path: tests/
-          image: test
-          tag: latest
+          image: ${THIS_IMAGE}-test
+          tag: ${THIS_LABEL}
+          registry: ${THIS_REGISTRY}
           extra_build_args: --build-arg BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
-          step-name: Build test image
+          step-name: Build unit test image
       - run:
-          name: Run tests
+          name: Run unit tests
           command: ./test.sh
       - store_test_results:
           path: testResults
       - store_artifacts:
           path: testResults
       - docker/push:
+          step-name: Pushing actual image
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
+      - docker/push:
+          step-name: Pushing unit test image
+          registry: $THIS_REGISTRY
+          image: ${THIS_IMAGE}-test
+          tag: ${THIS_LABEL}
+
 workflows:
   default:
     jobs:

@@ -1,11 +1,11 @@
 <?php
-include_once "Logger.php";
-include_once "Request.php";
-include_once "OutputFile.php";
-include_once "functions.php";
-include_once "ConvertSubtitle.php";
-include_once "ConvertAudio.php";
-include_once "ffmpeg/FFmpegHelper.php";
+require_once "Logger.php";
+require_once "Request.php";
+require_once "OutputFile.php";
+require_once "functions.php";
+require_once "ConvertSubtitle.php";
+require_once "ConvertAudio.php";
+require_once "ffmpeg/FFmpegHelper.php";
 
 class ConvertFile
 {

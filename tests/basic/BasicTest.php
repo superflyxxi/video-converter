@@ -3,23 +3,12 @@
  * Tests when no input is given. It should product results for the file as expected.
  */
 require_once "common.php";
-require_once "Logger.php";
 
 final class BasicTests extends Test
 {
-    public function testLoggingProducesNoErrors() {
-        Logger::debug("Testing");
-        Logger::debug("Testing nothing", "blah");
-        Logger::debug("Testing something {}", "blah");
-        Logger::debug("Testing multiple things {}, {}, {}", "one", "two", "three");
-        Logger::debug("Testing an array {}", array("something","somethingelse"));
-        Logger::debug("Testing an integer={} and float={}", 1, 2.35);
-        $this->assertTrue(true, "Test ran without error");
-    }
-
-    public function testNoInputSpecified() {
+    public function testNoInputSpecifiedWithOnlyOneFile() {
         $this->getFile("dvd");
-	$this->ripvideo(array("TITLE"=>"Test No Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"), $output, $return);
+	$return = $this->ripvideo(array("TITLE"=>"Test No Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"));
 
         $this->assertEquals(0, $return, "Exit status not expected");
 
@@ -33,17 +22,17 @@ final class BasicTests extends Test
         $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("subtitle", $probe["streams"][2]["codec_type"], "Stream 2 codec_type");
         $this->assertEquals("dvd_subtitle", $probe["streams"][2]["codec_name"], "Stream 2 codec");
-        $this->assertFalse(array_key_exists(3, $probe["streams"]), "Stream 3 exists");
+        $this->assertArrayNotHasKey(3, $probe["streams"], "Stream 3 exists");
         $this->assertEquals("Test No Input", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
-        $this->assertFalse(array_key_exists("SEASON", $probe["format"]["tags"]), "Metadata SEASON exists");
-        $this->assertFalse(array_key_exists("EPISODE", $probe["format"]["tags"]), "Metadata EPISODE exists");
-        $this->assertFalse(array_key_exists("SUBTITLE", $probe["format"]["tags"]), "Metadata SUBTITLE exists");
+        $this->assertArrayNotHasKey("SEASON", $probe["format"]["tags"], "Metadata SEASON exists");
+        $this->assertArrayNotHasKey("EPISODE", $probe["format"]["tags"], "Metadata EPISODE exists");
+        $this->assertArrayNotHasKey("SUBTITLE", $probe["format"]["tags"], "Metadata SUBTITLE exists");
     }
 
     public function testInputWithCopy() {
         $this->getFile("dvd");
-        $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"), $output, $return);
+        $return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test Input", "YEAR"=>2019, "AUDIO_FORMAT"=>"copy", "VIDEO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"));
         $this->assertEquals(0, $return, "ffmpeg exit code");
 
         $probe = $this->probe("Test Input (2019).dvd.mkv.mkv");
@@ -56,18 +45,18 @@ final class BasicTests extends Test
         $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("subtitle", $probe["streams"][2]["codec_type"], "Stream 2 coded_type");
         $this->assertEquals("dvd_subtitle", $probe["streams"][2]["codec_name"], "Stream 2 codec");
-        $this->assertFalse(array_key_exists(3, $probe["streams"]), "Stream 3 exists");
+        $this->assertArrayNotHasKey(3, $probe["streams"], "Stream 3 exists");
         $this->assertEquals("Test Input", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
-        $this->assertFalse(array_key_exists("SEASON", $probe["format"]["tags"]), "Metadata SEASON exists");
-        $this->assertFalse(array_key_exists("EPISODE", $probe["format"]["tags"]), "Metadata EPISODE exists");
-        $this->assertFalse(array_key_exists("SUBTITLE", $probe["format"]["tags"]), "Metadata SUBTITLE exists");
+        $this->assertArrayNotHasKey("SEASON", $probe["format"]["tags"], "Metadata SEASON exists");
+        $this->assertArrayNotHasKey("EPISODE", $probe["format"]["tags"], "Metadata EPISODE exists");
+        $this->assertArrayNotHasKey("SUBTITLE", $probe["format"]["tags"], "Metadata SUBTITLE exists");
     }
 
     public function testTvShowMetadata() {
         $this->getFile("dvd");
 
-        $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test tv show", "YEAR"=>2019, "SEASON"=>"01", "EPISODE"=>"23", "SUBTITLE"=>"The One Where Things", "VIDEO_FORMAT"=>"copy", "AUDIO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"), $output, $return);
+        $return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test tv show", "YEAR"=>2019, "SEASON"=>"01", "EPISODE"=>"23", "SUBTITLE"=>"The One Where Things", "VIDEO_FORMAT"=>"copy", "AUDIO_FORMAT"=>"copy", "SUBTITLE_FORMAT"=>"copy"));
         $this->assertEquals(0, $return, "rip-video exit code");
 
         $probe = $this->probe("Test tv show (2019) - s01e23 - The One Where Things.dvd.mkv.mkv");
@@ -80,7 +69,7 @@ final class BasicTests extends Test
         $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("subtitle", $probe["streams"][2]["codec_type"], "Stream 2 codec_type");
         $this->assertEquals("dvd_subtitle", $probe["streams"][2]["codec_name"], "Stream 2 codec");
-        $this->assertFalse(array_key_exists(3, $probe["streams"]), "Stream 3 exists");
+        $this->assertArrayNotHasKey(3, $probe["streams"], "Stream 3 exists");
         $this->assertEquals("Test tv show", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
         $this->assertEquals("01", $probe["format"]["tags"]["SEASON"], "Metadata SEASON");
@@ -91,19 +80,19 @@ final class BasicTests extends Test
     public function testNotApplyingPostfix() {
         $this->getFile("dvd");
 
-        $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Not Applying Postfix", "YEAR"=>2019, "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1), $output, $return);
+        $return = $this->ripvideo(array("APPLY_POSTFIX"=>"false", "INPUT"=>"dvd.mkv", "TITLE"=>"Test Not Applying Postfix", "YEAR"=>2019, "VIDEO_FORMAT"=>"copy", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1));
         $this->assertEquals(0, $return, "ripvideo exit code");
 
         $probe = $this->probe("Test Not Applying Postfix (2019).mkv");
 
         $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("mpeg2video", $probe["streams"][0]["codec_name"], "Stream 0 codec");
-        $this->assertFalse(array_key_exists(1, $probe["streams"]), "Stream 1 exists");
+        $this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
         $this->assertEquals("Test Not Applying Postfix", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
-        $this->assertFalse(array_key_exists("SEASON", $probe["format"]["tags"]), "Metadata SEASON");
-        $this->assertFalse(array_key_exists("EPISODE", $probe["format"]["tags"]), "Metadata EPISODE");
-        $this->assertFalse(array_key_exists("SUBTITLE", $probe["format"]["tags"]), "Metadata SUBTITLE");
+        $this->assertArrayNotHasKey("SEASON", $probe["format"]["tags"], "Metadata SEASON");
+        $this->assertArrayNotHasKey("EPISODE", $probe["format"]["tags"], "Metadata EPISODE");
+        $this->assertArrayNotHasKey("SUBTITLE", $probe["format"]["tags"], "Metadata SUBTITLE");
     }
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
-include_once "InputFile.php";
-include_once "functions.php";
+require_once "InputFile.php";
+require_once "functions.php";
 
 class Request
 {
