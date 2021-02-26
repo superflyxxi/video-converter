@@ -55,9 +55,9 @@ jobs:
           tag: ${THIS_LABEL}
           registry: ${THIS_REGISTRY}
           extra_build_args: --build-arg BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
-          step-name: Build test image
+          step-name: Build unit test image
       - run:
-          name: Run tests
+          name: Run unit tests
           command: ./test.sh
       - store_test_results:
           path: testResults
@@ -69,7 +69,7 @@ jobs:
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
       - docker/push:
-          step-name: Pushing test image
+          step-name: Pushing unit test image
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
