@@ -64,12 +64,12 @@ jobs:
       - store_artifacts:
           path: testResults
       - docker/push:
-          step-name: Pushing ${THIS_IMAGE}
+          step-name: Pushing actual image
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
       - docker/push:
-          step-name: Pushing ${THIS_IMAGE}-test
+          step-name: Pushing test image
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
