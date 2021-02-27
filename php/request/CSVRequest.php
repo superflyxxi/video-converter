@@ -1,7 +1,7 @@
 <?php
 
-include_once "request/Request.php";
-include_once "convert/ConvertFile.php";
+require_once "request/Request.php";
+require_once "convert/ConvertFile.php";
 
 class CSVRequest {
 
