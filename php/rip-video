@@ -2,6 +2,7 @@
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
 require_once "convert/ConvertFile.php";
+require_once "request/CSVRequest.php";
 
 function error_handler(int $errno, string $errstr, $errfile = NULL, $errline = 0, $errcontext = NULL)
 {

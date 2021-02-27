@@ -22,8 +22,6 @@ class ConvertFile
 
     public $year = NULL;
 
-    public $oRequest = NULL;
-
     public function __construct($inputFilename, $title=NULL, $year=NULL, $season=NULL, $episode=NULL, $subtitle=NULL)
     {
         $this->inputFilename = $inputFilename;
@@ -32,7 +30,6 @@ class ConvertFile
         $this->season = $season;
         $this->episode = $episode;
         $this->subtitle = $subtitle;
-        $this->oRequest = Request::newInstanceFromEnv($this->inputFilename);
     }
 
     public function convert($oRequest)
@@ -46,10 +43,10 @@ class ConvertFile
         $oOutput->year = $this->year;
 
         Logger::verbose("Conversion output {}", $oOutput);
-        Logger::verbose("Request information {}", $this->oRequest);
-        $allRequests[] = $this->oRequest;
-        $allRequests = array_merge($allRequests, ConvertAudio::convert($this->oRequest));
-        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($this->oRequest, $oOutput));
+        Logger::verbose("Request information {}", $oRequest);
+        $allRequests[] = $oRequest;
+        $allRequests = array_merge($allRequests, ConvertAudio::convert($oRequest));
+        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($oRequest, $oOutput));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput, FALSE);
         Logger::info("Completed conversion.");
