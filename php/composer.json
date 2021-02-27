@@ -4,7 +4,7 @@
     "keywords": [
         "ffmpeg"
     ],
-    "homepage": "https://github.com/superflyxxi/vide-converter",
+    "homepage": "https://github.com/superflyxxi/video-converter",
     "license": "Apache-2.0",
     "require": {
         "php" : ">=7.0.0"
