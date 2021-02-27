@@ -1,8 +1,8 @@
 <?php
-include_once "ffmpeg/generators/FFmpegArgGenerator.php";
-include_once "InputFile.php";
-include_once "Request.php";
-include_once "Stream.php";
+require_once "ffmpeg/generators/FFmpegArgGenerator.php";
+require_once "InputFile.php";
+require_once "Request.php";
+require_once "Stream.php";
 
 class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 {
@@ -15,15 +15,38 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
         } else if ($request->isHDR()) {
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
         } else if ($request->isHwaccel()) {
+            if ($request->deinterlace) {
+                switch($request->deinterlaceMode) {
+                    default:
+                    case "00":
+                        $args .= " -vf 'hwdownload,dejudder,fps=" . $stream->frame_rate .",fieldmatch,yadif=deint=interlaced,decimate,hwupload'"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                        break;
+                    case "01":
+                        // each field is a frame (double framerate) https://www.mltframework.org/plugins/FilterAvfilter-deinterlace_vaapi/
+                        $args .= " -vf 'deinterlace_vaapi=rate=field:auto=1'"; 
+                        break;
+                    case "02":
+                        $args .= " -vf deinterlace_vaapi";
+                        break;
+                }
+            }
             $args .= " -c:v:" . $outTrack . " hevc_vaapi -qp 20 -level:v 4";
-            if ($request->deinterlace) {
-                $args .= " -vf deinterlace_vaapi";
-            }
         } else {
-            $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
             if ($request->deinterlace) {
-                $args .= " -vf yadif";
+                switch($request->deinterlaceMode) {
+                    default:
+                    case "00":
+                        $args .= " -vf 'dejudder,fps=" . $stream->frame_rate . ",fieldmatch,yadif=deint=interlaced',decimate"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                        break;
+                    case "01":
+                        $args .= " -vf 'yadif=mode=1'"; // each field is a frame (double framerate) https://ffmpeg.org/ffmpeg-filters.html#yadif-1
+                        break;
+                    case "02":
+                        $args .= " -vf yadif"; // original
+                        break;
+                }
             }
+            $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
         }
         $args .= " -metadata:s:v:" . $outTrack . " language=" . $stream->language;
         return $args;

@@ -1,7 +1,7 @@
 <?php
-include_once "InputFile.php";
-include_once "Request.php";
-include_once "Stream.php";
+require_once "InputFile.php";
+require_once "Request.php";
+require_once "Stream.php";
 
 interface FFmpegArgGenerator
 {

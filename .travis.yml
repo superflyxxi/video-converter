@@ -3,14 +3,15 @@ language: php
 env:
   global:
   matrix:
-    - DOCKERFILE=vaapi
+    - DOCKERFILE=vaapi FROM_TAG=4.3-vaapi1804 BUILD_SUBTITLE_SUPPORT=false
 
 services:
   - docker
 
 before_install:
-  - export FROM_IMAGE=jrottenberg/ffmpeg:snapshot-${DOCKERFILE}
-  - export THIS_LABEL=${DOCKERFILE}-${TRAVIS_BRANCH}
+  - export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}
+  - export THIS_LABEL=${FROM_TAG}-${TRAVIS_BRANCH}
+  - if [[ "${TRAVIS_BRANCH}" == "master" ]]; then export THIS_LABEL=${FROM_TAG}; fi
   - export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${THIS_LABEL}
   - export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE}
   - sudo mkdir -p "/etc/docker/certs.d/${THIS_REGISTRY}"
@@ -25,7 +26,7 @@ install:
   - echo ${THIS_REGISTRY_PASSWORD} | docker login --username ${THIS_REGISTRY_USERNAME} --password-stdin ${THIS_REGISTRY}
   - if [[ ! ${TRAVIS_BRANCH} =~ (master|v.*) ]]; then 
         echo "Pulling ${CACHE_FROM_IMAGE}"; 
-        docker pull ${CACHE_FROM_IMAGE} || true; 
+        timeout -s9 9m docker pull ${CACHE_FROM_IMAGE} || true; 
     else
         export CACHE_FROM_ARGS="--no-cache"; 
     fi
@@ -38,10 +39,3 @@ script:
 
 after_success:
   - ./push.sh
-  - if [[ "${TRAVIS_BRANCH}" == "master" ]]; then
-        export NEW_FULL_IMAGE=${THIS_REGISTRY}/${THIS_REPO}/${THIS_IMAGE}:${DOCKERFILE};
-        echo "Going to label ${THIS_FULL_IMAGE} an additional name of ${NEW_FULL_IMAGE}";
-        docker tag ${THIS_FULL_IMAGE} ${NEW_FULL_IMAGE};
-        THIS_FULL_IMAGE=${NEW_FULL_IMAGE} ./push.sh;
-    fi
-

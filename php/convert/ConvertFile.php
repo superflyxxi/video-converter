@@ -1,11 +1,11 @@
 <?php
-include_once "Logger.php";
-include_once "request/Request.php";
-include_once "OutputFile.php";
-include_once "functions.php";
-include_once "convert/ConvertSubtitle.php";
-include_once "convert/ConvertAudio.php";
-include_once "ffmpeg/FFmpegHelper.php";
+require_once "Logger.php";
+require_once "request/Request.php";
+require_once "OutputFile.php";
+require_once "functions.php";
+require_once "convert/ConvertSubtitle.php";
+require_once "convert/ConvertAudio.php";
+require_once "ffmpeg/FFmpegHelper.php";
 
 class ConvertFile
 {
@@ -35,7 +35,7 @@ class ConvertFile
         $this->oRequest = Request::newInstanceFromEnv($this->inputFilename);
     }
 
-    public function convert()
+    public function convert($oRequest)
     {
         Logger::info("Starting conversion for {}", $this->inputFilename);
         $oOutput = new OutputFile(getEnvWithDefault("APPLY_POSTFIX", "true") == "true" ? basename($this->inputFilename) : NULL); // use inputfile as the postfix only if APPLY_POSTFIX is set
@@ -52,13 +52,7 @@ class ConvertFile
         $allRequests = array_merge($allRequests, ConvertSubtitle::convert($this->oRequest, $oOutput));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput, FALSE);
-        Logger::info("Completed conversion with {} as a return value.", $returnValue);
-	if ($returnValue == 0) {
-	        Logger::info("Chowning new file to match existing file.");
-        	chown($oOutput->getFileName(), fileowner($oRequest->oInputFile->getFileName()));
-	        chgrp($oOutput->getFileName(), filegroup($oRequest->oInputFile->getFileName()));
-        	chmod($oOutput->getFileName(), fileperms($oRequest->oInputFile->getFileName()));
-	}
+        Logger::info("Completed conversion.");
         return $returnValue;
     }
 }

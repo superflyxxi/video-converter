@@ -1,65 +1,70 @@
 <?php
-$user = getEnv("UID");
-$image = getEnv("THIS_FULL_IMAGE");
-$sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
 
-printf("TEST: %s\n", debug_backtrace()[0]['file']);
-
-function test($message, $expected, $actual, $extraLogs = "")
-{
-    if ($expected !== $actual) {
-        printf("FAIL: %s. Expected='", $message);
-        print_r($expected);
-        printf("', but got '");
-        print_r($actual);
-        printf("'\n");
-        print_r($extraLogs);
-        printf("\n\n");
-        flush();
-        exit(1);
+use PHPUnit\Framework\TestCase;
+class Test extends TestCase {
+        
+    public function __construct() {
+        parent::__construct();
+        $this->sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
+        $this->dataDir = getEnv("DATA_DIR");
     }
-    printf("PASS: %s. Got expected='", $message);
-    print_r($expected);
-    printf("'\n");
+    private $sampleDomain;
+    private $dataDir;
+
+    protected function getDataDir() {
+        return $this->dataDir;
+    }
+
+    protected function setUp(): void {
+        parent::setUp();
+        $tmpDir = exec("mktemp -d");
+        exec("mkdir -p " . $tmpDir . DIRECTORY_SEPARATOR . "data");
+        putenv("TMP_DIR=" . $tmpDir ); 
+    }
+
+    public function probe($filename)
+    {
+        $file = $this->getDataDir() . DIRECTORY_SEPARATOR . $filename;
+        $this->assertFileExists($file, "File missing, cannot probe");
+        $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $file . '"';
+        exec($command, $out, $ret);
+        if ($ret == 0) {
+            $out = implode($out);
+            return json_decode($out, true);
+        }
+        return NULL;
+    }
+
+    public function getFile($file) {
+        switch ($file) {
+            case "dvd.mkv":
+            case "dvd":
+                $URLpath = "/samples/DVD_Sample.mkv";
+                $localFilename = "dvd.mkv";
+                break;
+
+            case "bluray.mkv":
+            case "bluray":
+                $URLpath = "/samples/Bluray_Sample.mkv";
+                $localFilename = "bluray.mkv";
+                break;
+        }
+        if (! file_exists($this->dataDir . DIRECTORY_SEPARATOR . $localFilename)) {
+            $command = 'curl -k -L -o "' . $this->dataDir . DIRECTORY_SEPARATOR . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"';
+            passthru($command, $ret);
+            return 0 < $ret;
+        }
+        return TRUE;
+    }
+
+    public function ripvideo($envVars, $timeout = "8m") {
+        $command = "";
+        foreach ($envVars as $key => $value) {
+            $command .= $key . '="' . $value . '" ';
+        }
+        $command .= 'timeout -s9 ' . $timeout . ' /home/ripvideo/rip-video ';
+        passthru($command, $return);
+        return $return;
+    }
 }
-
-function probe($file)
-{
-    global $user;
-    global $image;
-    $command = 'docker run --rm -t';
-    if ($user) {
-        $command .= ' --user=' . $user;
-    }
-    $command .= ' -v ' . getEnv("TMP_DIR") . ':/data --entrypoint ffprobe ' . $image . ' -v quiet -print_format json -show_format -show_streams "' . $file . '"';
-    printf("Probing '%s'\n", $file);
-    exec($command, $out, $ret);
-    if ($ret == 0) {
-        $out = implode($out);
-        return $out;
-    }
-    return NULL;
-}
-
-function getFile($localFilename, $URL)
-{
-    if (! file_exists(getEnv("TMP_DIR") . "/" . $localFilename)) {
-        passthru('curl -k -L -o "' . getEnv("TMP_DIR") . '/' . $localFilename . '" "' . $URL . '"', $ret);
-        return 0 < $ret;
-    }
-    return TRUE;
-}
-
-function test_ffmpeg($envVars, &$output, &$return, $timeout = "5m") {
-    $command = 'timeout -s9 ' . $timeout . ' docker run -t --rm --user $(id -u):$(id -g) --name test -v "' . getEnv("TMP_DIR") . ':/data" ';
-    foreach ($envVars as $key => $value) {
-        $command .= " -e " . $key . '="' . $value . '" ';
-    }
-    $command .= getEnv("THIS_FULL_IMAGE");
-    printf("%s: executing: %s\n", date(DateTimeInterface::ISO8601), $command);
-    exec($command, $output, $return);
-    exec("docker stop test");
-    printf("%s: Done executing\n", date(DateTimeInterface::ISO8601));
-}
-
 ?>

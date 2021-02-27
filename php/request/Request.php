@@ -1,6 +1,6 @@
 <?php
-include_once "InputFile.php";
-include_once "functions.php";
+require_once "InputFile.php";
+require_once "functions.php";
 
 class Request
 {
@@ -37,10 +37,11 @@ class Request
         if ($req->deinterlace != NULL) {
             $req->deinterlace = ($req->deinterlace == "true");
         } else if ("copy" != $req->videoFormat) {
-            $req->deinterlace = FFmpegHelper::isInterlaced($filename) ? TRUE : FALSE;
+            $req->deinterlace = FFmpegHelper::isInterlaced($req->oInputFile) ? TRUE : FALSE;
         } else {
             $req->deinterlace = FALSE;
         }
+        $req->deinterlaceMode = getEnvWithDefault("DEINTERLACE_MODE", $req->deinterlaceMode);
 
         $req->prepareStreams();
         return $req;
@@ -204,6 +205,8 @@ class Request
     private $hwaccel = false;
 
     public $deinterlace = false;
+
+    public $deinterlaceMode = "02";
 
     private $videoTracks = array(
         "*"

@@ -20,6 +20,9 @@ class Stream
         if (array_key_exists("codec_time_base", $json)) {
             $this->audio_sample_rate = substr($json["codec_time_base"], 2);
         }
+	if (array_key_exists("r_frame_rate", $json)) {
+            $this->frame_rate = $json["r_frame_rate"];
+        }
     }
 
     public $codec_type = NULL;
@@ -35,4 +38,6 @@ class Stream
     public $channels = NULL;
 
     public $audio_sample_rate = NULL;
+
+    public $frame_rate = NULL;
 }

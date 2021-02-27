@@ -1,0 +1,25 @@
+<phpunit testdox="true" noInteraction="true" cacheResult="false">
+  <php>
+    <includePath>/home/ripvideo</includePath>
+    <env name="LOG_LEVEL" value="VERBOSE" />
+  </php>
+  <logging>
+    <log type="testdox-html" target="/testResults/testdox.html"/>
+    <log type="testdox-text" target="/testResults/testdox.txt"/>
+    <log type="junit" target="/testResults/junit.xml"/>
+  </logging>
+  <testsuites>
+    <testsuite name="basic">
+      <directory>basic</directory>
+    </testsuite>
+    <testsuite name="subtitles">
+      <directory>subtitles</directory>
+    </testsuite>
+    <testsuite name="deinterlace">
+      <directory>deinterlace</directory>
+    </testsuite>
+    <testsuite name="audio">
+      <directory>audio</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
