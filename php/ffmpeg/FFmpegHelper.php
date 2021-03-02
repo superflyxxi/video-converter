@@ -18,7 +18,7 @@ class FFmpegHelper
     {
         if (! array_key_exists($inputFile->getFileName(), self::$probeCache)) {
             $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $inputFile->getPrefix() . $inputFile->getFileName() . '"';
-            Logger::debug("Executing ffprobe: {}", $command);
+            Logger::info("Executing ffprobe: {}", $command);
             exec($command, $out, $ret);
             if ($ret > 0) {
                 throw new ExecutionException("ffprobe", $ret);
@@ -51,7 +51,6 @@ class FFmpegHelper
 
     private static function isInterlacedBasedOnProbe($inputFile) {
         $json = self::probe($inputFile);
-        print_r($json);
         $stream = $json["streams"][0];
         return array_key_exists("field_order", $stream) && $stream["field_order"] != "progressive";
     }
@@ -61,7 +60,7 @@ class FFmpegHelper
         Logger::info("Checking for interlacing: {}", $inputFile->getFileName());
         $args = '-i "' . $inputFile->getFileName() . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
         $command = 'ffmpeg ' . $args;
-        Logger::debug("Command: {}", $command);
+        Logger::info("Checking for interlace: {}", $command);
         exec($command, $out, $ret);
         if ($ret > 0) {
             throw new ExecutionException("ffmpeg", $ret, $args);
@@ -88,7 +87,7 @@ class FFmpegHelper
     public static function execute($listRequests, $outputFile, $exit = TRUE)
     {
         $command = self::generate($listRequests, $outputFile);
-        Logger::debug("Executing ffmpeg: {}", $command);
+        Logger::info("Executing ffmpeg: {}", $command);
         passthru($command . " 2>&1", $ret);
         if ($ret > 0) {
             throw new ExecutionException("ffmpeg", $ret, $command);
@@ -108,11 +107,11 @@ class FFmpegHelper
             $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
         }
 
-        Logger::info("Generating video args");
+        Logger::debug("Generating video args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegVideoArgGenerator());
-        Logger::info("Generating audio args");
+        Logger::debug("Generating audio args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegAudioArgGenerator());
-        Logger::info("Generating subtitle args");
+        Logger::debug("Generating subtitle args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegSubtitleArgGenerator());
 
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
