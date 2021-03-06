@@ -37,6 +37,6 @@ final class CountryToLanguageMapping {
   }   
 }
 
-CountryToLanguageMap::init();
+CountryToLanguageMapping::init();
 
 ?>
