@@ -8,7 +8,7 @@ final class CountryToLanguageMapping {
     if (array_key_exists($language, self::$mapLanguageCountry)) {
       return self::$mapLanguageCountry[$language][0];
     }
-    return $country;
+    return $language;
   }
 
   /** No need to execute this manually. Runs on load of class.**/
