@@ -2,7 +2,7 @@
 
 final class CountryToLanguageMapping {
 
-  public static mapLanguageCountry = NULL;
+  public static $mapLanguageCountry = NULL;
 
   public static function getCountry($language) {
     if (array_key_exists($language, self::$mapLanguageCountry)) {
