@@ -22,7 +22,11 @@ final class BasicTests extends Test
         $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("subtitle", $probe["streams"][2]["codec_type"], "Stream 2 codec_type");
         $this->assertEquals("dvd_subtitle", $probe["streams"][2]["codec_name"], "Stream 2 codec");
-        $this->assertArrayNotHasKey(3, $probe["streams"], "Stream 3 exists");
+        $this->assertEquals("eng", $probe["streams"][2]["tags"]["language"], "Stream 2 language");
+        $this->assertEquals("subtitle", $probe["streams"][3]["codec_type"], "Stream 3 codec_type");
+        $this->assertEquals("dvd_subtitle", $probe["streams"][3]["codec_name"], "Stream 3 codec");
+        $this->assertEquals("fre", $probe["streams"][3]["tags"]["language"], "Stream 3 language");
+        $this->assertArrayNotHasKey(4, $probe["streams"], "Stream 4 exists");
         $this->assertEquals("Test No Input", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
         $this->assertArrayNotHasKey("SEASON", $probe["format"]["tags"], "Metadata SEASON exists");
@@ -45,7 +49,9 @@ final class BasicTests extends Test
         $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("subtitle", $probe["streams"][2]["codec_type"], "Stream 2 coded_type");
         $this->assertEquals("dvd_subtitle", $probe["streams"][2]["codec_name"], "Stream 2 codec");
-        $this->assertArrayNotHasKey(3, $probe["streams"], "Stream 3 exists");
+        $this->assertEquals("subtitle", $probe["streams"][3]["codec_type"], "Stream 3 codec_type");
+        $this->assertEquals("dvd_subtitle", $probe["streams"][3]["codec_name"], "Stream 3 codec");
+        $this->assertArrayNotHasKey(4, $probe["streams"], "Stream 4 exists");
         $this->assertEquals("Test Input", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
         $this->assertArrayNotHasKey("SEASON", $probe["format"]["tags"], "Metadata SEASON exists");
@@ -69,7 +75,9 @@ final class BasicTests extends Test
         $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("subtitle", $probe["streams"][2]["codec_type"], "Stream 2 codec_type");
         $this->assertEquals("dvd_subtitle", $probe["streams"][2]["codec_name"], "Stream 2 codec");
-        $this->assertArrayNotHasKey(3, $probe["streams"], "Stream 3 exists");
+        $this->assertEquals("subtitle", $probe["streams"][3]["codec_type"], "Stream 3 codec_type");
+        $this->assertEquals("dvd_subtitle", $probe["streams"][3]["codec_name"], "Stream 3 codec");
+        $this->assertArrayNotHasKey(4, $probe["streams"], "Stream 4 exists");
         $this->assertEquals("Test tv show", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
         $this->assertEquals("01", $probe["format"]["tags"]["SEASON"], "Metadata SEASON");

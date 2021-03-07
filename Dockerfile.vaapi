@@ -11,7 +11,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
-	apt-get install -y php php-json mkvtoolnix && \
+	apt-get install -y php-cli php-json mkvtoolnix && \
 	apt-get clean -y
 ARG BUILD_SUBTITLE_SUPPORT=false
 
