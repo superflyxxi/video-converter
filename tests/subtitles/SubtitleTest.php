@@ -16,7 +16,10 @@ final class SubtitleTests extends Test
         $this->assertEquals("subtitle", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("subrip", $probe["streams"][0]["codec_name"], "Stream 0 codec");
         $this->assertEquals("eng", $probe["streams"][0]["tags"]["language"], "Stream 0 language");
-        $this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
+        $this->assertEquals("subtitle", $probe["streams"][1]["codec_type"], "Stream 1 codec_type");
+        $this->assertEquals("subrip", $probe["streams"][1]["codec_name"], "Stream 1 codec");
+        $this->assertEquals("fre", $probe["streams"][1]["tags"]["language"], "Stream 1 language");
+        $this->assertArrayNotHasKey(2, $probe["streams"], "Stream 2 exists");
         $this->assertEquals("Test Convert DVD Subtitle", $probe["format"]["tags"]["title"], "Metadata title");
     }
 
@@ -36,10 +39,13 @@ final class SubtitleTests extends Test
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata Year");
 
         $testfile = $this->getDataDir() . DIRECTORY_SEPARATOR . "Test Subtitle Files (2019).mkv.2-eng.srt";
-        $this->assertFileExists($testfile, "File missing");
+        $this->assertFileExists($testfile, "File for 2-eng missing");
 	$contents = file_get_contents($testfile);
 	$this->assertFalse(strpos($contents, "’"), "SRT contains ’");
 	$this->assertFalse(strpos($contents, "!"), "SRT contains |");
+        
+        $testfile = $this->getDataDir() . DIRECTORY_SEPARATOR . "Test Subtitle Files (2019).mkv.3-fre.srt";
+        $this->assertFileExists($testfile, "File for 3-fre missing");
     }
 
     public function testBluraySubtitles() {
