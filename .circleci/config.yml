@@ -135,3 +135,5 @@ workflows:
       - release:
           name: release
           prerelease: false
+          requires:
+            - build-test-push-4.3-vaapi1804
