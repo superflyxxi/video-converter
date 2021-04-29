@@ -114,7 +114,7 @@ jobs:
             else
               echo "${CIRCLE_BRANCH}" > /tmp/workspace/version.txt
             fi
-            echo "Version $(cat /tmp/workspace/version.txt)"
+            echo "Version: $(cat /tmp/workspace/version.txt)"
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
