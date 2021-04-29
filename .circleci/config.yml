@@ -124,9 +124,11 @@ workflows:
     jobs:
       - release:
           name: pre-release
+          context: default
           prerelease: true
       - build:
           name: build-test-push-4.3-vaapi1804
+          context: default
           dockerfile: vaapi
           build-subtitle: true
           from-tag: 4.3-vaapi1804
@@ -134,6 +136,7 @@ workflows:
             - pre-release
       - release:
           name: release
+          context: default
           prerelease: false
           requires:
             - build-test-push-4.3-vaapi1804
