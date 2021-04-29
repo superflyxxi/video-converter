@@ -130,9 +130,12 @@ workflows:
           name: pre-release
           prerelease: true
       - build:
-          name: build-4.3-vaapi1804
+          name: build-test-push-4.3-vaapi1804
           dockerfile: vaapi
           build-subtitle: true
           from-tag: 4.3-vaapi1804
           requires:
             - pre-release
+      - release:
+          name: release
+          prerelease: false
