@@ -22,18 +22,17 @@ jobs:
       
     machine: true
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - run:
           name: Custom enviroment variables
           command: |
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
-            else 
-              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
-            fi
+            export VERSION=$(cat /tmp/workspace/version.txt)
+            echo 'export THIS_LABEL=${FROM_TAG}-${VERSION}' >> ${BASH_ENV}
             echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
-              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
+              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:latest' >> ${BASH_ENV}
             fi
             echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             cat ${BASH_ENV}
@@ -63,6 +62,22 @@ jobs:
           path: testResults
       - store_artifacts:
           path: testResults
+      - when:
+          condition:
+            equal: [ master, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Tag image as latest
+                command: docker tag ${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL} ${THIS_REGISTRY}/${THIS_IMAGE}:latest
+            - docker/push:
+                step-name: Pushing actual image
+                registry: $THIS_REGISTRY
+                image: ${THIS_IMAGE}
+                tag: latest
+      - run:
+          registry: $THIS_REGISTRY
+          image: ${THIS_IMAGE}
+          tag: ${THIS_LABEL}
       - docker/push:
           step-name: Pushing actual image
           registry: $THIS_REGISTRY
@@ -73,12 +88,51 @@ jobs:
           registry: $THIS_REGISTRY
           image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
+  release:
+    docker:
+      - image: circleci/node
+    parameters:
+      prerelease:
+        description: Whether it's a pre-release and not actually release.
+        type: boolean
+        default: false
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm install -D @semantic-release/exec
+      - attach_workspace:
+          at: /tmp/workspace
+      - when:
+          condition: << parameters.prerelease >>
+          steps:
+            run:
+              name: Define additional args
+              command: |
+                echo "ADDITIONAL_ARGS=--dry-run" >> ${BASH_ENV}
+      - run:
+          name: Run semantic-release
+          command: |
+            npx semantic-release ${ADDITIONAL_ARGS}
+            if [[ "" == "$(cat version.txt)" ]]; then 
+              echo "${CIRCLE_BRANCH}" > /tmp/workspace/version.txt
+            else
+              cp -v version.txt /tmp/workspace
+            fi
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - version.txt
 
 workflows:
   default:
     jobs:
+      - release:
+          name: pre-release
+          prerelease: true
       - build:
           name: build-4.3-vaapi1804
           dockerfile: vaapi
           build-subtitle: true
           from-tag: 4.3-vaapi1804
+          requires:
+            - pre-release
