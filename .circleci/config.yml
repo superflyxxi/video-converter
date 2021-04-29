@@ -28,17 +28,15 @@ jobs:
           name: Custom enviroment variables
           command: |
             echo 'export THIS_LABEL=${FROM_TAG}-$(cat /tmp/workspace/version.txt)' >> ${BASH_ENV}
-            echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
-            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
+            echo 'export THIS_FULL_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            echo 'export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
-              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:latest' >> ${BASH_ENV}
+              echo 'export CACHE_FROM_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:latest' >> ${BASH_ENV}
             fi
             echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
-          docker-username: THIS_REGISTRY_USERNAME
-          docker-password: THIS_REGISTRY_PASSWORD
-          registry: $THIS_REGISTRY
+          registry: $DOCKER_REGISTRY
       - docker/pull:
           images: ${FROM_IMAGE},${CACHE_FROM_IMAGE}
           ignore-docker-pull-error: true
@@ -51,8 +49,8 @@ jobs:
           path: tests/
           image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
-          registry: ${THIS_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
+          registry: ${DOCKER_REGISTRY}
+          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
           step-name: Build unit test image
       - run:
           name: Run unit tests
@@ -67,20 +65,20 @@ jobs:
           steps:
             - run:
                 name: Tag image as latest
-                command: docker tag ${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL} ${THIS_REGISTRY}/${THIS_IMAGE}:latest
+                command: docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL} ${DOCKER_REGISTRY}/${THIS_IMAGE}:latest
             - docker/push:
                 step-name: Pushing actual image
-                registry: $THIS_REGISTRY
+                registry: $DOCKER_REGISTRY
                 image: ${THIS_IMAGE}
                 tag: latest
       - docker/push:
           step-name: Pushing actual image
-          registry: $THIS_REGISTRY
+          registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
       - docker/push:
           step-name: Pushing unit test image
-          registry: $THIS_REGISTRY
+          registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
   release:
