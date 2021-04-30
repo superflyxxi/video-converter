@@ -66,16 +66,11 @@ jobs:
             - run:
                 name: Tag image as latest
                 command: docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL} ${DOCKER_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}
-            - docker/push:
-                step-name: Pushing actual image
-                registry: $DOCKER_REGISTRY
-                image: ${THIS_IMAGE}
-                tag: ${FROM_TAG}
       - docker/push:
           step-name: Pushing actual image
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
-          tag: ${THIS_LABEL}
+          tag: ${THIS_LABEL},${FROM_TAG}
       - docker/push:
           step-name: Pushing unit test image
           registry: $DOCKER_REGISTRY
