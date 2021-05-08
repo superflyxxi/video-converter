@@ -27,7 +27,7 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            echo 'export THIS_LABEL=${FROM_TAG}-$(cat /tmp/workspace/version.txt)' >> ${BASH_ENV}
+            echo 'export THIS_LABEL=${FROM_TAG}-$(cat /tmp/workspace/short_version.txt)' >> ${BASH_ENV}
             echo 'export THIS_FULL_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             echo 'export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "main" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
@@ -98,19 +98,20 @@ jobs:
               command: |
                 echo "ADDITIONAL_ARGS=--dry-run" >> ${BASH_ENV}
       - run:
-          name: Run semantic-release
           command: |
             npx semantic-release ${ADDITIONAL_ARGS}
-            if [[ -f version.txt ]]; then 
-              cp -v version.txt /tmp/workspace
+            if [[ "" == "$(cat version.txt)" ]]; then 
+              printf "%s-%s" ${CIRCLE_BRANCH} ${CIRCLE_SHA1:0:7} | sed 's#/#-#g' > /tmp/workspace/full_version.txt
+              printf "${CIRCLE_BRANCH}" | sed 's#/#-#g' > /tmp/workspace/short_version.txt
             else
-              echo "${CIRCLE_BRANCH}" > /tmp/workspace/version.txt
+              cp -v version.txt /tmp/workspace/full_version.txt
+              cp -v version.txt /tmp/workspace/short_version.txt
             fi
-            echo "Version: $(cat /tmp/workspace/version.txt)"
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
-            - version.txt
+            - full_version.txt
+            - short_version.txt
 
 workflows:
   default:
