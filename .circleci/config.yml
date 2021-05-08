@@ -86,7 +86,7 @@ jobs:
         default: false
     steps:
       - checkout
-      - run: npm install
+      - run: npm ci
       - run: npm install -D @semantic-release/exec
       - attach_workspace:
           at: /tmp/workspace
@@ -98,6 +98,7 @@ jobs:
               command: |
                 echo "ADDITIONAL_ARGS=--dry-run" >> ${BASH_ENV}
       - run:
+          name: Semantic-release
           command: |
             npx semantic-release ${ADDITIONAL_ARGS}
             if [[ "" == "$(cat version.txt)" ]]; then 
