@@ -27,7 +27,7 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            echo 'export THIS_LABEL=${FROM_TAG}-$(cat /tmp/workspace/short_version.txt)' >> ${BASH_ENV}
+            echo 'export THIS_LABEL=$(cat /tmp/workspace/short_version.txt)-${FROM_TAG}' >> ${BASH_ENV}
             echo 'export THIS_FULL_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
             echo 'export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "main" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
