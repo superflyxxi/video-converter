@@ -54,5 +54,5 @@ ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Su
 ENTRYPOINT /home/ripvideo/rip-video
 
 COPY php/ /home/ripvideo/
-RUN find /home/ripvideo/ -name "*.php" -exec php -l {} \; && \
+RUN find /home/ripvideo/ -name "*.php" -print0 | xargs -L1 -0 php -l && \
 	chmod -R ugo+r /home/ripvideo
