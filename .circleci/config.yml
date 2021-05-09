@@ -4,6 +4,11 @@ version: 2.1
 orbs:
     docker: circleci/docker@1.5.0
 
+parameters:
+  latest-from-tag:
+    type: string
+    default: '4.3-vaapi1804'
+
 # Orchestrate or schedule a set of jobs
 jobs:
   build:
@@ -61,16 +66,24 @@ jobs:
           path: testResults
       - when:
           condition:
-            equal: [ main, << pipeline.git.branch >> ]
+            and:
+              - equal: [ main, << pipeline.git.branch >> ]
+              - equal: [ << parameters.from-tag >>, << pipeline.parameters.latest-from-tag >> ]
           steps:
             - run:
                 name: Tag image as latest
-                command: docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL} ${DOCKER_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}
+                command: |
+                  export ADDITIONAL_TAGS=$(cat /tmp/workspace/short_version.txt),${FROM_TAG},latest
+                  echo "export ADDITIONAL_TAGS=${ADDITIONAL_TAGS}" >> ${BASH_ENV}
+                  echo "Tagging ${ADDITIONAL_TAGS}"
+                  for TAG in $(echo ${ADDITIONAL_TAGS} | sed 's/,/ /g'); do
+                    docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL} ${DOCKER_REGISTRY}/${THIS_IMAGE}:${TAG}
+                  done
       - docker/push:
           step-name: Pushing actual image
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
-          tag: ${THIS_LABEL},${FROM_TAG}
+          tag: ${THIS_LABEL},${ADDITIONAL_TAGS}
       - docker/push:
           step-name: Pushing unit test image
           registry: $DOCKER_REGISTRY
