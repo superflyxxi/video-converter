@@ -26,9 +26,10 @@ if (NULL == getEnv("TITLE")) {
 }
 
 $envInput = getEnv("INPUT");
+Logger::info("INPUT=$envInput");
 $csvRequest = NULL;
 if (substr($envInput, -4 ) === ".csv") {
-  $csvRequest = new CSVRequest("/data/".$envInput);
+  $csvRequest = new CSVRequest(new SplFileObject("/data/".$envInput, "r"));
 } else {
   if (NULL == $envInput) {
     $arrFiles = array_diff(scandir("/data/"), array(
@@ -38,6 +39,7 @@ if (substr($envInput, -4 ) === ".csv") {
   } else {
     $arrFiles[] = $envInput;
   }
+  Logger::info("arrFiles={}", $arrFiles);
   //$csvFilename = getEnvWithDefault("TMP_DIR", "/tmp")."/tmp.csv"; 
   //$csvFile = new SplFileObject($csvFilename, "w");
   $csvFile = new SplTempFileObject();
@@ -45,7 +47,8 @@ if (substr($envInput, -4 ) === ".csv") {
   foreach ($arrFiles as $infile) {
     $csvFile->fputcsv(array($infile));
   }
-  $csvRequest = new CSVRequest($csvFile->getRealPath());
+  $csvFile->rewind();
+  $csvRequest = new CSVRequest($csvFile);
 }
 
 Logger::verbose("Files to process: {}", $arrFiles);

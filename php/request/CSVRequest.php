@@ -7,10 +7,12 @@ class CSVRequest {
 
   public $arrConvertFiles = array();
 
-  public function __construct($filename) {
-    $f = fopen($filename, "r");
-    $colums = fgetcsv($f);
-    while (($row = fgetcsv($f)) !== FALSE) {
+  public function __construct(SplFileObject $file) {
+    $arrLines = $file->fgetcsv();
+    $i = 1;
+    $columns = $arrLines[0];
+    for(; $i<count($arrLines); $i++) {
+      $row = $arrLines[$i];
       $data = self::getArrayForRow($columns, $row);
       $cf = new ConvertFile($data["filename"]);
       $this->arrConvertFiles[] = $cf;
@@ -85,7 +87,6 @@ class CSVRequest {
         }
       }
     }
-    fclose($f);
   }
 
   private static function getArrayForRow($columns, $row) {
