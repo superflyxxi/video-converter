@@ -4,6 +4,11 @@ version: 2.1
 orbs:
     docker: circleci/docker@1.5.0
 
+parameters:
+  latest-from-tag:
+    type: string
+    default: '4.3-vaapi1804'
+
 # Orchestrate or schedule a set of jobs
 jobs:
   build:
@@ -22,25 +27,21 @@ jobs:
       
     machine: true
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - run:
           name: Custom enviroment variables
           command: |
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              echo 'export THIS_LABEL=${FROM_TAG}' >> ${BASH_ENV}
-            else 
-              echo 'export THIS_LABEL=${FROM_TAG}-${CIRCLE_BRANCH}' >> ${BASH_ENV}
-            fi
-            echo 'export THIS_FULL_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
-            echo 'export TEST_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
-            if [[ ! "${CIRCLE_BRANCH}" == "master" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
-              echo 'export CACHE_FROM_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
+            echo 'export THIS_LABEL=$(cat /tmp/workspace/short_version.txt)-${FROM_TAG}' >> ${BASH_ENV}
+            echo 'export THIS_FULL_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            echo 'export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
+            if [[ ! "${CIRCLE_BRANCH}" == "main" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
+              echo 'export CACHE_FROM_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
             fi
             echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
-          docker-username: THIS_REGISTRY_USERNAME
-          docker-password: THIS_REGISTRY_PASSWORD
-          registry: $THIS_REGISTRY
+          registry: $DOCKER_REGISTRY
       - docker/pull:
           images: ${FROM_IMAGE},${CACHE_FROM_IMAGE}
           ignore-docker-pull-error: true
@@ -53,8 +54,8 @@ jobs:
           path: tests/
           image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
-          registry: ${THIS_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${THIS_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
+          registry: ${DOCKER_REGISTRY}
+          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
           step-name: Build unit test image
       - run:
           name: Run unit tests
@@ -63,22 +64,90 @@ jobs:
           path: testResults
       - store_artifacts:
           path: testResults
+      - when:
+          condition:
+            and:
+              - equal: [ main, << pipeline.git.branch >> ]
+              - equal: [ << parameters.from-tag >>, << pipeline.parameters.latest-from-tag >> ]
+          steps:
+            - run:
+                name: Tag image as latest
+                command: |
+                  export ADDITIONAL_TAGS=$(cat /tmp/workspace/short_version.txt),${FROM_TAG},latest
+                  echo "export ADDITIONAL_TAGS=${ADDITIONAL_TAGS}" >> ${BASH_ENV}
+                  echo "Tagging ${ADDITIONAL_TAGS}"
+                  for TAG in $(echo ${ADDITIONAL_TAGS} | sed 's/,/ /g'); do
+                    docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL} ${DOCKER_REGISTRY}/${THIS_IMAGE}:${TAG}
+                  done
       - docker/push:
           step-name: Pushing actual image
-          registry: $THIS_REGISTRY
+          registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
-          tag: ${THIS_LABEL}
+          tag: ${THIS_LABEL},${ADDITIONAL_TAGS}
       - docker/push:
           step-name: Pushing unit test image
-          registry: $THIS_REGISTRY
+          registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
+  release:
+    docker:
+      - image: circleci/node
+    parameters:
+      prerelease:
+        description: Whether it's a pre-release and not actually release.
+        type: boolean
+        default: false
+    steps:
+      - checkout
+      - run: npm install -D @semantic-release/exec
+      - attach_workspace:
+          at: /tmp/workspace
+      - when:
+          condition: << parameters.prerelease >>
+          steps:
+            run:
+              name: Define additional args
+              command: |
+                echo "ADDITIONAL_ARGS=--dry-run" >> ${BASH_ENV}
+      - run:
+          name: Semantic-release
+          command: |
+            npx semantic-release ${ADDITIONAL_ARGS}
+            if [[ "" == "$(cat version.txt)" ]]; then 
+              printf "%s-%s" ${CIRCLE_BRANCH} ${CIRCLE_SHA1:0:7} | sed 's#/#-#g' > /tmp/workspace/full_version.txt
+              printf "${CIRCLE_BRANCH}" | sed 's#/#-#g' > /tmp/workspace/short_version.txt
+            else
+              cp -v version.txt /tmp/workspace/full_version.txt
+              cp -v version.txt /tmp/workspace/short_version.txt
+            fi
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - full_version.txt
+            - short_version.txt
 
 workflows:
   default:
     jobs:
+      - release:
+          name: pre-release
+          context: default
+          prerelease: true
       - build:
-          name: build-4.3-vaapi1804
+          name: build-test-push-4.3-vaapi1804
+          context: default
           dockerfile: vaapi
           build-subtitle: true
           from-tag: 4.3-vaapi1804
+          requires:
+            - pre-release
+      - release:
+          name: release
+          context: default
+          prerelease: false
+          requires:
+            - build-test-push-4.3-vaapi1804
+          filters:
+            branches:
+              only:
+                - main

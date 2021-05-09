@@ -6,6 +6,7 @@ require_once "Logger.php";
 require_once "ffmpeg/FFmpegHelper.php";
 require_once "MKVExtractHelper.php";
 require_once "exceptions/ExecutionException.php";
+require_once "CountryToLanguageMapping.php";
 
 class ConvertSubtitle
 {
@@ -78,7 +79,7 @@ class ConvertSubtitle
                             Logger::info("Convert DVD sub to SRT.");
                             $command = 'vobsub2srt ';
                             if (isset($subtitle->language)) {
-                                $command .= ' --tesseract-lang ' . $subtitle->language . ' ';
+                                $command .= ' --tesseract-lang ' . CountryToLanguageMapping::getCountry($subtitle->language) . ' ';
                             }
                             if (NULL != $oRequest->subtitleConversionBlacklist) {
                                 $command .= " --blacklist '" . $oRequest->subtitleConversionBlacklist . "'";

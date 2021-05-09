@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-class Test extends TestCase {
+abstract class Test extends TestCase {
         
     public function __construct() {
         parent::__construct();
