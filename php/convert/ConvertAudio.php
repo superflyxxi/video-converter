@@ -1,7 +1,7 @@
 <?php
 require_once "Logger.php";
 require_once "functions.php";
-require_once "Request.php";
+require_once "request/Request.php";
 require_once "Stream.php";
 require_once "exceptions/ExecutionException.php";
 

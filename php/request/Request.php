@@ -4,6 +4,59 @@ require_once "functions.php";
 
 class Request
 {
+    public $title = NULL;
+
+    public $year = NULL;
+
+    public $season = NULL;
+
+    public $episode = NULL;
+
+    public $subtitle = NULL;
+
+    public $oInputFile = NULL;
+
+    public $playlist = NULL;
+
+    private $subtitleTracks = array(
+        "*"
+    );
+
+    public $subtitleFormat = NULL;
+
+    public $subtitleConversionBlacklist = NULL;
+
+    public $subtitleConversionOutput = NULL;
+
+    private $audioTracks = array(
+        "*"
+    );
+
+    public $audioFormat = NULL;
+
+    public $audioQuality = NULL;
+
+    public $audioChannelLayout = NULL;
+
+    private $audioChannelLayoutTracks = array();
+
+    public $audioSampleRate = NULL;
+
+    public $normalizeAudioTracks = NULL;
+
+    private $hwaccel = false;
+
+    public $deinterlace = false;
+
+    public $deinterlaceMode = "02";
+
+    private $videoTracks = array(
+        "*"
+    );
+
+    public $videoFormat = NULL;
+
+    private $videoHdr = false;
 
     public function __construct($filename)
     {
@@ -15,6 +68,12 @@ class Request
     public static function newInstanceFromEnv($filename)
     {
         $req = new Request($filename);
+
+        $req->title = getEnv("TITLE");
+        $req->year = getEnv("YEAR");
+        $req->season = getEnv("SEASON");
+        $req->episode = getEnv("EPISODE");
+        $req->subtitle = getEnv("SUBTITLE");
 
         $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
         $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
@@ -172,49 +231,6 @@ class Request
         return $this->videoHdr;
     }
 
-    public $oInputFile = NULL;
-
-    public $playlist = NULL;
-
-    private $subtitleTracks = array(
-        "*"
-    );
-
-    public $subtitleFormat = NULL;
-
-    public $subtitleConversionBlacklist = NULL;
-
-    public $subtitleConversionOutput = NULL;
-
-    private $audioTracks = array(
-        "*"
-    );
-
-    public $audioFormat = NULL;
-
-    public $audioQuality = NULL;
-
-    public $audioChannelLayout = NULL;
-
-    private $audioChannelLayoutTracks = array();
-
-    public $audioSampleRate = NULL;
-
-    public $normalizeAudioTracks = NULL;
-
-    private $hwaccel = false;
-
-    public $deinterlace = false;
-
-    public $deinterlaceMode = "02";
-
-    private $videoTracks = array(
-        "*"
-    );
-
-    public $videoFormat = NULL;
-
-    private $videoHdr = false;
 }
 
 ?>

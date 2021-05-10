@@ -1,0 +1,12 @@
+{
+    "name": "superflyxxi/rip-video",
+    "description": "Convert Video",
+    "keywords": [
+        "ffmpeg"
+    ],
+    "homepage": "https://github.com/superflyxxi/video-converter",
+    "license": "Apache-2.0",
+    "require": {
+        "php" : ">=7.0.0"
+    }
+}
