@@ -38,5 +38,4 @@ ENTRYPOINT php /home/ripvideo/script.php
 
 COPY scripts/ /home/ripvideo/scripts/
 COPY php/ /home/ripvideo/
-RUN find /home/ripvideo/ -name "*.php" -print0 | xargs -L1 -0 php -l && \
-	chmod -R ugo+r /home/ripvideo
+RUN chmod -R ugo+r /home/ripvideo
