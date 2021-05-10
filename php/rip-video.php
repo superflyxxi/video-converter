@@ -26,7 +26,6 @@ if (NULL == getEnv("TITLE")) {
 }
 
 $envInput = getEnv("INPUT");
-Logger::info("INPUT=$envInput");
 $csvRequest = NULL;
 if (substr($envInput, -4 ) === ".csv") {
   $csvRequest = new CSVRequest(new SplFileObject("/data/".$envInput, "r"));
@@ -39,31 +38,18 @@ if (substr($envInput, -4 ) === ".csv") {
   } else {
     $arrFiles[] = $envInput;
   }
-  Logger::info("arrFiles={}", $arrFiles);
-  //$csvFilename = getEnvWithDefault("TMP_DIR", "/tmp")."/tmp.csv"; 
-  //$csvFile = new SplFileObject($csvFilename, "w");
+  Logger::verbose("Files to process: {}", $arrFiles);
+  $tmpFilename = tempnam("/tmp", "csv");
   $csvFile = new SplTempFileObject();
-  $csvFile->fputcsv(array("filename"));
+  $csvFile->fputcsv(array("filename", "dummy"));
   foreach ($arrFiles as $infile) {
-    $csvFile->fputcsv(array($infile));
+    Logger::debug("Adding to CSV: {}", array($infile, "dummy"));
+    $csvFile->fputcsv(array($infile, "dummy"));
   }
   $csvFile->rewind();
   $csvRequest = new CSVRequest($csvFile);
 }
 
-Logger::verbose("Files to process: {}", $arrFiles);
-
-$finalResult = 0;
-foreach ($arrFiles as $file) {
-    try {
-        $conversion = new ConvertFile("/data/" . $file, getEnv("TITLE"), getEnv("YEAR"), getEnv("SEASON"), getEnv("EPISODE"), getEnv("SUBTITLE"));
-        $result = $conversion->convert(Request::newInstanceFromEnv("/data/".$file));
-    } catch (Exception $ex) {
-        Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
-        $result = 255;
-    } finally {
-        $finalResult = isset($result) ? max($finalResult, $result) : $finalResult;
-    }
-}
+$finalResult = $csvRequest->convert();
 exit($finalResult);
 ?>
