@@ -8,14 +8,13 @@ class CSVRequest {
   public $arrConvertFiles = array();
 
   public function __construct(SplFileObject $file) {
-    $arrLines = $file->fgetcsv();
-    $i = 1;
-    $columns = $arrLines[0];
-    for(; $i<count($arrLines); $i++) {
-      $row = $arrLines[$i];
+    $columns = $file->fgetcsv();
+    while(!$file->eof()) {
+      $row = $file->fgetcsv();
       $data = self::getArrayForRow($columns, $row);
-      $cf = new ConvertFile($data["filename"]);
-      $this->arrConvertFiles[] = $cf;
+      Logger::debug("Creating metadata: {}", $data);
+      $req = Request::newInstanceFromEnv("/data/".$data["filename"]);
+      $this->arrConvertFiles[] = $req;
       foreach (array_keys($data) as $key) {
         $value = $data[$key];
         if ($value != NULL) {
@@ -90,6 +89,7 @@ class CSVRequest {
   }
 
   private static function getArrayForRow($columns, $row) {
+    Logger::debug("Get array for row {}={}", $columns, $row);
     $data = array();
     for ($i=0; $i<count($columns); $i++) {
       $data[$columns[$i]] = $row[$i];
@@ -98,16 +98,18 @@ class CSVRequest {
   }
 
   public function convert() {
+    Logger::info("Starting conversion");
     $finalResult = 0;
     foreach ($this->arrConvertFiles as $file) {
-        try {
-            $result = $file->convert();
-        } catch (Exception $ex) {
-            Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
-            $result = 255;
-        } finally {
-            $finalResult = max($finalResult, $result);
-        }
+      Logger::info("Beginning to convert {}", $file);
+      $result = 255;
+      try {
+          $result = $file->convert(Request::newInstanceFromEnv("/data/".$file));
+      } catch (Exception $ex) {
+          Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
+      } finally {
+          $finalResult = max($finalResult, $result);
+      }
     }
     return $finalResult;
   }
