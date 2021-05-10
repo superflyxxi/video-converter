@@ -27,7 +27,7 @@ if (NULL == getEnv("TITLE")) {
 
 $envInput = getEnv("INPUT");
 $csvRequest = NULL;
-if (substr($envInput, -4 ) === ".csv") {
+if (strcasecmp(substr($envInput, -4 ), ".csv") === 0) {
   $csvRequest = new CSVRequest(new SplFileObject("/data/".$envInput, "r"));
 } else {
   if (NULL == $envInput) {
@@ -39,11 +39,10 @@ if (substr($envInput, -4 ) === ".csv") {
     $arrFiles[] = $envInput;
   }
   Logger::verbose("Files to process: {}", $arrFiles);
-  $tmpFilename = tempnam("/tmp", "csv");
   $csvFile = new SplTempFileObject();
   $csvFile->fputcsv(array("filename", "dummy"));
   foreach ($arrFiles as $infile) {
-    Logger::debug("Adding to CSV: {}", array($infile, "dummy"));
+    Logger::debug("Adding to CSV: {}", $infile);
     $csvFile->fputcsv(array($infile, "dummy"));
   }
   $csvFile->rewind();
