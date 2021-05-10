@@ -12,41 +12,29 @@ class ConvertFile
 
     private $inputFilename = NULL;
 
-    public $title = NULL;
+    private $req = NULL;
 
-    public $subtitle = NULL;
-
-    public $season = NULL;
-
-    public $episode = NULL;
-
-    public $year = NULL;
-
-    public function __construct($inputFilename, $title=NULL, $year=NULL, $season=NULL, $episode=NULL, $subtitle=NULL)
+    public function __construct($req)
     {
-        $this->inputFilename = $inputFilename;
-        $this->title = $title;
-        $this->year = $year;
-        $this->season = $season;
-        $this->episode = $episode;
-        $this->subtitle = $subtitle;
+        $this->req = $req;
+        $this->inputFilename = $this->req->oInputFile->getFileName();
     }
 
-    public function convert($oRequest)
+    public function convert()
     {
         Logger::info("Starting conversion for {}", $this->inputFilename);
         $oOutput = new OutputFile(getEnvWithDefault("APPLY_POSTFIX", "true") == "true" ? basename($this->inputFilename) : NULL); // use inputfile as the postfix only if APPLY_POSTFIX is set
-        $oOutput->title = $this->title;
-        $oOutput->subtitle = $this->subtitle;
-        $oOutput->season = $this->season;
-        $oOutput->episode = $this->episode;
-        $oOutput->year = $this->year;
+        $oOutput->title = $this->req->title;
+        $oOutput->subtitle = $this->req->subtitle;
+        $oOutput->season = $this->req->season;
+        $oOutput->episode = $this->req->episode;
+        $oOutput->year = $this->req->year;
 
         Logger::verbose("Conversion output {}", $oOutput);
-        Logger::verbose("Request information {}", $oRequest);
-        $allRequests[] = $oRequest;
-        $allRequests = array_merge($allRequests, ConvertAudio::convert($oRequest));
-        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($oRequest, $oOutput));
+        Logger::verbose("Request information {}", $this->req);
+        $allRequests[] = $this->req;
+        $allRequests = array_merge($allRequests, ConvertAudio::convert($this->req));
+        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($this->req, $oOutput));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput, FALSE);
         Logger::info("Completed conversion.");

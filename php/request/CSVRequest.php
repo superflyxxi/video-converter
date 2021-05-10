@@ -24,63 +24,63 @@ class CSVRequest {
               break;
 
             case "title":
-              $cf->title = $value;
+              $req->title = $value;
               break;
 
             case "year":
-              $cf->year = $value;
+              $req->year = $value;
               break;
 
             case "season":
-              $cf->season = $value;
+              $req->season = $value;
               break;
 
             case "episode":
-              $cf->episode = $value;
+              $req->episode = $value;
               break;
 
             case "subtitle":
-              $cf->subtitle = $value;
+              $req->subtitle = $value;
               break;
 
             case "playlist":
-              $cf->oRequest->playlist = $value;
+              $req->playlist = $value;
               break;
 
             case "subtitleTracks":
-              $cf->oRequest->setSubtitleTracks($value);
+              $req->setSubtitleTracks($value);
               break;
 
             case "audioTracks":
-              $cf->oRequest->setAudioTracks($value);
+              $req->setAudioTracks($value);
               break;
 
             case "videoTracks":
-              $cf->oRequest->setVideoTracks($value);
+              $req->setVideoTracks($value);
               break;
 
             case "subtitleFormat":
-              $cf->oRequest->subtitleFormat = $value;
+              $req->subtitleFormat = $value;
               break;
 
             case "audioFormat":
-              $cf->oRequest->audioFormat = $value;
+              $req->audioFormat = $value;
               break;
 
             case "audioQuality":
-              $cf->oRequest->audioQuality = $value;
+              $req->audioQuality = $value;
               break;
 
             case "audioChannelLayout":
-              $cf->oRequest->audioChannelLayout = $value;
+              $req->audioChannelLayout = $value;
               break;
 
             case "audioSampleRate":
-              $cf->oRequest->audioSampleRate = $value;
+              $req->audioSampleRate = $value;
               break;
 
             case "videoFormat":
-              $cf->oRequest->videoFormat = $value;
+              $req->videoFormat = $value;
               break;
           }
         }
@@ -100,11 +100,12 @@ class CSVRequest {
   public function convert() {
     Logger::info("Starting conversion");
     $finalResult = 0;
-    foreach ($this->arrConvertFiles as $file) {
-      Logger::info("Beginning to convert {}", $file);
+    foreach ($this->arrConvertFiles as $req) {
+      Logger::info("Beginning to convert {}", $req);
       $result = 255;
       try {
-          $result = $file->convert(Request::newInstanceFromEnv("/data/".$file));
+          $convert = new ConvertFile($req);
+          $result = $convert->convert();
       } catch (Exception $ex) {
           Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
       } finally {
