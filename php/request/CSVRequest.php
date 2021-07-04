@@ -11,77 +11,79 @@ class CSVRequest {
     $columns = $file->fgetcsv();
     while(!$file->eof()) {
       $row = $file->fgetcsv();
-      $data = self::getArrayForRow($columns, $row);
-      Logger::debug("Creating metadata: {}", $data);
-      $req = Request::newInstanceFromEnv("/data/".$data["filename"]);
-      $this->arrConvertFiles[] = $req;
-      foreach (array_keys($data) as $key) {
-        $value = $data[$key];
-        if ($value != NULL) {
-          switch ($key) {
-            case "filename":
-              // Already Processed
-              break;
+      if (array(null) !== $row) {
+        $data = self::getArrayForRow($columns, $row);
+        Logger::debug("Creating metadata: {}", $data);
+        $req = Request::newInstanceFromEnv("/data/".$data["filename"]);
+        $this->arrConvertFiles[] = $req;
+        foreach (array_keys($data) as $key) {
+          $value = $data[$key];
+          if ($value != NULL) {
+            switch ($key) {
+              case "filename":
+                // Already Processed
+                break;
 
-            case "title":
-              $req->title = $value;
-              break;
+              case "title":
+                $req->title = $value;
+                break;
 
-            case "year":
-              $req->year = $value;
-              break;
+              case "year":
+                $req->year = $value;
+                break;
 
-            case "season":
-              $req->season = $value;
-              break;
+              case "season":
+                $req->season = $value;
+                break;
 
-            case "episode":
-              $req->episode = $value;
-              break;
+              case "episode":
+                $req->episode = $value;
+                break;
 
-            case "subtitle":
-              $req->subtitle = $value;
-              break;
+              case "subtitle":
+                $req->subtitle = $value;
+                break;
 
-            case "playlist":
-              $req->playlist = $value;
-              break;
+              case "playlist":
+                $req->playlist = $value;
+                break;
 
-            case "subtitleTracks":
-              $req->setSubtitleTracks($value);
-              break;
+              case "subtitleTracks":
+                $req->setSubtitleTracks($value);
+                break;
 
-            case "audioTracks":
-              $req->setAudioTracks($value);
-              break;
+              case "audioTracks":
+                $req->setAudioTracks($value);
+                break;
 
-            case "videoTracks":
-              $req->setVideoTracks($value);
-              break;
+              case "videoTracks":
+                $req->setVideoTracks($value);
+                break;
 
-            case "subtitleFormat":
-              $req->subtitleFormat = $value;
-              break;
+              case "subtitleFormat":
+                $req->subtitleFormat = $value;
+                break;
 
-            case "audioFormat":
-              $req->audioFormat = $value;
-              break;
+              case "audioFormat":
+                $req->audioFormat = $value;
+                break;
 
-            case "audioQuality":
-              $req->audioQuality = $value;
-              break;
+              case "audioQuality":
+                $req->audioQuality = $value;
+                break;
 
-            case "audioChannelLayout":
-              $req->audioChannelLayout = $value;
-              break;
+              case "audioChannelLayout":
+                $req->audioChannelLayout = $value;
+                break;
 
-            case "audioSampleRate":
-              $req->audioSampleRate = $value;
-              break;
+              case "audioSampleRate":
+                $req->audioSampleRate = $value;
+                break;
 
-            case "videoFormat":
-              $req->videoFormat = $value;
-              break;
+              case "videoFormat":
+                $req->videoFormat = $value;
+                break;
+            }
           }
         }
       }
