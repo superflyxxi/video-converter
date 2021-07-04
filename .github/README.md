@@ -45,7 +45,7 @@ Variable | Description | Required | Default | Example
 If the `INPUT` is a CSV file, the files defined within the CSV will be converted based on the definition within.
 This environment variables marked with an `*` are not supported; all others are supported in camelCase.
 A `filename` header must be provided in order for this to function. If a header is provided, then every row must have a
-value for that header.
+value for that header. Any setting not mentioned in the CSV will default to the environment variable's value.
 
 ### Examples
 
