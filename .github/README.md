@@ -26,18 +26,18 @@ Variable | Description | Required | Default | Example
 `SUBTITLE_FORMAT` | The desired output subtitle format. | No | `ass` | `copy`
 `SUBTITLE_CONVERSION_OUTPUT`\* | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | No | `MERGE` | `FILE`
 `SUBTITLE_CONVERSION_BLACKLIST`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing to docker as `-e`. | No | ``\|~/`_`` | `\|`
-`AUDIO_TRACKS`\* | The input audio tracks to convert. | No | `*` | `1`
+`AUDIO_TRACKS` | The input audio tracks to convert. | No | `*` | `1`
 `AUDIO_FORMAT` | The desired output audio format. | No | `aac` | `eac3`
 `AUDIO_QUALITY` | The desired output audio quality based on the `AUDIO_FORMAT`. | No | `2` | `560`
 `AUDIO_SAMPLE_RATE` | The desired output audio sample rate. If not provided, input sample rate will be used. | No | | `48000`
 `AUDIO_CHANNEL_LAYOUT` | The desired output audio channel layout. | No | ` ` | `7.1`
-`AUDIO_CHANNEL_LAYOUT_TRACKS`\* | The space-separated list of input audio tracks that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | `*` | `1`
-`NORMALIZE_AUDIO_TRACKS`\* | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
-`VIDEO_TRACKS`\* | The input video tracks to convert. | No | `*` | `0`
+`AUDIO_CHANNEL_LAYOUT_TRACKS` | The space-separated list of input audio tracks that should have the `AUDIO_CHANNEL_LAYOUT` applied. | No | `*` | `1`
+`NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
+`VIDEO_TRACKS` | The input video tracks to convert. | No | `*` | `0`
 `VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
-`DEINTERLACE`\* | Boolean determining whether deinterlacing should be done. If not specified, deinterlacing will be enabled if the source is interlaced. | No |  | `true`
+`DEINTERLACE` | Boolean determining whether deinterlacing should be done. If not specified, deinterlacing will be enabled if the source is interlaced. | No |  | `true`
 `DEINTERLACE_CHECK`\* | How to check for deinterlacing. `idet` will determine wether more than 1% of frames are interlaced. `probe` will be based on video data. | No | `probe` | `idet`
-`DEINTERLACE_MODE`\* | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), or default behavior of deinterlacing while keeping the same framerate (`02`). | No | `02` | `00`
+`DEINTERLACE_MODE` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), or default behavior of deinterlacing while keeping the same framerate (`02`). | No | `02` | `00`
 `HDR`\* | The input is in HDR and the desired output should also be HDR. | No | `false` | `true`
 `APPLY_POSTFIX`\* | Whether to apply the input filename as a postfix to the output files. | No | `true` | `false` 
 
