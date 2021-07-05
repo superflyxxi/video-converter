@@ -15,6 +15,7 @@ from blurays.
 ## Environment Variables
 Variable | Description | Required | Default | Example
 --- | --- | --- | --- | ---
+`LOG_LEVEL` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | No | `250` | `100`
 `INPUT` | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | No | | `title_00.mkv`
 `TITLE` | The title to be used in metadata and naming of the file. | Yes | | `Cool Movie`
 `YEAR` | The year of the movie to be used in metadata and naming of the file. | No | | `2019`
