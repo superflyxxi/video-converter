@@ -16,7 +16,7 @@ RUN apt-get update -y && \
 RUN apt-get update -y && \
 	apt-get install -y curl && \
 	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
-	apt-get remove -y curl && \
+	apt-get purge -y curl && \
 	apt autoremove -y --purge && apt-get clean -y
 
 ARG BUILD_SUBTITLE_SUPPORT=false
@@ -60,5 +60,9 @@ ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Su
 ENTRYPOINT /home/ripvideo/rip-video.php
 
 COPY php/ /home/ripvideo/
-RUN composer install --no-dev && \
+RUN apt-get update && \
+	apt-get install -y git && \
+	composer install --no-dev && \
+	apt-get purge -y git && \
+	apt autoremove -y --purge && apt-get clean -y && \
 	chmod -R ugo+r /home/ripvideo
