@@ -92,7 +92,7 @@ class ConvertAudio
         $command .= ' -metadata:s:a:0 "title=Normalized ' . $stream->language . ' ' . $normChannelMap . '"';
         $command .= ' -f matroska "' . $normFile . '" 2>&1';
 
-        self::$log->debug("Normalizing track with command", array('filename'=>$oRequest->oInputFile->getFileName(), 'index'=>$index, 'command'=>$command);
+        self::$log->debug("Normalizing track with command", array('filename'=>$oRequest->oInputFile->getFileName(), 'index'=>$index, 'command'=>$command));
         passthru($command, $return);
         if ($return != 0) {
 	    throw new ExecutionException("ffmpeg", $return, $command);
