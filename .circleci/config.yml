@@ -2,7 +2,8 @@
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:
-    docker: circleci/docker@1.5.0
+    docker: circleci/docker@1
+    php: circleci/php@1
 
 parameters:
   latest-from-tag:
@@ -11,6 +12,14 @@ parameters:
 
 # Orchestrate or schedule a set of jobs
 jobs:
+  validate:
+    executor: php/default
+    steps:
+      - checkout
+      - run:
+          name: Verify files
+          command: find php -name '*.php' | xargs -L1 php -l
+
   build:
     parameters:
       from-tag: 
@@ -24,7 +33,6 @@ jobs:
       FROM_TAG: << parameters.from-tag >>
       BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
       DEBIAN_FRONTEND: noninteractive
-      
     machine: true
     steps:
       - attach_workspace:
@@ -89,6 +97,7 @@ jobs:
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
+
   release:
     docker:
       - image: circleci/node
@@ -133,6 +142,8 @@ workflows:
           name: pre-release
           context: default
           prerelease: true
+      - validate:
+          context: default
       - build:
           name: build-test-push-4.3-vaapi1804
           context: default
@@ -141,6 +152,7 @@ workflows:
           from-tag: 4.3-vaapi1804
           requires:
             - pre-release
+            - validate
       - release:
           name: release
           context: default
