@@ -13,6 +13,12 @@ RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
 	apt-get install -y php-cli php-json mkvtoolnix && \
 	apt-get clean -y
+RUN apt-get update -y && \
+	apt-get install -y curl && \
+	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
+	apt-get remove -y curl && \
+	apt autoremove -y --purge && apt-get clean -y
+
 ARG BUILD_SUBTITLE_SUPPORT=false
 
 # Support bash as the deafult shell
@@ -54,4 +60,5 @@ ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Su
 ENTRYPOINT /home/ripvideo/rip-video.php
 
 COPY php/ /home/ripvideo/
-RUN chmod -R ugo+r /home/ripvideo
+RUN composer install --no-dev && \
+	chmod -R ugo+r /home/ripvideo
