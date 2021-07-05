@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run:
           name: Verify files
-          command: find php -name '*.php' | xargs -L1 php -l
+          command: find php -name '*.php' | xargs --max-procs=0 -L1 php -l
 
   build:
     parameters:
