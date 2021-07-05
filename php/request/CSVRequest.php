@@ -52,16 +52,12 @@ class CSVRequest {
                 $req->setSubtitleTracks($value);
                 break;
 
-              case "audioTracks":
-                $req->setAudioTracks($value);
-                break;
-
-              case "videoTracks":
-                $req->setVideoTracks($value);
-                break;
-
               case "subtitleFormat":
                 $req->subtitleFormat = $value;
+                break;
+
+              case "audioTracks":
+                $req->setAudioTracks($value);
                 break;
 
               case "audioFormat":
@@ -76,12 +72,32 @@ class CSVRequest {
                 $req->audioChannelLayout = $value;
                 break;
 
+              case "audioChannelLayoutTracks":
+                $req->setAudioChannelLayoutTracks($value);
+                break;
+
               case "audioSampleRate":
                 $req->audioSampleRate = $value;
                 break;
 
+              case "normalizeAudioTracks":
+                $req->setNormalizeAudioTracks($value);
+                break;
+
+              case "videoTracks":
+                $req->setVideoTracks($value);
+                break;
+
               case "videoFormat":
                 $req->videoFormat = $value;
+                break;
+
+              case "deinterlace":
+                $req->setDeinterlace($value);
+                break;
+
+              case "deinterlaceMode":
+                $req->deinterlaceMode = $value;
                 break;
             }
           }
