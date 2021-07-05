@@ -16,7 +16,7 @@ PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}
 	printf "%s Executing... " "$(date)"
-	tail -n1 testResults/testdox.txt
+	tail -n1 testResults/testdox.txt || docker logs test
 done
 EXIT_CODE=$(docker inspect test | grep "ExitCode\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 if [[ ${EXIT_CODE} -ne 0 ]]; then
