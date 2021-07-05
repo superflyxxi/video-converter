@@ -25,7 +25,7 @@ class ConvertFile
 
     public function convert()
     {
-        self::log->info("Starting conversion for file", array('filename'=>$this->inputFilename));
+        self::$log->info("Starting conversion for file", array('filename'=>$this->inputFilename));
         $oOutput = new OutputFile(getEnvWithDefault("APPLY_POSTFIX", "true") == "true" ? basename($this->inputFilename) : NULL); // use inputfile as the postfix only if APPLY_POSTFIX is set
         $oOutput->title = $this->req->title;
         $oOutput->subtitle = $this->req->subtitle;
