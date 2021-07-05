@@ -1,5 +1,5 @@
 <?php
-require_once "Logger.php";
+require_once "LogWrapper.php";
 require_once "functions.php";
 require_once "request/Request.php";
 require_once "Stream.php";
@@ -7,6 +7,7 @@ require_once "exceptions/ExecutionException.php";
 
 class ConvertAudio
 {
+	private static $log = new LogWrapper('ConvertAudio');
 
     public static function convert($oRequest)
     {
@@ -17,7 +18,7 @@ class ConvertAudio
             // any track that is not needed, just copy it to its own file
             foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
                 // copy original always and add to list of additional requests
-                Logger::info("Converting audio track {}:{}", $oRequest->oInputFile->getFileName(), $index);
+                self::$log->info("Converting audio track", array('filename'=>$oRequest->oInputFile->getFileName(), 'index'=>$index));
                 $tmpRequest = new Request($oRequest->oInputFile->getFileName());
                 $tmpRequest->setVideoTracks(NULL);
                 $tmpRequest->setAudioTracks($index);
@@ -53,14 +54,14 @@ class ConvertAudio
     private static function normalize($oRequest, $index, $dir, $inFileName, $stream)
     {
         // if the track is to be normalized, now let's normalize it and put it in
-        Logger::info("Normalizing track {}:{}", $oRequest->oInputFile->getFileName(), $index);
+        self::$log->info("Normalizing track", array('filename'=>$oRequest->oInputFile->getFileName(), 'index'=>$index));
         $command = 'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
-        Logger::debug("Measuring {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
+        self::$log->debug("Measuring audio with command", array('filename'=>$oRequest->oInputFile->getFileName(), 'index'=>$index, 'command'=>$command));
         exec($command, $out, $return);
         if ($return != 0) {
 	    throw new ExecutionException("ffmpeg", $return, $command);
         }
-        Logger::verbose($out);
+        self::$log->debug('Command output', array('output'=>$out));
         $out = implode(array_slice($out, - 12));
         $json = json_decode($out, true);
 
@@ -90,7 +91,7 @@ class ConvertAudio
         $command .= ' -metadata:s:a:0 "title=Normalized ' . $stream->language . ' ' . $normChannelMap . '"';
         $command .= ' -f matroska "' . $normFile . '" 2>&1';
 
-        Logger::debug("Normalizing {}:{} with command: {}", $oRequest->oInputFile->getFileName(), $index, $command);
+        self::$log->debug("Normalizing track with command", array('filename'=>$oRequest->oInputFile->getFileName(), 'index'=>$index, 'command'=>$command);
         passthru($command, $return);
         if ($return != 0) {
 	    throw new ExecutionException("ffmpeg", $return, $command);
