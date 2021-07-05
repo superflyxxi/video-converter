@@ -42,7 +42,6 @@ jobs:
           command: |
             echo 'export THIS_LABEL=$(cat /tmp/workspace/short_version.txt)-${FROM_TAG}' >> ${BASH_ENV}
             echo 'export THIS_FULL_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
-            echo 'export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "main" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
             fi
@@ -67,7 +66,9 @@ jobs:
           step-name: Build unit test image
       - run:
           name: Run unit tests
-          command: ./test.sh
+          command: |
+            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
+            ./test.sh
       - store_test_results:
           path: testResults
       - store_artifacts:
