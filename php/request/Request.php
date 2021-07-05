@@ -173,13 +173,13 @@ class Request
     }
 
     public function setDeinterlace($val) {
-        $req->deinterlace = $val;
-        if ($req->deinterlace != NULL) {
-            $req->deinterlace = ($req->deinterlace == "true");
-        } else if ("copy" != $req->videoFormat) {
-            $req->deinterlace = FFmpegHelper::isInterlaced($req->oInputFile) ? TRUE : FALSE;
+        $this->deinterlace = $val;
+        if ($this->deinterlace != NULL) {
+            $this->deinterlace = ($this->deinterlace == "true");
+        } else if ("copy" != $this->videoFormat) {
+            $this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile) ? TRUE : FALSE;
         } else {
-            $req->deinterlace = FALSE;
+            $this->deinterlace = FALSE;
         }
     }
 
