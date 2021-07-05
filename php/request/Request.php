@@ -91,15 +91,7 @@ class Request
 
         $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
         $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
-
-        $req->deinterlace = getEnvWithDefault("DEINTERLACE", NULL);
-        if ($req->deinterlace != NULL) {
-            $req->deinterlace = ($req->deinterlace == "true");
-        } else if ("copy" != $req->videoFormat) {
-            $req->deinterlace = FFmpegHelper::isInterlaced($req->oInputFile) ? TRUE : FALSE;
-        } else {
-            $req->deinterlace = FALSE;
-        }
+        $req->setDeinterlace(getEnvWithDefault("DEINTERLACE", NULL));
         $req->deinterlaceMode = getEnvWithDefault("DEINTERLACE_MODE", $req->deinterlaceMode);
 
         $req->prepareStreams();
@@ -178,6 +170,17 @@ class Request
     public function getSubtitleTracks()
     {
         return $this->subtitleTracks;
+    }
+
+    public function setDeinterlace($val) {
+        $this->deinterlace = $val;
+        if ($this->deinterlace != NULL) {
+            $this->deinterlace = ($this->deinterlace == "true");
+        } else if ("copy" != $this->videoFormat) {
+            $this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile) ? TRUE : FALSE;
+        } else {
+            $this->deinterlace = FALSE;
+        }
     }
 
     public function prepareStreams()
