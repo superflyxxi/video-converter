@@ -2,15 +2,19 @@
 require_once "request/Request.php";
 require_once "functions.php";
 require_once "OutputFile.php";
-require_once "Logger.php";
+require_once "LogWrapper.php";
 require_once "ffmpeg/generators/FFmpegArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
 require_once "exceptions/ExecutionException.php";
 
+FFmpegHelper::$log = new LogWrapper('FFmpegHelper');
+
 class FFmpegHelper
 {
+
+	private static $log;
 
     private static $probeCache = array();
 
@@ -18,16 +22,16 @@ class FFmpegHelper
     {
         if (! array_key_exists($inputFile->getFileName(), self::$probeCache)) {
             $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $inputFile->getPrefix() . $inputFile->getFileName() . '"';
-            Logger::info("Executing ffprobe: {}", $command);
+            self::$log->info("Executing ffprobe", array('command'=>$command));
             exec($command, $out, $ret);
             if ($ret > 0) {
                 throw new ExecutionException("ffprobe", $ret);
             }
             $json = json_decode(implode($out), true);
-            Logger::verbose("Adding to probe cache {} = {}", $inputFile->getFileName(), $json);
+            self::$log->debug("Adding to probe cache", array('filename'=>$inputFile->getFileName(), 'result'=>$json));
             self::$probeCache[$inputFile->getFileName()] = $json;
         } else {
-            Logger::debug("Found {} in probe cache", $inputFile->getFileName());
+            self::$log->debug("Found in probe cache", array('filename'=>$inputFile->getFileName()));
             $json = self::$probeCache[$inputFile->getFileName()];
         }
         if (false == $json) {
@@ -57,15 +61,15 @@ class FFmpegHelper
 
     private static function isInterlacedBasedOnIdet($inputFile)
     {
-        Logger::info("Checking for interlacing: {}", $inputFile->getFileName());
+        self::$log->info("Checking for interlacing", array('filename'=>$inputFile->getFileName()));
         $args = '-i "' . $inputFile->getFileName() . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
         $command = 'ffmpeg ' . $args;
-        Logger::info("Checking for interlace: {}", $command);
+        self::$log->info("Checking for interlace", array('command'=>$command));
         exec($command, $out, $ret);
         if ($ret > 0) {
             throw new ExecutionException("ffmpeg", $ret, $args);
         }
-        Logger::verbose("Output: {}", $out);
+        self::$log->debug("Interlacing output", array('output'=>$out));
         $out = implode($out);
 	/*
 [Parsed_idet_0 @ 0x559b53b4b700] Repeated Fields: Neither: 14385 Top:     1 Bottom:     2
@@ -79,7 +83,7 @@ class FFmpegHelper
         preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
         $bff = preg_replace("/[A-Za-z]+:[ ]+([0-9]+)/", "$1", $matches[0]);
 	$total = $progressive + $tff + $bff;
-        Logger::debug("Progressive={}; TFF={}; BFF={}; Total={}", $progressive, $tff, $bff, $total);
+        self::$log->debug("Interlacing probe results", array('progressive'=>$progressive, 'tff'=>$tff, 'bff'=>$bff, 'total'=>$total));
 	// if percentage of frames are > 1% interlaced, then de-interlace
         return ($tff/$total > 0.01 || $bff/$total > 0.01);
     }
@@ -87,7 +91,7 @@ class FFmpegHelper
     public static function execute($listRequests, $outputFile, $exit = TRUE)
     {
         $command = self::generate($listRequests, $outputFile);
-        Logger::info("Executing ffmpeg: {}", $command);
+        self::$log->info("Executing ffmpeg", array('command'=>$command));
         passthru($command . " 2>&1", $ret);
         if ($ret > 0) {
             throw new ExecutionException("ffmpeg", $ret, $command);
@@ -107,11 +111,11 @@ class FFmpegHelper
             $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
         }
 
-        Logger::debug("Generating video args");
+        self::$log->debug("Generating video args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegVideoArgGenerator());
-        Logger::debug("Generating audio args");
+        self::$log->debug("Generating audio args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegAudioArgGenerator());
-        Logger::debug("Generating subtitle args");
+        self::$log->debug("Generating subtitle args");
         $finalCommand .= " " . self::generateArgs($listRequests, new FFmpegSubtitleArgGenerator());
 
         $finalCommand .= self::generateGlobalMetadataArgs($outputFile);
@@ -140,7 +144,7 @@ class FFmpegHelper
         $args = " ";
         foreach ($listRequests as $tmpRequest) {
             $streamList = $generator->getStreams($tmpRequest->oInputFile);
-            Logger::verbose("File {}, Streams: {}", $tmpRequest->oInputFile->getFileName(), $streamList);
+            self::$log->debug("Generating args", array('filename'=>$tmpRequest->oInputFile->getFileName(), 'streamList'=>$streamList));
             foreach ($streamList as $index => $stream) {
                 $args .= " -map " . $fileno . ":" . $index;
                 $args .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $index, $stream);
