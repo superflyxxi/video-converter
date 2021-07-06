@@ -1,7 +1,7 @@
 <phpunit testdox="true" noInteraction="true" cacheResult="false">
   <php>
     <includePath>/home/ripvideo</includePath>
-    <env name="LOG_LEVEL" value="VERBOSE" />
+    <env name="LOG_LEVEL" value="100" />
   </php>
   <logging>
     <log type="testdox-html" target="/testResults/testdox.html"/>
