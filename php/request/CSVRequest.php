@@ -1,9 +1,13 @@
 <?php
-
+require_once "LogWrapper.php";
 require_once "request/Request.php";
 require_once "convert/ConvertFile.php";
 
+CSVRequest::$log = new LogWrapper('CSVRequest');
+
 class CSVRequest {
+
+	private static $log;
 
   public $arrConvertFiles = array();
 
@@ -13,7 +17,7 @@ class CSVRequest {
       $row = $file->fgetcsv();
       if (array(null) !== $row) {
         $data = self::getArrayForRow($columns, $row);
-        Logger::debug("Creating metadata: {}", $data);
+        self::$log->debug("Creating metadata", array('metadata'=>$data));
         $req = Request::newInstanceFromEnv("/data/".$data["filename"]);
         $this->arrConvertFiles[] = $req;
         foreach (array_keys($data) as $key) {
@@ -107,7 +111,7 @@ class CSVRequest {
   }
 
   private static function getArrayForRow($columns, $row) {
-    Logger::debug("Get array for row {}={}", $columns, $row);
+    self::$log->debug("Get array for row", array('columns'=>$columns, 'row'=>$row));
     $data = array();
     for ($i=0; $i<count($columns); $i++) {
       $data[$columns[$i]] = $row[$i];
@@ -116,16 +120,16 @@ class CSVRequest {
   }
 
   public function convert() {
-    Logger::info("Starting conversion");
+    self::$log->info("Starting conversion");
     $finalResult = 0;
     foreach ($this->arrConvertFiles as $req) {
-      Logger::info("Beginning to convert {}", $req);
+      self::$log->info("Beginning to convert", array('req'=>$req));
       $result = 255;
       try {
           $convert = new ConvertFile($req);
           $result = $convert->convert();
       } catch (Exception $ex) {
-          Logger::error("Got exception for file {}: {}", $file, $ex->getMessage());
+          self::$log->error("Got exception for file", array('filename'=>$file, 'errorMessage'=>$ex->getMessage()));
       } finally {
           $finalResult = max($finalResult, $result);
       }
