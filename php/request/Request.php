@@ -240,5 +240,5 @@ class Request
 
 }
 
-Requet::$log = new LogWrapper('Request');
+Request::$log = new LogWrapper('Request');
 ?>
