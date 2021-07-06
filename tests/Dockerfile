@@ -4,7 +4,7 @@ WORKDIR /tests
 RUN DEBIAN_FRONTEND=noninteractive \
 	apt-get update && \
 	apt-get install -y php-xml php-mbstring curl && \
-	apt-get clean -y
+	apt autoremove -y --purge && apt-get clean -y
 ADD "https://phar.phpunit.de/phpunit-8.phar" /usr/bin/phpunit
 ENTRYPOINT [ "/usr/bin/phpunit", "-c", "/tests/phpunit.xml" ]
 CMD [ "/tests" ]
