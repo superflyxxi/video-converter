@@ -7,11 +7,9 @@ require_once "convert/ConvertSubtitle.php";
 require_once "convert/ConvertAudio.php";
 require_once "ffmpeg/FFmpegHelper.php";
 
-ConvertFile::$log = new LogWrapper('ConvertFile');
-
 class ConvertFile
 {
-	private static $log;
+	public static $log;
 
     private $inputFilename = NULL;
 
@@ -44,4 +42,5 @@ class ConvertFile
     }
 }
 
+ConvertFile::$log = new LogWrapper('ConvertFile');
 ?>

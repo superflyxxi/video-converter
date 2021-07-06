@@ -9,12 +9,10 @@ require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
 require_once "exceptions/ExecutionException.php";
 
-FFmpegHelper::$log = new LogWrapper('FFmpegHelper');
-
 class FFmpegHelper
 {
 
-	private static $log;
+	public static $log;
 
     private static $probeCache = array();
 
@@ -155,4 +153,5 @@ class FFmpegHelper
     }
 }
 
+FFmpegHelper::$log = new LogWrapper('FFmpegHelper');
 ?>

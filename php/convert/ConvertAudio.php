@@ -5,10 +5,9 @@ require_once "request/Request.php";
 require_once "Stream.php";
 require_once "exceptions/ExecutionException.php";
 
-ConvertAudio::$log = new LogWrapper('ConvertAudio');
 class ConvertAudio
 {
-	private static $log;
+	public static $log;
 
     public static function convert($oRequest)
     {
@@ -106,4 +105,5 @@ class ConvertAudio
     }
 }
 
+ConvertAudio::$log = new LogWrapper('ConvertAudio');
 ?>

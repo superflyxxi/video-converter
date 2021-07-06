@@ -1,12 +1,9 @@
 <?php
-
 require_once "LogWrapper.php";
-
-ExecutionException::$log = new LogWrapper('ExecutionException');
 
 class ExecutionException extends Exception {
 
-	private static $log;
+	public static $log;
 
     private $args = NULL;
 
@@ -17,5 +14,6 @@ class ExecutionException extends Exception {
     }
 
 }
-?>
 
+ExecutionException::$log = new LogWrapper('ExecutionException');
+?>

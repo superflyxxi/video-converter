@@ -5,11 +5,9 @@ require_once "request/Request.php";
 require_once "Stream.php";
 require_once "LogWrapper.php";
 
-FFmpegAudioArgGenerator::$log = new LogWrapper('FFmpegArgGenerator');
-
 class FFmpegAudioArgGenerator implements FFmpegArgGenerator
 {
-	private static $log;
+	public static $log;
 
     public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream)
     {
@@ -60,4 +58,6 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
         return $inputFile->getAudioStreams();
     }
 }
+
+FFmpegAudioArgGenerator::$log = new LogWrapper('FFmpegArgGenerator');
 ?>

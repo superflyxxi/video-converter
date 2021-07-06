@@ -8,11 +8,9 @@ require_once "MKVExtractHelper.php";
 require_once "exceptions/ExecutionException.php";
 require_once "CountryToLanguageMapping.php";
 
-ConvertSubtitle::$log = new LogWrapper('ConvertSubtitle');
-
 class ConvertSubtitle
 {
-	private static $log;
+	public static $log;
 
     public static function convert($oRequest, $oOutput)
     {
@@ -123,5 +121,5 @@ class ConvertSubtitle
     }
 }
 
+ConvertSubtitle::$log = new LogWrapper('ConvertSubtitle');
 ?>
-

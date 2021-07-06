@@ -5,6 +5,9 @@ require_once "functions.php";
 
 class Request
 {
+
+	public static $log;
+
     public $title = NULL;
 
     public $year = NULL;
@@ -237,5 +240,5 @@ class Request
 
 }
 
+Requet::$log = new LogWrapper('Request');
 ?>
-

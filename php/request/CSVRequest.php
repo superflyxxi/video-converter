@@ -3,11 +3,9 @@ require_once "LogWrapper.php";
 require_once "request/Request.php";
 require_once "convert/ConvertFile.php";
 
-CSVRequest::$log = new LogWrapper('CSVRequest');
-
 class CSVRequest {
 
-	private static $log;
+	public static $log;
 
   public $arrConvertFiles = array();
 
@@ -138,4 +136,6 @@ class CSVRequest {
   }
 
 }
+
+CSVRequest::$log = new LogWrapper('CSVRequest');
 ?>
