@@ -13,12 +13,12 @@ parameters:
 # Orchestrate or schedule a set of jobs
 jobs:
   validate:
-    executor: php/default
+    machine: true
     steps:
       - checkout
       - run:
           name: Verify files
-          command: find php -name '*.php' | xargs --max-procs=0 -L1 php -l
+          command: docker run -v "$(pwd)/php:/data" -e INPUT_PATH=/data -e INPUT_OPTIONS="-vvv -w"  overtrue/phplint:latest
 
   build:
     parameters:
