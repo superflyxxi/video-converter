@@ -29,9 +29,7 @@ jobs:
       build-subtitle:
         type: boolean
     environment:
-      DOCKERFILE: << parameters.dockerfile >>
       FROM_TAG: << parameters.from-tag >>
-      BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
       DEBIAN_FRONTEND: noninteractive
     machine: true
     steps:
@@ -41,11 +39,12 @@ jobs:
           name: Custom enviroment variables
           command: |
             echo 'export THIS_LABEL=$(cat /tmp/workspace/short_version.txt)-${FROM_TAG}' >> ${BASH_ENV}
-            echo 'export THIS_FULL_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
+            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "main" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
+            else
+              echo 'export CACHE_FROM_IMAGE=${FROM_IMAGE}' >> ${BASH_ENV}
             fi
-            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           registry: $DOCKER_REGISTRY
@@ -53,9 +52,14 @@ jobs:
           images: ${FROM_IMAGE},${CACHE_FROM_IMAGE}
           ignore-docker-pull-error: true
       - checkout
-      - run:
-          name: Build docker image
-          command: ./build.sh
+      - docker/build:
+          dockerfile: Dockerfile.<< parameters.dockerfile >>
+          image: ${THIS_IMAGE}
+          tag: ${THIS_LABEL}
+          registry: ${DOCKER_REGISTRY}
+          extra_build_args: --build-arg FROM_IMAGE=${FROM_IMAGE} --build-arg BUILD_SUBTITLE_SUPPORT=<< parameters.build-subtitle >>
+          cache_from: ${CACHE_FROM_IMAGE}
+          step-name: Build docker image
       - docker/build:
           docker-context: tests/
           path: tests/
