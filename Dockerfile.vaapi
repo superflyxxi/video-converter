@@ -12,11 +12,11 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
 	apt-get install -y php-cli php-json mkvtoolnix && \
-	apt-get clean -y
+	apt autoremove -y --purge && apt-get clean -y
 RUN apt-get update -y && \
 	apt-get install -y curl && \
 	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
-	apt-get remove -y curl && \
+	apt-get purge -y curl && \
 	apt autoremove -y --purge && apt-get clean -y
 
 ARG BUILD_SUBTITLE_SUPPORT=false
@@ -29,7 +29,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	apt-get update && \
 	apt-get install -y libtesseract4 openjdk-11-jre-headless && \
 	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y && \
-	apt-get clean -y ; \
+	apt autoremove -y --purge && apt-get clean -y ; \
     fi
 
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
@@ -50,7 +50,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	make && \
 	make install && \
 	apt-get purge -y ${BUILD_DEPS} && \
-	apt-get clean -y && \
+	apt autoremove -y --purge && apt-get clean -y && \
 	rm -rf ${DIR} ; \
    fi
 
@@ -60,5 +60,9 @@ ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Su
 ENTRYPOINT /home/ripvideo/rip-video.php
 
 COPY php/ /home/ripvideo/
-RUN composer install --no-dev && \
+RUN apt-get update && \
+	apt-get install -y git && \
+	composer install --no-dev && \
+	apt-get purge -y git && \
+	apt autoremove -y --purge && apt-get clean -y && \
 	chmod -R ugo+r /home/ripvideo

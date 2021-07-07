@@ -1,8 +1,12 @@
 #!/usr/bin/php
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
+require_once 'vendor/autoload.php';
 require_once "convert/ConvertFile.php";
 require_once "request/CSVRequest.php";
+require_once 'LogWrapper.php';
+
+$log = new LogWrapper('rip-video');
 
 function error_handler(int $errno, string $errstr, $errfile = NULL, $errline = 0, $errcontext = NULL)
 {
@@ -21,7 +25,7 @@ function error_handler(int $errno, string $errstr, $errfile = NULL, $errline = 0
 set_error_handler('error_handler');
 
 if (NULL == getEnv("TITLE")) {
-    Logger::error("TITLE env variable missing");
+    $log->error("TITLE env variable missing");
     exit(1);
 }
 
@@ -38,11 +42,11 @@ if (strcasecmp(substr($envInput, -4 ), ".csv") === 0) {
   } else {
     $arrFiles[] = $envInput;
   }
-  Logger::verbose("Files to process: {}", $arrFiles);
+  $log->debug("Files to process", array('arrFiles'=>$arrFiles));
   $csvFile = new SplTempFileObject();
   $csvFile->fputcsv(array("filename", "dummy"));
   foreach ($arrFiles as $infile) {
-    Logger::debug("Adding to CSV: {}", $infile);
+    $log->debug("Adding to CSV", array('filename'=>$infile));
     $csvFile->fputcsv(array($infile, "dummy"));
   }
   $csvFile->rewind();

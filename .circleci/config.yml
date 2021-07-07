@@ -2,7 +2,7 @@
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:
-    docker: circleci/docker@1.5.0
+    docker: circleci/docker@1
 
 parameters:
   latest-from-tag:
@@ -11,6 +11,14 @@ parameters:
 
 # Orchestrate or schedule a set of jobs
 jobs:
+  validate:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Verify files
+          command: docker run -v "$(pwd):/data" -e INPUT_PATH=/data -e INPUT_OPTIONS="-vvv -w"  overtrue/phplint:latest
+
   build:
     parameters:
       from-tag: 
@@ -20,11 +28,8 @@ jobs:
       build-subtitle:
         type: boolean
     environment:
-      DOCKERFILE: << parameters.dockerfile >>
       FROM_TAG: << parameters.from-tag >>
-      BUILD_SUBTITLE_SUPPORT: << parameters.build-subtitle >>
       DEBIAN_FRONTEND: noninteractive
-      
     machine: true
     steps:
       - attach_workspace:
@@ -33,12 +38,12 @@ jobs:
           name: Custom enviroment variables
           command: |
             echo 'export THIS_LABEL=$(cat /tmp/workspace/short_version.txt)-${FROM_TAG}' >> ${BASH_ENV}
-            echo 'export THIS_FULL_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}' >> ${BASH_ENV}
-            echo 'export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}' >> ${BASH_ENV}
+            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             if [[ ! "${CIRCLE_BRANCH}" == "main" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
               echo 'export CACHE_FROM_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
+            else
+              echo 'export CACHE_FROM_IMAGE=${FROM_IMAGE}' >> ${BASH_ENV}
             fi
-            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           registry: $DOCKER_REGISTRY
@@ -46,9 +51,14 @@ jobs:
           images: ${FROM_IMAGE},${CACHE_FROM_IMAGE}
           ignore-docker-pull-error: true
       - checkout
-      - run:
-          name: Build docker image
-          command: ./build.sh
+      - docker/build:
+          dockerfile: Dockerfile.<< parameters.dockerfile >>
+          image: ${THIS_IMAGE}
+          tag: ${THIS_LABEL}
+          registry: ${DOCKER_REGISTRY}
+          extra_build_args: --build-arg FROM_IMAGE=${FROM_IMAGE} --build-arg BUILD_SUBTITLE_SUPPORT=<< parameters.build-subtitle >>
+          cache_from: ${CACHE_FROM_IMAGE}
+          step-name: Build docker image
       - docker/build:
           docker-context: tests/
           path: tests/
@@ -59,7 +69,9 @@ jobs:
           step-name: Build unit test image
       - run:
           name: Run unit tests
-          command: ./test.sh
+          command: |
+            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
+            ./test.sh
       - store_test_results:
           path: testResults
       - store_artifacts:
@@ -89,6 +101,7 @@ jobs:
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}-test
           tag: ${THIS_LABEL}
+
   release:
     docker:
       - image: circleci/node
@@ -133,6 +146,8 @@ workflows:
           name: pre-release
           context: default
           prerelease: true
+      - validate:
+          context: default
       - build:
           name: build-test-push-4.3-vaapi1804
           context: default
@@ -141,6 +156,7 @@ workflows:
           from-tag: 4.3-vaapi1804
           requires:
             - pre-release
+            - validate
       - release:
           name: release
           context: default

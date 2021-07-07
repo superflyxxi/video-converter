@@ -1,5 +1,5 @@
 <?php
-require_once "Logger.php";
+require_once "LogWrapper.php";
 require_once "exceptions/ExecutionException.php";
 
 class MKVExtractHelper
@@ -7,12 +7,12 @@ class MKVExtractHelper
 
     public static function extractTracks($oInputFile, $arrTracks, $exit = FALSE)
     {
-        Logger::info("Extracting {}", $oInputFile->getFileName());
+        self::$log->info("Extracting", array('filename'=>$oInputFile->getFileName()));
         $command = 'mkvextract tracks "' . $oInputFile->getFileName() . '" ';
         foreach ($arrTracks as $track => $outFileName) {
             $command .= ' "' . $track . ':' . $outFileName . '"';
         }
-        Logger::debug("extracting with mkvextract with command: {}", $command);
+        self::$log->debug("extracting with mkvextract with command", array('command'=>$command));
         passthru($command, $return);
         if (0 < $return) {
 	    throw new ExecutionException("mkvextract", $return, $command);

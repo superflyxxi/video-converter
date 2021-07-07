@@ -1,5 +1,5 @@
 <?php
-require_once "Logger.php";
+require_once "LogWrapper.php";
 require_once "request/Request.php";
 require_once "OutputFile.php";
 require_once "functions.php";
@@ -9,6 +9,7 @@ require_once "ffmpeg/FFmpegHelper.php";
 
 class ConvertFile
 {
+	public static $log;
 
     private $inputFilename = NULL;
 
@@ -22,7 +23,7 @@ class ConvertFile
 
     public function convert()
     {
-        Logger::info("Starting conversion for {}", $this->inputFilename);
+        self::$log->info("Starting conversion for file", array('filename'=>$this->inputFilename));
         $oOutput = new OutputFile(getEnvWithDefault("APPLY_POSTFIX", "true") == "true" ? basename($this->inputFilename) : NULL); // use inputfile as the postfix only if APPLY_POSTFIX is set
         $oOutput->title = $this->req->title;
         $oOutput->subtitle = $this->req->subtitle;
@@ -30,16 +31,16 @@ class ConvertFile
         $oOutput->episode = $this->req->episode;
         $oOutput->year = $this->req->year;
 
-        Logger::verbose("Conversion output {}", $oOutput);
-        Logger::verbose("Request information {}", $this->req);
+        self::$log->debug('Conversion output', array('request'=>$this->req, 'output'=>$oOutput));
         $allRequests[] = $this->req;
         $allRequests = array_merge($allRequests, ConvertAudio::convert($this->req));
         $allRequests = array_merge($allRequests, ConvertSubtitle::convert($this->req, $oOutput));
 
         $returnValue = FFmpegHelper::execute($allRequests, $oOutput, FALSE);
-        Logger::info("Completed conversion.");
+        self::$log->info("Completed conversion.");
         return $returnValue;
     }
 }
 
+ConvertFile::$log = new LogWrapper('ConvertFile');
 ?>
