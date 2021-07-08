@@ -1,4 +1,6 @@
 <?php
+use Monolog\Logger;
+
 require_once "request/Request.php";
 require_once "InputFile.php";
 require_once "functions.php";
