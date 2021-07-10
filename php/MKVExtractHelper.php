@@ -4,6 +4,7 @@ require_once "exceptions/ExecutionException.php";
 
 class MKVExtractHelper
 {
+	public static $log;
 
     public static function extractTracks($oInputFile, $arrTracks, $exit = FALSE)
     {
@@ -21,4 +22,5 @@ class MKVExtractHelper
     }
 }
 
+MKVExtractHelper::$log = new LogWrapper('MKVExtractHelper');
 ?>
