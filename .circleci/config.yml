@@ -29,81 +29,62 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
+      - checkout
       - run:
           name: Custom enviroment variables
           command: |
-            echo 'export THIS_LABEL=$(cat /tmp/workspace/short_version.txt)-${FROM_TAG}' >> ${BASH_ENV}
-            echo 'export FROM_IMAGE=jrottenberg/ffmpeg:${FROM_TAG}' >> ${BASH_ENV}
-            if [[ ! "${CIRCLE_BRANCH}" == "main" ]] && [[ ! ${CIRCLE_BRANCH} == v* ]]; then
-              echo 'export CACHE_FROM_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${FROM_TAG}' >> ${BASH_ENV}
-            else
-              echo 'export CACHE_FROM_IMAGE=${FROM_IMAGE}' >> ${BASH_ENV}
+            echo 'export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)-${FROM_TAG}' >> ${BASH_ENV}
+            export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g')
+            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
+              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${THIS_IMAGE}:latest"
+            fi
+            echo "export CACHE_FROM_IMAGES=${CACHE_FROM_IMAGES}" >> ${BASH_ENV}
+            export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
+            if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
+              for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
+                NOW="$PREV.$A"
+                export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
+                PREV=$NOW
+              done
+              export DOCKER_TAGS="${DOCKER_TAGS},latest"
             fi
             cat ${BASH_ENV}
       - docker/check:
           registry: $DOCKER_REGISTRY
-      - docker/pull:
-          images: ${FROM_IMAGE},${CACHE_FROM_IMAGE}
-          ignore-docker-pull-error: true
-      - checkout
       - docker/build:
           image: ${THIS_IMAGE}
-          tag: ${THIS_LABEL}
+          tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg FROM_IMAGE=${FROM_IMAGE} --build-arg BUILD_SUBTITLE_SUPPORT=<< parameters.build-subtitle >>
+          extra_build_args: --build-arg BUILD_SUBTITLE_SUPPORT=<< parameters.build-subtitle >>
           cache_from: ${CACHE_FROM_IMAGE}
           step-name: Build docker image
       - docker/build:
           docker-context: tests/
           path: tests/
           image: ${THIS_IMAGE}-test
-          tag: ${THIS_LABEL}
+          tag: ${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL}
+          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
           step-name: Build unit test image
       - run:
           name: Run unit tests
           command: |
-            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${THIS_LABEL}
+            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
             ./test.sh
       - store_test_results:
           path: testResults
       - store_artifacts:
           path: testResults
-      - when:
-          condition:
-            and:
-              - equal: [ main, << pipeline.git.branch >> ]
-              - equal: [ << parameters.from-tag >>, << pipeline.parameters.latest-from-tag >> ]
-          steps:
-            - run:
-                name: Tag image as latest
-                command: |
-                  export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
-                  if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
-                    for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
-                      NOW="$PREV.$A"
-                      export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
-                      PREV=$NOW
-                    done
-                    export DOCKER_TAGS="${DOCKER_TAGS},latest"
-                  fi
-                  export ADDITIONAL_TAGS=$(cat /tmp/workspace/short_version.txt),${FROM_TAG},latest
-                  echo "export ADDITIONAL_TAGS=${ADDITIONAL_TAGS}" >> ${BASH_ENV}
-                  echo "Tagging ${ADDITIONAL_TAGS}"
-                  for TAG in $(echo ${ADDITIONAL_TAGS} | sed 's/,/ /g'); do
-                    docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}:${THIS_LABEL} ${DOCKER_REGISTRY}/${THIS_IMAGE}:${TAG}
-                  done
       - docker/push:
           step-name: Pushing actual image
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
-          tag: ${THIS_LABEL},${ADDITIONAL_TAGS}
+          tag: ${DOCKER_TAGS}
       - docker/push:
           step-name: Pushing unit test image
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}-test
-          tag: ${THIS_LABEL}
+          tag: ${PRIMARY_DOCKER_TAG}
 
   release:
     docker:

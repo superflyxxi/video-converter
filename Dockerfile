@@ -1,5 +1,4 @@
-ARG FROM_IMAGE
-FROM ${FROM_IMAGE}
+FROM jrottenberg/ffmpeg:4.3-vaapi1804
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
 WORKDIR /home/ripvideo/
