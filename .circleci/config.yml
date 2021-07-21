@@ -21,12 +21,9 @@ jobs:
 
   build:
     parameters:
-      from-tag: 
-        type: string
       build-subtitle:
         type: boolean
     environment:
-      FROM_TAG: << parameters.from-tag >>
       DEBIAN_FRONTEND: noninteractive
     machine: true
     steps:
@@ -82,6 +79,15 @@ jobs:
             - run:
                 name: Tag image as latest
                 command: |
+                  export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
+                  if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
+                    for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
+                      NOW="$PREV.$A"
+                      export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
+                      PREV=$NOW
+                    done
+                    export DOCKER_TAGS="${DOCKER_TAGS},latest"
+                  fi
                   export ADDITIONAL_TAGS=$(cat /tmp/workspace/short_version.txt),${FROM_TAG},latest
                   echo "export ADDITIONAL_TAGS=${ADDITIONAL_TAGS}" >> ${BASH_ENV}
                   echo "Tagging ${ADDITIONAL_TAGS}"
@@ -149,7 +155,6 @@ workflows:
           name: build-test-push-4.3-vaapi1804
           context: default
           build-subtitle: true
-          from-tag: 4.3-vaapi1804
           requires:
             - pre-release
             - validate
