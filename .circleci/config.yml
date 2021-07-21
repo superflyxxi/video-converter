@@ -140,7 +140,7 @@ workflows:
           context: default
           prerelease: false
           requires:
-            - build-test-push-4.3-vaapi1804
+            - build-test-push
           filters:
             branches:
               only:
