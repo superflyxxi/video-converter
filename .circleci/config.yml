@@ -23,8 +23,6 @@ jobs:
     parameters:
       from-tag: 
         type: string
-      dockerfile:
-        type: string
       build-subtitle:
         type: boolean
     environment:
@@ -52,7 +50,6 @@ jobs:
           ignore-docker-pull-error: true
       - checkout
       - docker/build:
-          dockerfile: Dockerfile.<< parameters.dockerfile >>
           image: ${THIS_IMAGE}
           tag: ${THIS_LABEL}
           registry: ${DOCKER_REGISTRY}
@@ -151,7 +148,6 @@ workflows:
       - build:
           name: build-test-push-4.3-vaapi1804
           context: default
-          dockerfile: vaapi
           build-subtitle: true
           from-tag: 4.3-vaapi1804
           requires:
