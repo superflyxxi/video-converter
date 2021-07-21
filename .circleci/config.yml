@@ -20,9 +20,6 @@ jobs:
           command: docker run -v "$(pwd):/data" -e INPUT_PATH=/data -e INPUT_OPTIONS="-vvv -w"  overtrue/phplint:latest
 
   build:
-    parameters:
-      build-subtitle:
-        type: boolean
     environment:
       DEBIAN_FRONTEND: noninteractive
     machine: true
@@ -55,7 +52,6 @@ jobs:
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg BUILD_SUBTITLE_SUPPORT=<< parameters.build-subtitle >>
           cache_from: ${CACHE_FROM_IMAGE}
           step-name: Build docker image
       - docker/build:
@@ -133,9 +129,8 @@ workflows:
       - validate:
           context: default
       - build:
-          name: build-test-push-4.3-vaapi1804
+          name: build-test-push
           context: default
-          build-subtitle: true
           requires:
             - pre-release
             - validate

@@ -18,7 +18,7 @@ RUN apt-get update -y && \
 	apt-get purge -y curl && \
 	apt autoremove -y --purge && apt-get clean -y
 
-ARG BUILD_SUBTITLE_SUPPORT=false
+ARG BUILD_SUBTITLE_SUPPORT=true
 
 # Support bash as the deafult shell
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
