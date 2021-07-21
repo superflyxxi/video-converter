@@ -30,7 +30,8 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            echo 'export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)-${FROM_TAG}' >> ${BASH_ENV}
+            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
+            echo 'export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g')
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${THIS_IMAGE}:latest"
