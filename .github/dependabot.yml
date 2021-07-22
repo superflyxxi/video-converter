@@ -4,3 +4,7 @@ updates:
     directory: "/php"
     schedule:
       interval: "monthly"
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
