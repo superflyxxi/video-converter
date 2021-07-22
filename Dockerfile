@@ -1,4 +1,4 @@
-FROM jrottenberg/ffmpeg:4.3-vaapi1804
+FROM jrottenberg/ffmpeg:4.4-vaapi1804
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
 WORKDIR /home/ripvideo/
