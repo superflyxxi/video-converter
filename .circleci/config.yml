@@ -54,7 +54,7 @@ jobs:
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
-          cache_from: ${CACHE_FROM_IMAGE}
+          cache_from: ${CACHE_FROM_IMAGES}
           step-name: Build docker image
       - docker/build:
           docker-context: tests/
