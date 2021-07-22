@@ -46,6 +46,7 @@ jobs:
               done
               export DOCKER_TAGS="${DOCKER_TAGS},latest"
             fi
+            echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           registry: $DOCKER_REGISTRY
