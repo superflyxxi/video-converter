@@ -63,7 +63,7 @@ ARG BUILD_UPSCALER=false
 RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
 	BUILD_DEPS="python3-pip gfortran git wget" && \
 	apt-get update && \
-	apt-get install -y python3 ${BUILD_DEPS} && \
+	apt-get install -y python3 libgl1-mesa-dev libglib2.0-dev ${BUILD_DEPS} && \
 	pip3 install --upgrade pip && \
 	pip3 install numpy opencv-python torch && \
 	git clone --depth 1 https://github.com/xinntao/ESRGAN && \
@@ -73,7 +73,8 @@ RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
 	apt-get purge -y ${BUILD_DEPS} && \
 	apt-get clean -y ; \
     fi
-ADD esrgan/convert.py /home/ripvideo/ESRGAN/upscale.py
+ENV ESRGAN_DIR=/home/ripvideo/ESRGAN
+ADD esrgan/convert.py ${ESRGAN_DIR}/upscale.py
 
 RUN apt-get update && \
 	apt-get install -y git && \
