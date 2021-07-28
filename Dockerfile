@@ -56,10 +56,11 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
 
 ENTRYPOINT /home/ripvideo/rip-video.php
-COPY php/ /home/ripvideo/
+COPY src/ /home/ripvideo/
 
 # Introduce AI Upscaler
 ARG BUILD_UPSCALER=false
+ENV ESRGAN_DIR=/home/ripvideo/ESRGAN
 RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
 	BUILD_DEPS="python3-pip gfortran git wget" && \
 	apt-get update && \
@@ -73,7 +74,6 @@ RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
 	apt-get purge -y ${BUILD_DEPS} && \
 	apt-get clean -y ; \
     fi
-ENV ESRGAN_DIR=/home/ripvideo/ESRGAN
 ADD esrgan/convert.py ${ESRGAN_DIR}/upscale.py
 
 RUN apt-get update && \
