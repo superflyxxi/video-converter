@@ -42,7 +42,6 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	printf "FROM_IMAGE=${FROM_IMAGE}\nBUILD_DEPS=${BUILD_DEPS}\n" && \
 	apt-get update && \
 	apt-get install -y ${BUILD_DEPS} &&  \
-#	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && \
 	git clone --depth 1 https://github.com/bubonic/VobSub2SRT.git && \
 	cd VobSub2SRT && \
 	./configure && \
@@ -57,11 +56,29 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
 
 ENTRYPOINT /home/ripvideo/rip-video.php
-
 COPY php/ /home/ripvideo/
+
+# Introduce AI Upscaler
+ARG BUILD_UPSCALER=false
+RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
+	BUILD_DEPS="python3-pip gfortran git wget" && \
+	apt-get update && \
+	apt-get install -y python3 ${BUILD_DEPS} && \
+	pip3 install --upgrade pip && \
+	pip3 install numpy opencv-python torch && \
+	git clone --depth 1 https://github.com/xinntao/ESRGAN && \
+	rm -v ./ESRGAN/LR/* && \
+	wget --progress=dot:mega "https://drive.google.com/uc?export=download&id=1TPrz5QKd8DHHt1k8SRtm6tMiPjz_Qene" -O ./ESRGAN/models/RRDB_ESRGAN_x4.pth && \
+	wget --progress=dot:mega "https://drive.google.com/uc?export=download&id=1pJ_T-V1dpb1ewoEra1TGSWl5e6H7M4NN" -O ./ESRGAN/models/RRDB_PSNR_x4.pth && \
+	apt-get purge -y ${BUILD_DEPS} && \
+	apt-get clean -y ; \
+    fi
+ADD esrgan/convert.py /home/ripvideo/ESRGAN/upscale.py
+
 RUN apt-get update && \
 	apt-get install -y git && \
 	composer install --no-dev && \
 	apt-get purge -y git && \
 	apt autoremove -y --purge && apt-get clean -y && \
 	chmod -R ugo+r /home/ripvideo
+
