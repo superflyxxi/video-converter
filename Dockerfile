@@ -74,7 +74,6 @@ RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
 	apt-get purge -y ${BUILD_DEPS} && \
 	apt-get clean -y ; \
     fi
-ADD esrgan/convert.py ${ESRGAN_DIR}/upscale.py
 
 RUN apt-get update && \
 	apt-get install -y git && \
