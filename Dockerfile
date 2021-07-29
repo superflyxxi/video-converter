@@ -56,27 +56,36 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
 
 ENTRYPOINT /home/ripvideo/rip-video.php
-COPY src/ /home/ripvideo/
 
 # Introduce AI Upscaler
 ARG BUILD_UPSCALER=false
-ENV ESRGAN_DIR=/home/ripvideo/ESRGAN
+ENV ESRGAN_DIR=/home/ESRGAN
 RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
-	BUILD_DEPS="python3-pip gfortran git wget" && \
+	BUILD_DEPS="python3-pip gfortran git" && \
 	apt-get update && \
 	apt-get install -y python3 libgl1-mesa-dev libglib2.0-dev ${BUILD_DEPS} && \
 	pip3 install --upgrade pip && \
 	pip3 install numpy opencv-python torch && \
-	git clone --depth 1 https://github.com/xinntao/ESRGAN && \
-	rm -v ./ESRGAN/LR/* && \
-	wget --progress=dot:mega "https://drive.google.com/uc?export=download&id=1TPrz5QKd8DHHt1k8SRtm6tMiPjz_Qene" -O ./ESRGAN/models/RRDB_ESRGAN_x4.pth && \
-	wget --progress=dot:mega "https://drive.google.com/uc?export=download&id=1pJ_T-V1dpb1ewoEra1TGSWl5e6H7M4NN" -O ./ESRGAN/models/RRDB_PSNR_x4.pth && \
+	cd /home && git clone --depth 1 https://github.com/xinntao/ESRGAN && \
+	rm -v ${ESRGAN_DIR}/LR/* && \
 	apt-get purge -y ${BUILD_DEPS} && \
 	apt-get clean -y ; \
     fi
 
+RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
+	BUILD_DEPS=wget && \
+	apt-get update && \
+	apt-get install -y ${BUILD_DEPS} && \
+	wget --progress=dot:mega "https://drive.google.com/uc?export=download&id=1TPrz5QKd8DHHt1k8SRtm6tMiPjz_Qene" -O ${ESRGAN_DIR}/models/RRDB_ESRGAN_x4.pth && \
+	wget --progress=dot:mega "https://drive.google.com/uc?export=download&id=1pJ_T-V1dpb1ewoEra1TGSWl5e6H7M4NN" -O ${ESRGAN_DIR}/models/RRDB_PSNR_x4.pth && \
+	apt-get purge -y ${BUILD_DEPS} && \
+	apt-get clean -y ; \
+	fi
+
+COPY src/ /home/ripvideo/
 RUN apt-get update && \
 	apt-get install -y git && \
+	mv -v /home/ripvideo/upscale.py ${ESRGAN_DIR}/upscale.py && \
 	composer install --no-dev && \
 	apt-get purge -y git && \
 	apt autoremove -y --purge && apt-get clean -y && \
