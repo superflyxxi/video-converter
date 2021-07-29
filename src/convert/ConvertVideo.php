@@ -16,10 +16,11 @@ class ConvertVideo
             return [];
         }
         $arrReq = array();
+        $imgOutFilename = "/tmp/frames-%09d.jpg";
         {
             self::$log->info("Extracting images from video.", array('factor'=>$oRquest->videoUpscale));
             // extract video as images to {ESRGAN_DIR}/LR
-            $imgOutFile = new OutputFile("/tmp", "/tmp/frames-%09d.jpg");
+            $imgOutFile = new OutputFile("/tmp", );
             $imgRequest = new Request($oRequest->oInputFile->getFileName());
             $imgRequest->setSubtitleTracks(NULL);
             $imgRequest->setAudioTracks(NULL);
@@ -31,10 +32,22 @@ class ConvertVideo
         // run upscale
         {
             self::$log->info("Upscaling images. TODO");
+            passthru("python3 ${ESRGAN_DIR}/upscale.py");
         }
         // combine into a video.mkv --convert as well
         {
             self::$log->info("Making new video. TODO");
+            $dir = getEnvWithDefault("TMP_DIR", "/tmp");
+            $vidOutFile = new OutputFile(NULL, $dir."/video.mkv");
+            $vidRequest = new Request($oRequest->oInputFile->getFileName());
+            $vidRequest->setSubtitleTracks(NULL);
+            $vidRequest->setAudioTracks(NULL);
+            $vidRequest->setVideoTracks(0); // TODO don't assume 0
+            $vidRequest->videoFormat = $oRequest->videoFormat;
+            $vidRequest->deinterlace = $oRequest->deinterlace;
+            $vidRequest->deinterlaceMode = $oRequest->deinterlaceMode;
+            $vidRequest->prepareStreams();
+            FFmpegHelper::execute(array($vidRequest), $vidOutFile, FALSE);
         }
         // add video track as new request as copy and remove video request from original
         return $arrReq;
