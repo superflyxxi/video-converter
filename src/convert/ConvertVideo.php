@@ -20,7 +20,7 @@ class ConvertVideo
         {
             self::$log->info("Extracting images from video.", array('factor'=>$oRquest->videoUpscale));
             // extract video as images to {ESRGAN_DIR}/LR
-            $imgOutFile = new OutputFile("/tmp", );
+            $imgOutFile = new OutputFile("/tmp", $imgOutFilename);
             $imgRequest = new Request($oRequest->oInputFile->getFileName());
             $imgRequest->setSubtitleTracks(NULL);
             $imgRequest->setAudioTracks(NULL);
@@ -39,7 +39,7 @@ class ConvertVideo
             self::$log->info("Making new video. TODO");
             $dir = getEnvWithDefault("TMP_DIR", "/tmp");
             $vidOutFile = new OutputFile(NULL, $dir."/video.mkv");
-            $vidRequest = new Request($oRequest->oInputFile->getFileName());
+            $vidRequest = new Request($imgOutFilename);
             $vidRequest->setSubtitleTracks(NULL);
             $vidRequest->setAudioTracks(NULL);
             $vidRequest->setVideoTracks(0); // TODO don't assume 0
