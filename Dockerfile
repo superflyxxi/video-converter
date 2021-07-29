@@ -85,7 +85,7 @@ RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
 COPY src/ /home/ripvideo/
 RUN apt-get update && \
 	apt-get install -y git && \
-	mv -v /home/ripvideo/upscale.py ${ESRGAN_DIR}/upscale.py && \
+	if [[ -d ${ESRGAN_DIR} ]]; then mv -v /home/ripvideo/upscale.py ${ESRGAN_DIR}/upscale.py; fi && \
 	composer install --no-dev && \
 	apt-get purge -y git && \
 	apt autoremove -y --purge && apt-get clean -y && \
