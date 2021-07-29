@@ -59,7 +59,7 @@ class ConvertAudio
         self::$log->debug("Measuring audio with command", array('filename'=>$oRequest->oInputFile->getFileName(), 'index'=>$index, 'command'=>$command));
         exec($command, $out, $return);
         if ($return != 0) {
-	    throw new ExecutionException("ffmpeg", $return, $command);
+	        throw new ExecutionException("ffmpeg", $return, $command);
         }
         self::$log->debug('Command output', array('output'=>$out));
         $out = implode(array_slice($out, - 12));
@@ -94,7 +94,7 @@ class ConvertAudio
         self::$log->debug("Normalizing track with command", array('filename'=>$oRequest->oInputFile->getFileName(), 'index'=>$index, 'command'=>$command));
         passthru($command, $return);
         if ($return != 0) {
-	    throw new ExecutionException("ffmpeg", $return, $command);
+	        throw new ExecutionException("ffmpeg", $return, $command);
         }
         $oNewRequest = new Request($normFile);
         $oNewRequest->setAudioTracks("0");

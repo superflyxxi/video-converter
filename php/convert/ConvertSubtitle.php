@@ -1,6 +1,4 @@
 <?php
-use Monolog\Logger;
-
 require_once "request/Request.php";
 require_once "InputFile.php";
 require_once "functions.php";
@@ -23,7 +21,7 @@ class ConvertSubtitle
             foreach ($oRequest->oInputFile->getSubtitleStreams() as $index => $subtitle) {
                 $codecName = $subtitle->codec_name;
                 $dvdFile = NULL;
-		try {
+		        try {
                     if ("hdmv_pgs_subtitle" == $codecName) {
                         // convert to dvd
                         if ($oRequest->oInputFile->getPrefix() != NULL) {
@@ -81,9 +79,9 @@ class ConvertSubtitle
                         if (! file_exists($dvdFile . ".srt")) {
                             self::$log->info("Convert DVD sub to SRT.");
                             $command = 'vobsub2srt ';
-			    if (self::$log->isHandling(Logger::DEBUG)) {
-				$command .= ' --verbose';
-			    }
+                            if (self::$log->isHandling(Logger::DEBUG)) {
+                                $command .= ' --verbose';
+                            }
                             if (isset($subtitle->language)) {
                                 $command .= ' --tesseract-lang ' . CountryToLanguageMapping::getCountry($subtitle->language) . ' ';
                             }
@@ -116,7 +114,7 @@ class ConvertSubtitle
                         $oRequest->oInputFile->removeSubtitleStream($index);
                     }
                 } catch (ExecutionException $ex) {
-	            self::$log->warn("Skipping track due to error", array('errorMessage'=>$ex->getMessage()));
+	                self::$log->warn("Skipping track due to error", array('errorMessage'=>$ex->getMessage()));
                 }
             }
             // if for some reason some couldn't be converted, copy the ones in the main input file

@@ -33,6 +33,7 @@ class ConvertFile
 
         self::$log->debug('Conversion output', array('request'=>$this->req, 'output'=>$oOutput));
         $allRequests[] = $this->req;
+        $allRequests = array_merge($allRequests, ConvertVideo::convert($this->req));
         $allRequests = array_merge($allRequests, ConvertAudio::convert($this->req));
         $allRequests = array_merge($allRequests, ConvertSubtitle::convert($this->req, $oOutput));
 
