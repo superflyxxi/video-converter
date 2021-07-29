@@ -12,15 +12,16 @@ class ConvertVideo
             return [];
         }
         if ($oRequest->videoUpscale > 4) {
-            self::$log->warn("Can't upscale video more than 4.", array('factor'=>$oRquest->videoUpscale));
+            self::$log->warn("Can't upscale video more than 4.", array('factor'=>$oRequest->videoUpscale));
             return [];
         }
         $arrReq = array();
-        $imgOutFilename = "/tmp/frames-%09d.jpg";
+        $esrganDir = getEnvWithDefault("ESRGAN_DIR", "/tmp");
+        $imgOutFilename = $esrganDir . "/LR/frames-%09d.jpg";
         {
-            self::$log->info("Extracting images from video.", array('factor'=>$oRquest->videoUpscale));
+            self::$log->info("Extracting images from video.", array('factor'=>$oRequest->videoUpscale));
             // extract video as images to {ESRGAN_DIR}/LR
-            $imgOutFile = new OutputFile("/tmp", $imgOutFilename);
+            $imgOutFile = new OutputFile(NULL, $imgOutFilename);
             $imgRequest = new Request($oRequest->oInputFile->getFileName());
             $imgRequest->setSubtitleTracks(NULL);
             $imgRequest->setAudioTracks(NULL);
@@ -32,14 +33,14 @@ class ConvertVideo
         // run upscale
         {
             self::$log->info("Upscaling images. TODO");
-            passthru("python3 ${ESRGAN_DIR}/upscale.py");
+            passthru("python3 " . $esrganDir . "/upscale.py " . $oRequest->videoUpscale);
         }
         // combine into a video.mkv --convert as well
         {
             self::$log->info("Making new video. TODO");
             $dir = getEnvWithDefault("TMP_DIR", "/tmp");
             $vidOutFile = new OutputFile(NULL, $dir."/video.mkv");
-            $vidRequest = new Request($imgOutFilename);
+            $vidRequest = new Request($esrganDir . "/results/frames-%09d.jpg");
             $vidRequest->setSubtitleTracks(NULL);
             $vidRequest->setAudioTracks(NULL);
             $vidRequest->setVideoTracks(0); // TODO don't assume 0

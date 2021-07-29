@@ -88,6 +88,6 @@ RUN apt-get update && \
 	if [[ -d ${ESRGAN_DIR} ]]; then mv -v /home/ripvideo/upscale.py ${ESRGAN_DIR}/upscale.py; fi && \
 	composer install --no-dev && \
 	apt-get purge -y git && \
-	apt autoremove -y --purge && apt-get clean -y && \
+	apt-get clean -y && \
 	chmod -R ugo+r /home/ripvideo
 

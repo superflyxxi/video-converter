@@ -7,7 +7,7 @@ import torch
 import RRDBNet_arch as arch
 import sys
 
-scale = sys.argv[1]
+scale = float(sys.argv[1])
 
 model_path = os.environ.get('ESRGAN_DIR') + '/models/RRDB_ESRGAN_x4.pth'  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
 #device = torch.device('cuda')  # if you want to run on CPU, change 'cuda' -> cpu
