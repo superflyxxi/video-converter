@@ -62,6 +62,8 @@ class Request
 
     private $videoHdr = false;
 
+    public $videoUpscale = 1;
+
     public function __construct($filename)
     {
         $this->oInputFile = new InputFile($filename);
@@ -89,12 +91,13 @@ class Request
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
         $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
         $req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", NULL);
-	$req->setNormalizeAudioTracks(getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", ""));;
+	    $req->setNormalizeAudioTracks(getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", ""));;
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
         $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
         $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
+        $req->videoUpscale = getEnvWithDefault("VIDEO_UPSCALE", 1);
         $req->setDeinterlace(getEnvWithDefault("DEINTERLACE", NULL));
         $req->deinterlaceMode = getEnvWithDefault("DEINTERLACE_MODE", $req->deinterlaceMode);
 

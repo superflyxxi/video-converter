@@ -3,6 +3,7 @@ require_once "LogWrapper.php";
 require_once "request/Request.php";
 require_once "OutputFile.php";
 require_once "functions.php";
+require_once "convert/ConvertVideo.php";
 require_once "convert/ConvertSubtitle.php";
 require_once "convert/ConvertAudio.php";
 require_once "ffmpeg/FFmpegHelper.php";
@@ -33,6 +34,7 @@ class ConvertFile
 
         self::$log->debug('Conversion output', array('request'=>$this->req, 'output'=>$oOutput));
         $allRequests[] = $this->req;
+        $allRequests = array_merge($allRequests, ConvertVideo::convert($this->req));
         $allRequests = array_merge($allRequests, ConvertAudio::convert($this->req));
         $allRequests = array_merge($allRequests, ConvertSubtitle::convert($this->req, $oOutput));
 
