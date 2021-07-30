@@ -17,7 +17,7 @@ class ConvertVideo
         }
         $arrReq = array();
         $esrganDir = getEnvWithDefault("ESRGAN_DIR", "/tmp");
-        $imgOutFilename = $esrganDir . "/LR/frames-%09d.jpg";
+        $imgOutFilename = $esrganDir . "/LR/frames-%09d.png";
         {
             self::$log->info("Extracting images from video.", array('factor'=>$oRequest->videoUpscale));
             // extract video as images to {ESRGAN_DIR}/LR
@@ -40,7 +40,7 @@ class ConvertVideo
             self::$log->info("Making new video. TODO");
             $dir = getEnvWithDefault("TMP_DIR", "/tmp");
             $vidOutFile = new OutputFile(NULL, $dir."/video.mkv");
-            $vidRequest = new Request($esrganDir . "/results/frames-%09d.jpg");
+            $vidRequest = new Request($esrganDir . "/results/frames-%09d.png");
             $vidRequest->setSubtitleTracks(NULL);
             $vidRequest->setAudioTracks(NULL);
             $vidRequest->setVideoTracks(0); // TODO don't assume 0
