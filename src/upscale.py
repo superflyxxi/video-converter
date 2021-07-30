@@ -38,5 +38,5 @@ for path in glob.glob(test_img_folder):
         output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
-    cv2.resize(img, ((img.shape[1] * scale / 4.0),(img.shape[0] * scale / 4.0)))
-    cv2.imwrite(os.environ.get('ESRGAN_DIR') + '/results/{:s}_rlt.png'.format(base), output)
+    output = cv2.resize(output, (int(img.shape[2] * scale),int(img.shape[1] * scale)))
+    cv2.imwrite(os.environ.get('ESRGAN_DIR') + '/results/{:s}_rlt.jpg'.format(base), output)
