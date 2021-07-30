@@ -67,7 +67,7 @@ RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
 	pip3 install --upgrade pip && \
 	pip3 install numpy opencv-python torch && \
 	cd /home && git clone --depth 1 https://github.com/xinntao/ESRGAN && \
-	rm -v ${ESRGAN_DIR}/LR/* && \
+	rm -v ${ESRGAN_DIR}/LR/* ${ESRGAN_DIR}/results/* && \
 	apt-get purge -y ${BUILD_DEPS} && \
 	apt-get clean -y ; \
     fi
