@@ -1,0 +1,10 @@
+{
+    "autoload": {
+        "classmap": [
+            "/home/ripvideo"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    }
+}

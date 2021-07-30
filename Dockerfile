@@ -61,6 +61,7 @@ COPY src/main/ /home/ripvideo/
 RUN apt-get update && \
 	apt-get install -y git && \
 	composer install --no-dev && \
+	composer clear-cache && \
 	apt-get purge -y git && \
-	apt autoremove -y --purge && apt-get clean -y && \
+	apt-get clean -y && \
 	chmod -R ugo+r /home/ripvideo
