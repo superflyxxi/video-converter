@@ -61,9 +61,3 @@ docker run --rm -it --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e INPUT=. -
 docker run --rm -it -v `pwd`:/data -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 rip-video
 
 ```
-
-#### Find correct playlist of Bluray
-```
-docker run --rm -it -v /mnt/bluray:/data --entrypoint /home/ripvideo/scripts/find-playlist.perl rip-video /data
-```
-
