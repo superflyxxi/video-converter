@@ -82,7 +82,7 @@ RUN if [[ "${BUILD_UPSCALER}" == "true" ]]; then \
 	apt-get clean -y ; \
 	fi
 
-COPY src/ /home/ripvideo/
+COPY src/main/ /home/ripvideo/
 RUN apt-get update && \
 	apt-get install -y git && \
 	if [[ -d ${ESRGAN_DIR} ]]; then mv -v /home/ripvideo/upscale.py ${ESRGAN_DIR}/upscale.py; fi && \
@@ -90,4 +90,3 @@ RUN apt-get update && \
 	apt-get purge -y git && \
 	apt-get clean -y && \
 	chmod -R ugo+r /home/ripvideo
-

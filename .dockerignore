@@ -2,4 +2,4 @@
 **/*.mkv
 **/*.mpg
 **/*.iso
-src/vendor/
+src/main/vendor/
