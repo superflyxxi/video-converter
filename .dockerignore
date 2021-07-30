@@ -2,4 +2,4 @@
 **/*.mkv
 **/*.mpg
 **/*.iso
-php/vendor/
+src/main/vendor/

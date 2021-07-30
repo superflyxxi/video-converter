@@ -42,7 +42,6 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	printf "FROM_IMAGE=${FROM_IMAGE}\nBUILD_DEPS=${BUILD_DEPS}\n" && \
 	apt-get update && \
 	apt-get install -y ${BUILD_DEPS} &&  \
-#	git clone --depth 1 https://github.com/ruediger/VobSub2SRT.git && \
 	git clone --depth 1 https://github.com/bubonic/VobSub2SRT.git && \
 	cd VobSub2SRT && \
 	./configure && \
@@ -58,7 +57,7 @@ ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Su
 
 ENTRYPOINT /home/ripvideo/rip-video.php
 
-COPY php/ /home/ripvideo/
+COPY src/main/ /home/ripvideo/
 RUN apt-get update && \
 	apt-get install -y git && \
 	composer install --no-dev && \
