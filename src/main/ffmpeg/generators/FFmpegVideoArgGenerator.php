@@ -49,6 +49,9 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                         break;
                 }
             }
+	    if ($request->videoUpscale != 1) {
+		$args .= " -vf 'scale=1280:720'";
+	    }
             $args .= " -c:v:" . $outTrack . " libx265 -crf 20 -level:v 4";
         }
         $args .= " -metadata:s:v:" . $outTrack . " language=" . $stream->language;
