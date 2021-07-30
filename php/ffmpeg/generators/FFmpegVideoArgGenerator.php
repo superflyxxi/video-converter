@@ -30,6 +30,9 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                         break;
                 }
             }
+	    if ($request->videoUpscale != 1) {
+		$args .= " -vf 'scale_vaapi=w=1280:h=720'";
+	    }
             $args .= " -c:v:" . $outTrack . " hevc_vaapi -qp 20 -level:v 4";
         } else {
             if ($request->deinterlace) {
