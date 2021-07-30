@@ -58,7 +58,7 @@ ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Su
 
 ENTRYPOINT /home/ripvideo/rip-video.php
 
-COPY php/ /home/ripvideo/
+COPY src/main/ /home/ripvideo/
 RUN apt-get update && \
 	apt-get install -y git && \
 	composer install --no-dev && \
