@@ -21,5 +21,8 @@
     <testsuite name="audio">
       <directory>audio</directory>
     </testsuite>
+    <testsuite name="video">
+      <directory>video</directory>
+    </testsuite>
   </testsuites>
 </phpunit>
