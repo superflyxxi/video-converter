@@ -7,7 +7,7 @@ updates:
     reviewers:
       - superflyxxi
   - package-ecosystem: "docker"
-    directory: "/src"
+    directory: "/"
     schedule:
       interval: "monthly"
     reviewers:
