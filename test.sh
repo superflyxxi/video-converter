@@ -6,12 +6,12 @@
 set -e
 
 TEST_IMAGE=${TEST_IMAGE:-test}
-TESTSUITES=${TESTSUITES:-basic,deinterlace,audio,video}
+TESTSUITES=${TESTSUITES:-units,basic,deinterlace,audio,video}
 if [[ "${BUILD_SUBTITLE_SUPPORT}" = "true" ]]; then
 	TESTSUITES="${TESTSUITES},subtitles"
 fi
 mkdir testResults || true
-docker run --name test -d -v "$(pwd)/testResults:/testResults" --user $(id -u):$(id -g) -e LOG_LEVEL=100 -e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN?Missing TEST_SAMPLE_DOMAIN} ${TEST_IMAGE} --testsuite ${TESTSUITES}
+docker run --name test -d --rm -v "$(pwd)/testResults:/testResults" --user $(id -u):$(id -g) -e LOG_LEVEL=100 -e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN?Missing TEST_SAMPLE_DOMAIN} ${TEST_IMAGE} --testsuite ${TESTSUITES}
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}
