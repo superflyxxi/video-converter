@@ -69,11 +69,15 @@ jobs:
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
-      - docker/push:
-          step-name: Pushing unit test image
-          registry: $DOCKER_REGISTRY
-          image: ${THIS_IMAGE}-test
-          tag: ${PRIMARY_DOCKER_TAG}
+      - unless:
+          condition:
+            equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - docker/push:
+                step-name: Pushing unit test image
+                registry: $DOCKER_REGISTRY
+                image: ${THIS_IMAGE}-test
+                tag: ${PRIMARY_DOCKER_TAG}
       - run:
           name: Run unit tests
           command: |
