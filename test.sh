@@ -10,7 +10,7 @@ TESTSUITES=${TESTSUITES:-units,basic,deinterlace,audio,video}
 if [[ "${BUILD_SUBTITLE_SUPPORT}" = "true" ]]; then
 	TESTSUITES="${TESTSUITES},subtitles"
 fi
-if [[ "${USE_DEV_DRI:-false}" = "true" ]]; then
+if [[ "${USE_VAAPI:-false}" = "true" ]]; then
 	DEVICES="--device /dev/dri"
 fi
 mkdir testResults || true
