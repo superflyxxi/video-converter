@@ -32,7 +32,8 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 				}
 			}
 			if ($request->videoUpscale != 1) {
-				$filters .= ",scale_vaapi=w=1280:h=720";
+				$filters .= ",scale_vaapi=w=" . ($request->videoUpscale * $stream->width) 
+					. ":h=" . ($request->videoUpscale * $stream->height);
 			}
 			if (strlen($filters) > 0) {
 				$args .= " -vf '" . substr($filters, 1) . "'";
@@ -55,7 +56,8 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 				}
 			}
 			if ($request->videoUpscale != 1) {
-				$filters .= ",scale=1280:720";
+				$filters .= ",scale=" . ($request->videoUpscale * $stream->height)
+					. ":" . ($request->videoUpscale * $stream->height);
 			}
 			if (strlen($filters) > 0) {
 				$args .= " -vf '" . substr($filters, 1) . "'";
