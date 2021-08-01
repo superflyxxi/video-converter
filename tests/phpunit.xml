@@ -9,6 +9,9 @@
     <log type="junit" target="/testResults/junit.xml"/>
   </logging>
   <testsuites>
+    <testsuite name="units">
+      <directory>units</directory>
+    </testsuite>
     <testsuite name="basic">
       <directory>basic</directory>
     </testsuite>
