@@ -5,9 +5,9 @@
 require_once "common.php";
 require_once "InputFile.php";
 
-final class InputFileTests extends Test
+final class StreamTests extends Test
 {
-	public function test_InputFile_Video_DVD() {
+	public function test_DVD_Video_Stream() {
 		$this->getFile("dvd");
 		$file = new InputFile($this->getDataDir() . DIRECTORY_SEPARATOR . "dvd.mkv");
 		$videoStreams = $file->getVideoStreams();
@@ -22,7 +22,7 @@ final class InputFileTests extends Test
 		$this->assertEquals(NULL, $videoStreams[0]->audio_sample_rate, "Audio sample rate");
 	}
 	
-	public function test_InputFile_Audio_DVD() {
+	public function test_DVD_Audio_Stream() {
 		$this->getFile("dvd");
 		$file = new InputFile($this->getDataDir() . DIRECTORY_SEPARATOR . "dvd.mkv");
 		$audioStreams = $file->getAudioStreams();
@@ -37,7 +37,7 @@ final class InputFileTests extends Test
 		$this->assertEquals("0/0", $audioStreams[1]->frame_rate, "Frame rate");
 	}
 	
-	public function test_InputFile_Subtitle_DVD() {
+	public function test_DVD_Subtitle_Stream() {
 		$this->getFile("dvd");
 		$file = new InputFile($this->getDataDir() . DIRECTORY_SEPARATOR . "dvd.mkv");
 		$subStreams = $file->getSubtitleStreams();
