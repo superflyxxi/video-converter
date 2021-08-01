@@ -56,7 +56,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 				}
 			}
 			if ($request->videoUpscale != 1) {
-				$filters .= ",scale=" . ($request->videoUpscale * $stream->height)
+				$filters .= ",scale=" . ($request->videoUpscale * $stream->width)
 					. ":" . ($request->videoUpscale * $stream->height);
 			}
 			if (strlen($filters) > 0) {
