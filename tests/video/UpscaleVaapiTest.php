@@ -7,8 +7,8 @@ final class UpscaleVaapiTests extends Test
 	public function testUpscalingUsingVaapi() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test 2.25x Vaapi Upscale", "VIDEO_UPSCALE"=>"2.25", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1));
-//		$this->assertEquals(0, $return, "ripvideo exit code");
+		$return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test 2.25x Vaapi Upscale", "VIDEO_UPSCALE"=>"2.25", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "DEINTERLACE"=>"false"));
+		$this->assertEquals(0, $return, "ripvideo exit code");
 
 		$probe = $this->probe("Test 2.25x Vaapi Upscale.dvd.mkv.mkv");
 
