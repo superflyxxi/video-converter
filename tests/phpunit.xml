@@ -1,6 +1,6 @@
 <phpunit testdox="true" noInteraction="true" cacheResult="false">
   <php>
-    <includePath>/home/ripvideo</includePath>
+    <includePath>/app/ripvideo</includePath>
     <env name="LOG_LEVEL" value="100" />
   </php>
   <logging>
