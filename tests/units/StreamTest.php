@@ -52,8 +52,8 @@ final class StreamTests extends Test
 		$this->assertEquals("eng", $subStreams[2]->language, "2. Language");
 		$this->assertEquals(NULL, $subStreams[2]->channel_layout, "2. Channel layout");
 		$this->assertEquals(NULL, $subStreams[2]->channels, "2. Channels");
-		$this->assertEquals(NULL, $subStreams[2]->width, "2. Width");
-		$this->assertEquals(NULL, $subStreams[2]->height, "2. Height");
+		$this->assertEquals(720, $subStreams[2]->width, "2. Width");
+		$this->assertEquals(480, $subStreams[2]->height, "2. Height");
 		$this->assertEquals(NULL, $subStreams[2]->audio_sample_rate, "2. Audio sample rate");
 		$this->assertEquals("0/0", $subStreams[2]->frame_rate, "2. Frame rate");
 		$this->assertEquals("subtitle", $subStreams[3]->codec_type, "3. Codec type");
@@ -62,8 +62,8 @@ final class StreamTests extends Test
 		$this->assertEquals("fre", $subStreams[3]->language, "3. Language");
 		$this->assertEquals(NULL, $subStreams[3]->channel_layout, "3. Channel layout");
 		$this->assertEquals(NULL, $subStreams[3]->channels, "3. Channels");
-		$this->assertEquals(NULL, $subStreams[3]->width, "3. Width");
-		$this->assertEquals(NULL, $subStreams[3]->height, "3. Height");
+		$this->assertEquals(720, $subStreams[3]->width, "3. Width");
+		$this->assertEquals(480, $subStreams[3]->height, "3. Height");
 		$this->assertEquals(NULL, $subStreams[3]->audio_sample_rate, "3. Audio sample rate");
 		$this->assertEquals("0/0", $subStreams[3]->frame_rate, "3. Frame rate");
 	}
