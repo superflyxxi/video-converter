@@ -42,14 +42,21 @@ final class InputFileTests extends Test
 		$file = new InputFile($this->getDataDir() . DIRECTORY_SEPARATOR . "dvd.mkv");
 		$subStreams = $file->getSubtitleStreams();
 		$this->assertEquals(2, count($subStreams), "Audio Streams");
-		$this->markTestIncomplete("Missing correct assertions");
-		$this->assertEquals("audio", $audioStreams[1]->codec_type, "Codec type");
-		$this->assertEquals("ac3", $audioStreams[1]->codec_name, "Codec name");
-		$this->assertEquals(1, $audioStreams[1]->index, "Index");
-		$this->assertEquals('5.1(side)', $audioStreams[1]->channel_layout, "Channel layout");
-		$this->assertEquals(6, $audioStreams[1]->channels, "Channels");
-		$this->assertEquals(NULL, $audioStreams[1]->audio_sample_rate, "Audio sample rate");
-		$this->assertEquals("eng", $audioStreams[1]->language, "Language");
-		$this->assertEquals("0/0", $audioStreams[1]->frame_rate, "Frame rate");
+		$this->assertEquals("subtitle", $subStreams[2]->codec_type, "2. Codec type");
+		$this->assertEquals("dvd_subtitle", $subStreams[2]->codec_name, "2. Codec name");
+		$this->assertEquals(2, $subStreams[2]->index, "Index");
+		$this->assertEquals("eng", $subStreams[2]->language, "2. Language");
+		$this->assertEquals(NULL, $subStreams[2]->channel_layout, "2. Channel layout");
+		$this->assertEquals(NULL, $subStreams[2]->channels, "2. Channels");
+		$this->assertEquals(NULL, $subStreams[2]->audio_sample_rate, "2. Audio sample rate");
+		$this->assertEquals("0/0", $subStreams[2]->frame_rate, "2. Frame rate");
+		$this->assertEquals("subtitle", $subStreams[3]->codec_type, "3. Codec type");
+		$this->assertEquals("dvd_subtitle", $subStreams[3]->codec_name, "3. Codec name");
+		$this->assertEquals(3, $subStreams[3]->index, "Index");
+		$this->assertEquals("fre", $subStreams[3]->language, "3. Language");
+		$this->assertEquals(NULL, $subStreams[3]->channel_layout, "3. Channel layout");
+		$this->assertEquals(NULL, $subStreams[3]->channels, "3. Channels");
+		$this->assertEquals(NULL, $subStreams[3]->audio_sample_rate, "3. Audio sample rate");
+		$this->assertEquals("0/0", $subStreams[3]->frame_rate, "3. Frame rate");
 	}
 }
