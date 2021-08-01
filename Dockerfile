@@ -1,24 +1,22 @@
 FROM jrottenberg/ffmpeg:4.4-vaapi1804
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
-WORKDIR /home/ripvideo/
+ARG DEBIAN_FRONTEND=noninteractive
+ARG BUILD_SUBTITLE_SUPPORT=true
+WORKDIR /app/ripvideo/
 
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
-ARG DEBIAN_FRONTEND=noninteractive
-
 RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
 	apt-get install -y php-cli php-json mkvtoolnix && \
-	apt autoremove -y --purge && apt-get clean -y
+	apt-get clean -y
 RUN apt-get update -y && \
 	apt-get install -y curl && \
 	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
 	apt-get purge -y curl && \
-	apt autoremove -y --purge && apt-get clean -y
-
-ARG BUILD_SUBTITLE_SUPPORT=true
+	apt-get clean -y
 
 # Support bash as the deafult shell
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
@@ -28,7 +26,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	apt-get update && \
 	apt-get install -y libtesseract4 openjdk-11-jre-headless && \
 	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y && \
-	apt autoremove -y --purge && apt-get clean -y ; \
+	apt-get clean -y ; \
     fi
 
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
@@ -48,19 +46,21 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	make && \
 	make install && \
 	apt-get purge -y ${BUILD_DEPS} && \
-	apt autoremove -y --purge && apt-get clean -y && \
+	apt-get clean -y && \
 	rm -rf ${DIR} ; \
    fi
 
 # Install DBSup2Sub
-ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /home/ripvideo/
+ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /app/ripvideo/
 
-ENTRYPOINT /home/ripvideo/rip-video.php
+ENTRYPOINT /app/ripvideo/rip-video.php
+COPY src/ /app/ripvideo/
+COPY composer* /app/ripvideo/
 
-COPY src/main/ /home/ripvideo/
 RUN apt-get update && \
 	apt-get install -y git && \
 	composer install --no-dev && \
+	composer clear-cache && \
 	apt-get purge -y git && \
-	apt autoremove -y --purge && apt-get clean -y && \
-	chmod -R ugo+r /home/ripvideo
+	apt-get clean -y && \
+	chmod -R ugo+r /app/ripvideo

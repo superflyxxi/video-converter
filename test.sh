@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Build beforehand
-# docker build --tag test --build-arg BUILD_IMAGE=${THIS_FULL_IMAGE:?Missing THIS_FULL_IMAGE} src/tests/
+# docker build --tag test --build-arg BUILD_IMAGE=${THIS_FULL_IMAGE:?Missing THIS_FULL_IMAGE} tests/
 
 set -e
 
