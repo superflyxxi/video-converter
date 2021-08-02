@@ -64,7 +64,7 @@ abstract class Test extends TestCase {
         }
         $command .= 'timeout -s15 ' . $timeout . ' /app/ripvideo/rip-video.php';
         passthru($command, $return);
-	println("Return value ". $return);
+	print("Return value ". $return);
         return $return;
     }
 }
