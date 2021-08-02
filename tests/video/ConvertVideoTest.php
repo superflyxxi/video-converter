@@ -18,7 +18,6 @@ final class ConvertVideoTests extends Test
 		$this->assertEquals("720", $probe["streams"][0]["width"], "Stream 0 width");
 		$this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
 		$this->assertEquals("Test x265 Conversion", $probe["format"]["tags"]["title"], "Metadata title");
-		$this->markTestIncomplete("TBD");
 	}
 }
 ?>
