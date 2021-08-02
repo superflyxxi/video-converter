@@ -81,6 +81,9 @@ jobs:
       - run:
           name: Run unit tests
           command: |
+            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
+              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
+            fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
             ./test.sh
       - store_test_results:
