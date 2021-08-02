@@ -7,7 +7,7 @@ final class SimpleScaleTests extends Test
 	public function test_Simple_Upscaling() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test 2.25x Simple Upscale", "VIDEO_UPSCALE"=>"2.25", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "DEINTERLACE"=>"false"));
+		$return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test 2.25x Simple Upscale", "VIDEO_UPSCALE"=>"2.25", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "DEINTERLACE"=>"false"), "30m");
 		$this->assertEquals(0, $return, "ripvideo exit code");
 
 		$probe = $this->probe("Test 2.25x Simple Upscale.dvd.mkv.mkv");
@@ -20,7 +20,7 @@ final class SimpleScaleTests extends Test
 		$this->assertEquals("Test 2.25x Simple Upscale", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 	
-	public function test_Simple_Downscaling() {
+	public function st_Simple_Downscaling() {
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test 0.5x Downscale", "VIDEO_UPSCALE"=>"0.5", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "DEINTERLACE"=>"false"));
