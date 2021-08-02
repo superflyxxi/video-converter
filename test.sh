@@ -6,7 +6,7 @@
 set -e
 
 TEST_IMAGE=${TEST_IMAGE:-test}
-TESTSUITES=${TESTSUITES:-units,basic,deinterlace,audio,video}
+TESTSUITES=${TESTSUITES:-units,basic,audio,video}
 if [[ "${BUILD_SUBTITLE_SUPPORT}" = "true" ]]; then
 	TESTSUITES="${TESTSUITES},subtitles"
 fi
