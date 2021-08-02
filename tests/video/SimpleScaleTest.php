@@ -20,7 +20,7 @@ final class SimpleScaleTests extends Test
 		$this->assertEquals("Test 1.5x Simple Upscale", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 	
-	public function st_Simple_Downscaling() {
+	public function test_Simple_Downscaling() {
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test 0.5x Downscale", "VIDEO_UPSCALE"=>"0.5", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "DEINTERLACE"=>"false"));
