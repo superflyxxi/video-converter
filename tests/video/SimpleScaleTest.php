@@ -6,19 +6,18 @@ final class SimpleScaleTests extends Test
 
 	public function test_Simple_Upscaling() {
 		$this->getFile("dvd");
-		$this->markTestIncomplete("Try downscaling");
 
-		$return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test 2.25x Vaapi Upscale", "VIDEO_UPSCALE"=>"2.25", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "DEINTERLACE"=>"false"));
+		$return = $this->ripvideo(array("INPUT"=>"dvd.mkv", "TITLE"=>"Test 2.25x Simple Upscale", "VIDEO_UPSCALE"=>"2.25", "AUDIO_TRACKS"=>-1, "SUBTITLE_TRACKS"=>-1, "DEINTERLACE"=>"false"));
 		$this->assertEquals(0, $return, "ripvideo exit code");
 
-		$probe = $this->probe("Test 2.25x Vaapi Upscale.dvd.mkv.mkv");
+		$probe = $this->probe("Test 2.25x Simple Upscale.dvd.mkv.mkv");
 
 		$this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
 		$this->assertEquals("hevc", $probe["streams"][0]["codec_name"], "Stream 0 codec");
 		$this->assertEquals("1080", $probe["streams"][0]["height"], "Stream 0 height");
 		$this->assertEquals("1620", $probe["streams"][0]["width"], "Stream 0 width");
 		$this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
-		$this->assertEquals("Test 2.25x Vaapi Upscale", $probe["format"]["tags"]["title"], "Metadata title");
+		$this->assertEquals("Test 2.25x Simple Upscale", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 	
 	public function test_Simple_Downscaling() {
