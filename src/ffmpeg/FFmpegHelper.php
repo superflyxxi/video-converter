@@ -91,6 +91,7 @@ class FFmpegHelper
         $command = self::generate($listRequests, $outputFile);
         self::$log->info("Executing ffmpeg", array('command'=>$command));
         passthru($command . " 2>&1", $ret);
+	self::$log->debug("Command return result", array('result'=>$ret));
         if ($ret > 0) {
             throw new ExecutionException("ffmpeg", $ret, $command);
         }
