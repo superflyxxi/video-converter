@@ -62,8 +62,9 @@ abstract class Test extends TestCase {
         foreach ($envVars as $key => $value) {
             $command .= $key . '="' . $value . '" ';
         }
-        $command .= 'timeout -s9 ' . $timeout . ' /app/ripvideo/rip-video.php ';
+        $command .= 'timeout -s15 ' . $timeout . ' /app/ripvideo/rip-video.php';
         passthru($command, $return);
+	println("Return value ". $return);
         return $return;
     }
 }
