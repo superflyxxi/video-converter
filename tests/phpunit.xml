@@ -18,9 +18,6 @@
     <testsuite name="subtitles">
       <directory>subtitles</directory>
     </testsuite>
-    <testsuite name="deinterlace">
-      <directory>deinterlace</directory>
-    </testsuite>
     <testsuite name="audio">
       <directory>audio</directory>
     </testsuite>
