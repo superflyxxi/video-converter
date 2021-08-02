@@ -36,6 +36,7 @@ Variable | Description | Required | Default | Example
 `NORMALIZE_AUDIO_TRACKS` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
 `VIDEO_TRACKS` | The input video tracks to convert. | No | `*` | `0`
 `VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
+`VIDEO_UPSCALE` | The upscale multiplier to use for uscaling the video. | No | `1` | `2.25`
 `DEINTERLACE` | Boolean determining whether deinterlacing should be done. If not specified, deinterlacing will be enabled if the source is interlaced. | No |  | `true`
 `DEINTERLACE_CHECK`\* | How to check for deinterlacing. `idet` will determine wether more than 1% of frames are interlaced. `probe` will be based on video data. | No | `probe` | `idet`
 `DEINTERLACE_MODE` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), or default behavior of deinterlacing while keeping the same framerate (`02`). | No | `02` | `00`

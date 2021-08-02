@@ -4,7 +4,11 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    reviewers:
+      - superflyxxi
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "monthly"
+    reviewers:
+      - superflyxxi

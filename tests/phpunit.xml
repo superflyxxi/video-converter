@@ -9,17 +9,20 @@
     <log type="junit" target="/testResults/junit.xml"/>
   </logging>
   <testsuites>
+    <testsuite name="units">
+      <directory>units</directory>
+    </testsuite>
     <testsuite name="basic">
       <directory>basic</directory>
     </testsuite>
     <testsuite name="subtitles">
       <directory>subtitles</directory>
     </testsuite>
-    <testsuite name="deinterlace">
-      <directory>deinterlace</directory>
-    </testsuite>
     <testsuite name="audio">
       <directory>audio</directory>
+    </testsuite>
+    <testsuite name="video">
+      <directory>video</directory>
     </testsuite>
   </testsuites>
 </phpunit>

@@ -64,25 +64,32 @@ jobs:
           registry: ${DOCKER_REGISTRY}
           extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
           step-name: Build unit test image
+      - docker/push:
+          step-name: Pushing actual image
+          registry: $DOCKER_REGISTRY
+          image: ${THIS_IMAGE}
+          tag: ${DOCKER_TAGS}
+      - unless:
+          condition:
+            equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - docker/push:
+                step-name: Pushing unit test image
+                registry: $DOCKER_REGISTRY
+                image: ${THIS_IMAGE}-test
+                tag: ${PRIMARY_DOCKER_TAG}
       - run:
           name: Run unit tests
           command: |
+            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
+              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
+            fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
             ./test.sh
       - store_test_results:
           path: testResults
       - store_artifacts:
           path: testResults
-      - docker/push:
-          step-name: Pushing actual image
-          registry: $DOCKER_REGISTRY
-          image: ${THIS_IMAGE}
-          tag: ${DOCKER_TAGS}
-      - docker/push:
-          step-name: Pushing unit test image
-          registry: $DOCKER_REGISTRY
-          image: ${THIS_IMAGE}-test
-          tag: ${PRIMARY_DOCKER_TAG}
 
   release:
     docker:
