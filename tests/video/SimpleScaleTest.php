@@ -1,7 +1,7 @@
 <?php
 require_once "common.php";
 
-final class UpscaleVaapiTests extends Test
+final class SimpleScaleTests extends Test
 {
 
 	public function test_Simple_Upscaling() {
