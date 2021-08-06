@@ -1,13 +1,11 @@
-FROM jrottenberg/ffmpeg:4.4-vaapi1804
+FROM jrottenberg/ffmpeg:4.4-vaapi
 MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
-ARG DEBIAN_FRONTEND=noninteractive
-ARG BUILD_SUBTITLE_SUPPORT=true
+ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /app/ripvideo/
 
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
-
 RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
 	apt-get install -y php-cli php-json mkvtoolnix && \
@@ -22,10 +20,20 @@ RUN apt-get update -y && \
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # install tesseract, language packs, and java
+ARG BUILD_SUBTITLE_SUPPORT=true
+ARG SUBTITLE_LANGUAGES=*
+RUN apt-get update
+RUN apt-get install -y openjdk-11-jre-headless
+RUN apt-get install -y libtesseract4
+RUN apt-get install -y tesseract-ocr
+RUN apt-get install -y tesseract-ocr-eng
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	apt-get update && \
-	apt-get install -y libtesseract4 openjdk-11-jre-headless && \
-	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y && \
+	echo "font-config reinstall" && apt-get install -y --reinstall --purge fontconfig-config && \
+	echo "openjdk install" && apt-get install -y openjdk-11-jre-headless && \
+	echo "tesseract install" && apt-get install -y libtesseract4 && \
+	echo "tesseract-ocr install" && apt-get install -y tesseract-ocr && \
+	echo "tesseract languages install" && apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep "${SUBTITLE_LANGUAGES}" | grep -v "\-old" | xargs apt-get install -y && \
 	apt-get clean -y ; \
     fi
 
