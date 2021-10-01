@@ -1,4 +1,5 @@
 version: 2
+
 updates:
   - package-ecosystem: "composer"
     directory: "/"
@@ -15,5 +16,6 @@ updates:
       interval: "monthly"
     commit-message:
       prefix: "fix: "
+      prefix-development: "fix(ci): "
     reviewers:
       - superflyxxi
