@@ -1,7 +1,7 @@
 <?php
 require_once "common.php";
 
-final class AudioTests extends Test
+final class AudioTest extends Test
 {
 
     public function testChannelMappingOverrideToLowerValue() {

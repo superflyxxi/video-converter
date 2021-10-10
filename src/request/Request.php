@@ -91,7 +91,7 @@ class Request
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
         $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
         $req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", NULL);
-	    $req->setNormalizeAudioTracks(getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", ""));;
+	    $req->setNormalizeAudioTracks(getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", ""));
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
@@ -193,6 +193,12 @@ class Request
     public function prepareStreams()
     {
         self::$log->debug("Preparing streams.", array('filename'=>$this->oInputFile->getFileName()));
+        $this->prepareSubtitleStreams();
+        $this->prepareAudioStreams();
+        $this->prepareVideoStreams();
+    }
+
+    private function prepareSubtitleStreams() {
         if (! $this->areAllSubtitleTracksConsidered()) {
             self::$log->debug("Not considering all subtitle streams.", array('subtitleTracks'=>$this->getSubtitleTracks()));
             // if not * (all subtitles), then remove all track except the desired
@@ -205,6 +211,9 @@ class Request
                 }
             }
         }
+    }
+
+    private function prepareAudioStreams() {
         if (! $this->areAllAudioTracksConsidered()) {
             self::$log->debug("Not considering all audio streams.", array('audioTracks'=>$this->getAudioTracks()));
             // if not * (all audio), then remove all track except the desired
@@ -217,6 +226,9 @@ class Request
                 }
             }
         }
+    }
+
+    private function prepareVideoStreams() {
         if (! $this->areAllVideoTracksConsidered()) {
             self::$log->debug("Not considering all video streams.", array('videoTracks'=>$this->getVideoTracks()));
             // if not * (all videos), then remove all track except the desired

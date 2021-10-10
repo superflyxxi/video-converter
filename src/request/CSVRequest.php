@@ -22,10 +22,6 @@ class CSVRequest {
           $value = $data[$key];
           if ($value != NULL) {
             switch ($key) {
-              case "filename":
-                // Already Processed
-                break;
-
               case "title":
                 $req->title = $value;
                 break;
@@ -101,6 +97,10 @@ class CSVRequest {
               case "deinterlaceMode":
                 $req->deinterlaceMode = $value;
                 break;
+              
+              default:
+		// invalid or already processed
+	        break;
             }
           }
         }
@@ -127,7 +127,7 @@ class CSVRequest {
           $convert = new ConvertFile($req);
           $result = $convert->convert();
       } catch (Exception $ex) {
-          self::$log->error("Got exception for file", array('filename'=>$file, 'errorMessage'=>$ex->getMessage()));
+          self::$log->error("Got exception for file", array('errorMessage'=>$ex->getMessage()));
       } finally {
           $finalResult = max($finalResult, $result);
       }

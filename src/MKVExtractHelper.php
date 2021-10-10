@@ -6,7 +6,7 @@ class MKVExtractHelper
 {
 	public static $log;
 
-    public static function extractTracks($oInputFile, $arrTracks, $exit = FALSE)
+    public static function extractTracks($oInputFile, $arrTracks)
     {
         self::$log->info("Extracting", array('filename'=>$oInputFile->getFileName()));
         $command = 'mkvextract tracks "' . $oInputFile->getFileName() . '" ';

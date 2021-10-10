@@ -48,6 +48,9 @@ abstract class Test extends TestCase {
                 $URLpath = "/samples/Bluray_Sample.mkv";
                 $localFilename = "bluray.mkv";
                 break;
+
+            default:
+                break;
         }
         if (! file_exists($this->dataDir . DIRECTORY_SEPARATOR . $localFilename)) {
             $command = 'curl -k -L -o "' . $this->dataDir . DIRECTORY_SEPARATOR . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"';

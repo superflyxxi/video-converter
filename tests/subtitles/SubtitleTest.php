@@ -1,7 +1,7 @@
 <?php
 require_once "common.php";
 
-final class SubtitleTests extends Test
+final class SubtitleTest extends Test
 {
 
     public function testDvdSubtitleConversion() {

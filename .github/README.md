@@ -1,3 +1,14 @@
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=alert_status)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=security_rating)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=bugs)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=code_smells)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=sqale_index)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter):
+
 # video-converter
 Tools to convert video
 

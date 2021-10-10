@@ -1,7 +1,7 @@
 <?php
 require_once "common.php";
 
-final class ConvertVideoTests extends Test
+final class ConvertVideoTest extends Test
 {
 
 	public function test_x265_Conversion() {

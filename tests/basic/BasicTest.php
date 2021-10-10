@@ -4,7 +4,7 @@
  */
 require_once "common.php";
 
-final class BasicTests extends Test
+final class BasicTest extends Test
 {
     public function testNoInputSpecifiedWithOnlyOneFile() {
         $this->getFile("dvd");
