@@ -33,9 +33,6 @@ class FFmpegHelper
             self::$log->debug("Found in probe cache", array('filename'=>$inputFile->getFileName()));
             $json = self::$probeCache[$inputFile->getFileName()];
         }
-        if (!$json) {
-            return false;
-        }
         return $json;
     }
 
