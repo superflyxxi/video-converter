@@ -22,10 +22,6 @@ class CSVRequest {
           $value = $data[$key];
           if ($value != NULL) {
             switch ($key) {
-              case "filename":
-                // Already Processed
-                break;
-
               case "title":
                 $req->title = $value;
                 break;
@@ -101,6 +97,10 @@ class CSVRequest {
               case "deinterlaceMode":
                 $req->deinterlaceMode = $value;
                 break;
+              
+              default:
+		// invalid or already processed
+	        break;
             }
           }
         }
