@@ -193,18 +193,7 @@ class Request
     public function prepareStreams()
     {
         self::$log->debug("Preparing streams.", array('filename'=>$this->oInputFile->getFileName()));
-        if (! $this->areAllSubtitleTracksConsidered()) {
-            self::$log->debug("Not considering all subtitle streams.", array('subtitleTracks'=>$this->getSubtitleTracks()));
-            // if not * (all subtitles), then remove all track except the desired
-            foreach ($this->oInputFile->getSubtitleStreams() as $track) {
-                if (! in_array($track->index, $this->getSubtitleTracks())) {
-                    self::$log->debug("Removing subtitle track from input.", array('index'=>$track->index));
-                    $this->oInputFile->removeSubtitleStream($track->index);
-                } else {
-                    self::$log->debug("Keeping subtitle track in input.", array('index'=>$track->index));
-                }
-            }
-        }
+        $this->prepareSubtitleStreams();
         if (! $this->areAllAudioTracksConsidered()) {
             self::$log->debug("Not considering all audio streams.", array('audioTracks'=>$this->getAudioTracks()));
             // if not * (all audio), then remove all track except the desired
@@ -226,6 +215,20 @@ class Request
                     $this->oInputFile->removeVideoStream($track->index);
                 } else {
                     self::$log->debug("Keeping video track in input.", array('index'=>$track->index));
+                }
+            }
+        }
+    }
+    private function prepareSubtitleStreams() {
+        if (! $this->areAllSubtitleTracksConsidered()) {
+            self::$log->debug("Not considering all subtitle streams.", array('subtitleTracks'=>$this->getSubtitleTracks()));
+            // if not * (all subtitles), then remove all track except the desired
+            foreach ($this->oInputFile->getSubtitleStreams() as $track) {
+                if (! in_array($track->index, $this->getSubtitleTracks())) {
+                    self::$log->debug("Removing subtitle track from input.", array('index'=>$track->index));
+                    $this->oInputFile->removeSubtitleStream($track->index);
+                } else {
+                    self::$log->debug("Keeping subtitle track in input.", array('index'=>$track->index));
                 }
             }
         }
