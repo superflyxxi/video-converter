@@ -194,18 +194,7 @@ class Request
     {
         self::$log->debug("Preparing streams.", array('filename'=>$this->oInputFile->getFileName()));
         $this->prepareSubtitleStreams();
-        if (! $this->areAllAudioTracksConsidered()) {
-            self::$log->debug("Not considering all audio streams.", array('audioTracks'=>$this->getAudioTracks()));
-            // if not * (all audio), then remove all track except the desired
-            foreach ($this->oInputFile->getAudioStreams() as $track) {
-                if (! in_array($track->index, $this->getAudioTracks())) {
-                    self::$log->debug("Removing audio track from input.", array('index'=>$track->index));
-                    $this->oInputFile->removeAudioStream($track->index);
-                } else {
-                    self::$log->debug("Keeping audio track in input.", array('index'=>$track->index));
-                }
-            }
-        }
+        $this->prepareAudioStreams();
         if (! $this->areAllVideoTracksConsidered()) {
             self::$log->debug("Not considering all video streams.", array('videoTracks'=>$this->getVideoTracks()));
             // if not * (all videos), then remove all track except the desired
@@ -229,6 +218,21 @@ class Request
                     $this->oInputFile->removeSubtitleStream($track->index);
                 } else {
                     self::$log->debug("Keeping subtitle track in input.", array('index'=>$track->index));
+                }
+            }
+        }
+    }
+
+    private function prepareAudioStreams() {
+        if (! $this->areAllAudioTracksConsidered()) {
+            self::$log->debug("Not considering all audio streams.", array('audioTracks'=>$this->getAudioTracks()));
+            // if not * (all audio), then remove all track except the desired
+            foreach ($this->oInputFile->getAudioStreams() as $track) {
+                if (! in_array($track->index, $this->getAudioTracks())) {
+                    self::$log->debug("Removing audio track from input.", array('index'=>$track->index));
+                    $this->oInputFile->removeAudioStream($track->index);
+                } else {
+                    self::$log->debug("Keeping audio track in input.", array('index'=>$track->index));
                 }
             }
         }
