@@ -127,7 +127,7 @@ class CSVRequest {
           $convert = new ConvertFile($req);
           $result = $convert->convert();
       } catch (Exception $ex) {
-          self::$log->error("Got exception for file", array('filename'=>$file, 'errorMessage'=>$ex->getMessage()));
+          self::$log->error("Got exception for file", array('errorMessage'=>$ex->getMessage()));
       } finally {
           $finalResult = max($finalResult, $result);
       }
