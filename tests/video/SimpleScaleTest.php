@@ -1,7 +1,7 @@
 <?php
 require_once "common.php";
 
-final class SimpleScaleTests extends Test
+final class SimpleScaleTest extends Test
 {
 
 	public function test_Simple_Upscaling() {

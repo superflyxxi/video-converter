@@ -5,7 +5,7 @@
 require_once "common.php";
 require_once "InputFile.php";
 
-final class StreamTests extends Test
+final class StreamTest extends Test
 {
 	public function test_DVD_Video_Stream() {
 		$this->getFile("dvd");

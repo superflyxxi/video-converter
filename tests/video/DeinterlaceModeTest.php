@@ -1,7 +1,7 @@
 <?php
 require_once "common.php";
 
-final class DeinterlaceModeTests extends Test
+final class DeinterlaceModeTest extends Test
 {
 
     public function testDeinterlaceMode00() {
