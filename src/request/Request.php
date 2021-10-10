@@ -195,19 +195,9 @@ class Request
         self::$log->debug("Preparing streams.", array('filename'=>$this->oInputFile->getFileName()));
         $this->prepareSubtitleStreams();
         $this->prepareAudioStreams();
-        if (! $this->areAllVideoTracksConsidered()) {
-            self::$log->debug("Not considering all video streams.", array('videoTracks'=>$this->getVideoTracks()));
-            // if not * (all videos), then remove all track except the desired
-            foreach ($this->oInputFile->getVideoStreams() as $track) {
-                if (! in_array($track->index, $this->getVideoTracks())) {
-                    self::$log->debug("Removing video track from input.", array('index'=>$track->index));
-                    $this->oInputFile->removeVideoStream($track->index);
-                } else {
-                    self::$log->debug("Keeping video track in input.", array('index'=>$track->index));
-                }
-            }
-        }
+        $this->prepareVideoStreams();
     }
+
     private function prepareSubtitleStreams() {
         if (! $this->areAllSubtitleTracksConsidered()) {
             self::$log->debug("Not considering all subtitle streams.", array('subtitleTracks'=>$this->getSubtitleTracks()));
@@ -233,6 +223,21 @@ class Request
                     $this->oInputFile->removeAudioStream($track->index);
                 } else {
                     self::$log->debug("Keeping audio track in input.", array('index'=>$track->index));
+                }
+            }
+        }
+    }
+
+    private function prepareVideoStreams() {
+        if (! $this->areAllVideoTracksConsidered()) {
+            self::$log->debug("Not considering all video streams.", array('videoTracks'=>$this->getVideoTracks()));
+            // if not * (all videos), then remove all track except the desired
+            foreach ($this->oInputFile->getVideoStreams() as $track) {
+                if (! in_array($track->index, $this->getVideoTracks())) {
+                    self::$log->debug("Removing video track from input.", array('index'=>$track->index));
+                    $this->oInputFile->removeVideoStream($track->index);
+                } else {
+                    self::$log->debug("Keeping video track in input.", array('index'=>$track->index));
                 }
             }
         }
