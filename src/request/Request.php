@@ -91,7 +91,7 @@ class Request
         $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
         $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
         $req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", NULL);
-	    $req->setNormalizeAudioTracks(getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", ""));;
+	    $req->setNormalizeAudioTracks(getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", ""));
         $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
         $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
 
