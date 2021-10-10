@@ -35,7 +35,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 					. ":h=" . ($request->videoUpscale * $stream->height);
 			}
 			if (strlen($filters) > 0) {
-				$args .= ' -vf "' . substr($filters, 1) . '"';
+				$args = ' -vf "' . substr($filters, 1) . '"' . $args;
 			}
 			$args .= " hevc_vaapi -qp 20 -level:v 4";
 		} else {
