@@ -59,7 +59,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 					. ":" . ($request->videoUpscale * $stream->height);
 			}
 			if (strlen($filters) > 0) {
-				$args .= ' -vf "' . substr($filters, 1) . '"';
+				$args = ' -vf "' . substr($filters, 1) . '"' . $args;
 			}
 			$args .= " libx265 -crf 20 -level:v 4";
 		}
