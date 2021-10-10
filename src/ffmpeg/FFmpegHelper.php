@@ -35,7 +35,7 @@ class FFmpegHelper
         if (!$json) {
             return false;
         }
-        return $json; //json_decode(implode($out), true);
+        return $json;
     }
 
     public static function isInterlaced($inputFile)
