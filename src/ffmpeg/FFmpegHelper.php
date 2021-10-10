@@ -95,6 +95,7 @@ class FFmpegHelper
         if ($ret > 0) {
             throw new ExecutionException("ffmpeg", $ret, $command);
         }
+	return $ret;
     }
 
     public static function generate($listRequests, $outputFile)
