@@ -13,7 +13,7 @@ class FFmpegHelper
 {
 
 	public static $log;
-	private static INTERLACED_REPLACEMENT_REGEX="/[A-Za-z]+:[ ]+([0-9]+)/";
+	private static $INTERLACED_REPLACEMENT_REGEX="/[A-Za-z]+:[ ]+([0-9]+)/";
 
     private static $probeCache = array();
 
@@ -78,18 +78,18 @@ class FFmpegHelper
 [Parsed_idet_0 @ 0x559b53b4b700] Multi frame detection: TFF:     0 BFF:     0 Progressive: 14365 Undetermined:    23
 	*/
         preg_match("/Progressive:[ ]+([0-9]+)/", $out, $matches);
-        $progressive = preg_replace(INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
+        $progressive = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
         preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
-        $tff = preg_replace(INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
+        $tff = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
         preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
-        $bff = preg_replace(INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
+        $bff = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
 	$total = $progressive + $tff + $bff;
         self::$log->debug("Interlacing probe results", array('progressive'=>$progressive, 'tff'=>$tff, 'bff'=>$bff, 'total'=>$total));
 	// if percentage of frames are > 1% interlaced, then de-interlace
         return ($tff/$total > 0.01 || $bff/$total > 0.01);
     }
 
-    public static function execute($listRequests, $outputFile, $exit = TRUE)
+    public static function execute($listRequests, $outputFile)
     {
         $command = self::generate($listRequests, $outputFile);
         self::$log->info("Executing ffmpeg", array('command'=>$command));
