@@ -2,7 +2,8 @@
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:
-    docker: circleci/docker@1
+  docker: circleci/docker@1
+  node: circleci/node@4
 
 parameters:
   latest-from-tag:
@@ -12,13 +13,11 @@ parameters:
 # Orchestrate or schedule a set of jobs
 jobs:
   check-formatting:
-    docker:
-      - cimg/node:16.10
+    executor: node/default
+      tag: '16.10'
     steps:
       - checkout
-      - run:
-          name: Check for formatting
-          command: npx -p prettier -p @prettier/plugin-php prettier src/ --check
+      - run: npx -p prettier -p @prettier/plugin-php prettier src/ --check
 
   validate:
     machine: true
