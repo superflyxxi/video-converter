@@ -17,7 +17,7 @@ jobs:
       - checkout
       - run:
           name: Check for formatting
-          command: docker run --rm -v "$(pwd):/app" --entrypoint bash node cd app; npx -p prettier -p @prettier/plugin-php prettier src/ --check
+          command: docker run --rm -v "$(pwd):/app" --entrypoint bash cimg/node:16.10 -c cd app; npx -p prettier -p @prettier/plugin-php prettier src/ --check
       - run:
           name: Verify files
           command: docker run --rm -v "$(pwd):/data" -e INPUT_PATH=/data -e INPUT_OPTIONS="-vvv -w"  overtrue/phplint:latest
