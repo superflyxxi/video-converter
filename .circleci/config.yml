@@ -25,7 +25,12 @@ jobs:
     docker:
       - image: 'overtrue/phplint:latest'
     steps:
-      - run: ls -lha
+      - checkout
+      - run:
+          command: |
+            pwd
+            ls -lha
+
       - run: exit 1
       - run:
           name: Verify files
