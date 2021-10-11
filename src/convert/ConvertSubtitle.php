@@ -36,28 +36,12 @@ class ConvertSubtitle
                         "vobsub" == $codecName ||
                         "dvd_subtitle" == $codecName
                     ) {
-                        // extract vobsub
-                        if ($oRequest->oInputFile->getPrefix() != null) {
-                            $dvdFile =
-                                $dir .
-                                "/" .
-                                realpath($filename) .
-                                "/dir-" .
-                                $index;
-                        } else {
-                            $dvdFile = $dir . "/" . $filename . "-" . $index;
-                        }
-                        if (!file_exists($dvdFile . ".sub")) {
-                            self::$log->info("Generating DVD sub file.", [
-                                "index" => $index,
-                                "filename" => $filename,
-                            ]);
-                            $arrOutput = [$index => $dvdFile . ".sub"];
-                            MKVExtractHelper::extractTracks(
-                                $oRequest->oInputFile,
-                                $arrOutput
-                            );
-                        }
+			$dvdFile = self::convertDvdSubtitle(
+                            $oRequest,
+                            $dir,
+                            $filename,
+                            $index
+                        );
                     } elseif ("subrip" == $codecName) {
                         self::$log->info("Adding subrip to request", [
                             "index" => $index,
@@ -202,6 +186,32 @@ class ConvertSubtitle
                 throw new ExecutionException("java", $return, $command);
             }
         }
+        return $dvdFile;
+    }
+
+    private static convertDvdSubtitle($oRequest, $dir, $filename, $index) {
+                        // extract vobsub
+                        if ($oRequest->oInputFile->getPrefix() != null) {
+                            $dvdFile =
+                                $dir .
+                                "/" .
+                                realpath($filename) .
+                                "/dir-" .
+                                $index;
+                        } else {
+                            $dvdFile = $dir . "/" . $filename . "-" . $index;
+                        }
+                        if (!file_exists($dvdFile . ".sub")) {
+                            self::$log->info("Generating DVD sub file.", [
+                                "index" => $index,
+                                "filename" => $filename,
+                            ]);
+                            $arrOutput = [$index => $dvdFile . ".sub"];
+                            MKVExtractHelper::extractTracks(
+                                $oRequest->oInputFile,
+                                $arrOutput
+                            );
+                        }
         return $dvdFile;
     }
 }
