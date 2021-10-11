@@ -28,8 +28,8 @@ jobs:
       tag: '7.2'
     steps:
       - checkout
-      - install-composer
-      - install-packages
+      - php/install-composer
+      - php/install-packages
       - run: ./vendor/bin/phplint src/ tests/ -vvv -w
 
   build:
