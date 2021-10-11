@@ -13,7 +13,8 @@ parameters:
 # Orchestrate or schedule a set of jobs
 jobs:
   check-formatting:
-    executor: node/default
+    executor: 
+      name: node/default
       tag: '16.10'
     steps:
       - checkout
