@@ -18,7 +18,8 @@ jobs:
       tag: '16.10'
     steps:
       - checkout
-      - run: npx -p prettier -p @prettier/plugin-php prettier src/ --check
+      - run: npm install prettier @prettier/plugin-php
+      - run: npx prettier src/ --check
 
   validate:
     machine: true
