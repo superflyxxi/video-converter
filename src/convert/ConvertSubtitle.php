@@ -62,74 +62,7 @@ class ConvertSubtitle
 
                     // convert to srt
                     if (null != $dvdFile) {
-                        if (!file_exists($dvdFile . ".srt")) {
-                            self::$log->info("Convert DVD sub to SRT.");
-                            $command = "vobsub2srt ";
-                            if (self::$log->isHandling(Logger::DEBUG)) {
-                                $command .= " --verbose";
-                            }
-                            if (isset($subtitle->language)) {
-                                $command .=
-                                    " --tesseract-lang " .
-                                    CountryToLanguageMapping::getCountry(
-                                        $subtitle->language
-                                    ) .
-                                    " ";
-                            }
-                            if (
-                                null != $oRequest->subtitleConversionBlacklist
-                            ) {
-                                $command .=
-                                    " --blacklist '" .
-                                    $oRequest->subtitleConversionBlacklist .
-                                    "'";
-                            }
-                            $command .= ' "' . $dvdFile . '" ';
-                            self::$log->debug("Using command", [
-                                "command" => $command,
-                            ]);
-                            exec($command, $out, $return);
-                            if ($return != 0) {
-                                throw new ExecutionException(
-                                    "vobsub2srt",
-                                    $return,
-                                    $command
-                                );
-                            }
-                        }
-                        if ($oRequest->subtitleConversionOutput == "MERGE") {
-                            self::$log->info("Merging srt into mkv.", [
-                                "dvdfile" => $dvdFile,
-                            ]);
-                            $oNewRequest = new Request($dvdFile . ".srt");
-                            $oNewRequest->setSubtitleTracks("0");
-                            $oNewRequest->setAudioTracks(null);
-                            $oNewRequest->setVideoTracks(null);
-                            $oNewRequest->subtitleFormat =
-                                $oRequest->subtitleFormat;
-                            $oNewRequest->prepareStreams();
-                            $oNewRequest->oInputFile->getSubtitleStreams()[0]->language =
-                                $subtitle->language;
-                            self::$log->debug(
-                                "Using language for final stream.",
-                                ["language" => $subtitle->language]
-                            );
-                            $arrAdditionalRequests[] = $oNewRequest;
-                        } else {
-                            $newFile =
-                                $oOutput->getFileName() .
-                                "." .
-                                $index .
-                                "-" .
-                                $subtitle->language .
-                                ".srt";
-                            self::$log->info("Keeping file outside", [
-                                "dvdfile" => $dvdFile,
-                                "newfile" => $newFile,
-                            ]);
-                            rename($dvdFile . ".srt", $newFile);
-                        }
-                        $oRequest->oInputFile->removeSubtitleStream($index);
+			$oNewRequest = convertSrtSubtitle($dvdFile, $subtitle, $oRequest);
                     }
                 } catch (ExecutionException $ex) {
                     self::$log->warn("Skipping track due to error", [
@@ -214,6 +147,78 @@ class ConvertSubtitle
                         }
         return $dvdFile;
     }
+
+    private static function convertSrtSubtitle($dvdFile, $subtitle, $oRequest) {
+                        if (!file_exists($dvdFile . ".srt")) {
+                            self::$log->info("Convert DVD sub to SRT.");
+                            $command = "vobsub2srt ";
+                            if (self::$log->isHandling(Logger::DEBUG)) {
+                                $command .= " --verbose";
+                            }
+                            if (isset($subtitle->language)) {
+                                $command .=
+                                    " --tesseract-lang " .
+                                    CountryToLanguageMapping::getCountry(
+                                        $subtitle->language
+                                    ) .
+                                    " ";
+                            }
+                            if (
+                                null != $oRequest->subtitleConversionBlacklist
+                            ) {
+                                $command .=
+                                    " --blacklist '" .
+                                    $oRequest->subtitleConversionBlacklist .
+                                    "'";
+                            }
+                            $command .= ' "' . $dvdFile . '" ';
+                            self::$log->debug("Using command", [
+                                "command" => $command,
+                            ]);
+                            exec($command, $out, $return);
+                            if ($return != 0) {
+                                throw new ExecutionException(
+                                    "vobsub2srt",
+                                    $return,
+                                    $command
+                                );
+                            }
+                        }
+                        if ($oRequest->subtitleConversionOutput == "MERGE") {
+                            self::$log->info("Merging srt into mkv.", [
+                                "dvdfile" => $dvdFile,
+                            ]);
+                            $oNewRequest = new Request($dvdFile . ".srt");
+                            $oNewRequest->setSubtitleTracks("0");
+                            $oNewRequest->setAudioTracks(null);
+                            $oNewRequest->setVideoTracks(null);
+                            $oNewRequest->subtitleFormat =
+                                $oRequest->subtitleFormat;
+                            $oNewRequest->prepareStreams();
+                            $oNewRequest->oInputFile->getSubtitleStreams()[0]->language =
+                                $subtitle->language;
+                            self::$log->debug(
+                                "Using language for final stream.",
+                                ["language" => $subtitle->language]
+                            );
+                            $arrAdditionalRequests[] = $oNewRequest;
+                        } else {
+                            $newFile =
+                                $oOutput->getFileName() .
+                                "." .
+                                $index .
+                                "-" .
+                                $subtitle->language .
+                                ".srt";
+                            self::$log->info("Keeping file outside", [
+                                "dvdfile" => $dvdFile,
+                                "newfile" => $newFile,
+                            ]);
+                            rename($dvdFile . ".srt", $newFile);
+                        }
+                        $oRequest->oInputFile->removeSubtitleStream($index);
+                    }
+        return $oNewRequest;
 }
 
 ConvertSubtitle::$log = new LogWrapper("ConvertSubtitle");
