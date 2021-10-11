@@ -6,6 +6,9 @@
     ],
     "homepage": "https://github.com/superflyxxi/video-converter",
     "license": "Apache-2.0",
+    "scripts": {
+        "test": "phpunit -c tests/phpunit.xml"
+    },
     "require": {
         "php" : ">=7.0.0",
         "monolog/monolog": "^2.3"
