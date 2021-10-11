@@ -26,56 +26,12 @@ class ConvertSubtitle
                 $dvdFile = null;
                 try {
                     if ("hdmv_pgs_subtitle" == $codecName) {
-                        // convert to dvd
-                        if ($oRequest->oInputFile->getPrefix() != null) {
-                            $dvdFile =
-                                $dir .
-                                "/" .
-                                realpath($filename) .
-                                "/dir-" .
-                                $index;
-                        } else {
-                            $dvdFile = $dir . "/" . $filename . "-" . $index;
-                        }
-                        $pgsFile = new OutputFile(null, $dvdFile . ".sup");
-                        if (!file_exists($pgsFile->getFileName())) {
-                            self::$log->info(
-                                "Generating PGS sup file for file.",
-                                ["index" => $index, "filename" => $filename]
-                            );
-                            $pgsRequest = new Request($filename);
-                            $pgsRequest->setSubtitleTracks($index);
-                            $pgsRequest->setAudioTracks(null);
-                            $pgsRequest->setVideoTracks(null);
-                            $pgsRequest->subtitleFormat = "copy";
-                            $pgsRequest->prepareStreams();
-                            FFmpegHelper::execute(
-                                [$pgsRequest],
-                                $pgsFile,
-                                false
-                            );
-                        }
-
-                        if (!file_exists($dvdFile . ".sub")) {
-                            self::$log->info("Converting pgs to dvd subtitle.");
-                            $command =
-                                'java -jar /app/ripvideo/BDSup2Sub.jar -o "' .
-                                $dvdFile .
-                                '.sub" "' .
-                                $pgsFile->getFileName() .
-                                '"';
-                            self::$log->debug("Executing command", [
-                                "command" => $command,
-                            ]);
-                            exec($command, $out, $return);
-                            if ($return != 0) {
-                                throw new ExecutionException(
-                                    "java",
-                                    $return,
-                                    $command
-                                );
-                            }
-                        }
+                        $dvdFile = self::convertBluraySubtitle(
+                            $oRequest,
+                            $dir,
+                            $filename,
+                            $index
+                        );
                     } elseif (
                         "vobsub" == $codecName ||
                         "dvd_subtitle" == $codecName
@@ -201,6 +157,52 @@ class ConvertSubtitle
             $oRequest->subtitleFormat = "copy";
         }
         return $arrAdditionalRequests;
+    }
+
+    private static function convertBluraySubtitle(
+        $oRequest,
+        $dir,
+        $filename,
+        $index
+    ) {
+        // convert to dvd
+        if ($oRequest->oInputFile->getPrefix() != null) {
+            $dvdFile = $dir . "/" . realpath($filename) . "/dir-" . $index;
+        } else {
+            $dvdFile = $dir . "/" . $filename . "-" . $index;
+        }
+        $pgsFile = new OutputFile(null, $dvdFile . ".sup");
+        if (!file_exists($pgsFile->getFileName())) {
+            self::$log->info("Generating PGS sup file for file.", [
+                "index" => $index,
+                "filename" => $filename,
+            ]);
+            $pgsRequest = new Request($filename);
+            $pgsRequest->setSubtitleTracks($index);
+            $pgsRequest->setAudioTracks(null);
+            $pgsRequest->setVideoTracks(null);
+            $pgsRequest->subtitleFormat = "copy";
+            $pgsRequest->prepareStreams();
+            FFmpegHelper::execute([$pgsRequest], $pgsFile, false);
+        }
+
+        if (!file_exists($dvdFile . ".sub")) {
+            self::$log->info("Converting pgs to dvd subtitle.");
+            $command =
+                'java -jar /app/ripvideo/BDSup2Sub.jar -o "' .
+                $dvdFile .
+                '.sub" "' .
+                $pgsFile->getFileName() .
+                '"';
+            self::$log->debug("Executing command", [
+                "command" => $command,
+            ]);
+            exec($command, $out, $return);
+            if ($return != 0) {
+                throw new ExecutionException("java", $return, $command);
+            }
+        }
+        return $dvdFile;
     }
 }
 
