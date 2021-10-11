@@ -30,7 +30,7 @@ jobs:
       - checkout
       - php/install-composer
       - run: composer require overtrue/phplint:^2.0 --dev -vvv
-      - run: ./vendor/bin/phplint ./ -vvv -w
+      - run: ./vendor/bin/phplint src/ tests/ -vvv -w
       #command: docker run --rm -v "$(pwd):/data" -e INPUT_PATH=/data -e INPUT_OPTIONS="-vvv -w"  overtrue/phplint:latest
 
   build:
