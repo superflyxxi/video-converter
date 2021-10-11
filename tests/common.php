@@ -1,9 +1,10 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-abstract class Test extends TestCase {
-        
-    public function __construct() {
+abstract class Test extends TestCase
+{
+    public function __construct()
+    {
         parent::__construct();
         $this->sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
         $this->dataDir = getEnv("DATA_DIR");
@@ -11,31 +12,37 @@ abstract class Test extends TestCase {
     private $sampleDomain;
     private $dataDir;
 
-    protected function getDataDir() {
+    protected function getDataDir()
+    {
         return $this->dataDir;
     }
 
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $tmpDir = exec("mktemp -d");
         exec("mkdir -p " . $tmpDir . DIRECTORY_SEPARATOR . "data");
-        putenv("TMP_DIR=" . $tmpDir ); 
+        putenv("TMP_DIR=" . $tmpDir);
     }
 
     public function probe($filename)
     {
         $file = $this->getDataDir() . DIRECTORY_SEPARATOR . $filename;
         $this->assertFileExists($file, "File missing, cannot probe");
-        $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $file . '"';
+        $command =
+            'ffprobe -v quiet -print_format json -show_format -show_streams "' .
+            $file .
+            '"';
         exec($command, $out, $ret);
         if ($ret == 0) {
             $out = implode($out);
             return json_decode($out, true);
         }
-        return NULL;
+        return null;
     }
 
-    public function getFile($file) {
+    public function getFile($file)
+    {
         switch ($file) {
             case "dvd.mkv":
             case "dvd":
@@ -52,22 +59,33 @@ abstract class Test extends TestCase {
             default:
                 break;
         }
-        if (! file_exists($this->dataDir . DIRECTORY_SEPARATOR . $localFilename)) {
-            $command = 'curl -k -L -o "' . $this->dataDir . DIRECTORY_SEPARATOR . $localFilename . '" "https://' .$this->sampleDomain . $URLpath . '"';
+        if (
+            !file_exists($this->dataDir . DIRECTORY_SEPARATOR . $localFilename)
+        ) {
+            $command =
+                'curl -k -L -o "' .
+                $this->dataDir .
+                DIRECTORY_SEPARATOR .
+                $localFilename .
+                '" "https://' .
+                $this->sampleDomain .
+                $URLpath .
+                '"';
             passthru($command, $ret);
             return 0 < $ret;
         }
-        return TRUE;
+        return true;
     }
 
-    public function ripvideo($envVars, $timeout = "8m") {
+    public function ripvideo($envVars, $timeout = "8m")
+    {
         $command = "";
         foreach ($envVars as $key => $value) {
             $command .= $key . '="' . $value . '" ';
         }
-        $command .= 'timeout -s15 ' . $timeout . ' /app/ripvideo/rip-video.php';
+        $command .= "timeout -s15 " . $timeout . " /app/ripvideo/rip-video.php";
         passthru($command, $return);
-	print("Return value ". $return);
+        print "Return value " . $return;
         return $return;
     }
 }
