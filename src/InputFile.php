@@ -4,17 +4,19 @@ require_once "ffmpeg/FFmpegHelper.php";
 
 class InputFile
 {
-
     public function __construct($filename)
     {
         $this->filename = $filename;
-        if (is_dir($filename) || substr($filename, - strlen($filename)) === ".iso") {
+        if (
+            is_dir($filename) ||
+            substr($filename, -strlen($filename)) === ".iso"
+        ) {
             $this->prefix = "bluray:";
         }
         $json = FFmpegHelper::probe($this);
-	if ($json === FALSE) {
-	    throw new Exception("Could not probe file " . $filename);
-	}
+        if ($json === false) {
+            throw new Exception("Could not probe file " . $filename);
+        }
         if (array_key_exists("streams", $json)) {
             foreach ($json["streams"] as $stream) {
                 $oStream = new Stream($stream);
@@ -35,17 +37,17 @@ class InputFile
         }
     }
 
-    private $streams = array();
+    private $streams = [];
 
-    private $subtitleStreams = array();
+    private $subtitleStreams = [];
 
-    private $videoStreams = array();
+    private $videoStreams = [];
 
-    private $audioStreams = array();
+    private $audioStreams = [];
 
-    private $filename = NULL;
+    private $filename = null;
 
-    private $prefix = NULL;
+    private $prefix = null;
 
     public function getSubtitleStreams()
     {
