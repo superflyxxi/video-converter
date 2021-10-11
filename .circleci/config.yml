@@ -4,6 +4,7 @@ version: 2.1
 orbs:
   docker: circleci/docker@1
   node: circleci/node@4
+  php: circleci/php@1
 
 parameters:
   latest-from-tag:
@@ -22,19 +23,15 @@ jobs:
       - run: npx prettier src/ --check
 
   validate:
-    docker:
-      - image: 'overtrue/phplint:latest'
+    executor: 
+      name: php/default
+      tag: '7.2'
     steps:
       - checkout
-      - run:
-          command: |
-            pwd
-            ls -lha
-
-      - run: exit 1
-      - run:
-          name: Verify files
-          command: docker run --rm -v "$(pwd):/data" -e INPUT_PATH=/data -e INPUT_OPTIONS="-vvv -w"  overtrue/phplint:latest
+      - php/install-composer
+      - run: composer require overtrue/phplint:^2.0 --dev -vvv
+      - run: ./vendor/bin/phplint ./ -vvv -w
+      #command: docker run --rm -v "$(pwd):/data" -e INPUT_PATH=/data -e INPUT_OPTIONS="-vvv -w"  overtrue/phplint:latest
 
   build:
     environment:
