@@ -10,7 +10,7 @@ RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 RUN apt-get update -y && \
 	apt-get install -y apt-utils && \
-	apt-get install -y php-cli php-json mkvtoolnix && \
+	apt-get install -y php7.2-cli php7.2-json mkvtoolnix && \
 	apt-get clean -y
 RUN apt-get update -y && \
 	apt-get install -y curl && \
