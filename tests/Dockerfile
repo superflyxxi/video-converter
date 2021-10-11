@@ -2,7 +2,7 @@ ARG BUILD_IMAGE
 FROM ${BUILD_IMAGE}
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-	apt-get install -y php-xml php-mbstring curl && \
+	apt-get install -y php7.2-xml php7.2-mbstring curl && \
 	apt-get clean -y
 ENTRYPOINT [ "/app/ripvideo/vendor/bin/phpunit", "-c", "/app/ripvideo/tests/phpunit.xml" ]
 CMD [ "/app/ripvideo/tests" ]
