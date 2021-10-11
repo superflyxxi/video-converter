@@ -22,8 +22,11 @@ jobs:
       - run: npx prettier src/ --check
 
   validate:
-    machine: true
+    docker:
+      - image: 'overtrue/phplint:latest'
     steps:
+      - run: ls -lha
+      - run: exit 1
       - run:
           name: Verify files
           command: docker run --rm -v "$(pwd):/data" -e INPUT_PATH=/data -e INPUT_OPTIONS="-vvv -w"  overtrue/phplint:latest
