@@ -30,7 +30,7 @@ jobs:
       - checkout
       - php/install-composer
       - php/install-packages
-      - run: ./vendor/bin/phplint src/ tests/ -vvv -w
+      - run: composer run-script lint
 
   build:
     environment:
