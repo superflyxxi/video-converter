@@ -13,7 +13,7 @@ parameters:
 
 # Orchestrate or schedule a set of jobs
 jobs:
-  check-formatting:
+  validate-format:
     executor: 
       name: node/default
       tag: '16.10'
@@ -22,7 +22,7 @@ jobs:
       - run: npm install prettier @prettier/plugin-php
       - run: npx prettier src/ --check
 
-  validate:
+  validate-syntax:
     executor: 
       name: php/default
       tag: '7.2'
@@ -152,17 +152,17 @@ workflows:
             branches:
               only:
                 - main
-      - check-formatting:
+      - validate-format:
           context: default
-      - validate:
+      - validate-syntax:
           context: default
       - build:
           name: build-test-push
           context: default
           requires:
             - pre-release
-            - validate
-            - check-formatting
+            - validate-syntax
+            - validate-format
       - release:
           name: release
           context: default
