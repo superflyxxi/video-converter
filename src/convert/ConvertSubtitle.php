@@ -62,7 +62,7 @@ class ConvertSubtitle
 
                     // convert to srt
                     if (null != $dvdFile) {
-                        $oNewRequest = convertSrtSubtitle(
+                        $oNewRequest = self::convertSrtSubtitle(
                             $dvdFile,
                             $subtitle,
                             $oRequest,
