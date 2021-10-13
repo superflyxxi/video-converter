@@ -10,11 +10,11 @@ require_once "ffmpeg/FFmpegHelper.php";
 
 class ConvertFile
 {
-	public static $log;
+    public static $log;
 
-    private $inputFilename = NULL;
+    private $inputFilename = null;
 
-    private $req = NULL;
+    private $req = null;
 
     public function __construct($req)
     {
@@ -24,25 +24,43 @@ class ConvertFile
 
     public function convert()
     {
-        self::$log->info("Starting conversion for file", array('filename'=>$this->inputFilename));
-        $oOutput = new OutputFile(getEnvWithDefault("APPLY_POSTFIX", "true") == "true" ? basename($this->inputFilename) : NULL); // use inputfile as the postfix only if APPLY_POSTFIX is set
+        self::$log->info("Starting conversion for file", [
+            "filename" => $this->inputFilename,
+        ]);
+        $oOutput = new OutputFile(
+            getEnvWithDefault("APPLY_POSTFIX", "true") == "true"
+                ? basename($this->inputFilename)
+                : null
+        ); // use inputfile as the postfix only if APPLY_POSTFIX is set
         $oOutput->title = $this->req->title;
         $oOutput->subtitle = $this->req->subtitle;
         $oOutput->season = $this->req->season;
         $oOutput->episode = $this->req->episode;
         $oOutput->year = $this->req->year;
 
-        self::$log->debug('Conversion output', array('request'=>$this->req, 'output'=>$oOutput));
+        self::$log->debug("Conversion output", [
+            "request" => $this->req,
+            "output" => $oOutput,
+        ]);
         $allRequests[] = $this->req;
-        $allRequests = array_merge($allRequests, ConvertVideo::convert($this->req));
-        $allRequests = array_merge($allRequests, ConvertAudio::convert($this->req));
-        $allRequests = array_merge($allRequests, ConvertSubtitle::convert($this->req, $oOutput));
+        $allRequests = array_merge(
+            $allRequests,
+            ConvertVideo::convert($this->req)
+        );
+        $allRequests = array_merge(
+            $allRequests,
+            ConvertAudio::convert($this->req)
+        );
+        $allRequests = array_merge(
+            $allRequests,
+            ConvertSubtitle::convert($this->req, $oOutput)
+        );
 
-        $returnValue = FFmpegHelper::execute($allRequests, $oOutput, FALSE);
+        $returnValue = FFmpegHelper::execute($allRequests, $oOutput, false);
         self::$log->info("Completed conversion.");
         return $returnValue;
     }
 }
 
-ConvertFile::$log = new LogWrapper('ConvertFile');
+ConvertFile::$log = new LogWrapper("ConvertFile");
 ?>

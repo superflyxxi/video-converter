@@ -3,48 +3,48 @@ require_once "functions.php";
 
 class OutputFile
 {
-
-    public function __construct($postfix = NULL, $out = NULL, $dir = NULL)
+    public function __construct($postfix = null, $out = null, $dir = null)
     {
         $this->postfix = $postfix;
-        $this->envOutput = $out == NULL ? getEnv("OUTPUT") : $out;
-        $this->outputDir = $dir == NULL ? getEnvWithDefault("OUTPUT_DIR", "/data") : $dir;
+        $this->envOutput = $out == null ? getEnv("OUTPUT") : $out;
+        $this->outputDir =
+            $dir == null ? getEnvWithDefault("OUTPUT_DIR", "/data") : $dir;
     }
 
-    public $title = NULL;
+    public $title = null;
 
-    public $subtitle = NULL;
+    public $subtitle = null;
 
-    public $year = NULL;
+    public $year = null;
 
-    public $season = NULL;
+    public $season = null;
 
-    public $episode = NULL;
+    public $episode = null;
 
-    public $format = NULL;
+    public $format = null;
 
-    private $envOutput = NULL;
+    private $envOutput = null;
 
-    private $outputDir = NULL;
+    private $outputDir = null;
 
-    private $postfix = NULL;
+    private $postfix = null;
 
     public function getFileName()
     {
-        if (NULL != $this->envOutput) {
+        if (null != $this->envOutput) {
             return $this->envOutput;
         }
         $out = $this->outputDir . "/" . $this->title;
-        if (NULL != $this->year) {
+        if (null != $this->year) {
             $out .= " (" . $this->year . ")";
         }
-        if (NULL != $this->season) {
+        if (null != $this->season) {
             $out .= " - s" . $this->season . "e" . $this->episode;
         }
-        if (NULL != $this->subtitle) {
+        if (null != $this->subtitle) {
             $out .= " - " . $this->subtitle;
         }
-        if (NULL != $this->postfix) {
+        if (null != $this->postfix) {
             $out .= "." . $this->postfix;
         }
         $out .= ".mkv";
