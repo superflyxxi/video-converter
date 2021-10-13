@@ -148,10 +148,6 @@ workflows:
           name: pre-release
           context: default
           prerelease: true
-          filters:
-            branches:
-              only:
-                - main
       - validate-format:
           context: default
       - validate-syntax:
@@ -169,3 +165,7 @@ workflows:
           prerelease: false
           requires:
             - build-test-push
+          filters:
+            branches:
+              only:
+                - main
