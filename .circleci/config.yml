@@ -32,6 +32,18 @@ jobs:
       - php/install-packages
       - run: composer run-script lint
 
+  build-phar:
+    executor:
+      name: php/default
+      tag: '7.2'
+    steps:
+      - checkout
+      - php/install-composer
+      - php/install-packages
+      - run: vendor/bin/phar-composer --version
+      - run: vendor/bin/phar-composer build .
+      - run: ls -lha .
+
   build:
     environment:
       DEBIAN_FRONTEND: noninteractive
@@ -152,6 +164,8 @@ workflows:
           context: default
       - validate-syntax:
           context: default
+      - build-phar:
+          context: default
       - build:
           name: build-test-push
           context: default
@@ -159,6 +173,7 @@ workflows:
             - pre-release
             - validate-syntax
             - validate-format
+            - build-phar
       - release:
           name: release
           context: default
