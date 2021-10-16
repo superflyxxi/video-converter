@@ -8,6 +8,8 @@ require_once "MKVExtractHelper.php";
 require_once "exceptions/ExecutionException.php";
 require_once "CountryToLanguageMapping.php";
 
+use Monolog\Logger;
+
 class ConvertSubtitle {
 	public static $log;
 
@@ -72,7 +74,7 @@ class ConvertSubtitle {
 						}
 					}
 				} catch (ExecutionException $ex) {
-					self::$log->warn("Skipping track due to error", [
+					self::$log->warning("Skipping track due to error", [
 						"errorMessage" => $ex->getMessage(),
 					]);
 				}
