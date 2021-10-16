@@ -71,12 +71,15 @@ abstract class Test extends TestCase {
 		return true;
 	}
 
-	public function ripvideo($envVars, $timeout = "8m") {
+	public function ripvideo($args, $timeout = "8m") {
 		$command = "";
-		foreach ($envVars as $key => $value) {
+		foreach ($args as $key => $value) {
 			$command .= $key . '="' . $value . '" ';
 		}
 		$command .= "timeout -s15 " . $timeout . " /app/ripvideo/rip-video.php";
+		foreach ($args as $key => $value) {
+			$command .= $key . ' "' . $value . '" ';
+		}
 		passthru($command, $return);
 		print "Return value " . $return;
 		return $return;

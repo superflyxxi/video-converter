@@ -8,7 +8,7 @@ final class SimpleScaleTest extends Test {
 		$return = $this->ripvideo(
 			[
 				"INPUT" => "dvd.mkv",
-				"TITLE" => "Test 1.5x Simple Upscale",
+				"--title" => "Test 1.5x Simple Upscale",
 				"VIDEO_UPSCALE" => "1.5",
 				"AUDIO_TRACKS" => -1,
 				"SUBTITLE_TRACKS" => -1,
@@ -53,7 +53,7 @@ final class SimpleScaleTest extends Test {
 
 		$return = $this->ripvideo([
 			"INPUT" => "dvd.mkv",
-			"TITLE" => "Test 0.5x Downscale",
+			"--title" => "Test 0.5x Downscale",
 			"VIDEO_UPSCALE" => "0.5",
 			"AUDIO_TRACKS" => -1,
 			"SUBTITLE_TRACKS" => -1,

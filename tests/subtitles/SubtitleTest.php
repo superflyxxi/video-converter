@@ -8,7 +8,7 @@ final class SubtitleTest extends Test {
 		$return = $this->ripvideo([
 			"APPLY_POSTFIX" => "false",
 			"INPUT" => "dvd.mkv",
-			"TITLE" => "Test Convert DVD Subtitle",
+			"--title" => "Test Convert DVD Subtitle",
 			"VIDEO_TRACKS" => -1,
 			"AUDIO_TRACKS" => -1,
 			"SUBTITLE_FORMAT" => "srt",
@@ -66,7 +66,7 @@ final class SubtitleTest extends Test {
 		$return = $this->ripvideo([
 			"APPLY_POSTFIX" => "false",
 			"INPUT" => "dvd.mkv",
-			"TITLE" => "Test Subtitle Files",
+			"--title" => "Test Subtitle Files",
 			"VIDEO_FORMAT" => "copy",
 			"AUDIO_TRACKS" => -1,
 			"SUBTITLE_FORMAT" => "srt",
@@ -118,7 +118,7 @@ final class SubtitleTest extends Test {
 		$return = $this->ripvideo([
 			"APPLY_POSTFIX" => "false",
 			"INPUT" => "bluray.mkv",
-			"TITLE" => "Test Convert Bluray Subtitle",
+			"--title" => "Test Convert Bluray Subtitle",
 			"VIDEO_TRACKS" => -1,
 			"AUDIO_TRACKS" => -1,
 			"YEAR" => 2019,

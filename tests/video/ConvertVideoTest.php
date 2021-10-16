@@ -7,7 +7,7 @@ final class ConvertVideoTest extends Test {
 
 		$return = $this->ripvideo([
 			"INPUT" => "dvd.mkv",
-			"TITLE" => "Test x265 Conversion",
+			"--title" => "Test x265 Conversion",
 			"AUDIO_TRACKS" => -1,
 			"SUBTITLE_TRACKS" => -1,
 			"DEINTERLACE" => "false",
