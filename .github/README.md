@@ -33,7 +33,7 @@ Argument | Description | Required | Default | Example
 `--log-level` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | No | `250` | `100`
 `INPUT`\* | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | No | | `title_00.mkv`
 `--title` | The title to be used in metadata and naming of the file. | Yes | | `Cool Movie`
-`YEAR` | The year of the movie to be used in metadata and naming of the file. | No | | `2019`
+`--year` | The year of the movie to be used in metadata and naming of the file. | No | | `2019`
 `SEASON` | The season of the TV show. | No | | `01`
 `EPISODE` | The episode within the season of the TV show. | No | | `01`
 `SUBTITLE` | The episode title of the TV show. | No | | `The One Where They Dance`

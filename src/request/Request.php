@@ -67,7 +67,7 @@ class Request {
 		$req = new Request($filename);
 
 		$req->title = Options::get("title");
-		$req->year = getEnv("YEAR");
+		$req->year = Options::get("year");
 		$req->season = getEnv("SEASON");
 		$req->episode = getEnv("EPISODE");
 		$req->subtitle = getEnv("SUBTITLE");
