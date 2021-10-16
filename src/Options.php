@@ -6,12 +6,6 @@ class Options
     private static $log;
     private static $opts;
 
-    private static function init()
-    {
-        self::$log = new LogWrapper("Options");
-        self::$opts = getopt("", ["log-level::"]);
-    }
-
     public static function get($arg, $default)
     {
 	$env = getEnv(strtoupper(str_replace(array("-", "."), array("_", "__"), $arg)));
@@ -25,5 +19,7 @@ class Options
     }
 }
 
-Options::init();
+// Init the static class
+self::$log = new LogWrapper("Options");
+self::$opts = getopt("", ["log-level::"]);
 ?>
