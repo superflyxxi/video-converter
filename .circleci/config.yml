@@ -27,6 +27,8 @@ jobs:
       name: php/default
       tag: '7.2'
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - checkout
       - php/install-composer
       - php/install-packages
