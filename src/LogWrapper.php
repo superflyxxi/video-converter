@@ -1,5 +1,6 @@
 <?php
 require_once "functions.php";
+require_once "Options.php";
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -12,7 +13,7 @@ class LogWrapper extends Logger
         $this->pushHandler(
             new StreamHandler(
                 "php://stdout",
-                getEnvWithDefault("LOG_LEVEL", Logger::NOTICE)
+                Options::get("log-level", Logger::NOTICE)
             )
         );
     }

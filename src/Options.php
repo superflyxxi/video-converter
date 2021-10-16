@@ -9,7 +9,7 @@ class Options
     private static function init()
     {
         self::$log = new LogWrapper("Options");
-        self::$opts = getopt("", [""]);
+        self::$opts = getopt("", ["log-level::"]);
     }
 
     public static function get($arg, $default)
