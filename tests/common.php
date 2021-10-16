@@ -75,11 +75,11 @@ abstract class Test extends TestCase {
 		$command =
 			"timeout -s15 " .
 			$timeout .
-			" /app/ripvideo/rip-video.php --log-level 100";
+			" /app/ripvideo/rip-video.php --log-level=100";
 		foreach ($args as $key => $value) {
 			$command .= " " . $key;
 			if (!is_bool($value)) {
-				$command .= ' "' . $value . '"';
+				$command .= '="' . $value . '"';
 			}
 		}
 		if (null !== $filename) {
