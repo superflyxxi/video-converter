@@ -1,3 +1,8 @@
 testResults/
 vendor/
 .phplint-cache
+
+# Prettier stuff
+node_modules/
+package.json
+package-lock.json
