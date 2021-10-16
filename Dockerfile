@@ -3,7 +3,7 @@ MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG BUILD_SUBTITLE_SUPPORT=true
-WORKDIR /app/ripvideo/
+WORKDIR /data
 
 ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
@@ -53,14 +53,5 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 # Install DBSup2Sub
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /app/ripvideo/
 
-ENTRYPOINT /app/ripvideo/rip-video.php
-COPY src/ /app/ripvideo/
-COPY composer* /app/ripvideo/
-
-RUN apt-get update && \
-	apt-get install -y git && \
-	composer install --no-dev && \
-	composer clear-cache && \
-	apt-get purge -y git && \
-	apt-get clean -y && \
-	chmod -R ugo+r /app/ripvideo
+ENTRYPOINT /usr/bin/video-converter.phar
+COPY video-converter.phar /user/bin/
