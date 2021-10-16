@@ -19,14 +19,18 @@ Tools to convert video
 ## Docker Image
 This image supports ripping a video or bluray directory into an MKV using ffmpeg. As a result, 
 you'll see in the same directory mapped to `/data` a file with the following naming:
-`{TITLE} ({YEAR}) - s{SEASON}e{EPISODE} - {SUBTITLE}.{inputFileName}.mkv`. 
+`{title} ({year}) - s{season}e{episode} - {show-title}.{input}.mkv`. 
 You may want to rip the bluray to mkv before running this tool as ffmpeg is not very good at metadata 
 from blurays.
 
-### Environment Variables
-Variable | Description | Required | Default | Example
+### Arguments
+All the command line arguments listed below can also be overridden using an environment variable. Any `-` will be
+replaced with `_`. Any `.` will be replaced with two `_`. For example, `--log-level` can be set using the
+`LOG_LEVEL` environment variable.
+
+Argument | Description | Required | Default | Example
 --- | --- | --- | --- | ---
-`LOG_LEVEL` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | No | `250` | `100`
+`--log-level` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | No | `250` | `100`
 `INPUT`\* | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | No | | `title_00.mkv`
 `TITLE` | The title to be used in metadata and naming of the file. | Yes | | `Cool Movie`
 `YEAR` | The year of the movie to be used in metadata and naming of the file. | No | | `2019`
