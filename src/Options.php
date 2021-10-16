@@ -3,12 +3,10 @@ require_once "LogWrapper.php";
 
 class Options
 {
-    private static $log;
     private static $opts;
 
     public static function init()
     {
-        self::$log = new LogWrapper("Options");
         self::$opts = getopt("", ["log-level::"]);
     }
 
