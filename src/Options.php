@@ -5,10 +5,10 @@ class Options {
 	private static $opts;
 
 	public static function init() {
-		self::$opts = getopt("", ["log-level::"]);
+		self::$opts = getopt("", ["log-level::", "title:"]);
 	}
 
-	public static function get($arg, $default) {
+	public static function get($arg, $default = null) {
 		$env = getEnv(strtoupper(str_replace(["-", "."], ["_", "__"], $arg)));
 		if ($env) {
 			return $env;

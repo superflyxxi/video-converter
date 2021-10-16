@@ -2,6 +2,7 @@
 require_once "LogWrapper.php";
 require_once "InputFile.php";
 require_once "functions.php";
+require_once "Options.php";
 
 class Request {
 	public static $log;
@@ -65,7 +66,7 @@ class Request {
 	public static function newInstanceFromEnv($filename) {
 		$req = new Request($filename);
 
-		$req->title = getEnv("TITLE");
+		$req->title = Options::get("title");
 		$req->year = getEnv("YEAR");
 		$req->season = getEnv("SEASON");
 		$req->episode = getEnv("EPISODE");

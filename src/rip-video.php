@@ -5,6 +5,7 @@ require_once "vendor/autoload.php";
 require_once "convert/ConvertFile.php";
 require_once "request/CSVRequest.php";
 require_once "LogWrapper.php";
+require_once "Options.php";
 
 $log = new LogWrapper("rip-video");
 
@@ -29,8 +30,8 @@ function error_handler(
 }
 set_error_handler("error_handler");
 
-if (null == getEnv("TITLE")) {
-	$log->error("TITLE env variable missing");
+if (null == Options::get("title")) {
+	$log->error("title missing");
 	exit(1);
 }
 
