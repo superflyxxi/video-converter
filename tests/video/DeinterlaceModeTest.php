@@ -9,7 +9,8 @@ final class DeinterlaceModeTest extends Test {
 	public function testDeinterlaceMode01() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo("dvd.mkv",
+		$return = $this->ripvideo(
+			"dvd.mkv",
 			[
 				"--deinterlace" => "01",
 				"--audio-tracks" => -1,
@@ -53,7 +54,8 @@ final class DeinterlaceModeTest extends Test {
 	public function testDeinterlaceMode02() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo("dvd.mkv",
+		$return = $this->ripvideo(
+			"dvd.mkv",
 			[
 				"--deinterlace" => "02",
 				"--audio-tracks" => -1,

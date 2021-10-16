@@ -62,7 +62,7 @@ final class SubtitleTest extends Test {
 		);
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo("dvd.mkv",[
+		$return = $this->ripvideo("dvd.mkv", [
 			"--disable-postfix" => "false",
 			"--title" => "Test Subtitle Files",
 			"--video-format" => "copy",
@@ -113,7 +113,7 @@ final class SubtitleTest extends Test {
 	public function testBluraySubtitles() {
 		$this->getFile("bluray.mkv");
 
-		$return = $this->ripvideo("bluray.mkv",[
+		$return = $this->ripvideo("bluray.mkv", [
 			"--disable-postfix" => "false",
 			"--title" => "Test Convert Bluray Subtitle",
 			"--video-tracks" => -1,

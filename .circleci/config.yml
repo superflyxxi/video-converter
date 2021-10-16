@@ -9,23 +9,23 @@ orbs:
 parameters:
   latest-from-tag:
     type: string
-    default: '4.3-vaapi1804'
+    default: "4.3-vaapi1804"
 
 # Orchestrate or schedule a set of jobs
 jobs:
   validate-format:
-    executor: 
+    executor:
       name: node/default
-      tag: '16.10'
+      tag: "16.10"
     steps:
       - checkout
       - run: npm install prettier @prettier/plugin-php
       - run: npx prettier src/ --check
 
   validate-syntax:
-    executor: 
+    executor:
       name: php/default
-      tag: '7.2'
+      tag: "7.2"
     steps:
       - checkout
       - php/install-composer
@@ -79,7 +79,7 @@ jobs:
           step-name: Build unit test image
       - unless:
           condition:
-            equal: [ main, << pipeline.git.branch >> ]
+            equal: [main, << pipeline.git.branch >>]
           steps:
             - docker/push:
                 step-name: Pushing unit test image

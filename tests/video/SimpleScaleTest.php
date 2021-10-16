@@ -5,7 +5,8 @@ final class SimpleScaleTest extends Test {
 	public function test_Simple_Upscaling() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo("dvd.mkv",
+		$return = $this->ripvideo(
+			"dvd.mkv",
 			[
 				"--title" => "Test 1.5x Simple Upscale",
 				"--video-upscale" => "1.5",
@@ -50,7 +51,7 @@ final class SimpleScaleTest extends Test {
 	public function test_Simple_Downscaling() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo("dvd.mkv",[
+		$return = $this->ripvideo("dvd.mkv", [
 			"--title" => "Test 0.5x Downscale",
 			"--video-upscale" => "0.5",
 			"--audio-tracks" => -1,

@@ -5,7 +5,8 @@ final class DeinterlaceDetectionTest extends Test {
 	public function testProbeAutoDeinterlace() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo("dvd.mkv",
+		$return = $this->ripvideo(
+			"dvd.mkv",
 			[
 				"--deinterlace" => "00",
 				"--audio-tracks" => -1,
@@ -68,7 +69,8 @@ final class DeinterlaceDetectionTest extends Test {
 	public function testIdetAutoDeinterlace() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo("dvd.mkv",
+		$return = $this->ripvideo(
+			"dvd.mkv",
 			[
 				"--deinterlace" => "00",
 				"--deinterlace-check" => "idet",
