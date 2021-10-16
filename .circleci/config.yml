@@ -22,16 +22,6 @@ jobs:
       - run: npm install prettier @prettier/plugin-php
       - run: npx prettier src/ --check
 
-  validate-syntax:
-    executor: 
-      name: php/default
-      tag: '7.2'
-    steps:
-      - checkout
-      - php/install-composer
-      - php/install-packages
-      - run: composer run-script lint
-
   build-phar:
     executor:
       name: php/default
@@ -40,8 +30,13 @@ jobs:
       - checkout
       - php/install-composer
       - php/install-packages
+      - run: composer run-script lint
       - run: vendor/bin/phar-composer --version
       - run: vendor/bin/phar-composer build .
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - video-converter.phar
       - store_artifacts:
           path: video-converter.phar
 
@@ -163,8 +158,6 @@ workflows:
           prerelease: true
       - validate-format:
           context: default
-      - validate-syntax:
-          context: default
       - build-phar:
           context: default
       - build:
@@ -172,7 +165,6 @@ workflows:
           context: default
           requires:
             - pre-release
-            - validate-syntax
             - validate-format
             - build-phar
       - release:
