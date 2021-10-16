@@ -72,7 +72,7 @@ abstract class Test extends TestCase {
 	}
 
 	public function ripvideo($filename, $args, $timeout = "8m") {
-		$command = "timeout -s15 " . $timeout . " /app/ripvideo/rip-video.php";
+		$command = "timeout -s15 " . $timeout . " /app/ripvideo/rip-video.php --log-level 100";
 		foreach ($args as $key => $value) {
 			$command .= " " . $key;
 			if (!is_bool($value)) {
