@@ -5,14 +5,13 @@ final class DeinterlaceDetectionTest extends Test {
 	public function testProbeAutoDeinterlace() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo(
+		$return = $this->ripvideo("dvd.mkv",
 			[
-				"INPUT" => "dvd.mkv",
-				"DEINTERLACE_MODE" => "00",
-				"AUDIO_TRACKS" => -1,
-				"SUBTITLE_TRACKS" => -1,
-				"title" => "Test Probe Auto Deinterlace",
-				"year" => 2019,
+				"--deinterlace" => "00",
+				"--audio-tracks" => -1,
+				"--subtitle-tracks" => -1,
+				"--title" => "Test Probe Auto Deinterlace",
+				"--year" => 2019,
 			],
 			"1m"
 		);
@@ -69,15 +68,14 @@ final class DeinterlaceDetectionTest extends Test {
 	public function testIdetAutoDeinterlace() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo(
+		$return = $this->ripvideo("dvd.mkv",
 			[
-				"INPUT" => "dvd.mkv",
-				"DEINTERLACE_MODE" => "00",
-				"DEINTERLACE_CHECK" => "idet",
-				"AUDIO_TRACKS" => -1,
-				"SUBTITLE_TRACKS" => -1,
-				"title" => "Test Idet Auto Deinterlace",
-				"year" => 2021,
+				"--deinterlace" => "00",
+				"--deinterlace-check" => "idet",
+				"--audio-tracks" => -1,
+				"--subtitle-tracks" => -1,
+				"--title" => "Test Idet Auto Deinterlace",
+				"--year" => 2021,
 			],
 			"1m"
 		);

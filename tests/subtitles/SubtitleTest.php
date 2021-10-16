@@ -5,14 +5,13 @@ final class SubtitleTest extends Test {
 	public function testDvdSubtitleConversion() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo([
-			"APPLY_POSTFIX" => "false",
-			"INPUT" => "dvd.mkv",
-			"title" => "Test Convert DVD Subtitle",
-			"VIDEO_TRACKS" => -1,
-			"AUDIO_TRACKS" => -1,
-			"SUBTITLE_FORMAT" => "srt",
-			"year" => 2019,
+		$return = $this->ripvideo("dvd.mkv", [
+			"--disable-postfix" => "false",
+			"--title" => "Test Convert DVD Subtitle",
+			"--video-tracks" => -1,
+			"--audio-tracks" => -1,
+			"--subtitle-format" => "srt",
+			"--year" => 2019,
 		]);
 
 		$this->assertEquals(0, $return, "ripvideo exit code");
@@ -63,16 +62,15 @@ final class SubtitleTest extends Test {
 		);
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo([
-			"APPLY_POSTFIX" => "false",
-			"INPUT" => "dvd.mkv",
-			"title" => "Test Subtitle Files",
-			"VIDEO_FORMAT" => "copy",
-			"AUDIO_TRACKS" => -1,
-			"SUBTITLE_FORMAT" => "srt",
-			"SUBTITLE_CONVERSION_OUTPUT" => "FILE",
-			"SUBTITLE_CONVERSION_BLACKLIST" => "’!\�~@~",
-			"year" => 2019,
+		$return = $this->ripvideo("dvd.mkv",[
+			"--disable-postfix" => "false",
+			"--title" => "Test Subtitle Files",
+			"--video-format" => "copy",
+			"--audio-tracks" => -1,
+			"--subtitle-format" => "srt",
+			"--subtitle-conversion-output" => "FILE",
+			"--subtitle-conversion-blacklist" => "’!\�~@~",
+			"--year" => 2019,
 		]);
 
 		$this->assertEquals(0, $return, "ripvideo exit code"); //test("ffmpeg code", 0, $return, $output);
@@ -115,13 +113,12 @@ final class SubtitleTest extends Test {
 	public function testBluraySubtitles() {
 		$this->getFile("bluray.mkv");
 
-		$return = $this->ripvideo([
-			"APPLY_POSTFIX" => "false",
-			"INPUT" => "bluray.mkv",
-			"title" => "Test Convert Bluray Subtitle",
-			"VIDEO_TRACKS" => -1,
-			"AUDIO_TRACKS" => -1,
-			"year" => 2019,
+		$return = $this->ripvideo("bluray.mkv",[
+			"--disable-postfix" => "false",
+			"--title" => "Test Convert Bluray Subtitle",
+			"--video-tracks" => -1,
+			"--audio-tracks" => -1,
+			"--year" => 2019,
 		]);
 
 		$this->assertEquals(0, $return, "ripvideo exit code");

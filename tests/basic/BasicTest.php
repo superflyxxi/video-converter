@@ -7,12 +7,12 @@ require_once "common.php";
 final class BasicTest extends Test {
 	public function testNoInputSpecifiedWithOnlyOneFile() {
 		$this->getFile("dvd");
-		$return = $this->ripvideo([
-			"title" => "Test No Input",
-			"year" => 2019,
-			"AUDIO_FORMAT" => "copy",
-			"VIDEO_FORMAT" => "copy",
-			"SUBTITLE_FORMAT" => "copy",
+		$return = $this->ripvideo(null, [
+			"--title" => "Test No Input",
+			"--year" => 2019,
+			"--audio-format" => "copy",
+			"--video-format" => "copy",
+			"--subtitle-format" => "copy",
 		]);
 
 		$this->assertEquals(0, $return, "Exit status not expected");
@@ -109,13 +109,12 @@ final class BasicTest extends Test {
 
 	public function testInputWithCopy() {
 		$this->getFile("dvd");
-		$return = $this->ripvideo([
-			"INPUT" => "dvd.mkv",
-			"title" => "Test Input",
-			"year" => 2019,
-			"AUDIO_FORMAT" => "copy",
-			"VIDEO_FORMAT" => "copy",
-			"SUBTITLE_FORMAT" => "copy",
+		$return = $this->ripvideo("dvd.mkv", [
+			"--title" => "Test Input",
+			"--year" => 2019,
+			"--audio-format" => "copy",
+			"--video-format" => "copy",
+			"--subtitle-format" => "copy",
 		]);
 		$this->assertEquals(0, $return, "ffmpeg exit code");
 
@@ -202,16 +201,15 @@ final class BasicTest extends Test {
 	public function testTvShowMetadata() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo([
-			"INPUT" => "dvd.mkv",
-			"title" => "Test tv show",
-			"year" => 2019,
-			"SEASON" => "01",
-			"EPISODE" => "23",
-			"SUBTITLE" => "The One Where Things",
-			"VIDEO_FORMAT" => "copy",
-			"AUDIO_FORMAT" => "copy",
-			"SUBTITLE_FORMAT" => "copy",
+		$return = $this->ripvideo("dvd.mkv", [
+			"--title" => "Test tv show",
+			"--year" => 2019,
+			"--season" => "01",
+			"--episode" => "23",
+			"--subtitle" => "The One Where Things",
+			"--video-format" => "copy",
+			"--audio-format" => "copy",
+			"--subtitle-format" => "copy",
 		]);
 		$this->assertEquals(0, $return, "rip-video exit code");
 
@@ -300,14 +298,13 @@ final class BasicTest extends Test {
 	public function testNotApplyingPostfix() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo([
-			"APPLY_POSTFIX" => "false",
-			"INPUT" => "dvd.mkv",
-			"title" => "Test Not Applying Postfix",
-			"year" => 2019,
-			"VIDEO_FORMAT" => "copy",
-			"AUDIO_TRACKS" => -1,
-			"SUBTITLE_TRACKS" => -1,
+		$return = $this->ripvideo("dvd.mkv", [
+			"--disable-postfix" => "false",
+			"--title" => "Test Not Applying Postfix",
+			"--year" => 2019,
+			"--video-format" => "copy",
+			"--audio-tracks" => -1,
+			"--subtitle-tracks" => -1,
 		]);
 		$this->assertEquals(0, $return, "ripvideo exit code");
 

@@ -71,14 +71,16 @@ abstract class Test extends TestCase {
 		return true;
 	}
 
-	public function ripvideo($args, $timeout = "8m") {
-		$command = "";
+	public function ripvideo($filename, $args, $timeout = "8m") {
+		$command = "timeout -s15 " . $timeout . " /app/ripvideo/rip-video.php";
 		foreach ($args as $key => $value) {
-			$command .= $key . '="' . $value . '" ';
+			$command .= " " . $key;
+			if (!is_bool($value)) {
+				$command .= ' "' . $value . '"';
+			}
 		}
-		$command .= "timeout -s15 " . $timeout . " /app/ripvideo/rip-video.php";
-		foreach ($args as $key => $value) {
-			$command .= "--" . $key . ' "' . $value . '" ';
+		if (null !== $filename) {
+			$command .= " --input " . $filename;
 		}
 		passthru($command, $return);
 		print "Return value " . $return;

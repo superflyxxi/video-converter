@@ -5,13 +5,12 @@ final class AudioTest extends Test {
 	public function testChannelMappingOverrideToLowerValue() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo([
-			"INPUT" => "dvd.mkv",
-			"title" => "Test Channel Mapping",
-			"AUDIO_CHANNEL_LAYOUT" => "stereo",
-			"AUDIO_CHANNEL_LAYOUT_TRACKS" => 1,
-			"VIDEO_TRACKS" => -1,
-			"SUBTITLE_TRACKS" => -1,
+		$return = $this->ripvideo("dvd.mkv", [
+			"--title" => "Test Channel Mapping",
+			"--audio-channel-layout" => "stereo",
+			"--audio-channel-layout-tracks" => 1,
+			"--video-tracks" => -1,
+			"--subtitle-tracks" => -1,
 		]);
 		$this->assertEquals(0, $return, "ripvideo exit code");
 
@@ -40,7 +39,7 @@ final class AudioTest extends Test {
 		$this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
 		$this->assertEquals(
 			"Test Channel Mapping",
-			$probe["format"]["tags"]["title"],
+			$probe["format"]["tags"]["TITLE"],
 			"Metadata title"
 		);
 	}
@@ -48,13 +47,12 @@ final class AudioTest extends Test {
 	public function testNormalizing() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo([
-			"INPUT" => "dvd.mkv",
-			"title" => "Test Normalize Track 1",
-			"year" => 2019,
-			"NORMALIZE_AUDIO_TRACKS" => 1,
-			"VIDEO_TRACKS" => -1,
-			"SUBTITLE_TRACKS" => -1,
+		$return = $this->ripvideo("dvd.mkv", [
+			"--title" => "Test Normalize Track 1",
+			"--year" => 2019,
+			"--normalize-audio-tracks" => 1,
+			"--video-tracks" => -1,
+			"--subtitle-tracks" => -1,
 		]);
 		$this->assertEquals(0, $return, "ripvideo exit code");
 
@@ -102,13 +100,13 @@ final class AudioTest extends Test {
 		);
 		$this->assertEquals(
 			"Normalized eng 5.1",
-			$probe["streams"][1]["tags"]["title"],
+			$probe["streams"][1]["tags"]["TITLE"],
 			"Stream 1 title"
 		);
 		$this->assertArrayNotHasKey(2, $probe["streams"], "Stream 2 exists");
 		$this->assertEquals(
 			"Test Normalize Track 1",
-			$probe["format"]["tags"]["title"],
+			$probe["format"]["tags"]["TITLE"],
 			"Metadata title"
 		);
 	}

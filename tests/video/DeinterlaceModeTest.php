@@ -9,15 +9,13 @@ final class DeinterlaceModeTest extends Test {
 	public function testDeinterlaceMode01() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo(
+		$return = $this->ripvideo("dvd.mkv",
 			[
-				"INPUT" => "dvd.mkv",
-				"DEINTERLACE" => "true",
-				"DEINTERLACE_MODE" => "01",
-				"AUDIO_TRACKS" => -1,
-				"SUBTITLE_TRACKS" => -1,
-				"title" => "Test Deinterlace Mode 01",
-				"year" => 2021,
+				"--deinterlace" => "01",
+				"--audio-tracks" => -1,
+				"--subtitle-tracks" => -1,
+				"--title" => "Test Deinterlace Mode 01",
+				"--year" => 2021,
 			],
 			"1m"
 		);
@@ -55,15 +53,13 @@ final class DeinterlaceModeTest extends Test {
 	public function testDeinterlaceMode02() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo(
+		$return = $this->ripvideo("dvd.mkv",
 			[
-				"INPUT" => "dvd.mkv",
-				"DEINTERLACE" => "true",
-				"DEINTERLACE_MODE" => "02",
-				"AUDIO_TRACKS" => -1,
-				"SUBTITLE_TRACKS" => -1,
-				"title" => "Test Deinterlace Mode 02",
-				"year" => 2021,
+				"--deinterlace" => "02",
+				"--audio-tracks" => -1,
+				"--subtitle-tracks" => -1,
+				"--title" => "Test Deinterlace Mode 02",
+				"--year" => 2021,
 			],
 			"1m"
 		);

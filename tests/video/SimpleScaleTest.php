@@ -5,14 +5,13 @@ final class SimpleScaleTest extends Test {
 	public function test_Simple_Upscaling() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo(
+		$return = $this->ripvideo("dvd.mkv",
 			[
-				"INPUT" => "dvd.mkv",
-				"title" => "Test 1.5x Simple Upscale",
-				"VIDEO_UPSCALE" => "1.5",
-				"AUDIO_TRACKS" => -1,
-				"SUBTITLE_TRACKS" => -1,
-				"DEINTERLACE" => "false",
+				"--title" => "Test 1.5x Simple Upscale",
+				"--video-upscale" => "1.5",
+				"--audio-tracks" => -1,
+				"--subtitle-tracks" => -1,
+				"--deinterlace" => "off",
 			],
 			"10m"
 		);
@@ -51,13 +50,12 @@ final class SimpleScaleTest extends Test {
 	public function test_Simple_Downscaling() {
 		$this->getFile("dvd");
 
-		$return = $this->ripvideo([
-			"INPUT" => "dvd.mkv",
-			"title" => "Test 0.5x Downscale",
-			"VIDEO_UPSCALE" => "0.5",
-			"AUDIO_TRACKS" => -1,
-			"SUBTITLE_TRACKS" => -1,
-			"DEINTERLACE" => "false",
+		$return = $this->ripvideo("dvd.mkv",[
+			"--title" => "Test 0.5x Downscale",
+			"--video-upscale" => "0.5",
+			"--audio-tracks" => -1,
+			"--subtitle-tracks" => -1,
+			"--deinterlace" => "off",
 		]);
 		$this->assertEquals(0, $return, "ripvideo exit code");
 
