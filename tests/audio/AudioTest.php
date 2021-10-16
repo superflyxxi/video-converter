@@ -7,7 +7,7 @@ final class AudioTest extends Test {
 
 		$return = $this->ripvideo([
 			"INPUT" => "dvd.mkv",
-			"--title" => "Test Channel Mapping",
+			"title" => "Test Channel Mapping",
 			"AUDIO_CHANNEL_LAYOUT" => "stereo",
 			"AUDIO_CHANNEL_LAYOUT_TRACKS" => 1,
 			"VIDEO_TRACKS" => -1,
@@ -50,8 +50,8 @@ final class AudioTest extends Test {
 
 		$return = $this->ripvideo([
 			"INPUT" => "dvd.mkv",
-			"--title" => "Test Normalize Track 1",
-			"YEAR" => 2019,
+			"title" => "Test Normalize Track 1",
+			"year" => 2019,
 			"NORMALIZE_AUDIO_TRACKS" => 1,
 			"VIDEO_TRACKS" => -1,
 			"SUBTITLE_TRACKS" => -1,

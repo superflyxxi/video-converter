@@ -8,11 +8,11 @@ final class SubtitleTest extends Test {
 		$return = $this->ripvideo([
 			"APPLY_POSTFIX" => "false",
 			"INPUT" => "dvd.mkv",
-			"--title" => "Test Convert DVD Subtitle",
+			"title" => "Test Convert DVD Subtitle",
 			"VIDEO_TRACKS" => -1,
 			"AUDIO_TRACKS" => -1,
 			"SUBTITLE_FORMAT" => "srt",
-			"YEAR" => 2019,
+			"year" = > 2019,
 		]);
 
 		$this->assertEquals(0, $return, "ripvideo exit code");
@@ -66,13 +66,13 @@ final class SubtitleTest extends Test {
 		$return = $this->ripvideo([
 			"APPLY_POSTFIX" => "false",
 			"INPUT" => "dvd.mkv",
-			"--title" => "Test Subtitle Files",
+			"title" => "Test Subtitle Files",
 			"VIDEO_FORMAT" => "copy",
 			"AUDIO_TRACKS" => -1,
 			"SUBTITLE_FORMAT" => "srt",
 			"SUBTITLE_CONVERSION_OUTPUT" => "FILE",
 			"SUBTITLE_CONVERSION_BLACKLIST" => "’!\�~@~",
-			"YEAR" => 2019,
+			"year" = > 2019,
 		]);
 
 		$this->assertEquals(0, $return, "ripvideo exit code"); //test("ffmpeg code", 0, $return, $output);
@@ -118,10 +118,10 @@ final class SubtitleTest extends Test {
 		$return = $this->ripvideo([
 			"APPLY_POSTFIX" => "false",
 			"INPUT" => "bluray.mkv",
-			"--title" => "Test Convert Bluray Subtitle",
+			"title" => "Test Convert Bluray Subtitle",
 			"VIDEO_TRACKS" => -1,
 			"AUDIO_TRACKS" => -1,
-			"YEAR" => 2019,
+			"year" = > 2019,
 		]);
 
 		$this->assertEquals(0, $return, "ripvideo exit code");

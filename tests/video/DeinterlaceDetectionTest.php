@@ -11,8 +11,8 @@ final class DeinterlaceDetectionTest extends Test {
 				"DEINTERLACE_MODE" => "00",
 				"AUDIO_TRACKS" => -1,
 				"SUBTITLE_TRACKS" => -1,
-				"--title" => "Test Probe Auto Deinterlace",
-				"YEAR" => 2019,
+				"title" => "Test Probe Auto Deinterlace",
+				"year" = > 2019,
 			],
 			"1m"
 		);
@@ -76,8 +76,8 @@ final class DeinterlaceDetectionTest extends Test {
 				"DEINTERLACE_CHECK" => "idet",
 				"AUDIO_TRACKS" => -1,
 				"SUBTITLE_TRACKS" => -1,
-				"--title" => "Test Idet Auto Deinterlace",
-				"YEAR" => 2021,
+				"title" => "Test Idet Auto Deinterlace",
+				"year" = > 2021,
 			],
 			"1m"
 		);

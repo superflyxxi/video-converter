@@ -16,8 +16,8 @@ final class DeinterlaceModeTest extends Test {
 				"DEINTERLACE_MODE" => "01",
 				"AUDIO_TRACKS" => -1,
 				"SUBTITLE_TRACKS" => -1,
-				"--title" => "Test Deinterlace Mode 01",
-				"YEAR" => 2021,
+				"title" => "Test Deinterlace Mode 01",
+				"year" = > 2021,
 			],
 			"1m"
 		);
@@ -62,8 +62,8 @@ final class DeinterlaceModeTest extends Test {
 				"DEINTERLACE_MODE" => "02",
 				"AUDIO_TRACKS" => -1,
 				"SUBTITLE_TRACKS" => -1,
-				"--title" => "Test Deinterlace Mode 02",
-				"YEAR" => 2021,
+				"title" => "Test Deinterlace Mode 02",
+				"year" = > 2021,
 			],
 			"1m"
 		);

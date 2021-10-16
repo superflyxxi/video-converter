@@ -78,7 +78,7 @@ abstract class Test extends TestCase {
 		}
 		$command .= "timeout -s15 " . $timeout . " /app/ripvideo/rip-video.php";
 		foreach ($args as $key => $value) {
-			$command .= $key . ' "' . $value . '" ';
+			$command .= "--" . $key . ' "' . $value . '" ';
 		}
 		passthru($command, $return);
 		print "Return value " . $return;

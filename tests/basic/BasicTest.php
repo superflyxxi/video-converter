@@ -8,8 +8,8 @@ final class BasicTest extends Test {
 	public function testNoInputSpecifiedWithOnlyOneFile() {
 		$this->getFile("dvd");
 		$return = $this->ripvideo([
-			"--title" => "Test No Input",
-			"YEAR" => 2019,
+			"title" => "Test No Input",
+			"year" => 2019,
 			"AUDIO_FORMAT" => "copy",
 			"VIDEO_FORMAT" => "copy",
 			"SUBTITLE_FORMAT" => "copy",
@@ -111,8 +111,8 @@ final class BasicTest extends Test {
 		$this->getFile("dvd");
 		$return = $this->ripvideo([
 			"INPUT" => "dvd.mkv",
-			"--title" => "Test Input",
-			"YEAR" => 2019,
+			"title" => "Test Input",
+			"year" => 2019,
 			"AUDIO_FORMAT" => "copy",
 			"VIDEO_FORMAT" => "copy",
 			"SUBTITLE_FORMAT" => "copy",
@@ -204,8 +204,8 @@ final class BasicTest extends Test {
 
 		$return = $this->ripvideo([
 			"INPUT" => "dvd.mkv",
-			"--title" => "Test tv show",
-			"YEAR" => 2019,
+			"title" => "Test tv show",
+			"year" => 2019,
 			"SEASON" => "01",
 			"EPISODE" => "23",
 			"SUBTITLE" => "The One Where Things",
@@ -303,8 +303,8 @@ final class BasicTest extends Test {
 		$return = $this->ripvideo([
 			"APPLY_POSTFIX" => "false",
 			"INPUT" => "dvd.mkv",
-			"--title" => "Test Not Applying Postfix",
-			"YEAR" => 2019,
+			"title" => "Test Not Applying Postfix",
+			"year" => 2019,
 			"VIDEO_FORMAT" => "copy",
 			"AUDIO_TRACKS" => -1,
 			"SUBTITLE_TRACKS" => -1,
