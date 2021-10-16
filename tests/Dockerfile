@@ -13,7 +13,7 @@ RUN apt-get update && \
 	apt-get install -y ${COMPOSER_DEPS} && \
 	composer install && \
 	composer clear-cache && \
-	apt-get purge -y ${COMPOSER_DEPS} && \
+	apt-get autoremove -y ${COMPOSER_DEPS} && \
 	apt-get clean -y && \
 	mkdir -m 777 -p ${DATA_DIR} && \
 	mkdir -m 777 -p /testResults
