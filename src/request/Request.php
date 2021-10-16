@@ -68,9 +68,9 @@ class Request {
 
 		$req->title = Options::get("title");
 		$req->year = Options::get("year");
-		$req->season = getEnv("SEASON");
-		$req->episode = getEnv("EPISODE");
-		$req->subtitle = getEnv("SUBTITLE");
+		$req->season = getEnv("season");
+		$req->episode = getEnv("episode");
+		$req->subtitle = getEnv("show-title");
 
 		$req->playlist = getEnvWithDefault("PLAYLIST", null);
 		$req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));

@@ -34,9 +34,9 @@ Argument | Description | Required | Default | Example
 `INPUT`\* | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | No | | `title_00.mkv`
 `--title` | The title to be used in metadata and naming of the file. | Yes | | `Cool Movie`
 `--year` | The year of the movie to be used in metadata and naming of the file. | No | | `2019`
-`SEASON` | The season of the TV show. | No | | `01`
-`EPISODE` | The episode within the season of the TV show. | No | | `01`
-`SUBTITLE` | The episode title of the TV show. | No | | `The One Where They Dance`
+`--season` | The season of the TV show. | No | | `01`
+`--episode` | The episode within the season of the TV show. | No | | `01`
+`--show-title` | The episode title of the TV show. | No | | `The One Where They Dance`
 `PLAYLIST` | If the input is bluray, override the playlist to be used. | No | | `183`
 `SUBTITLE_TRACKS` | The input subtitle tracks to convert. | No | `*` | `1`
 `SUBTITLE_FORMAT` | The desired output subtitle format. | No | `ass` | `copy`

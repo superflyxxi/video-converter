@@ -5,7 +5,7 @@ class Options {
 	private static $opts;
 
 	public static function init() {
-		self::$opts = getopt("", ["log-level::", "title:", "year::"]);
+		self::$opts = getopt("", ["log-level::", "title:", "year::", "season::", "episode::", "show-title::"]);
 	}
 
 	public static function get($arg, $default = null) {
