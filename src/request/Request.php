@@ -91,8 +91,10 @@ class Request {
 		$req->setNormalizeAudioTracks(
 			Options::get("normalize-audio-tracks", "")
 		);
-		$req->audioChannelLayout = Options::get("audio-channel-layout",	"");
-		$req->setAudioChannelLayoutTracks(Options::get("audio-channel-layout-tracks", "*"));
+		$req->audioChannelLayout = Options::get("audio-channel-layout", "");
+		$req->setAudioChannelLayoutTracks(
+			Options::get("audio-channel-layout-tracks", "*")
+		);
 
 		$req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
 		$req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
