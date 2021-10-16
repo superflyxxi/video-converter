@@ -35,7 +35,7 @@ if (null == Options::get("title")) {
 	exit(1);
 }
 
-$envInput = getEnv("INPUT");
+$envInput = Options::get("input");
 $csvRequest = null;
 if (strcasecmp(substr($envInput, -4), ".csv") === 0) {
 	$csvRequest = new CSVRequest(new SplFileObject("/data/" . $envInput, "r"));
@@ -58,6 +58,5 @@ if (strcasecmp(substr($envInput, -4), ".csv") === 0) {
 
 $finalResult = $csvRequest->convert();
 exit($finalResult);
-
 
 ?>

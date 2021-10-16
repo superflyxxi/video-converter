@@ -83,7 +83,7 @@ abstract class Test extends TestCase {
 			}
 		}
 		if (null !== $filename) {
-			$command .= " --input " . $filename;
+			$command .= " --input=" . $filename;
 		}
 		passthru($command, $return);
 		print "Return value " . $return;
