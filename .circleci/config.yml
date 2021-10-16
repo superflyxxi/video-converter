@@ -42,7 +42,8 @@ jobs:
       - php/install-packages
       - run: vendor/bin/phar-composer --version
       - run: vendor/bin/phar-composer build .
-      - run: ls -lha .
+      - store_artifacts:
+          path: video-converter.phar
 
   build:
     environment:
