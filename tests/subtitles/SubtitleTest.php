@@ -12,7 +12,7 @@ final class SubtitleTest extends Test {
 			"VIDEO_TRACKS" => -1,
 			"AUDIO_TRACKS" => -1,
 			"SUBTITLE_FORMAT" => "srt",
-			"year" = > 2019,
+			"year" => 2019,
 		]);
 
 		$this->assertEquals(0, $return, "ripvideo exit code");
@@ -72,7 +72,7 @@ final class SubtitleTest extends Test {
 			"SUBTITLE_FORMAT" => "srt",
 			"SUBTITLE_CONVERSION_OUTPUT" => "FILE",
 			"SUBTITLE_CONVERSION_BLACKLIST" => "’!\�~@~",
-			"year" = > 2019,
+			"year" => 2019,
 		]);
 
 		$this->assertEquals(0, $return, "ripvideo exit code"); //test("ffmpeg code", 0, $return, $output);
@@ -121,7 +121,7 @@ final class SubtitleTest extends Test {
 			"title" => "Test Convert Bluray Subtitle",
 			"VIDEO_TRACKS" => -1,
 			"AUDIO_TRACKS" => -1,
-			"year" = > 2019,
+			"year" => 2019,
 		]);
 
 		$this->assertEquals(0, $return, "ripvideo exit code");

@@ -12,7 +12,7 @@ final class DeinterlaceDetectionTest extends Test {
 				"AUDIO_TRACKS" => -1,
 				"SUBTITLE_TRACKS" => -1,
 				"title" => "Test Probe Auto Deinterlace",
-				"year" = > 2019,
+				"year" => 2019,
 			],
 			"1m"
 		);
@@ -77,7 +77,7 @@ final class DeinterlaceDetectionTest extends Test {
 				"AUDIO_TRACKS" => -1,
 				"SUBTITLE_TRACKS" => -1,
 				"title" => "Test Idet Auto Deinterlace",
-				"year" = > 2021,
+				"year" => 2021,
 			],
 			"1m"
 		);
