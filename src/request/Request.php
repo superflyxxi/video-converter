@@ -68,9 +68,9 @@ class Request {
 
 		$req->title = Options::get("title");
 		$req->year = Options::get("year");
-		$req->season = getEnv("season");
-		$req->episode = getEnv("episode");
-		$req->subtitle = getEnv("show-title");
+		$req->season = Options::get("season");
+		$req->episode = Options::get("episode");
+		$req->subtitle = Options::get("show-title");
 
 		$req->playlist = getEnvWithDefault("PLAYLIST", null);
 		$req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
@@ -84,20 +84,15 @@ class Request {
 			"|\\~/\`_"
 		);
 
-		$req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
-		$req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
-		$req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
-		$req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", null);
+		$req->setAudioTracks(Options::get("audio-tracks", "*"));
+		$req->audioFormat = Options::get("audio-format", "aac");
+		$req->audioQuality = Options::get("audio-quality", "2");
+		$req->audioSampleRate = Options::get("audio-sample-rate", null);
 		$req->setNormalizeAudioTracks(
-			getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", "")
+			Options::get("normalize-audio-tracks", "")
 		);
-		$req->audioChannelLayout = getEnvWithDefault(
-			"AUDIO_CHANNEL_LAYOUT",
-			""
-		);
-		$req->setAudioChannelLayoutTracks(
-			getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*")
-		);
+		$req->audioChannelLayout = Options::get("audio-channel-layout",	"");
+		$req->setAudioChannelLayoutTracks(Options::get("audio-channel-layout-tracks", "*"));
 
 		$req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
 		$req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
