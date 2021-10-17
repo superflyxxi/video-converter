@@ -49,6 +49,9 @@ jobs:
           at: /tmp/workspace
       - checkout
       - run:
+          name: Move phar to docker dir
+          command: cp -v /tmp/workspace/video-converter.phar ./
+      - run:
           name: Custom enviroment variables
           command: |
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
