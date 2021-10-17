@@ -97,7 +97,8 @@ jobs:
   test-docker:
     environment:
       DEBIAN_FRONTEND: noninteractive
-    machine: true
+    executor:
+      name: docker/machine
     steps:
       - attach_workspace:
           at: /tmp/workspace
