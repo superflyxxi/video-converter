@@ -37,7 +37,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	else \
 		BUILD_DEPS="${BUILD_DEPS} tesseract-ocr-dev"; \
 	fi && \
-	printf "FROM_IMAGE=${FROM_IMAGE}\nBUILD_DEPS=${BUILD_DEPS}\n" && \
+	printf "FROM_IMAGE=%s\nBUILD_DEPS=%s\n" "${FROM_IMAGE}" "${BUILD_DEPS}"&& \
 	apt-get update && \
 	apt-get install -y --no-install-recommends "${BUILD_DEPS}" &&  \
 	git clone --depth 1 "https://github.com/bubonic/VobSub2SRT.git" && \
