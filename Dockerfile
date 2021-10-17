@@ -14,19 +14,19 @@ RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 RUN apt-get update -y && \
 	apt-get install -y --no-install-recommends apt-utils && \
 	apt-get install -y --no-install-recommends php7.2-cli php7.2-json mkvtoolnix && \
-	apt-get clean -y
+	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 RUN apt-get update -y && \
 	apt-get install -y --no-install-recommends curl && \
 	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
 	apt-get purge -y curl && \
-	apt-get clean -y
+	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # install tesseract, language packs, and java
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	apt-get update && \
 	apt-get install -y --no-install-recommends libtesseract4 openjdk-11-jre-headless && \
 	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y --no-install-recommends && \
-	apt-get clean -y ; \
+	apt-get clean -y && rm -rf /var/lib/apt/lists/* ; \
     fi
 
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
@@ -46,7 +46,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	make && \
 	make install && \
 	apt-get purge -y ${BUILD_DEPS} && \
-	apt-get clean -y && \
+	apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
 	rm -rf ${DIR} ; \
    fi
 
