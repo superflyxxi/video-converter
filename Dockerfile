@@ -12,11 +12,11 @@ ENV TMP_DIR=/tmp/wip
 RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
 
 RUN apt-get update -y && \
-	apt-get install -y apt-utils && \
-	apt-get install -y php7.2-cli php7.2-json mkvtoolnix && \
+	apt-get install -y --no-install-recommends apt-utils && \
+	apt-get install -y --no-install-recommends php7.2-cli php7.2-json mkvtoolnix && \
 	apt-get clean -y
 RUN apt-get update -y && \
-	apt-get install -y curl && \
+	apt-get install -y --no-install-recommends curl && \
 	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
 	apt-get purge -y curl && \
 	apt-get clean -y
@@ -24,8 +24,8 @@ RUN apt-get update -y && \
 # install tesseract, language packs, and java
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	apt-get update && \
-	apt-get install -y libtesseract4 openjdk-11-jre-headless && \
-	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y && \
+	apt-get install -y --no-install-recommends libtesseract4 openjdk-11-jre-headless && \
+	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y --no-install-recommends && \
 	apt-get clean -y ; \
     fi
 
@@ -39,7 +39,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	fi && \
 	printf "FROM_IMAGE=${FROM_IMAGE}\nBUILD_DEPS=${BUILD_DEPS}\n" && \
 	apt-get update && \
-	apt-get install -y ${BUILD_DEPS} &&  \
+	apt-get install -y --no-install-recommends ${BUILD_DEPS} &&  \
 	git clone --depth 1 https://github.com/bubonic/VobSub2SRT.git && \
 	cd VobSub2SRT && \
 	./configure && \
