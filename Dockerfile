@@ -1,5 +1,5 @@
 FROM jrottenberg/ffmpeg:4.4-vaapi1804
-MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
+LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG BUILD_SUBTITLE_SUPPORT=true
@@ -51,7 +51,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
    fi
 
 # Install DBSup2Sub
-ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /app/ripvideo/
+COPY "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /app/ripvideo/
 
 ENTRYPOINT ["/usr/bin/video-converter.phar"]
 COPY video-converter.phar /usr/bin/
