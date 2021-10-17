@@ -179,7 +179,7 @@ jobs:
             - short_version.txt
 
 workflows:
-  default:
+  cicd:
     jobs:
       - release:
           name: pre-release
