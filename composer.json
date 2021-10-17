@@ -4,6 +4,7 @@
     "keywords": [
         "ffmpeg"
     ],
+	"bin": ["src/rip-video.php"],
     "homepage": "https://github.com/superflyxxi/video-converter",
     "license": "Apache-2.0",
     "scripts": {
