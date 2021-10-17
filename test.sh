@@ -17,7 +17,7 @@ mkdir testResults || true
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
-	-v "$(pwd)/testResults:/testResults" \
+	-v "$(pwd)/testResults:/app/ripvideo/testResults" \
 	-e LOG_LEVEL=100 \
 	-e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN?Missing TEST_SAMPLE_DOMAIN} \
 	${TEST_IMAGE} --testsuite ${TESTSUITES} ${ADDITIONAL_PHPUNIT_ARGS}
