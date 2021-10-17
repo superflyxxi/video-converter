@@ -22,5 +22,4 @@ RUN apt-get update && \
 	composer clear-cache && \
 	apt-get purge -y ${COMPOSER_DEPS} && \
 	apt-get clean -y && \
-	mkdir -m 777 ${DATA_DIR} && \
 	mkdir -m 777 ${SRC_DIR}/testResults
