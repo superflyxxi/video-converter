@@ -2,7 +2,7 @@ FROM jrottenberg/ffmpeg:4.4-vaapi1804
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
 # Support bash as the deafult shell
-SHELL ["/bin/bash", "-o pipefail"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG BUILD_SUBTITLE_SUPPORT=true
