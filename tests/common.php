@@ -76,7 +76,7 @@ abstract class Test extends TestCase {
 		foreach ($envVars as $key => $value) {
 			$command .= $key . '="' . $value . '" ';
 		}
-		$command .= "timeout -s15 " . $timeout . " /app/ripvideo/rip-video.php";
+		$command .= "timeout -s15 " . $timeout . " " . getEnv("SRC_DIR") . "/rip-video.php";
 		passthru($command, $return);
 		print "Return value " . $return;
 		return $return;

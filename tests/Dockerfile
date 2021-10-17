@@ -6,7 +6,7 @@ RUN apt-get update && \
 	apt-get clean -y
 ENV DATA_DIR=/data \
 	SRC_DIR=/app/ripvideo
-ENTRYPOINT [ "${SRC_DIR}/vendor/bin/phpunit", "-c", "${SRC_DIR}/tests/phpunit.xml" ]
+ENTRYPOINT ${SRC_DIR}/vendor/bin/phpunit -c ${SRC_DIR}/tests/phpunit.xml
 CMD [ "${SRC_DIR}/tests" ]
 WORKDIR ${SRC_DIR}
 ADD . ${SRC_DIR}
@@ -19,4 +19,3 @@ RUN apt-get update && \
 	apt-get clean -y && \
 	mkdir -m 777 -p ${DATA_DIR} && \
 	mkdir -m 777 -p /testResults
-ENTRYPOINT [ "/app/ripvideo/vendor/bin/phpunit", "-c", "${SRC_DIR}/tests/phpunit.xml" ]
