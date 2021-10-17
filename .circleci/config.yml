@@ -87,11 +87,13 @@ jobs:
           tag: ${DOCKER_TAGS}
       - run:
           name: Export tar
-          command: docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
+          command: |
+            docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
+            gzip video-converter.tar
       - persist_to_workspace:
           root: ./
           paths:
-            - video-converter.tar
+            - video-converter.tar.gz
 
   test-docker:
     environment:
@@ -107,7 +109,9 @@ jobs:
             echo "export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)" >> ${BASH_ENV}
       - run:
           name: Load docker image
-          command: docker load -i /tmp/workspace/video-converter.tar
+          command: |
+            gunzip /tmp/workspace/video-converter.tar.gz
+            docker load -i /tmp/workspace/video-converter.tar
       - docker/build:
           docker-context: .
           path: .
