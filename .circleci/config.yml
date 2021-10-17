@@ -107,7 +107,7 @@ jobs:
             echo "export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)" >> ${BASH_ENV}
       - run:
           name: Load docker image
-          run: docker load -i /tmp/workspace/video-converter.tar
+          command: docker load -i /tmp/workspace/video-converter.tar
       - docker/build:
           docker-context: .
           path: .
@@ -205,7 +205,8 @@ workflows:
           context: default
           prerelease: false
           requires:
-            - build-test-push
+            - build-docker
+            - test-docker
           filters:
             branches:
               only:
