@@ -89,7 +89,7 @@ jobs:
           tag: ${DOCKER_TAGS}
       - run:
           name: Export tar
-          command: docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}/${PRIMARY_DOCKER_TAG}
+          command: docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
