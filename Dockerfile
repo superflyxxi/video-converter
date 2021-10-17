@@ -9,7 +9,9 @@ ARG BUILD_SUBTITLE_SUPPORT=true
 WORKDIR /data
 
 ENV TMP_DIR=/tmp/wip
-RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
+RUN mkdir -p ${TMP_DIR}/data && \
+	chmod -R ugo+rw ${TMP_DIR} && \
+	chmod -R ugo+rw /data
 
 RUN apt-get update -y && \
 	apt-get install -y --no-install-recommends apt-utils && \
