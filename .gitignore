@@ -1,4 +1,4 @@
 testResults/
 vendor/
 .phplint-cache
-video-converter*.phar
+**/*.phar
