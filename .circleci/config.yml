@@ -43,8 +43,7 @@ jobs:
   build-docker:
     environment:
       DEBIAN_FRONTEND: noninteractive
-    executor:
-      name: docker/machine
+    executor: docker/machine
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -97,8 +96,7 @@ jobs:
   test-docker:
     environment:
       DEBIAN_FRONTEND: noninteractive
-    executor:
-      name: docker/machine
+    executor: docker/machine
     steps:
       - attach_workspace:
           at: /tmp/workspace
