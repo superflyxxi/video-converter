@@ -1,6 +1,9 @@
 FROM jrottenberg/ffmpeg:4.4-vaapi1804
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
+# Support bash as the deafult shell
+SHELL ["/bin/bash", "-o pipefail"]
+
 ARG DEBIAN_FRONTEND=noninteractive
 ARG BUILD_SUBTITLE_SUPPORT=true
 WORKDIR /data
@@ -17,9 +20,6 @@ RUN apt-get update -y && \
 	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
 	apt-get purge -y curl && \
 	apt-get clean -y
-
-# Support bash as the deafult shell
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # install tesseract, language packs, and java
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
