@@ -45,7 +45,6 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
     executor:
       name: docker/machine
-      dlc: true
     steps:
       - attach_workspace:
           at: /tmp/workspace
