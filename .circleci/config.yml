@@ -40,7 +40,7 @@ jobs:
       - store_artifacts:
           path: video-converter.phar
 
-  build:
+  build-docker:
     environment:
       DEBIAN_FRONTEND: noninteractive
     machine: true
@@ -72,31 +72,57 @@ jobs:
             fi
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             cat ${BASH_ENV}
-      - docker/check:
-          registry: $DOCKER_REGISTRY
       - docker/build:
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
           step-name: Build docker image
-      - docker/build:
-          docker-context: tests/
-          path: tests/
-          image: ${THIS_IMAGE}-test
-          tag: ${PRIMARY_DOCKER_TAG}
-          registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-          step-name: Build unit test image
+      - run:
+          name: Export tar
+          command: docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}/${PRIMARY_DOCKER_TAG}
+      - docker/check:
+          registry: $DOCKER_REGISTRY
       - docker/push:
           step-name: Pushing actual image
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - video-converter.tar
+
+  test-docker:
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    machine: true
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Custom enviroment variables
+          command: |
+            echo "export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)" >> ${BASH_ENV}
+      - run:
+          name: Load docker image
+          run: docker load -i /tmp/workspace/video-converter.tar
+      - docker/build:
+          docker-context: .
+          path: .
+          dockerfile: tests/Dockerfile
+          image: ${THIS_IMAGE}-test
+          tag: ${PRIMARY_DOCKER_TAG}
+          registry: ${DOCKER_REGISTRY}
+          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
+          step-name: Build unit test image
       - unless:
           condition:
             equal: [ main, << pipeline.git.branch >> ]
           steps:
+            - docker/check:
+                registry: $DOCKER_REGISTRY
             - docker/push:
                 step-name: Pushing unit test image
                 registry: $DOCKER_REGISTRY
@@ -163,13 +189,17 @@ workflows:
           context: default
       - build-phar:
           context: default
-      - build:
-          name: build-test-push
+      - build-docker:
           context: default
           requires:
             - pre-release
             - validate-format
             - build-phar
+      - test-docker:
+          context: default
+          requires:
+            - pre-release
+            - build-docker
       - release:
           name: release
           context: default
