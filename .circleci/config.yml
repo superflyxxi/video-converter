@@ -78,9 +78,6 @@ jobs:
           registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
           step-name: Build docker image
-      - run:
-          name: Export tar
-          command: docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}/${PRIMARY_DOCKER_TAG}
       - docker/check:
           registry: $DOCKER_REGISTRY
       - docker/push:
@@ -88,6 +85,9 @@ jobs:
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
+      - run:
+          name: Export tar
+          command: docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}/${PRIMARY_DOCKER_TAG}
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
