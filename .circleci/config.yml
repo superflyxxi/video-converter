@@ -189,10 +189,15 @@ workflows:
           context: default
       - build-phar:
           context: default
+      - docker/hadolint:
+          name: validate-dockerfile
+          context: default
+          dockerfiles: "Dockerfile,tests/Dockerfile"
       - build-docker:
           context: default
           requires:
             - pre-release
+            - validate-dockerfile
             - validate-format
             - build-phar
       - test-docker:
