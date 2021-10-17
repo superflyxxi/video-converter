@@ -30,7 +30,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
     fi
 
 RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
-	DIR=$(mktemp -d) && cd ${DIR} && \
+	DIR=$(mktemp -d) && cd "${DIR}" && \
         BUILD_DEPS="git libleptonica-dev libtiff5-dev build-essential cmake pkg-config" && \
 	if [[ ! "${FROM_IMAGE}" == *1804 ]]; then \
 		BUILD_DEPS="${BUILD_DEPS} libtesseract-dev"; \
@@ -39,15 +39,15 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
 	fi && \
 	printf "FROM_IMAGE=${FROM_IMAGE}\nBUILD_DEPS=${BUILD_DEPS}\n" && \
 	apt-get update && \
-	apt-get install -y --no-install-recommends ${BUILD_DEPS} &&  \
-	git clone --depth 1 https://github.com/bubonic/VobSub2SRT.git && \
+	apt-get install -y --no-install-recommends "${BUILD_DEPS}" &&  \
+	git clone --depth 1 "https://github.com/bubonic/VobSub2SRT.git" && \
 	cd VobSub2SRT && \
 	./configure && \
 	make && \
 	make install && \
-	apt-get purge -y ${BUILD_DEPS} && \
+	apt-get purge -y "${BUILD_DEPS}" && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-	rm -rf ${DIR} ; \
+	rm -rf "${DIR}" ; \
    fi
 
 # Install DBSup2Sub
