@@ -8,7 +8,7 @@ RUN apt-get update && \
 	apt-get clean -y
 ENV DATA_DIR=/data
 
-ENTRYPOINT /app/ripvideo/vendor/bin/phpunit -c /app/ripvideo/tests/phpunit.xml
+ENTRYPOINT ["/app/ripvideo/vendor/bin/phpunit", "-c", "/app/ripvideo/tests/phpunit.xml"]
 CMD [ "/app/ripvideo/tests" ]
 WORKDIR /app/ripvideo
 
