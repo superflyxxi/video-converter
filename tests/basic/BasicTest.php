@@ -78,7 +78,7 @@ final class BasicTest extends Test {
 			"--year" => 2019,
 			"--season" => "01",
 			"--episode" => "23",
-			"--subtitle" => "The One Where Things",
+			"--show-title" => "The One Where Things",
 			"--video-format" => "copy",
 			"--audio-format" => "copy",
 			"--subtitle-format" => "copy",
@@ -102,7 +102,7 @@ final class BasicTest extends Test {
 		$this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
 		$this->assertEquals("01", $probe["format"]["tags"]["SEASON"], "Metadata SEASON");
 		$this->assertEquals("23", $probe["format"]["tags"]["EPISODE"], "Metadata EPISODE");
-		$this->assertEquals("The One Where Things", $probe["format"]["tags"]["SUBTITLE"], "Metadata SUBTITLE");
+		$this->assertEquals("The One Where Things", $probe["format"]["tags"]["showTitle"], "Metadata showTitle");
 	}
 
 	public function testNotApplyingPostfix() {
