@@ -12,7 +12,7 @@ Install the tools. This is a one time run locally.
 `docker run --rm -it -v "$(pwd):/pwd" -w /pwd --entrypoint npm node install prettier @prettier/plugin-php`
 
 Now run each time to fix formatting.
-`docker run --rm -it -v "$(pwd):/pwd" -w /pwd --entrypoint npx prettier src/ tests/ --write`
+`docker run --rm -it -v "$(pwd):/pwd" -w /pwd --entrypoint npx node prettier src/ tests/ --write`
 
 ## Building PHAR
 In order to build the phar, this simple command will work.
