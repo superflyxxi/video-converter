@@ -47,7 +47,7 @@ RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
    fi
 
 # Install DBSup2Sub
-ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /app/ripvideo/
+ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /opt/
 
 ENTRYPOINT ["/usr/bin/video-converter"]
 COPY video-converter.phar /usr/bin/video-converter

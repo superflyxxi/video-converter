@@ -85,11 +85,10 @@ class ConvertSubtitle {
 		if (!file_exists($dvdFile . ".sub")) {
 			self::$log->info("Converting pgs to dvd subtitle.");
 			$command =
-				'java -jar /app/ripvideo/BDSup2Sub.jar -o "' . $dvdFile . '.sub" "' . $pgsFile->getFileName() . '"';
+				'java -jar /opt/BDSup2Sub.jar -o "' . $dvdFile . '.sub" "' . $pgsFile->getFileName() . '"';
 			self::$log->debug("Executing command", [
 				"command" => $command,
 			]);
-			//exec($command, $out, $return);
 			passthru($command . " 2>&1", $return);
 			if ($return != 0) {
 				throw new ExecutionException("java", $return, $command);
