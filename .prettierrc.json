@@ -1,5 +1,6 @@
 {
 	"phpVersion": "7.2",
 	"useTabs": true,
-	"braceStyle": "1tbs"
+	"braceStyle": "1tbs",
+	"printWidth": 120
 }
