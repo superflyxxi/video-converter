@@ -8,16 +8,16 @@ ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /data
 
 ENV TMP_DIR=/tmp/wip
+
+# Install DBSup2Sub
+ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /opt/
+
 RUN mkdir -p ${TMP_DIR}/data && \
 	chmod -R ugo+rw ${TMP_DIR} && \
-	chmod -R ugo+rw /data
-
-RUN apt-get update -y && \
-	apt-get install -y --no-install-recommends apt-utils && \
-	apt-get install -y --no-install-recommends php7.2-cli php7.2-json mkvtoolnix && \
-	apt-get clean -y && rm -rf /var/lib/apt/lists/*
-RUN apt-get update -y && \
-	apt-get install -y --no-install-recommends curl && \
+	chmod -R ugo+rw /data && \
+	chmod ugo+r /opt/BDSup2Sub.jar && \
+	apt-get update -y && \
+	apt-get install -y --no-install-recommends apt-utils curl php7.2-cli php7.2-json mkvtoolnix && \
 	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
 	apt-get purge -y curl && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
@@ -40,10 +40,6 @@ RUN DIR=$(mktemp -d) && cd "${DIR}" && \
 	apt-get purge -y ${BUILD_DEPS} && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
 	rm -rf "${DIR}"
-
-# Install DBSup2Sub
-ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /opt/
-RUN chmod ugo+r /opt/BDSup2Sub.jar
 
 ENTRYPOINT ["/usr/bin/video-converter"]
 COPY video-converter.phar /usr/bin/video-converter
