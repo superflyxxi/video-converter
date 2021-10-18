@@ -60,7 +60,7 @@ class Request {
 	public function __construct($filename) {
 		$this->oInputFile = new InputFile($filename);
 		$this->hwaccel = is_dir("/dev/dri");
-		$this->videoHdr = getEnvWithDefault("HDR", "false") == "true";
+		$this->videoHdr = Options::get("hdr");
 	}
 
 	public static function newInstanceFromEnv($filename) {
