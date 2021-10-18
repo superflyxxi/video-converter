@@ -30,7 +30,7 @@ jobs:
       - checkout
       - php/install-composer
       - php/install-packages
-      - run: mv -v vendor/bin/phar-composer /usr/bin/
+      - run: mv -v vendor/bin/phar-composer /bin/
       - run: composer run-script lint
       - run: composer clean
       - php/install-packages:
