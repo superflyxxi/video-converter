@@ -6,7 +6,7 @@ final class SubtitleTest extends Test {
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo("dvd.mkv", [
-			"--disable-postfix" => "false",
+			"--disable-postfix" => true,
 			"--title" => "Test Convert DVD Subtitle",
 			"--video-tracks" => -1,
 			"--audio-tracks" => -1,
@@ -33,7 +33,7 @@ final class SubtitleTest extends Test {
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo("dvd.mkv", [
-			"--disable-postfix" => "false",
+			"--disable-postfix" => true,
 			"--title" => "Test Subtitle Files",
 			"--video-format" => "copy",
 			"--audio-tracks" => -1,
@@ -66,7 +66,7 @@ final class SubtitleTest extends Test {
 		$this->getFile("bluray.mkv");
 
 		$return = $this->ripvideo("bluray.mkv", [
-			"--disable-postfix" => "false",
+			"--disable-postfix" => true,
 			"--title" => "Test Convert Bluray Subtitle",
 			"--video-tracks" => -1,
 			"--audio-tracks" => -1,
