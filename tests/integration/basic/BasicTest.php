@@ -102,6 +102,7 @@ final class BasicTest extends Test {
 		$this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
 		$this->assertEquals("01", $probe["format"]["tags"]["SEASON"], "Metadata SEASON");
 		$this->assertEquals("23", $probe["format"]["tags"]["EPISODE"], "Metadata EPISODE");
+		print_r($probe);
 		$this->assertEquals("The One Where Things", $probe["format"]["tags"]["showTitle"], "Metadata showTitle");
 	}
 
