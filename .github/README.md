@@ -40,7 +40,7 @@ Argument | Description | Default | Example
 `--log-level` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | `250` | `100`
 `--input`\* | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | | `title_00.mkv`
 `--disable-postfix`\* | Pass this to avoid having the input filename as a postfix to the output files. | | 
-`PLAYLIST` | If the input is bluray, override the playlist to be used. | | `183`
+`--playlist` | If the input is bluray, override the playlist to be used. | | `183`
 `--title` | The title to be used in metadata and naming of the file. | | `Cool Movie`
 `--year` | The year of the movie to be used in metadata and naming of the file. | | `2019`
 `--season` | The season of the TV show. | | `01`

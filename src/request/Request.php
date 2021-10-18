@@ -72,7 +72,7 @@ class Request {
 		$req->episode = Options::get("episode");
 		$req->showTitle = Options::get("show-title");
 
-		$req->playlist = getEnvWithDefault("PLAYLIST", null);
+		$req->playlist = Options::get("PLAYLIST", null);
 
 		$req->setVideoTracks(Options::get("video-tracks", "*"));
 		$req->videoFormat = Options::get("video-format", "notcopy");
