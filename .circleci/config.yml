@@ -22,8 +22,8 @@ jobs:
       - run: npm install prettier @prettier/plugin-php
       - run: npx prettier src/ --check
 
-  validate-syntax:
-    executor: 
+  build-phar:
+    executor:
       name: php/default
       tag: '7.2'
     steps:
@@ -31,15 +31,26 @@ jobs:
       - php/install-composer
       - php/install-packages
       - run: composer run-script lint
+      - run: vendor/bin/phar-composer --version
+      - run: vendor/bin/phar-composer build .
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - video-converter.phar
+      - store_artifacts:
+          path: video-converter.phar
 
-  build:
+  build-docker:
     environment:
       DEBIAN_FRONTEND: noninteractive
-    machine: true
+    executor: docker/machine
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
+      - run:
+          name: Move phar to docker dir
+          command: cp -v /tmp/workspace/video-converter.phar ./
       - run:
           name: Custom enviroment variables
           command: |
@@ -61,31 +72,61 @@ jobs:
             fi
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             cat ${BASH_ENV}
-      - docker/check:
-          registry: $DOCKER_REGISTRY
       - docker/build:
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
           step-name: Build docker image
-      - docker/build:
-          docker-context: tests/
-          path: tests/
-          image: ${THIS_IMAGE}-test
-          tag: ${PRIMARY_DOCKER_TAG}
-          registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-          step-name: Build unit test image
+      - docker/check:
+          registry: $DOCKER_REGISTRY
       - docker/push:
           step-name: Pushing actual image
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
+      - run:
+          name: Export tar
+          command: |
+            docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
+            gzip video-converter.tar
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - video-converter.tar.gz
+
+  test-docker:
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    executor: docker/machine
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Custom enviroment variables
+          command: |
+            echo "export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)" >> ${BASH_ENV}
+      - run:
+          name: Load docker image
+          command: |
+            gunzip /tmp/workspace/video-converter.tar.gz
+            docker load -i /tmp/workspace/video-converter.tar
+      - docker/build:
+          docker-context: .
+          path: .
+          dockerfile: tests/Dockerfile
+          image: ${THIS_IMAGE}-test
+          tag: ${PRIMARY_DOCKER_TAG}
+          registry: ${DOCKER_REGISTRY}
+          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
+          step-name: Build unit test image
       - unless:
           condition:
             equal: [ main, << pipeline.git.branch >> ]
           steps:
+            - docker/check:
+                registry: $DOCKER_REGISTRY
             - docker/push:
                 step-name: Pushing unit test image
                 registry: $DOCKER_REGISTRY
@@ -142,7 +183,7 @@ jobs:
             - short_version.txt
 
 workflows:
-  default:
+  cicd:
     jobs:
       - release:
           name: pre-release
@@ -150,21 +191,30 @@ workflows:
           prerelease: true
       - validate-format:
           context: default
-      - validate-syntax:
+      - build-phar:
           context: default
-      - build:
-          name: build-test-push
+      - docker/hadolint:
+          name: validate-dockerfile
+          context: default
+      - build-docker:
           context: default
           requires:
             - pre-release
-            - validate-syntax
+            - validate-dockerfile
             - validate-format
+            - build-phar
+      - test-docker:
+          context: default
+          requires:
+            - pre-release
+            - build-docker
       - release:
           name: release
           context: default
           prerelease: false
           requires:
-            - build-test-push
+            - build-docker
+            - test-docker
           filters:
             branches:
               only:
