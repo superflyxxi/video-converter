@@ -10,17 +10,11 @@ class ConvertAudio {
 
 	public static function convert($oRequest) {
 		$arrAdditionalRequests = [];
-		if (
-			"copy" != $oRequest->audioFormat &&
-			count($oRequest->normalizeAudioTracks)
-		) {
+		if ("copy" != $oRequest->audioFormat && count($oRequest->normalizeAudioTracks)) {
 			// only do this there are tracks to normalize
 			$dir = getEnvWithDefault("TMP_DIR", "/tmp");
 			// any track that is not needed, just copy it to its own file
-			foreach (
-				$oRequest->oInputFile->getAudioStreams()
-				as $index => $stream
-			) {
+			foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
 				// copy original always and add to list of additional requests
 				self::$log->info("Converting audio track", [
 					"filename" => $oRequest->oInputFile->getFileName(),
@@ -33,27 +27,17 @@ class ConvertAudio {
 				$tmpRequest->audioFormat = $oRequest->audioFormat;
 				$tmpRequest->audioQuality = $oRequest->audioQuality;
 				$tmpRequest->audioChannelLayout = $oRequest->audioChannelLayout;
-				$tmpRequest->setAudioChannelLayoutTracks(
-					implode(" ", $oRequest->getAudioChannelLayoutTracks())
-				);
+				$tmpRequest->setAudioChannelLayoutTracks(implode(" ", $oRequest->getAudioChannelLayoutTracks()));
 				$tmpRequest->prepareStreams();
 				if ($oRequest->oInputFile->getPrefix() != null) {
 					$convOutFile = new OutputFile(
 						null,
-						$dir .
-							realpath($oRequest->oInputFile->getFileName()) .
-							"/dir-" .
-							$index .
-							"-conv.mkv"
+						$dir . realpath($oRequest->oInputFile->getFileName()) . "/dir-" . $index . "-conv.mkv"
 					);
 				} else {
 					$convOutFile = new OutputFile(
 						null,
-						$dir .
-							$oRequest->oInputFile->getFileName() .
-							"-" .
-							$index .
-							"-conv.mkv"
+						$dir . $oRequest->oInputFile->getFileName() . "-" . $index . "-conv.mkv"
 					);
 				}
 				FFmpegHelper::execute([$tmpRequest], $convOutFile);
@@ -80,22 +64,14 @@ class ConvertAudio {
 		return $arrAdditionalRequests;
 	}
 
-	private static function normalize(
-		$oRequest,
-		$index,
-		$dir,
-		$inFileName,
-		$stream
-	) {
+	private static function normalize($oRequest, $index, $dir, $inFileName, $stream) {
 		// if the track is to be normalized, now let's normalize it and put it in
 		self::$log->info("Normalizing track", [
 			"filename" => $oRequest->oInputFile->getFileName(),
 			"index" => $index,
 		]);
 		$command =
-			'ffmpeg -hide_banner -i "' .
-			$inFileName .
-			'" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
+			'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
 		self::$log->debug("Measuring audio with command", [
 			"filename" => $oRequest->oInputFile->getFileName(),
 			"index" => $index,
@@ -109,12 +85,7 @@ class ConvertAudio {
 		$out = implode(array_slice($out, -12));
 		$json = json_decode($out, true);
 
-		$normFile =
-			$dir .
-			$oRequest->oInputFile->getFileName() .
-			"-" .
-			$index .
-			"-norm.mkv";
+		$normFile = $dir . $oRequest->oInputFile->getFileName() . "-" . $index . "-norm.mkv";
 		$normChannelMap =
 			$oRequest->areAllAudioChannelLayoutTracksConsidered() ||
 			in_array($index, $oRequest->getAudioChannelLayoutTracks())
@@ -149,12 +120,7 @@ class ConvertAudio {
 		if (null != $sampleRate) {
 			$command .= " -ar " . $sampleRate;
 		}
-		$command .=
-			' -metadata:s:a:0 "title=Normalized ' .
-			$stream->language .
-			" " .
-			$normChannelMap .
-			'"';
+		$command .= ' -metadata:s:a:0 "title=Normalized ' . $stream->language . " " . $normChannelMap . '"';
 		$command .= ' -f matroska "' . $normFile . '" 2>&1';
 
 		self::$log->debug("Normalizing track with command", [

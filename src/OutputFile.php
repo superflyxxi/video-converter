@@ -5,8 +5,7 @@ class OutputFile {
 	public function __construct($postfix = null, $out = null, $dir = null) {
 		$this->postfix = $postfix;
 		$this->envOutput = $out == null ? getEnv("OUTPUT") : $out;
-		$this->outputDir =
-			$dir == null ? getEnvWithDefault("OUTPUT_DIR", "/data") : $dir;
+		$this->outputDir = $dir == null ? getEnvWithDefault("OUTPUT_DIR", "/data") : $dir;
 	}
 
 	public $title = null;

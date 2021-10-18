@@ -5,10 +5,7 @@ require_once "ffmpeg/FFmpegHelper.php";
 class InputFile {
 	public function __construct($filename) {
 		$this->filename = $filename;
-		if (
-			is_dir($filename) ||
-			substr($filename, -strlen($filename)) === ".iso"
-		) {
+		if (is_dir($filename) || substr($filename, -strlen($filename)) === ".iso") {
 			$this->prefix = "bluray:";
 		}
 		$json = FFmpegHelper::probe($this);

@@ -5,12 +5,7 @@ require_once "request/Request.php";
 require_once "Stream.php";
 
 class FFmpegVideoArgGenerator implements FFmpegArgGenerator {
-	public function getAdditionalArgs(
-		$outTrack,
-		Request $request,
-		$inputTrack,
-		Stream $stream
-	) {
+	public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream) {
 		$args = " -c:v:" . $outTrack;
 		if ("copy" == $request->videoFormat) {
 			$args .= " copy";
@@ -55,9 +50,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator {
 					default:
 					case "00":
 						$filters .=
-							",dejudder,fps=" .
-							$stream->frame_rate .
-							",fieldmatch,yadif=deint=interlaced,decimate"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+							",dejudder,fps=" . $stream->frame_rate . ",fieldmatch,yadif=deint=interlaced,decimate"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
 						break;
 					case "01":
 						$filters .= ",yadif=mode=1"; // each field is a frame (double framerate) https://ffmpeg.org/ffmpeg-filters.html#yadif-1
@@ -79,8 +72,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator {
 			}
 			$args .= " libx265 -crf 20 -level:v 4";
 		}
-		$args .=
-			" -metadata:s:v:" . $outTrack . " language=" . $stream->language;
+		$args .= " -metadata:s:v:" . $outTrack . " language=" . $stream->language;
 		return $args;
 	}
 

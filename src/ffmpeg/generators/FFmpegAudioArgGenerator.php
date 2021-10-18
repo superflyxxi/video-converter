@@ -8,12 +8,7 @@ require_once "LogWrapper.php";
 class FFmpegAudioArgGenerator implements FFmpegArgGenerator {
 	public static $log;
 
-	public function getAdditionalArgs(
-		$outTrack,
-		Request $request,
-		$inputTrack,
-		Stream $stream
-	) {
+	public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream) {
 		$args = " ";
 		if ("copy" != $request->audioFormat) {
 			self::$log->debug("Audio Channel Layout Tracks", [
@@ -22,17 +17,11 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator {
 			if (
 				$request->audioChannelLayout != null &&
 				($request->areAllAudioChannelLayoutTracksConsidered() ||
-					in_array(
-						$inputTrack,
-						$request->getAudioChannelLayoutTracks()
-					))
+					in_array($inputTrack, $request->getAudioChannelLayoutTracks()))
 			) {
 				self::$log->debug("Taking channel layout from request");
 				$channelLayout = $request->audioChannelLayout;
-				if (
-					null != $channelLayout &&
-					preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)
-				) {
+				if (null != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
 					$channels = $matches[1] + $matches[2];
 				}
 			}
@@ -52,11 +41,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator {
 			if (null != $channelLayout && $channels <= $stream->channels) {
 				// only change the channel layout if the number of original channels is more than requested
 				$channelLayout = preg_replace("/\(.+\)/", "", $channelLayout);
-				$args .=
-					" -filter:a:" .
-					$outTrack .
-					" channelmap=channel_layout=" .
-					$channelLayout;
+				$args .= " -filter:a:" . $outTrack . " channelmap=channel_layout=" . $channelLayout;
 			}
 			$args .= " -c:a:" . $outTrack . " " . $request->audioFormat;
 			$args .= " -q:a:" . $outTrack . " " . $request->audioQuality;
@@ -75,8 +60,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator {
 			// specify copy
 			$args .= " -c:a:" . $outTrack . " copy";
 		}
-		$args .=
-			" -metadata:s:a:" . $outTrack . " language=" . $stream->language;
+		$args .= " -metadata:s:a:" . $outTrack . " language=" . $stream->language;
 		return $args;
 	}
 

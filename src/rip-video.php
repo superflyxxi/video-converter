@@ -9,13 +9,7 @@ require_once "Options.php";
 
 $log = new LogWrapper("rip-video");
 
-function error_handler(
-	int $errno,
-	string $errstr,
-	$errfile = null,
-	$errline = 0,
-	$errcontext = null
-) {
+function error_handler(int $errno, string $errstr, $errfile = null, $errline = 0, $errcontext = null) {
 	print_r("Error encountered! ");
 	print_r($errstr);
 	print_r(" at file ");

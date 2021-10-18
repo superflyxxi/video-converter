@@ -20,32 +20,12 @@ final class SimpleScaleTest extends Test {
 
 		$probe = $this->probe("Test 1.5x Simple Upscale.dvd.mkv.mkv");
 
-		$this->assertEquals(
-			"video",
-			$probe["streams"][0]["codec_type"],
-			"Stream 0 codec_type"
-		);
-		$this->assertEquals(
-			"hevc",
-			$probe["streams"][0]["codec_name"],
-			"Stream 0 codec"
-		);
-		$this->assertEquals(
-			"720",
-			$probe["streams"][0]["height"],
-			"Stream 0 height"
-		);
-		$this->assertEquals(
-			"1080",
-			$probe["streams"][0]["width"],
-			"Stream 0 width"
-		);
+		$this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
+		$this->assertEquals("hevc", $probe["streams"][0]["codec_name"], "Stream 0 codec");
+		$this->assertEquals("720", $probe["streams"][0]["height"], "Stream 0 height");
+		$this->assertEquals("1080", $probe["streams"][0]["width"], "Stream 0 width");
 		$this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
-		$this->assertEquals(
-			"Test 1.5x Simple Upscale",
-			$probe["format"]["tags"]["title"],
-			"Metadata title"
-		);
+		$this->assertEquals("Test 1.5x Simple Upscale", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 
 	public function test_Simple_Downscaling() {
@@ -62,32 +42,12 @@ final class SimpleScaleTest extends Test {
 
 		$probe = $this->probe("Test 0.5x Downscale.dvd.mkv.mkv");
 
-		$this->assertEquals(
-			"video",
-			$probe["streams"][0]["codec_type"],
-			"Stream 0 codec_type"
-		);
-		$this->assertEquals(
-			"hevc",
-			$probe["streams"][0]["codec_name"],
-			"Stream 0 codec"
-		);
-		$this->assertEquals(
-			"240",
-			$probe["streams"][0]["height"],
-			"Stream 0 height"
-		);
-		$this->assertEquals(
-			"360",
-			$probe["streams"][0]["width"],
-			"Stream 0 width"
-		);
+		$this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
+		$this->assertEquals("hevc", $probe["streams"][0]["codec_name"], "Stream 0 codec");
+		$this->assertEquals("240", $probe["streams"][0]["height"], "Stream 0 height");
+		$this->assertEquals("360", $probe["streams"][0]["width"], "Stream 0 width");
 		$this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
-		$this->assertEquals(
-			"Test 0.5x Downscale",
-			$probe["format"]["tags"]["title"],
-			"Metadata title"
-		);
+		$this->assertEquals("Test 0.5x Downscale", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 }
 ?>

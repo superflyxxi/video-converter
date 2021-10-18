@@ -25,9 +25,7 @@ class ConvertFile {
 			"filename" => $this->inputFilename,
 		]);
 		$oOutput = new OutputFile(
-			getEnvWithDefault("APPLY_POSTFIX", "true") == "true"
-				? basename($this->inputFilename)
-				: null
+			getEnvWithDefault("APPLY_POSTFIX", "true") == "true" ? basename($this->inputFilename) : null
 		); // use inputfile as the postfix only if APPLY_POSTFIX is set
 		$oOutput->title = $this->req->title;
 		$oOutput->showTitle = $this->req->showTitle;
@@ -40,18 +38,9 @@ class ConvertFile {
 			"output" => $oOutput,
 		]);
 		$allRequests[] = $this->req;
-		$allRequests = array_merge(
-			$allRequests,
-			ConvertVideo::convert($this->req)
-		);
-		$allRequests = array_merge(
-			$allRequests,
-			ConvertAudio::convert($this->req)
-		);
-		$allRequests = array_merge(
-			$allRequests,
-			ConvertSubtitle::convert($this->req, $oOutput)
-		);
+		$allRequests = array_merge($allRequests, ConvertVideo::convert($this->req));
+		$allRequests = array_merge($allRequests, ConvertAudio::convert($this->req));
+		$allRequests = array_merge($allRequests, ConvertSubtitle::convert($this->req, $oOutput));
 
 		$returnValue = FFmpegHelper::execute($allRequests, $oOutput, false);
 		self::$log->info("Completed conversion.");
