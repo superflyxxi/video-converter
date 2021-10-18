@@ -10,20 +10,11 @@
     <log type="junit" target="/app/ripvideo/testResults/junit.xml"/>
   </logging>
   <testsuites>
-    <testsuite name="units">
-      <directory>units</directory>
+    <testsuite name="unit-tests">
+      <directory>unit</directory>
     </testsuite>
-    <testsuite name="basic">
-      <directory>basic</directory>
-    </testsuite>
-    <testsuite name="subtitles">
-      <directory>subtitles</directory>
-    </testsuite>
-    <testsuite name="audio">
-      <directory>audio</directory>
-    </testsuite>
-    <testsuite name="video">
-      <directory>video</directory>
+    <testsuite name="integration-tests">
+      <directory>integration</directory>
     </testsuite>
   </testsuites>
 </phpunit>
