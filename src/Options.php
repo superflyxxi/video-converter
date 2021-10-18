@@ -1,5 +1,4 @@
 <?php
-require_once "LogWrapper.php";
 
 class Options {
 	private static $opts;
@@ -41,7 +40,11 @@ class Options {
 			return $env;
 		}
 		if (array_key_exists($arg, self::$opts)) {
-			return self::$opts[$arg];
+			$value = self::$opts[$arg];
+			if ($value == null) {
+				return true;
+			}
+			return $value;
 		}
 		return $default;
 	}
