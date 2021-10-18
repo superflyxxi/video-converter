@@ -22,7 +22,7 @@ class Options {
 			"audio-format::",
 			"audio-quality::",
 			"audio-sample-rate::",
-			"aduio-channel-layout::",
+			"audio-channel-layout::",
 			"audio-channel-layout-tracks::",
 			"normalize-audio-tracks::",
 			"subtitle-tracks::",
