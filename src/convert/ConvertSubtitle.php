@@ -84,8 +84,7 @@ class ConvertSubtitle {
 
 		if (!file_exists($dvdFile . ".sub")) {
 			self::$log->info("Converting pgs to dvd subtitle.");
-			$command =
-				'java -jar /opt/BDSup2Sub.jar -o "' . $dvdFile . '.sub" "' . $pgsFile->getFileName() . '"';
+			$command = 'java -jar /opt/BDSup2Sub.jar -o "' . $dvdFile . '.sub" "' . $pgsFile->getFileName() . '"';
 			self::$log->debug("Executing command", [
 				"command" => $command,
 			]);
