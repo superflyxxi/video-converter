@@ -30,9 +30,16 @@ jobs:
       - checkout
       - php/install-composer
       - php/install-packages
+      - run: mv -v vendor/bin/phar-composer /usr/bin/
       - run: composer run-script lint
-      - run: vendor/bin/phar-composer --version
-      - run: vendor/bin/phar-composer build .
+      - run: composer clean
+      - php/install-packages:
+          install-flags: '--no-interaction --prefer-dist --no-dev'
+      - run:
+          name: Build phar
+          command: |
+            phar-composer --version
+            phar-composer build .
       - persist_to_workspace:
           root: ./
           paths:
