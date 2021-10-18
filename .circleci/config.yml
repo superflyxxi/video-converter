@@ -89,7 +89,7 @@ jobs:
           name: Export tar
           command: |
             docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-            gzip video-converter.tar
+            gzip -v video-converter.tar
       - persist_to_workspace:
           root: ./
           paths:
@@ -110,7 +110,7 @@ jobs:
       - run:
           name: Load docker image
           command: |
-            gunzip /tmp/workspace/video-converter.tar.gz
+            gunzip -v /tmp/workspace/video-converter.tar.gz
             docker load -i /tmp/workspace/video-converter.tar
       - docker/build:
           docker-context: .
