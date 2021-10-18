@@ -8,11 +8,11 @@ RUN apt-get update && \
 	apt-get clean -y
 ENV DATA_DIR=/data
 
-ENTRYPOINT ["/app/ripvideo/vendor/bin/phpunit", "-c", "/app/ripvideo/tests/phpunit.xml"]
-CMD [ "/app/ripvideo/tests" ]
-WORKDIR /app/ripvideo
+ENTRYPOINT ["/app/vendor/bin/phpunit", "-c", "/app/tests/phpunit.xml"]
+CMD [ "/app/tests" ]
+WORKDIR /app
 
-COPY . /app/ripvideo
+COPY . /app
 
 RUN apt-get update && \
 	COMPOSER_DEPS="git zip" && \
@@ -21,4 +21,4 @@ RUN apt-get update && \
 	composer clear-cache && \
 	apt-get purge -y ${COMPOSER_DEPS} && \
 	apt-get clean -y && \
-	mkdir -m 777 /app/ripvideo/testResults
+	mkdir -m 777 /app/testResults
