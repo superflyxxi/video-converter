@@ -8,11 +8,11 @@ RUN apt-get update && \
 	apt-get clean -y
 ENV DATA_DIR=/data
 
-ENTRYPOINT ["/app/vendor/bin/phpunit", "-c", "/app/tests/phpunit.xml"]
-CMD [ "/app/tests" ]
-WORKDIR /app
+ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml"]
+CMD [ "/opt/video-converter/tests" ]
+WORKDIR /opt/video-converter
 
-COPY . /app
+COPY . /opt/video-converter
 
 RUN apt-get update && \
 	COMPOSER_DEPS="git zip" && \
@@ -21,4 +21,4 @@ RUN apt-get update && \
 	composer clear-cache && \
 	apt-get purge -y ${COMPOSER_DEPS} && \
 	apt-get clean -y && \
-	mkdir -m 777 /app/testResults
+	mkdir -m 777 /opt/video-converter/testResults
