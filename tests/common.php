@@ -77,8 +77,9 @@ abstract class Test extends TestCase {
 		if (null !== $filename) {
 			$command .= " --input=" . $filename;
 		}
+		print "Executing command: " . $command;
 		passthru($command, $return);
-		print "Return value " . $return;
+		print $command . " => returned value " . $return;
 		return $return;
 	}
 }
