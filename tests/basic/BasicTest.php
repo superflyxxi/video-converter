@@ -109,7 +109,7 @@ final class BasicTest extends Test {
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo("dvd.mkv", [
-			"--disable-postfix" => "false",
+			"--disable-postfix" => true,
 			"--title" => "Test Not Applying Postfix",
 			"--year" => 2019,
 			"--video-format" => "copy",
