@@ -32,7 +32,7 @@ jobs:
       - php/install-packages
       - run: mv -v vendor/bin/phar-composer ./
       - run: composer run-script lint
-      - run: composer clean
+      - run: rm -rvf vendor
       - php/install-packages:
           install-flags: '--no-interaction --prefer-dist --no-dev'
       - run:
