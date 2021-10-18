@@ -1,11 +1,13 @@
 <phpunit testdox="true" noInteraction="true" cacheResult="false">
   <php>
-    <includePath>/app/ripvideo</includePath>
+    <includePath>/app/ripvideo/src</includePath>
+    <includePath>/app/ripvideo/tests</includePath>
+    <env name="LOG_LEVEL" value="100" />
   </php>
   <logging>
-    <log type="testdox-html" target="/testResults/testdox.html"/>
-    <log type="testdox-text" target="/testResults/testdox.txt"/>
-    <log type="junit" target="/testResults/junit.xml"/>
+    <log type="testdox-html" target="/app/ripvideo/testResults/testdox.html"/>
+    <log type="testdox-text" target="/app/ripvideo/testResults/testdox.txt"/>
+    <log type="junit" target="/app/ripvideo/testResults/junit.xml"/>
   </logging>
   <testsuites>
     <testsuite name="units">
