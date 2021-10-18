@@ -76,7 +76,7 @@ class Request {
 
 		$req->setVideoTracks(Options::get("video-tracks", "*"));
 		$req->videoFormat = Options::get("video-format", "notcopy");
-		$req->videoUpscale = Options:get("video-upscale", 1);
+		$req->videoUpscale = Options::get("video-upscale", 1);
 		$req->setDeinterlace(Options::get("deinterlace", "off"));
 
 		$req->setAudioTracks(Options::get("audio-tracks", "*"));
