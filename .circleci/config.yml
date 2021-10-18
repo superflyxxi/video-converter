@@ -33,7 +33,7 @@ jobs:
       - run: composer run-script lint
       - run: rm -rvf vendor
       - php/install-packages:
-          install-flags: '--no-interaction --prefer-dist --no-dev'
+          install-flags: "--no-interaction --prefer-dist --no-dev"
       - run: curl -o phar-composer -JL https://clue.engineering/phar-composer-latest.phar
       - run:
           name: Build phar
