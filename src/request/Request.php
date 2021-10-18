@@ -74,9 +74,10 @@ class Request {
 
 		$req->playlist = getEnvWithDefault("PLAYLIST", null);
 
-		$req->setVideoTracks(getEnvWithDefault("video-tracks", "*"));
-		$req->videoFormat = getEnvWithDefault("video-format", "notcopy");
-		$req->videoUpscale = getEnvWithDefault("video-upscale", 1);
+		$req->setVideoTracks(Options::get("video-tracks", "*"));
+		$req->videoFormat = Options::get("video-format", "notcopy");
+		$req->videoUpscale = Options:get("video-upscale", 1);
+		$req->setDeinterlace(Options::get("deinterlace", "off"));
 
 		$req->setAudioTracks(Options::get("audio-tracks", "*"));
 		$req->audioFormat = Options::get("audio-format", "aac");
@@ -99,12 +100,6 @@ class Request {
 		$req->subtitleConversionBlacklist = getEnvWIthDefault(
 			"SUBTITLE_CONVERSION_BLACKLIST",
 			"|\\~/\`_"
-		);
-
-		$req->setDeinterlace(getEnvWithDefault("DEINTERLACE", null));
-		$req->deinterlaceMode = getEnvWithDefault(
-			"DEINTERLACE_MODE",
-			$req->deinterlaceMode
 		);
 
 		$req->prepareStreams();
@@ -173,14 +168,15 @@ class Request {
 
 	public function setDeinterlace($val) {
 		$this->deinterlace = $val;
-		if ($this->deinterlace != null) {
-			$this->deinterlace = $this->deinterlace == "true";
+		if ($this->deinterlace == "off") {
+			$this->deinterlace = false;
+			$this->deinterlaceMode = null;
 		} elseif ("copy" != $this->videoFormat) {
-			$this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile)
-				? true
-				: false;
+			$this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile);
+			$this->deinterlaceMode = $val;
 		} else {
 			$this->deinterlace = false;
+			$this->deinterlaceMode = null;
 		}
 	}
 

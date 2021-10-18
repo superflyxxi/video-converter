@@ -95,10 +95,6 @@ class CSVRequest {
 								$req->setDeinterlace($value);
 								break;
 
-							case "deinterlaceMode":
-								$req->deinterlaceMode = $value;
-								break;
-
 							default:
 								// invalid or already processed
 								break;

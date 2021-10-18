@@ -48,6 +48,8 @@ Argument | Description | Default | Example
 `--video-tracks` | The input video tracks to convert. | `*` | `0`
 `--video-format` | The desired output video format to use. This is ignored unless it is `copy`. | `nocopy` | `copy`
 `--video-upscale` | The upscale multiplier to use for uscaling the video. | `1` | `2.25`
+`--deinterlace` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), default behavior of deinterlacing while keeping the same framerate (`02`), or avoid deinterlacing (`off`). | `02` | `00`
+`--deinterlace-check`\* | How to check for deinterlacing. `idet` will determine wether more than 1% of frames are interlaced. `probe` will be based on video data. | `probe` | `idet`
 `--audio-tracks` | The input audio tracks to convert. | `*` | `1`
 `--audio-format` | The desired output audio format. | `aac` | `eac3`
 `--audio-quality` | The desired output audio quality based on the `--audio-format`. | `2` | `560`
@@ -59,9 +61,6 @@ Argument | Description | Default | Example
 `SUBTITLE_FORMAT` | The desired output subtitle format. | `ass` | `copy`
 `SUBTITLE_CONVERSION_OUTPUT`\* | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | `MERGE` | `FILE`
 `SUBTITLE_CONVERSION_BLACKLIST`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing to docker as `-e`. | `` \ |~/`_ `` | `\ |`
-`DEINTERLACE` | Boolean determining whether deinterlacing should be done. If not specified, deinterlacing will be enabled if the source is interlaced. | | `true`
-`DEINTERLACE_CHECK`\* | How to check for deinterlacing. `idet` will determine wether more than 1% of frames are interlaced. `probe` will be based on video data. | `probe` | `idet`
-`DEINTERLACE_MODE` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), or default behavior of deinterlacing while keeping the same framerate (`02`). | `02` | `00`
 `HDR`\* | The input is in HDR and the desired output should also be HDR. | `false` | `true`
 `APPLY_POSTFIX`\* | Whether to apply the input filename as a postfix to the output files. | `true` | `false`
 
