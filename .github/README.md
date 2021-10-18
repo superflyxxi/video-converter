@@ -38,8 +38,8 @@ Required Arguments:
 Argument (short) | Description | Default | Example
 --- | --- | --- | ---
 `--log-level` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | `250` | `100`
-`--input`\* | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | | `title_00.mkv`
-`--disable-postfix`\* | Pass this to avoid having the input filename as a postfix to the output files. | | 
+`--input` | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | | `title_00.mkv`
+`--disable-postfix` | Pass this to avoid having the input filename as a postfix to the output files. | | 
 `--playlist` | If the input is bluray, override the playlist to be used. | | `183`
 `--title` | The title to be used in metadata and naming of the file. | | `Cool Movie`
 `--year` | The year of the movie to be used in metadata and naming of the file. | | `2019`
@@ -49,9 +49,9 @@ Argument (short) | Description | Default | Example
 `--video-tracks` | The input video tracks to convert. | `*` | `0`
 `--video-format` | The desired output video format to use. This is ignored unless it is `copy`. | `nocopy` | `copy`
 `--video-upscale` | The upscale multiplier to use for uscaling the video. | `1` | `2.25`
-`--hdr`\* | The input is in HDR and the desired output should also be HDR. | |
+`--hdr` | The input is in HDR and the desired output should also be HDR. | |
 `--deinterlace` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), default behavior of deinterlacing while keeping the same framerate (`02`), or avoid deinterlacing (`off`). | `02` | `00`
-`--deinterlace-check`\* | How to check for deinterlacing. `idet` will determine wether more than 1% of frames are interlaced. `probe` will be based on video data. | `probe` | `idet`
+`--deinterlace-check` | How to check for deinterlacing. `idet` will determine wether more than 1% of frames are interlaced. `probe` will be based on video data. | `probe` | `idet`
 `--audio-tracks` | The input audio tracks to convert. | `*` | `1`
 `--audio-format` | The desired output audio format. | `aac` | `eac3`
 `--audio-quality` | The desired output audio quality based on the `--audio-format`. | `2` | `560`
@@ -61,15 +61,22 @@ Argument (short) | Description | Default | Example
 `--normalize-audio-tracks` | The space-separated list of input audio tracks that should be normalized. | | `1 2`
 `--subtitle-tracks` | The input subtitle tracks to convert. | `*` | `1`
 `--subtitle-format` | The desired output subtitle format. | `ass` | `copy`
-`--subtitle-conversion-output`\* | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | `MERGE` | `FILE`
-`--subtitle-conversion-blacklist`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing argument values. | `` \ |~/`_ `` | `\ |`
+`--subtitle-conversion-output` | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | `MERGE` | `FILE`
+`--subtitle-conversion-blacklist` | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing argument values. | `` \ |~/`_ `` | `\ |`
 
 ### CSV File
 
 If the `--input` is a CSV file, the files defined within the CSV will be converted based on the definition within.
-This environment variables marked with an `*` are not supported; all others are supported in camelCase.
+The arguments listed below are not supported; all others are supported in the CSV.
 A `filename` header must be provided in order for this to function. If a header is provided, then every row must have a
-value for that header. Any setting not mentioned in the CSV will default to the environment variable's value.
+value for that header. Any setting not mentioned in the CSV will default to the CLI argument's value.
+
+- `input`
+- `disable-postfix`
+- `hdr`
+- `deinterlace-check`
+- `subtitle-conversion-output`
+- `subtitle-conversion-blacklist`
 
 ### Examples
 
