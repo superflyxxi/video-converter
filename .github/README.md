@@ -21,7 +21,7 @@ Tools to convert video
 ## Docker Image
 
 This image supports ripping a video or bluray directory into an MKV using ffmpeg. As a result,
-you'll see in the same directory mapped to `/data` a file with the following naming:
+you'll see in the working directory a file with the following naming:
 `{title} ({year}) - s{season}e{episode} - {show-title}.{input}.mkv`.
 You may want to rip the bluray to mkv before running this tool as ffmpeg is not very good at metadata
 from blurays.
@@ -62,11 +62,11 @@ Argument | Description | Default | Example
 `--subtitle-tracks` | The input subtitle tracks to convert. | `*` | `1`
 `--subtitle-format` | The desired output subtitle format. | `ass` | `copy`
 `--subtitle-conversion-output`\* | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | `MERGE` | `FILE`
-`subtitle-conversion-blacklist`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing to docker as `-e`. | `` \ |~/`_ `` | `\ |`
+`subtitle-conversion-blacklist`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing argument values. | `` \ |~/`_ `` | `\ |`
 
 ### CSV File
 
-If the `INPUT` is a CSV file, the files defined within the CSV will be converted based on the definition within.
+If the `--input` is a CSV file, the files defined within the CSV will be converted based on the definition within.
 This environment variables marked with an `*` are not supported; all others are supported in camelCase.
 A `filename` header must be provided in order for this to function. If a header is provided, then every row must have a
 value for that header. Any setting not mentioned in the CSV will default to the environment variable's value.
@@ -77,13 +77,12 @@ value for that header. Any setting not mentioned in the CSV will default to the 
 
 This is currently untested.
 
-```
-docker run --rm -it --device /dev/dri:/dev/dri -v /mnt/bluray:/data -e INPUT=. -e TITLE=Test -e YEAR=2019 rip-video
+```sh
+docker run --rm -it --device /dev/dri -v /mnt/bluray:/data -w /data video-converter --input=. --title=Test --year=2019
 ```
 
 #### Ripping specific file without VAAPI
 
-```
-docker run --rm -it -v `pwd`:/data -e INPUT=file.mpg -e TITLE=Test -e YEAR=2019 rip-video
-
+```sh
+docker run --rm -it -v "$(pwd):/data" -w /data video-converter --input=file.mpg --title=Test --year=2019
 ```
