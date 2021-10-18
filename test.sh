@@ -7,9 +7,6 @@ set -e
 
 TEST_IMAGE=${TEST_IMAGE:-test}
 TESTSUITES=${TESTSUITES:-unit-tests,integration-tests}
-#if [[ "${BUILD_SUBTITLE_SUPPORT}" = "true" ]]; then
-#	TESTSUITES="${TESTSUITES},subtitles"
-#fi
 if [[ "${USE_VAAPI:-false}" = "true" ]]; then
 	DEVICES="--device /dev/dri"
 fi
