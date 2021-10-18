@@ -32,35 +32,35 @@ All the command line arguments listed below can also be overridden using an envi
 replaced with `_`. Any `.` will be replaced with two `_`. For example, `--log-level` can be set using the
 `LOG_LEVEL` environment variable.
 
-| Argument                          | Description                                                                                                                                                                    | Required | Default      | Example                    |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------------ | -------------------------- |
-| `--log-level`                     | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels).                                                               | No       | `250`        | `100`                      |
-| `--input`\*                         | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted.                                                                        | No       |              | `title_00.mkv`             |
-| `PLAYLIST`                        | If the input is bluray, override the playlist to be used.                                                                                                                      | No       |              | `183`                      |
-| `--title`                         | The title to be used in metadata and naming of the file.                                                                                                                       | Yes      |              | `Cool Movie`               |
-| `--year`                          | The year of the movie to be used in metadata and naming of the file.                                                                                                           | No       |              | `2019`                     |
-| `--season`                        | The season of the TV show.                                                                                                                                                     | No       |              | `01`                       |
-| `--episode`                       | The episode within the season of the TV show.                                                                                                                                  | No       |              | `01`                       |
-| `--show-title`                    | The episode title of the TV show.                                                                                                                                              | No       |              | `The One Where They Dance` |
-| `--audio-tracks`                    | The input audio tracks to convert.                                                                                                                                             | No       | `*`          | `1`                        |
-| `--audio-format`                    | The desired output audio format.                                                                                                                                               | No       | `aac`        | `eac3`                     |
-| `--audio-quality`                   | The desired output audio quality based on the `--audio-format`.                                                                                                                  | No       | `2`          | `560`                      |
-| `--audio-sample-rate`               | The desired output audio sample rate. If not provided, input sample rate will be used.                                                                                         | No       |              | `48000`                    |
-| `--audio-channel-layout`            | The desired output audio channel layout.                                                                                                                                       | No       | ` `          | `7.1`                      |
-| `--audio-channel-layout-tracks`     | The space-separated list of input audio tracks that should have the `--audio-channel-layout` applied.                                                                            | No       | `*`          | `1`                        |
-| `--normalize-audio-tracks`          | The space-separated list of input audio tracks that should be normalized.                                                                                                      | No       |              | `1 2`                      |
-| `SUBTITLE_TRACKS`                 | The input subtitle tracks to convert.                                                                                                                                          | No       | `*`          | `1`                        |
-| `SUBTITLE_FORMAT`                 | The desired output subtitle format.                                                                                                                                            | No       | `ass`        | `copy`                     |
-| `SUBTITLE_CONVERSION_OUTPUT`\*    | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate.                                 | No       | `MERGE`      | `FILE`                     |
-| `SUBTITLE_CONVERSION_BLACKLIST`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing to docker as `-e`.                                      | No       | `` \|~/`_ `` | `\|`                       |
-| `VIDEO_TRACKS`                    | The input video tracks to convert.                                                                                                                                             | No       | `*`          | `0`                        |
-| `VIDEO_FORMAT`                    | The desired output video format to use. This is ignored unless it is `copy`.                                                                                                   | No       | `nocopy`     | `copy`                     |
-| `VIDEO_UPSCALE`                   | The upscale multiplier to use for uscaling the video.                                                                                                                          | No       | `1`          | `2.25`                     |
-| `DEINTERLACE`                     | Boolean determining whether deinterlacing should be done. If not specified, deinterlacing will be enabled if the source is interlaced.                                         | No       |              | `true`                     |
-| `DEINTERLACE_CHECK`\*             | How to check for deinterlacing. `idet` will determine wether more than 1% of frames are interlaced. `probe` will be based on video data.                                       | No       | `probe`      | `idet`                     |
-| `DEINTERLACE_MODE`                | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), or default behavior of deinterlacing while keeping the same framerate (`02`). | No       | `02`         | `00`                       |
-| `HDR`\*                           | The input is in HDR and the desired output should also be HDR.                                                                                                                 | No       | `false`      | `true`                     |
-| `APPLY_POSTFIX`\*                 | Whether to apply the input filename as a postfix to the output files.                                                                                                          | No       | `true`       | `false`                    |
+Argument | Description | Required | Default | Example
+--- | --- | --- | --- | ---
+`--log-level` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | No | `250` | `100`
+`--input`\* | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | No | | `title_00.mkv`
+`PLAYLIST` | If the input is bluray, override the playlist to be used. | No | | `183`
+`--title` | The title to be used in metadata and naming of the file. | Yes | | `Cool Movie`
+`--year` | The year of the movie to be used in metadata and naming of the file. | No | | `2019`
+`--season` | The season of the TV show. | No | | `01`
+`--episode` | The episode within the season of the TV show. | No | | `01`
+`--show-title` | The episode title of the TV show. | No | | `The One Where They Dance`
+`--audio-tracks` | The input audio tracks to convert. | No | `*` | `1`
+`--audio-format` | The desired output audio format. | No | `aac` | `eac3`
+`--audio-quality` | The desired output audio quality based on the `--audio-format`. | No | `2` | `560`
+`--audio-sample-rate` | The desired output audio sample rate. If not provided, input sample rate will be used. | No | | `48000`
+`--audio-channel-layout` | The desired output audio channel layout. | No | ` ` | `7.1`
+`--audio-channel-layout-tracks` | The space-separated list of input audio tracks that should have the `--audio-channel-layout` applied. | No | `*` | `1`
+`--normalize-audio-tracks` | The space-separated list of input audio tracks that should be normalized. | No | | `1 2`
+`SUBTITLE_TRACKS` | The input subtitle tracks to convert. | No | `*` | `1`
+`SUBTITLE_FORMAT` | The desired output subtitle format. | No | `ass` | `copy`
+`SUBTITLE_CONVERSION_OUTPUT`\* | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | No | `MERGE` | `FILE`
+`SUBTITLE_CONVERSION_BLACKLIST`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing to docker as `-e`. | No | `` \ |~/`_ `` | `\ |`
+`VIDEO_TRACKS` | The input video tracks to convert. | No | `*` | `0`
+`VIDEO_FORMAT` | The desired output video format to use. This is ignored unless it is `copy`. | No | `nocopy` | `copy`
+`VIDEO_UPSCALE` | The upscale multiplier to use for uscaling the video. | No | `1` | `2.25`
+`DEINTERLACE` | Boolean determining whether deinterlacing should be done. If not specified, deinterlacing will be enabled if the source is interlaced. | No | | `true`
+`DEINTERLACE_CHECK`\* | How to check for deinterlacing. `idet` will determine wether more than 1% of frames are interlaced. `probe` will be based on video data. | No | `probe` | `idet`
+`DEINTERLACE_MODE` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), or default behavior of deinterlacing while keeping the same framerate (`02`). | No | `02` | `00`
+`HDR`\* | The input is in HDR and the desired output should also be HDR. | No | `false` | `true`
+`APPLY_POSTFIX`\* | Whether to apply the input filename as a postfix to the output files. | No | `true` | `false`
 
 ### CSV File
 
