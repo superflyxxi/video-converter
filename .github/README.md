@@ -35,7 +35,7 @@ replaced with `_`. Any `.` will be replaced with two `_`. For example, `--log-le
 Required Arguments:
 - `--title`
 
-Argument | Description | Default | Example
+Argument (short) | Description | Default | Example
 --- | --- | --- | ---
 `--log-level` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | `250` | `100`
 `--input`\* | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | | `title_00.mkv`
@@ -62,7 +62,7 @@ Argument | Description | Default | Example
 `--subtitle-tracks` | The input subtitle tracks to convert. | `*` | `1`
 `--subtitle-format` | The desired output subtitle format. | `ass` | `copy`
 `--subtitle-conversion-output`\* | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | `MERGE` | `FILE`
-`subtitle-conversion-blacklist`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing argument values. | `` \ |~/`_ `` | `\ |`
+`--subtitle-conversion-blacklist`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing argument values. | `` \ |~/`_ `` | `\ |`
 
 ### CSV File
 
