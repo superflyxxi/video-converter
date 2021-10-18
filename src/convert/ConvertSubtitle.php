@@ -91,7 +91,7 @@ class ConvertSubtitle {
 			]);
 			exec($command, $out, $return);
 			if ($return != 0) {
-				self::$log->debug($out);
+				self::$log->debug(print_r($out, true));
 				throw new ExecutionException("java", $return, $command);
 			}
 		}
