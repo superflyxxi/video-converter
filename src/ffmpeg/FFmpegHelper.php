@@ -8,6 +8,7 @@ require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
 require_once "exceptions/ExecutionException.php";
+require_once "Options.php";
 
 class FFmpegHelper {
 	public static $log;
@@ -43,7 +44,7 @@ class FFmpegHelper {
 	}
 
 	public static function isInterlaced($inputFile) {
-		switch (getEnvWithDefault("DEINTERLACE_CHECK", "probe")) {
+		switch (Options::get("deinterlace-check", "probe")) {
 			case "idet":
 				return self::isInterlacedBasedOnIdet($inputFile);
 				break;
