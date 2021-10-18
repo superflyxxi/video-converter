@@ -73,16 +73,10 @@ class Request {
 		$req->subtitle = Options::get("show-title");
 
 		$req->playlist = getEnvWithDefault("PLAYLIST", null);
-		$req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
-		$req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
-		$req->subtitleConversionOutput = getEnvWithDefault(
-			"SUBTITLE_CONVERSION_OUTPUT",
-			"MERGE"
-		);
-		$req->subtitleConversionBlacklist = getEnvWIthDefault(
-			"SUBTITLE_CONVERSION_BLACKLIST",
-			"|\\~/\`_"
-		);
+
+		$req->setVideoTracks(getEnvWithDefault("video-tracks", "*"));
+		$req->videoFormat = getEnvWithDefault("video-format", "notcopy");
+		$req->videoUpscale = getEnvWithDefault("video-upscale", 1);
 
 		$req->setAudioTracks(Options::get("audio-tracks", "*"));
 		$req->audioFormat = Options::get("audio-format", "aac");
@@ -96,9 +90,17 @@ class Request {
 			Options::get("audio-channel-layout-tracks", "*")
 		);
 
-		$req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
-		$req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
-		$req->videoUpscale = getEnvWithDefault("VIDEO_UPSCALE", 1);
+		$req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
+		$req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
+		$req->subtitleConversionOutput = getEnvWithDefault(
+			"SUBTITLE_CONVERSION_OUTPUT",
+			"MERGE"
+		);
+		$req->subtitleConversionBlacklist = getEnvWIthDefault(
+			"SUBTITLE_CONVERSION_BLACKLIST",
+			"|\\~/\`_"
+		);
+
 		$req->setDeinterlace(getEnvWithDefault("DEINTERLACE", null));
 		$req->deinterlaceMode = getEnvWithDefault(
 			"DEINTERLACE_MODE",
