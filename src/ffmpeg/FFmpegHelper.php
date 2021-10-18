@@ -144,10 +144,12 @@ class FFmpegHelper {
 		$finalCommand .=
 			" " .
 			self::generateArgs($listRequests, new FFmpegVideoArgGenerator());
+
 		self::$log->debug("Generating audio args");
 		$finalCommand .=
 			" " .
 			self::generateArgs($listRequests, new FFmpegAudioArgGenerator());
+
 		self::$log->debug("Generating subtitle args");
 		$finalCommand .=
 			" " .
@@ -175,8 +177,8 @@ class FFmpegHelper {
 				? '-metadata "title=' . $outputFile->title . '"'
 				: " ") .
 			" " .
-			(null != $outputFile->subtitle
-				? '-metadata "subtitle=' . $outputFile->subtitle . '"'
+			(null != $outputFile->showTitle
+				? '-metadata "showTitle=' . $outputFile->showTitle . '"'
 				: " ") .
 			" " .
 			(null != $outputFile->year

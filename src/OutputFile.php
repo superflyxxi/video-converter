@@ -11,7 +11,7 @@ class OutputFile {
 
 	public $title = null;
 
-	public $subtitle = null;
+	public $showTitle = null;
 
 	public $year = null;
 
@@ -38,8 +38,8 @@ class OutputFile {
 		if (null != $this->season) {
 			$out .= " - s" . $this->season . "e" . $this->episode;
 		}
-		if (null != $this->subtitle) {
-			$out .= " - " . $this->subtitle;
+		if (null != $this->showTitle) {
+			$out .= " - " . $this->showTitle;
 		}
 		if (null != $this->postfix) {
 			$out .= "." . $this->postfix;

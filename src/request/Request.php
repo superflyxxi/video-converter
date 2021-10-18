@@ -15,7 +15,7 @@ class Request {
 
 	public $episode = null;
 
-	public $subtitle = null;
+	public $showTitle = null;
 
 	public $oInputFile = null;
 
@@ -70,7 +70,7 @@ class Request {
 		$req->year = Options::get("year");
 		$req->season = Options::get("season");
 		$req->episode = Options::get("episode");
-		$req->subtitle = Options::get("show-title");
+		$req->showTitle = Options::get("show-title");
 
 		$req->playlist = getEnvWithDefault("PLAYLIST", null);
 

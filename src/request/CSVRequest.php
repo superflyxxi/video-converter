@@ -39,8 +39,8 @@ class CSVRequest {
 								$req->episode = $value;
 								break;
 
-							case "subtitle":
-								$req->subtitle = $value;
+							case "showTitle":
+								$req->showTitle = $value;
 								break;
 
 							case "playlist":

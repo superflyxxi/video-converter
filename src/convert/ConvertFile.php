@@ -30,7 +30,7 @@ class ConvertFile {
 				: null
 		); // use inputfile as the postfix only if APPLY_POSTFIX is set
 		$oOutput->title = $this->req->title;
-		$oOutput->subtitle = $this->req->subtitle;
+		$oOutput->showTitle = $this->req->showTitle;
 		$oOutput->season = $this->req->season;
 		$oOutput->episode = $this->req->episode;
 		$oOutput->year = $this->req->year;
