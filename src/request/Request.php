@@ -83,24 +83,14 @@ class Request {
 		$req->audioFormat = Options::get("audio-format", "aac");
 		$req->audioQuality = Options::get("audio-quality", "2");
 		$req->audioSampleRate = Options::get("audio-sample-rate", null);
-		$req->setNormalizeAudioTracks(
-			Options::get("normalize-audio-tracks", "")
-		);
+		$req->setNormalizeAudioTracks(Options::get("normalize-audio-tracks", ""));
 		$req->audioChannelLayout = Options::get("audio-channel-layout", "");
-		$req->setAudioChannelLayoutTracks(
-			Options::get("audio-channel-layout-tracks", "*")
-		);
+		$req->setAudioChannelLayoutTracks(Options::get("audio-channel-layout-tracks", "*"));
 
-		$req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
-		$req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
-		$req->subtitleConversionOutput = getEnvWithDefault(
-			"SUBTITLE_CONVERSION_OUTPUT",
-			"MERGE"
-		);
-		$req->subtitleConversionBlacklist = getEnvWIthDefault(
-			"SUBTITLE_CONVERSION_BLACKLIST",
-			"|\\~/\`_"
-		);
+		$req->setSubtitleTracks(Options::get("subtitle-tracks", "*"));
+		$req->subtitleFormat = Options::get("subtitle-format", "ass");
+		$req->subtitleConversionOutput = Options::get("subtitle-conversion-output", "MERGE");
+		$req->subtitleConversionBlacklist = Options::get("subtitle-conversion-blacklist", "|\\~/\`_");
 
 		$req->prepareStreams();
 		return $req;

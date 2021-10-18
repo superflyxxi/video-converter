@@ -57,10 +57,10 @@ Argument | Description | Default | Example
 `--audio-channel-layout` | The desired output audio channel layout. | ` ` | `7.1`
 `--audio-channel-layout-tracks` | The space-separated list of input audio tracks that should have the `--audio-channel-layout` applied. | `*` | `1`
 `--normalize-audio-tracks` | The space-separated list of input audio tracks that should be normalized. | | `1 2`
-`SUBTITLE_TRACKS` | The input subtitle tracks to convert. | `*` | `1`
-`SUBTITLE_FORMAT` | The desired output subtitle format. | `ass` | `copy`
-`SUBTITLE_CONVERSION_OUTPUT`\* | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | `MERGE` | `FILE`
-`SUBTITLE_CONVERSION_BLACKLIST`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing to docker as `-e`. | `` \ |~/`_ `` | `\ |`
+`--subtitle-tracks` | The input subtitle tracks to convert. | `*` | `1`
+`--subtitle-format` | The desired output subtitle format. | `ass` | `copy`
+`--subtitle-conversion-output`\* | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | `MERGE` | `FILE`
+`subtitle-conversion-blacklist`\* | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing to docker as `-e`. | `` \ |~/`_ `` | `\ |`
 `HDR`\* | The input is in HDR and the desired output should also be HDR. | `false` | `true`
 `APPLY_POSTFIX`\* | Whether to apply the input filename as a postfix to the output files. | `true` | `false`
 
