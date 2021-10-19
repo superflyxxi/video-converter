@@ -32,10 +32,10 @@ if (null == Options::get("title")) {
 $envInput = Options::get("input");
 $csvRequest = null;
 if (strcasecmp(substr($envInput, -4), ".csv") === 0) {
-	$csvRequest = new CSVRequest(new SplFileObject("/data/" . $envInput, "r"));
+	$csvRequest = new CSVRequest(new SplFileObject($envInput, "r"));
 } else {
 	if (null == $envInput) {
-		$arrFiles = array_diff(scandir("/data/"), ["..", "."]);
+		$arrFiles = array_diff(scandir("."), ["..", "."]);
 	} else {
 		$arrFiles[] = $envInput;
 	}

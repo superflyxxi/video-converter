@@ -15,7 +15,7 @@ class CSVRequest {
 			if ([null] !== $row) {
 				$data = self::getArrayForRow($columns, $row);
 				self::$log->debug("Creating metadata", ["metadata" => $data]);
-				$req = Request::newInstanceFromEnv("/data/" . $data["filename"]);
+				$req = Request::newInstanceFromEnv($data["filename"]);
 				$this->arrConvertFiles[] = $req;
 				foreach (array_keys($data) as $key) {
 					$value = $data[$key];
