@@ -5,6 +5,7 @@ class Options {
 	private static $inputfile;
 
 	public static function init() {
+		global $argv;
 		$otherArgs = null;
 		self::$opts = getopt(
 			"",
