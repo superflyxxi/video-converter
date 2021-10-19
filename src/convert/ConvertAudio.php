@@ -29,17 +29,10 @@ class ConvertAudio {
 				$tmpRequest->audioChannelLayout = $oRequest->audioChannelLayout;
 				$tmpRequest->setAudioChannelLayoutTracks(implode(" ", $oRequest->getAudioChannelLayoutTracks()));
 				$tmpRequest->prepareStreams();
-				if ($oRequest->oInputFile->getPrefix() != null) {
-					$convOutFile = new OutputFile(
-						null,
-						$dir . realpath($oRequest->oInputFile->getFileName()) . "/dir-" . $index . "-conv.mkv"
-					);
-				} else {
-					$convOutFile = new OutputFile(
-						null,
-						$dir . $oRequest->oInputFile->getFileName() . "-" . $index . "-conv.mkv"
-					);
-				}
+				$convOutFile = new OutputFile(
+					null,
+					$dir . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index . "-conv.mkv"
+				);
 				FFmpegHelper::execute([$tmpRequest], $convOutFile);
 				$oNewRequest = new Request($convOutFile->getFileName());
 				$oNewRequest->setVideoTracks(null);
@@ -85,7 +78,7 @@ class ConvertAudio {
 		$out = implode(array_slice($out, -12));
 		$json = json_decode($out, true);
 
-		$normFile = $dir . $oRequest->oInputFile->getFileName() . "-" . $index . "-norm.mkv";
+		$normFile = $dir . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index . "-norm.mkv";
 		$normChannelMap =
 			$oRequest->areAllAudioChannelLayoutTracksConsidered() ||
 			in_array($index, $oRequest->getAudioChannelLayoutTracks())

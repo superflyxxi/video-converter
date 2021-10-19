@@ -62,11 +62,7 @@ class ConvertSubtitle {
 
 	private static function convertBluraySubtitle($oRequest, $dir, $filename, $index) {
 		// convert to dvd
-		if ($oRequest->oInputFile->getPrefix() != null) {
-			$dvdFile = $dir . "/" . realpath($filename) . "/dir-" . $index;
-		} else {
-			$dvdFile = $dir . "/" . $filename . "-" . $index;
-		}
+		$dvdFile = $dir . DIRECTORY_SEPARATOR . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index;
 		$pgsFile = new OutputFile(null, $dvdFile . ".sup");
 		if (!file_exists($pgsFile->getFileName())) {
 			self::$log->info("Generating PGS sup file for file.", [
@@ -98,11 +94,7 @@ class ConvertSubtitle {
 
 	private static function convertDvdSubtitle($oRequest, $dir, $filename, $index) {
 		// extract vobsub
-		if ($oRequest->oInputFile->getPrefix() != null) {
-			$dvdFile = $dir . "/" . realpath($filename) . "/dir-" . $index;
-		} else {
-			$dvdFile = $dir . "/" . $filename . "-" . $index;
-		}
+		$dvdFile = $dir . DIRECTORY_SEPARATOR . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index;
 		if (!file_exists($dvdFile . ".sub")) {
 			self::$log->info("Generating DVD sub file.", [
 				"index" => $index,
