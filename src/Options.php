@@ -34,7 +34,7 @@ class Options {
 			"playlist::",
 		], $otherArgs);
 		$otherArgs = array_slice($argv, $otherArgs);
-		self::$inputfile = count($otherArgs) > 0 ? $otherArgs[0] : null;
+		self::$inputfile = empty($otherArgs) ? null : $otherArgs[0];
 	}
 
 	public static function getInputFile() {
