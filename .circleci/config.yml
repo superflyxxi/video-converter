@@ -92,15 +92,33 @@ jobs:
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
+      - docker/build:
+          docker-context: .
+          path: .
+          dockerfile: tests/Dockerfile
+          image: ${THIS_IMAGE}-test
+          tag: ${PRIMARY_DOCKER_TAG}
+          registry: ${DOCKER_REGISTRY}
+          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
+          step-name: Build test image
+      - unless:
+          condition:
+            equal: [main, << pipeline.git.branch >>]
+          steps:
+            - docker/push:
+                step-name: Pushing test image
+                registry: $DOCKER_REGISTRY
+                image: ${THIS_IMAGE}-test
+                tag: ${PRIMARY_DOCKER_TAG}
       - run:
-          name: Export tar
+          name: Export test image to tar
           command: |
-            docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-            gzip -v video-converter.tar
+            docker save -o video-converter-test.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
+            gzip -v video-converter-test.tar
       - persist_to_workspace:
           root: ./
           paths:
-            - video-converter.tar.gz
+            - video-converter-test.tar.gz
 
   test-docker:
     environment:
@@ -119,26 +137,6 @@ jobs:
           command: |
             gunzip -v /tmp/workspace/video-converter.tar.gz
             docker load -i /tmp/workspace/video-converter.tar
-      - docker/build:
-          docker-context: .
-          path: .
-          dockerfile: tests/Dockerfile
-          image: ${THIS_IMAGE}-test
-          tag: ${PRIMARY_DOCKER_TAG}
-          registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-          step-name: Build test image
-      - unless:
-          condition:
-            equal: [main, << pipeline.git.branch >>]
-          steps:
-            - docker/check:
-                registry: $DOCKER_REGISTRY
-            - docker/push:
-                step-name: Pushing test image
-                registry: $DOCKER_REGISTRY
-                image: ${THIS_IMAGE}-test
-                tag: ${PRIMARY_DOCKER_TAG}
       - run:
           name: Run tests
           command: |
