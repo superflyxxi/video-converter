@@ -75,7 +75,7 @@ abstract class Test extends TestCase {
 			}
 		}
 		if (null !== $filename) {
-			$command .= ' --input="' . $filename . '"';
+			$command .= ' --input="' . $this->dataDir . DIRECTORY_SEPARATOR . $filename . '"';
 		}
 		print "Executing command: " . $command . "\n";
 		passthru($command, $return);
