@@ -14,17 +14,18 @@ fi
 mkdir testResults || true
 
 if [[ "${TESTFILES}" == "" ]]; then
-	ADDITIONAL_PHPUNIT_ARGS="${ADDITIONAL_PHPUNIT_ARGS} ${TESTFILES}"
+	TESTS=${TESTFILES}
 else
-	ADDITIONAL_PHPUNIT_ARGS="${ADDITIONAL_PHPUNIT_ARGS} --testsuite ${TESTSUITES}"
+	TESTS="--testsuite ${TESTSUITES}"
 fi
+echo "TESTS=${TESTS}"
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
 	-v "$(pwd)/testResults:/opt/video-converter/testResults" \
 	-e LOG_LEVEL=100 \
 	-e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN?Missing TEST_SAMPLE_DOMAIN} \
-	${TEST_IMAGE} ${ADDITIONAL_PHPUNIT_ARGS}
+	${TEST_IMAGE} ${TESTS} ${ADDITIONAL_PHPUNIT_ARGS}
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}

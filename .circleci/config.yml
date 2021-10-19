@@ -146,11 +146,13 @@ jobs:
             fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
             echo "Simple tests"
-            circleci tests glob **/tests/**/*.php | circleci tests split
+            circleci tests glob **/tests/**/*Test.php | circleci tests split
             echo "Timing tests"
-            circleci tests glob **/tests/**/*.php | circleci tests split --split-by=timings
+            export TESTFILES=$(circleci tests glob **/tests/**/*Test.php | circleci tests split --split-by=timings)
+            echo "TESTFILES=${TESTFILES}"
             echo "Exporting"
-            export TESTFILES=$(circleci tests glob **/tests/**/*.php | circleci tests split)
+            export TESTFILES=$(circleci tests glob **/tests/**/*Test.php | circleci tests split)
+            echo "TESTFILES=${TESTFILES}"
             echo "Running"
             ./test.sh
       - store_test_results:
