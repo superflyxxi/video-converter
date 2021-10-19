@@ -78,7 +78,7 @@ abstract class Test extends TestCase {
 			$command .= ' --input="' . $this->dataDir . DIRECTORY_SEPARATOR . $filename . '"';
 		}
 		print "Executing command: " . $command . "\n";
-		passthru($command, $return);
+		passthru("cd \"" . $this->dataDir . "\"; " . $command, $return);
 		print $command . " => returned value " . $return . "\n";
 		return $return;
 	}
