@@ -5,16 +5,11 @@ require_once "vendor/autoload.php";
 require_once "convert/ConvertFile.php";
 require_once "request/CSVRequest.php";
 require_once "LogWrapper.php";
+require_once "Options.php";
 
 $log = new LogWrapper("rip-video");
 
-function error_handler(
-	int $errno,
-	string $errstr,
-	$errfile = null,
-	$errline = 0,
-	$errcontext = null
-) {
+function error_handler(int $errno, string $errstr, $errfile = null, $errline = 0, $errcontext = null) {
 	print_r("Error encountered! ");
 	print_r($errstr);
 	print_r(" at file ");
@@ -29,18 +24,18 @@ function error_handler(
 }
 set_error_handler("error_handler");
 
-if (null == getEnv("TITLE")) {
-	$log->error("TITLE env variable missing");
+if (null == Options::get("title")) {
+	$log->error("title missing");
 	exit(1);
 }
 
-$envInput = getEnv("INPUT");
+$envInput = Options::getInputFile();
 $csvRequest = null;
 if (strcasecmp(substr($envInput, -4), ".csv") === 0) {
-	$csvRequest = new CSVRequest(new SplFileObject("/data/" . $envInput, "r"));
+	$csvRequest = new CSVRequest(new SplFileObject($envInput, "r"));
 } else {
 	if (null == $envInput) {
-		$arrFiles = array_diff(scandir("/data/"), ["..", "."]);
+		$arrFiles = array_diff(scandir("."), ["..", "."]);
 	} else {
 		$arrFiles[] = $envInput;
 	}

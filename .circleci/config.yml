@@ -9,14 +9,14 @@ orbs:
 parameters:
   latest-from-tag:
     type: string
-    default: '4.3-vaapi1804'
+    default: "4.3-vaapi1804"
 
 # Orchestrate or schedule a set of jobs
 jobs:
   validate-format:
-    executor: 
+    executor:
       name: node/default
-      tag: '16.10'
+      tag: "16.10"
     steps:
       - checkout
       - run: npm install prettier @prettier/plugin-php
@@ -25,14 +25,21 @@ jobs:
   build-phar:
     executor:
       name: php/default
-      tag: '7.2'
+      tag: "7.2"
     steps:
       - checkout
       - php/install-composer
       - php/install-packages
       - run: composer run-script lint
-      - run: vendor/bin/phar-composer --version
-      - run: vendor/bin/phar-composer build .
+      - run: rm -rvf vendor
+      - php/install-packages:
+          install-flags: "--no-interaction --prefer-dist --no-dev"
+      - run: curl -o phar-composer -JL "https://github.com/clue/phar-composer/releases/download/v1.2.0/phar-composer-1.2.0.phar"
+      - run:
+          name: Build phar
+          command: |
+            php ./phar-composer --version
+            php ./phar-composer build .
       - persist_to_workspace:
           root: ./
           paths:
@@ -81,7 +88,7 @@ jobs:
       - docker/check:
           registry: $DOCKER_REGISTRY
       - docker/push:
-          step-name: Pushing actual image
+          step-name: Pushing image
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
@@ -89,7 +96,7 @@ jobs:
           name: Export tar
           command: |
             docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-            gzip video-converter.tar
+            gzip -v video-converter.tar
       - persist_to_workspace:
           root: ./
           paths:
@@ -110,7 +117,7 @@ jobs:
       - run:
           name: Load docker image
           command: |
-            gunzip /tmp/workspace/video-converter.tar.gz
+            gunzip -v /tmp/workspace/video-converter.tar.gz
             docker load -i /tmp/workspace/video-converter.tar
       - docker/build:
           docker-context: .
@@ -120,20 +127,20 @@ jobs:
           tag: ${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
           extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-          step-name: Build unit test image
+          step-name: Build test image
       - unless:
           condition:
-            equal: [ main, << pipeline.git.branch >> ]
+            equal: [main, << pipeline.git.branch >>]
           steps:
             - docker/check:
                 registry: $DOCKER_REGISTRY
             - docker/push:
-                step-name: Pushing unit test image
+                step-name: Pushing test image
                 registry: $DOCKER_REGISTRY
                 image: ${THIS_IMAGE}-test
                 tag: ${PRIMARY_DOCKER_TAG}
       - run:
-          name: Run unit tests
+          name: Run tests
           command: |
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";

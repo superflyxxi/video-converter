@@ -2,6 +2,7 @@
 require_once "LogWrapper.php";
 require_once "InputFile.php";
 require_once "functions.php";
+require_once "Options.php";
 
 class Request {
 	public static $log;
@@ -14,7 +15,7 @@ class Request {
 
 	public $episode = null;
 
-	public $subtitle = null;
+	public $showTitle = null;
 
 	public $oInputFile = null;
 
@@ -59,53 +60,37 @@ class Request {
 	public function __construct($filename) {
 		$this->oInputFile = new InputFile($filename);
 		$this->hwaccel = is_dir("/dev/dri");
-		$this->videoHdr = getEnvWithDefault("HDR", "false") == "true";
+		$this->videoHdr = Options::get("hdr");
 	}
 
 	public static function newInstanceFromEnv($filename) {
 		$req = new Request($filename);
 
-		$req->title = getEnv("TITLE");
-		$req->year = getEnv("YEAR");
-		$req->season = getEnv("SEASON");
-		$req->episode = getEnv("EPISODE");
-		$req->subtitle = getEnv("SUBTITLE");
+		$req->title = Options::get("title");
+		$req->year = Options::get("year");
+		$req->season = Options::get("season");
+		$req->episode = Options::get("episode");
+		$req->showTitle = Options::get("show-title");
 
-		$req->playlist = getEnvWithDefault("PLAYLIST", null);
-		$req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
-		$req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
-		$req->subtitleConversionOutput = getEnvWithDefault(
-			"SUBTITLE_CONVERSION_OUTPUT",
-			"MERGE"
-		);
-		$req->subtitleConversionBlacklist = getEnvWIthDefault(
-			"SUBTITLE_CONVERSION_BLACKLIST",
-			"|\\~/\`_"
-		);
+		$req->playlist = Options::get("PLAYLIST", null);
 
-		$req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
-		$req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
-		$req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
-		$req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", null);
-		$req->setNormalizeAudioTracks(
-			getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", "")
-		);
-		$req->audioChannelLayout = getEnvWithDefault(
-			"AUDIO_CHANNEL_LAYOUT",
-			""
-		);
-		$req->setAudioChannelLayoutTracks(
-			getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*")
-		);
+		$req->setVideoTracks(Options::get("video-tracks", "*"));
+		$req->videoFormat = Options::get("video-format", "notcopy");
+		$req->videoUpscale = Options::get("video-upscale", 1);
+		$req->setDeinterlace(Options::get("deinterlace", "off"));
 
-		$req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
-		$req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
-		$req->videoUpscale = getEnvWithDefault("VIDEO_UPSCALE", 1);
-		$req->setDeinterlace(getEnvWithDefault("DEINTERLACE", null));
-		$req->deinterlaceMode = getEnvWithDefault(
-			"DEINTERLACE_MODE",
-			$req->deinterlaceMode
-		);
+		$req->setAudioTracks(Options::get("audio-tracks", "*"));
+		$req->audioFormat = Options::get("audio-format", "aac");
+		$req->audioQuality = Options::get("audio-quality", "2");
+		$req->audioSampleRate = Options::get("audio-sample-rate", null);
+		$req->setNormalizeAudioTracks(Options::get("normalize-audio-tracks", ""));
+		$req->audioChannelLayout = Options::get("audio-channel-layout", "");
+		$req->setAudioChannelLayoutTracks(Options::get("audio-channel-layout-tracks", "*"));
+
+		$req->setSubtitleTracks(Options::get("subtitle-tracks", "*"));
+		$req->subtitleFormat = Options::get("subtitle-format", "ass");
+		$req->subtitleConversionOutput = Options::get("subtitle-conversion-output", "MERGE");
+		$req->subtitleConversionBlacklist = Options::get("subtitle-conversion-blacklist", "|\\~/\`_");
 
 		$req->prepareStreams();
 		return $req;
@@ -173,14 +158,12 @@ class Request {
 
 	public function setDeinterlace($val) {
 		$this->deinterlace = $val;
-		if ($this->deinterlace != null) {
-			$this->deinterlace = $this->deinterlace == "true";
-		} elseif ("copy" != $this->videoFormat) {
-			$this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile)
-				? true
-				: false;
+		if ("off" != $this->deinterlace && "copy" != $this->videoFormat) {
+			$this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile);
+			$this->deinterlaceMode = $val;
 		} else {
 			$this->deinterlace = false;
+			$this->deinterlaceMode = null;
 		}
 	}
 

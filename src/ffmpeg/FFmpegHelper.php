@@ -8,6 +8,7 @@ require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
 require_once "exceptions/ExecutionException.php";
+require_once "Options.php";
 
 class FFmpegHelper {
 	public static $log;
@@ -43,7 +44,7 @@ class FFmpegHelper {
 	}
 
 	public static function isInterlaced($inputFile) {
-		switch (getEnvWithDefault("DEINTERLACE_CHECK", "probe")) {
+		switch (Options::get("deinterlace-check", "probe")) {
 			case "idet":
 				return self::isInterlacedBasedOnIdet($inputFile);
 				break;
@@ -59,8 +60,7 @@ class FFmpegHelper {
 	private static function isInterlacedBasedOnProbe($inputFile) {
 		$json = self::probe($inputFile);
 		$stream = $json["streams"][0];
-		return array_key_exists("field_order", $stream) &&
-			$stream["field_order"] != "progressive";
+		return array_key_exists("field_order", $stream) && $stream["field_order"] != "progressive";
 	}
 
 	private static function isInterlacedBasedOnIdet($inputFile) {
@@ -68,9 +68,7 @@ class FFmpegHelper {
 			"filename" => $inputFile->getFileName(),
 		]);
 		$args =
-			'-i "' .
-			$inputFile->getFileName() .
-			'" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
+			'-i "' . $inputFile->getFileName() . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
 		$command = "ffmpeg " . $args;
 		self::$log->info("Checking for interlace", ["command" => $command]);
 		exec($command, $out, $ret);
@@ -85,23 +83,11 @@ class FFmpegHelper {
 [Parsed_idet_0 @ 0x559b53b4b700] Multi frame detection: TFF:     0 BFF:     0 Progressive: 14365 Undetermined:    23
 	*/
 		preg_match("/Progressive:[ ]+([0-9]+)/", $out, $matches);
-		$progressive = preg_replace(
-			self::$INTERLACED_REPLACEMENT_REGEX,
-			"$1",
-			$matches[0]
-		);
+		$progressive = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
 		preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
-		$tff = preg_replace(
-			self::$INTERLACED_REPLACEMENT_REGEX,
-			"$1",
-			$matches[0]
-		);
+		$tff = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
 		preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
-		$bff = preg_replace(
-			self::$INTERLACED_REPLACEMENT_REGEX,
-			"$1",
-			$matches[0]
-		);
+		$bff = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
 		$total = $progressive + $tff + $bff;
 		self::$log->debug("Interlacing probe results", [
 			"progressive" => $progressive,
@@ -134,24 +120,17 @@ class FFmpegHelper {
 		// generate input args
 		foreach ($listRequests as $tmpRequest) {
 			$finalCommand .=
-				' -i "' .
-				$tmpRequest->oInputFile->getPrefix() .
-				$tmpRequest->oInputFile->getFileName() .
-				'" ';
+				' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
 		}
 
 		self::$log->debug("Generating video args");
-		$finalCommand .=
-			" " .
-			self::generateArgs($listRequests, new FFmpegVideoArgGenerator());
+		$finalCommand .= " " . self::generateArgs($listRequests, new FFmpegVideoArgGenerator());
+
 		self::$log->debug("Generating audio args");
-		$finalCommand .=
-			" " .
-			self::generateArgs($listRequests, new FFmpegAudioArgGenerator());
+		$finalCommand .= " " . self::generateArgs($listRequests, new FFmpegAudioArgGenerator());
+
 		self::$log->debug("Generating subtitle args");
-		$finalCommand .=
-			" " .
-			self::generateArgs($listRequests, new FFmpegSubtitleArgGenerator());
+		$finalCommand .= " " . self::generateArgs($listRequests, new FFmpegSubtitleArgGenerator());
 
 		$finalCommand .= self::generateGlobalMetadataArgs($outputFile);
 		if ($outputFile->format != null) {
@@ -171,33 +150,20 @@ class FFmpegHelper {
 
 	private static function generateGlobalMetadataArgs($outputFile) {
 		return " " .
-			(null != $outputFile->title
-				? '-metadata "title=' . $outputFile->title . '"'
-				: " ") .
+			(null != $outputFile->title ? '-metadata "title=' . $outputFile->title . '"' : " ") .
 			" " .
-			(null != $outputFile->subtitle
-				? '-metadata "subtitle=' . $outputFile->subtitle . '"'
-				: " ") .
+			(null != $outputFile->showTitle ? '-metadata "showTitle=' . $outputFile->showTitle . '"' : " ") .
 			" " .
-			(null != $outputFile->year
-				? '-metadata "year=' . $outputFile->year . '"'
-				: " ") .
+			(null != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") .
 			" " .
-			(null != $outputFile->season
-				? '-metadata "season=' . $outputFile->season . '"'
-				: " ") .
+			(null != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") .
 			" " .
-			(null != $outputFile->episode
-				? '-metadata "episode=' . $outputFile->episode . '"'
-				: " ") .
+			(null != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") .
 			" " .
 			getEnvWithDefault("OTHER_METADATA", " ");
 	}
 
-	private static function generateArgs(
-		$listRequests,
-		FFmpegArgGenerator $generator
-	) {
+	private static function generateArgs($listRequests, FFmpegArgGenerator $generator) {
 		$fileno = 0;
 		$outTrack = 0;
 		$args = " ";
@@ -209,14 +175,7 @@ class FFmpegHelper {
 			]);
 			foreach ($streamList as $index => $stream) {
 				$args .= " -map " . $fileno . ":" . $index;
-				$args .=
-					" " .
-					$generator->getAdditionalArgs(
-						$outTrack++,
-						$tmpRequest,
-						$index,
-						$stream
-					);
+				$args .= " " . $generator->getAdditionalArgs($outTrack++, $tmpRequest, $index, $stream);
 			}
 			$fileno++;
 		}

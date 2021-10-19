@@ -6,10 +6,7 @@
 set -e
 
 TEST_IMAGE=${TEST_IMAGE:-test}
-TESTSUITES=${TESTSUITES:-units,basic,audio,video}
-if [[ "${BUILD_SUBTITLE_SUPPORT}" = "true" ]]; then
-	TESTSUITES="${TESTSUITES},subtitles"
-fi
+TESTSUITES=${TESTSUITES:-unit-tests,integration-tests}
 if [[ "${USE_VAAPI:-false}" = "true" ]]; then
 	DEVICES="--device /dev/dri"
 fi
@@ -17,7 +14,7 @@ mkdir testResults || true
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
-	-v "$(pwd)/testResults:/app/ripvideo/testResults" \
+	-v "$(pwd)/testResults:/opt/video-converter/testResults" \
 	-e LOG_LEVEL=100 \
 	-e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN?Missing TEST_SAMPLE_DOMAIN} \
 	${TEST_IMAGE} --testsuite ${TESTSUITES} ${ADDITIONAL_PHPUNIT_ARGS}

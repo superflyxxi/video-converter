@@ -15,9 +15,7 @@ class CSVRequest {
 			if ([null] !== $row) {
 				$data = self::getArrayForRow($columns, $row);
 				self::$log->debug("Creating metadata", ["metadata" => $data]);
-				$req = Request::newInstanceFromEnv(
-					"/data/" . $data["filename"]
-				);
+				$req = Request::newInstanceFromEnv($data["filename"]);
 				$this->arrConvertFiles[] = $req;
 				foreach (array_keys($data) as $key) {
 					$value = $data[$key];
@@ -39,8 +37,8 @@ class CSVRequest {
 								$req->episode = $value;
 								break;
 
-							case "subtitle":
-								$req->subtitle = $value;
+							case "showTitle":
+								$req->showTitle = $value;
 								break;
 
 							case "playlist":
@@ -93,10 +91,6 @@ class CSVRequest {
 
 							case "deinterlace":
 								$req->setDeinterlace($value);
-								break;
-
-							case "deinterlaceMode":
-								$req->deinterlaceMode = $value;
 								break;
 
 							default:

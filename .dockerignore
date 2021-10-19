@@ -4,3 +4,4 @@
 **/*.mpg
 **/*.iso
 vendor/
+node_modules/
