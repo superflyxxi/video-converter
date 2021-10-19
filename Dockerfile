@@ -5,16 +5,12 @@ LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG DEBIAN_FRONTEND=noninteractive
-WORKDIR /data
-
 ENV TMP_DIR=/tmp/wip
 
 # Install DBSup2Sub
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /opt/
 
-RUN mkdir -p ${TMP_DIR}/data && \
-	chmod -R ugo+rw ${TMP_DIR} && \
-	chmod -R ugo+rw /data && \
+RUN chmod -R ugo+rw ${TMP_DIR} && \
 	chmod ugo+r /opt/BDSup2Sub.jar && \
 	apt-get update -y && \
 	apt-get install -y --no-install-recommends apt-utils curl php7.2-cli php7.2-json mkvtoolnix && \
