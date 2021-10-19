@@ -81,9 +81,9 @@ class InputFile {
 
 	public function getTemporaryFileNamePrefix() {
 		if ($this->prefix != null) {
-			$dvdFile = str_replace(DIRECTORY_SEPARATOR, "-", realpath($this->getFileName())) . "-dir-";
+			return str_replace(DIRECTORY_SEPARATOR, "-", realpath($this->getFileName())) . "-dir-";
 		} else {
-			$dvdFile = $this->getFileName() . "-";
+			return $this->getFileName() . "-";
 		}
 	}
 }
