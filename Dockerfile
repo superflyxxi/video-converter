@@ -10,7 +10,8 @@ ENV TMP_DIR=/tmp/wip
 # Install DBSup2Sub
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /opt/
 
-RUN chmod -R ugo+rw ${TMP_DIR} && \
+RUN mkdir -p "${TMP_DIR}" && \
+	chmod -R ugo+rw "${TMP_DIR}" && \
 	chmod ugo+r /opt/BDSup2Sub.jar && \
 	apt-get update -y && \
 	apt-get install -y --no-install-recommends apt-utils curl php7.2-cli php7.2-json mkvtoolnix && \
