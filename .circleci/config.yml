@@ -145,9 +145,13 @@ jobs:
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
-            circleci tests glob tests/ | circleci tests split
-            circleci tests glob tests/ | circleci tests split --split-by=timings
-            export TESTFILES=$(circleci tests glob tests/ | circleci tests split)
+            echo "Simple tests"
+            circleci tests glob **/tests/**/*.php | circleci tests split
+            echo "Timing tests"
+            circleci tests glob **/tests/**/*.php | circleci tests split --split-by=timings
+            echo "Exporting"
+            export TESTFILES=$(circleci tests glob **/tests/**/*.php | circleci tests split)
+            echo "Running"
             ./test.sh
       - store_test_results:
           path: testResults
