@@ -22,7 +22,7 @@ Tools to convert video
 
 This image supports ripping a video or bluray directory into an MKV using ffmpeg. As a result,
 you'll see in the working directory a file with the following naming:
-`{title} ({year}) - s{season}e{episode} - {show-title}.{input}.mkv`.
+`{title} ({year}) - s{season}e{episode} - {show-title}.{filename}.mkv`.
 You may want to rip the bluray to mkv before running this tool as ffmpeg is not very good at metadata
 from blurays.
 
@@ -30,7 +30,7 @@ from blurays.
 
 All the command line arguments listed below can also be overridden using an environment variable. Any `-` will be
 replaced with `_`. Any `.` will be replaced with two `_`. For example, `--log-level` can be set using the
-`LOG_LEVEL` environment variable.
+`LOG_LEVEL` environment variable. The final argument will be the filename to process.
 
 Required Arguments:
 - `--title`
@@ -38,7 +38,6 @@ Required Arguments:
 Argument (short) | Description | Default | Example
 --- | --- | --- | ---
 `--log-level` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | `250` | `100`
-`--input` | The bluray directory/drive or file to convert. If not provided, all files in `/data` will be converted. | | `title_00.mkv`
 `--disable-postfix` | Pass this to avoid having the input filename as a postfix to the output files. | | 
 `--playlist` | If the input is bluray, override the playlist to be used. | | `183`
 `--title` | The title to be used in metadata and naming of the file. | | `Cool Movie`
@@ -66,12 +65,11 @@ Argument (short) | Description | Default | Example
 
 ### CSV File
 
-If the `--input` is a CSV file, the files defined within the CSV will be converted based on the definition within.
+If the `filename` is a CSV file, the files defined within the CSV will be converted based on the definition within.
 The arguments listed below are not supported; all others are supported in the CSV.
 A `filename` header must be provided in order for this to function. If a header is provided, then every row must have a
 value for that header. Any setting not mentioned in the CSV will default to the CLI argument's value.
 
-- `input`
 - `disable-postfix`
 - `hdr`
 - `deinterlace-check`
@@ -85,11 +83,11 @@ value for that header. Any setting not mentioned in the CSV will default to the 
 This is currently untested.
 
 ```sh
-docker run --rm -it --device /dev/dri -v /mnt/bluray:/data -w /data video-converter --input=. --title=Test --year=2019
+docker run --rm -it --device /dev/dri -v /mnt/bluray:/data -w /data video-converter --title=Test --year=2019 .
 ```
 
 #### Ripping specific file without VAAPI
 
 ```sh
-docker run --rm -it -v "$(pwd):/data" -w /data video-converter --input=file.mpg --title=Test --year=2019
+docker run --rm -it -v "$(pwd):/data" -w /data video-converter --title=Test --year=2019 file.mpg
 ```

@@ -2,11 +2,12 @@
 
 class Options {
 	private static $opts;
+	private static $inputfile;
 
 	public static function init() {
+		$otherArgs = null;
 		self::$opts = getopt("", [
 			"log-level::",
-			"input::",
 			"title:",
 			"year::",
 			"season::",
@@ -31,7 +32,13 @@ class Options {
 			"hdr",
 			"disable-postfix",
 			"playlist::",
-		]);
+		], $otherArgs);
+		$otherArgs = array_slice($argv, $otherArgs);
+		self::$inputfile = count($otherArgs) > 0 ? $otherArgs[0] : null;
+	}
+
+	public static function getInputFile() {
+		return self::$inputfile;
 	}
 
 	public static function get($arg, $default = null) {

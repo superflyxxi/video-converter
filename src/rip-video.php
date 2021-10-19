@@ -29,7 +29,7 @@ if (null == Options::get("title")) {
 	exit(1);
 }
 
-$envInput = Options::get("input");
+$envInput = Options::getInputFile();
 $csvRequest = null;
 if (strcasecmp(substr($envInput, -4), ".csv") === 0) {
 	$csvRequest = new CSVRequest(new SplFileObject($envInput, "r"));
