@@ -121,6 +121,7 @@ jobs:
             - video-converter-test.tar.gz
 
   test-docker:
+    parallelism: 4
     environment:
       DEBIAN_FRONTEND: noninteractive
     executor: docker/machine
@@ -135,8 +136,8 @@ jobs:
       - run:
           name: Load docker image
           command: |
-            gunzip -v /tmp/workspace/video-converter.tar.gz
-            docker load -i /tmp/workspace/video-converter.tar
+            gunzip -v /tmp/workspace/video-converter-test.tar.gz
+            docker load -i /tmp/workspace/video-converter-test.tar
       - run:
           name: Run tests
           command: |
@@ -144,6 +145,8 @@ jobs:
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
+            circleci tests glob tests/
+            export TESTFILES=$(circleci tests glob tests/)
             ./test.sh
       - store_test_results:
           path: testResults
