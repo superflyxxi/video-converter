@@ -7,17 +7,24 @@ set -e
 
 TEST_IMAGE=${TEST_IMAGE:-test}
 TESTSUITES=${TESTSUITES:-unit-tests,integration-tests}
+TESTFILES=${TESTFILES:-}
 if [[ "${USE_VAAPI:-false}" = "true" ]]; then
 	DEVICES="--device /dev/dri"
 fi
 mkdir testResults || true
+
+if [[ "${TESTFILES}" == "" ]]; then
+	ADDITIONAL_PHPUNIT_ARGS="${ADDITIONAL_PHPUNIT_ARGS} ${TESTFILES}"
+else
+	ADDITIONAL_PHPUNIT_ARGS="${ADDITIONAL_PHPUNIT_ARGS} --testsuite ${TESTSUITES}"
+fi
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
 	-v "$(pwd)/testResults:/opt/video-converter/testResults" \
 	-e LOG_LEVEL=100 \
 	-e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN?Missing TEST_SAMPLE_DOMAIN} \
-	${TEST_IMAGE} --testsuite ${TESTSUITES} ${ADDITIONAL_PHPUNIT_ARGS}
+	${TEST_IMAGE} ${ADDITIONAL_PHPUNIT_ARGS}
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}
