@@ -147,14 +147,18 @@ jobs:
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
             echo "PHP Unit"
             docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g'
-            echo "Simple tests"
-            circleci tests glob **/tests/**/*Test.php | circleci tests split
-            echo "Timing tests"
-            circleci tests glob **/tests/**/*Test.php | circleci tests split --split-by=timings
+            echo "CirlceCLI glob"
+            circleci tests glob **/tests/**/*Test.php
             echo "Exporting"
             export TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g')
             echo "TESTS=${TESTS}"
+            echo "Split TESTS"
+            echo $(echo $TESTS | circleci tests split)
+            echo "Split TESTS by timing"
+            echo $(echo $TESTS | circleci tests split --split-by=timings)
             echo "Running"
+            export TESTS=$(echo $TESTS | circleci tests split)
+            echo "Final TESTS=${TESTS}"
             ./test.sh
       - store_test_results:
           path: testResults
