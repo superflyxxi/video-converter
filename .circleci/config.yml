@@ -145,14 +145,15 @@ jobs:
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
+            echo "PHP Unit"
+            docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g'
             echo "Simple tests"
             circleci tests glob **/tests/**/*Test.php | circleci tests split
             echo "Timing tests"
-            export TESTFILES=$(circleci tests glob **/tests/**/*Test.php | circleci tests split --split-by=timings)
-            echo "TESTFILES=${TESTFILES}"
+            circleci tests glob **/tests/**/*Test.php | circleci tests split --split-by=timings
             echo "Exporting"
-            export TESTFILES=$(circleci tests glob **/tests/**/*Test.php | circleci tests split)
-            echo "TESTFILES=${TESTFILES}"
+            export TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g')
+            echo "TESTS=${TESTS}"
             echo "Running"
             ./test.sh
       - store_test_results:
