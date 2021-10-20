@@ -283,8 +283,14 @@ jobs:
             len=${#ALL_TESTS[@]}
             start=$(($len * ${CIRCLE_NODE_INDEX} / ${CIRCLE_NODE_TOTAL}))
             end=$((${CIRLCE_NODE_INEX} + 1))
-            end=$(($len * $end / ${CIRLC_ENODE_TOTAL}))
+            end=$(($len * $end / ${CIRLCE_NODE_TOTAL}))
             printf "Going %s to %s from %s total" "${start}" "${end}" "${len}"
+            declare -a TESTS_TO_CONSIDER
+            for (($i=$start; $i<$end; $i++)); do
+              TESTS_TO_CONSIDER+=${ALL_TESTS[$i]}
+            done
+            export TESTS=${TESTS_TO_CONSIDER[@]}
+            echo "TESTS=$TESTS"
             exit 0
             ./test.sh
       - store_test_results:
