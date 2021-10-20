@@ -1,5 +1,4 @@
-ARG BUILD_IMAGE
-FROM ${BUILD_IMAGE}
+FROM video-converter
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -9,11 +8,19 @@ RUN apt-get update && \
 	apt-get clean -y
 ENV DATA_DIR=/data \
 	TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples"
+RUN apt-get update && \
+	apt-get install -y curl && \
+	mkdir -m 777 "${DATA_DIR}" && \
+	apt-get clean -y
 
 ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml"]
 CMD [ "/opt/video-converter/tests" ]
 WORKDIR /opt/video-converter
 
+RUN curl --progress-bar "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" -o "${DATA_DIR}/dvd.mkv"
+RUN curl --progress-bar "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/bluray.mkv"
+
+#COPY --from=composer /usr/bin/composer /usr/bin/
 COPY . /opt/video-converter
 
 RUN apt-get update && \
@@ -23,7 +30,4 @@ RUN apt-get update && \
 	composer clear-cache && \
 	apt-get purge -y ${COMPOSER_DEPS} && \
 	apt-get clean -y && \
-	mkdir -m 777 /opt/video-converter/testResults && \
-	mkdir -m 777 "${DATA_DIR}"
-ADD "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" "${DATA_DIR}/dvd.mkv"
-ADD "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" "${DATA_DIR}/bluray.mkv"
+	mkdir -m 777 /opt/video-converter/testResults
