@@ -120,51 +120,6 @@ jobs:
           paths:
             - video-converter-test.tar.gz
 
-  test-docker:
-    parallelism: 4
-    environment:
-      DEBIAN_FRONTEND: noninteractive
-    executor: docker/machine
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - checkout
-      - run:
-          name: Custom enviroment variables
-          command: |
-            echo "export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)" >> ${BASH_ENV}
-      - run:
-          name: Load docker image
-          command: |
-            gunzip -v /tmp/workspace/video-converter-test.tar.gz
-            docker load -i /tmp/workspace/video-converter-test.tar
-      - run:
-          name: Run tests
-          command: |
-            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
-              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
-            fi
-            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
-            echo "PHP Unit"
-            docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g'
-            echo "CirlceCLI glob"
-            circleci tests glob **/tests/**/*Test.php
-            echo "Exporting"
-            export TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g')
-            echo ${TESTS}
-            echo "Split TESTS"
-            echo $(echo $TESTS | circleci tests split)
-            echo "Split TESTS by timing"
-            echo $(echo $TESTS | circleci tests split --split-by=timings)
-            echo "Running"
-            export TESTS=$(echo $TESTS | circleci tests split)
-            echo "Final TESTS=${TESTS}"
-            ./test.sh
-      - store_test_results:
-          path: testResults
-      - store_artifacts:
-          path: testResults
-
   release:
     docker:
       - image: circleci/node
@@ -202,7 +157,7 @@ jobs:
             - full_version.txt
             - short_version.txt
 
-  test-docker-parallel:
+  test-docker:
     parallelism: 3
     environment:
       DEBIAN_FRONTEND: noninteractive
@@ -213,19 +168,15 @@ jobs:
           at: /tmp/workspace
       - checkout
       - run:
-          name: Load docker image
+          name: Load docker test image
           command: |
-            if [[ -f "/tmp/workspace/video-converter-test.tar.gz" ]]; then
-              gunzip -v /tmp/workspace/video-converter-test.tar.gz
-              docker load -i /tmp/workspace/video-converter-test.tar
-            fi
-      - docker/check:
-          registry: $DOCKER_REGISTRY
+            gunzip -v /tmp/workspace/video-converter-test.tar.gz
+            docker load -i /tmp/workspace/video-converter-test.tar
       - run:
           name: Run tests
           command: |
-            if [[ "2" != "${CIRCLE_NODE_INDEX}" ]]; then
-              exit 0;
+            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
+              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
             ./test.sh
@@ -237,5 +188,37 @@ jobs:
 workflows:
   cicd:
     jobs:
-      - test-docker-parallel:
+      - release:
+          name: pre-release
           context: default
+          prerelease: true
+      - validate-format:
+          context: default
+      - build-phar:
+          context: default
+      - docker/hadolint:
+          name: validate-dockerfile
+          context: default
+      - build-docker:
+          context: default
+          requires:
+            - pre-release
+            - validate-dockerfile
+            - validate-format
+            - build-phar
+      - test-docker:
+          context: default
+          requires:
+            - pre-release
+            - build-docker
+      - release:
+          name: release
+          context: default
+          prerelease: false
+          requires:
+            - build-docker
+            - test-docker
+          filters:
+            branches:
+              only:
+                - main
