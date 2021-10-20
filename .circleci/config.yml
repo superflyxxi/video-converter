@@ -247,6 +247,8 @@ jobs:
             docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g' | circleci tests split
             echo "As is"
             docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | circleci tests split
+            echo "Circleci tests split help"
+            circleci tests split --help
             exit 0
             ./test.sh
       - store_test_results:
