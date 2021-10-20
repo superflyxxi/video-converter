@@ -203,7 +203,7 @@ jobs:
             - short_version.txt
 
   test-docker-parallel:
-    parallelism: 4
+    parallelism: 3
     environment:
       DEBIAN_FRONTEND: noninteractive
       PRIMARY_DOCKER_TAG: fix-test_parallel
@@ -224,7 +224,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            if [[ "0" != "${CIRCLE_NODE_INDEX}" ]]; then
+            if [[ "2" != "${CIRCLE_NODE_INDEX}" ]]; then
               exit 0;
             fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
