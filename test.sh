@@ -14,9 +14,9 @@ fi
 mkdir testResults || true
 
 if [[ "${TESTFILES}" == "" ]]; then
-	TESTS=${TESTFILES}
-else
 	TESTS="--testsuite ${TESTSUITES}"
+else
+	TESTS=${TESTFILES}
 fi
 echo "TESTS=${TESTS}"
 docker run --name test -d \
