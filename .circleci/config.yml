@@ -99,7 +99,7 @@ jobs:
           image: ${THIS_IMAGE}-test
           tag: ${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
+          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG} --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
           step-name: Build test image
       - unless:
           condition:

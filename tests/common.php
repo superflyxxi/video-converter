@@ -4,10 +4,10 @@ use PHPUnit\Framework\TestCase;
 abstract class Test extends TestCase {
 	public function __construct() {
 		parent::__construct();
-		$this->sampleDomain = getEnv("TEST_SAMPLE_DOMAIN");
+		$this->sampleBaseUrl = getEnv("TEST_SAMPLE_BASE_URL");
 		$this->dataDir = getEnv("DATA_DIR");
 	}
-	private $sampleDomain;
+	private $sampleBaseUrl;
 	private $dataDir;
 
 	protected function getDataDir() {
@@ -37,13 +37,13 @@ abstract class Test extends TestCase {
 		switch ($file) {
 			case "dvd.mkv":
 			case "dvd":
-				$URLpath = "/samples/DVD_Sample.mkv";
+				$URLpath = "DVD_Sample.mkv";
 				$localFilename = "dvd.mkv";
 				break;
 
 			case "bluray.mkv":
 			case "bluray":
-				$URLpath = "/samples/Bluray_Sample.mkv";
+				$URLpath = "Bluray_Sample.mkv";
 				$localFilename = "bluray.mkv";
 				break;
 
@@ -56,8 +56,9 @@ abstract class Test extends TestCase {
 				$this->dataDir .
 				DIRECTORY_SEPARATOR .
 				$localFilename .
-				'" "https://' .
-				$this->sampleDomain .
+				'" "' .
+				$this->sampleBaseUrl .
+				"/" .
 				$URLpath .
 				'"';
 			passthru($command, $ret);
