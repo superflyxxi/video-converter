@@ -202,40 +202,50 @@ jobs:
             - full_version.txt
             - short_version.txt
 
+  test-docker-parallel:
+    parallelism: 4
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    executor: docker/machine
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Custom enviroment variables
+          command: |
+            echo "export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)" >> ${BASH_ENV}
+      - docker/check:
+          registry: $DOCKER_REGISTRY
+      - run:
+          name: Run tests
+          command: |
+            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
+            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
+              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
+            fi
+            echo "PHP Unit"
+            docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g'
+            echo "CirlceCLI glob"
+            circleci tests glob **/tests/**/*Test.php
+            echo "Exporting"
+            export TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g')
+            echo ${TESTS}
+            echo "Split TESTS"
+            echo $(echo $TESTS | circleci tests split)
+            echo "Split TESTS by timing"
+            echo $(echo $TESTS | circleci tests split --split-by=timings)
+            echo "Running"
+            export TESTS=$(echo $TESTS | circleci tests split)
+            echo "Final TESTS=${TESTS}"
+            ./test.sh
+      - store_test_results:
+          path: testResults
+      - store_artifacts:
+          path: testResults
+
 workflows:
   cicd:
     jobs:
-      - release:
-          name: pre-release
+      - test-docker-parallel:
           context: default
-          prerelease: true
-      - validate-format:
-          context: default
-      - build-phar:
-          context: default
-      - docker/hadolint:
-          name: validate-dockerfile
-          context: default
-      - build-docker:
-          context: default
-          requires:
-            - pre-release
-            - validate-dockerfile
-            - validate-format
-            - build-phar
-      - test-docker:
-          context: default
-          requires:
-            - pre-release
-            - build-docker
-      - release:
-          name: release
-          context: default
-          prerelease: false
-          requires:
-            - build-docker
-            - test-docker
-          filters:
-            branches:
-              only:
-                - main
