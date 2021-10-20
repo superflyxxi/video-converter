@@ -120,6 +120,34 @@ jobs:
           paths:
             - video-converter-test.tar.gz
 
+  test-docker:
+    parallelism: 5
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+      PRIMARY_DOCKER_TAG: fix-test_parallel
+    executor: docker/machine
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Load docker test image
+          command: |
+            gunzip -v /tmp/workspace/video-converter-test.tar.gz
+            docker load -i /tmp/workspace/video-converter-test.tar
+      - run:
+          name: Run tests
+          command: |
+            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
+              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
+            fi
+            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
+            ./test.sh
+      - store_test_results:
+          path: testResults
+      - store_artifacts:
+          path: testResults
+
   release:
     docker:
       - image: circleci/node
@@ -157,33 +185,6 @@ jobs:
             - full_version.txt
             - short_version.txt
 
-  test-docker:
-    parallelism: 5
-    environment:
-      DEBIAN_FRONTEND: noninteractive
-      PRIMARY_DOCKER_TAG: fix-test_parallel
-    executor: docker/machine
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - checkout
-      - run:
-          name: Load docker test image
-          command: |
-            gunzip -v /tmp/workspace/video-converter-test.tar.gz
-            docker load -i /tmp/workspace/video-converter-test.tar
-      - run:
-          name: Run tests
-          command: |
-            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
-              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
-            fi
-            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
-            ./test.sh
-      - store_test_results:
-          path: testResults
-      - store_artifacts:
-          path: testResults
 
 workflows:
   cicd:
