@@ -217,11 +217,12 @@ jobs:
       - run:
           name: Run tests
           command: |
-            set -x
             if [[ "0" != "${CIRCLE_NODE_INDEX}" ]]; then
               exit 0;
             fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
+            docker pull ${TEST_IMAGE}
+            set -x
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
