@@ -286,7 +286,7 @@ jobs:
             end=$(($len * $end / ${CIRCLE_NODE_TOTAL}))
             printf "Going %s to %s from %s total" "${start}" "${end}" "${len}"
             declare -a TESTS_TO_CONSIDER
-            for (($i=$start; $i<$end; $i++)); do
+            for ((i=$start; i<$end; i++)); do
               TESTS_TO_CONSIDER+=(${ALL_TESTS[$i]})
             done
             export TESTS=${TESTS_TO_CONSIDER[@]}
