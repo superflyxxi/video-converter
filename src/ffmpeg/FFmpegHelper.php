@@ -26,6 +26,7 @@ class FFmpegHelper {
 			self::$log->info("Executing ffprobe", ["command" => $command]);
 			exec($command, $out, $ret);
 			if ($ret > 0) {
+				self::$log->error(print_r($out, true));
 				throw new ExecutionException("ffprobe", $ret);
 			}
 			$json = json_decode(implode($out), true);
