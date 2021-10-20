@@ -278,34 +278,13 @@ jobs:
             fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
             docker pull ${TEST_IMAGE}
-            set -x
-            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
-              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
-            fi
-            echo "PHP Unit"
-            docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g'
-            echo "CirlceCLI glob"
-            circleci tests glob **/tests/**/*Test.php
-            echo "Exporting"
-            export TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/ /g')
-            echo ${TESTS}
-            echo "Split TESTS"
-            echo $(echo $TESTS | circleci tests split)
-            echo "Split TESTS by timing"
-            echo $(echo $TESTS | circleci tests split --split-by=timings)
-            echo "Running"
-            export TESTS=$(echo $TESTS | circleci tests split)
-            echo "Final TESTS=${TESTS}"
-            set +x
-            echo "Try different things"
-            echo "Spaces"
-            docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/ /g' | circleci tests split
-            echo "Newlines"
-            docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g' | circleci tests split
-            echo "As is"
-            docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | circleci tests split
-            echo "Circleci tests split help"
-            circleci tests split --help
+            ALL_TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g')
+            ALL_TESTS=($ALL_TESTS)
+            len=${#ALL_TESTS[@]}
+            start=$(($len * ${CIRCLE_NODE_INDEX} / ${CIRCLE_NODE_TOTAL}))
+            end=$((${CIRLCE_NODE_INEX} + 1))
+            end=$(($len * $end / ${CIRLC_ENODE_TOTAL}))
+            printf "Going %s to %s from %s total" "${start}" "${end}" "${len}"
             exit 0
             ./test.sh
       - store_test_results:
