@@ -230,7 +230,7 @@ jobs:
             echo "CirlceCLI glob"
             circleci tests glob **/tests/**/*Test.php
             echo "Exporting"
-            export TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g')
+            export TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/ /g')
             echo ${TESTS}
             echo "Split TESTS"
             echo $(echo $TESTS | circleci tests split)
