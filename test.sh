@@ -16,9 +16,15 @@ mkdir testResults || true
 if [[ "${TESTFILES}" == "" ]]; then
 	TESTS="--testsuite ${TESTSUITES}"
 else
-	TESTS=${TESTFILES}
+	#for i in $TESTFILES; do
+	#	printf "TESTS=%s\t\ti=%s\n" "${TESTS}" "$i"
+	#	TESTS="${TESTS} --filter $i";
+	#done
+	#TESTS=${TESTFILES}
+	TESTS="--filter /$(echo $TESTFILES | sed 's/\r\s/|/g' | sed 's/\r//g' )/"
 fi
 echo "TESTS=${TESTS}"
+set -x
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
