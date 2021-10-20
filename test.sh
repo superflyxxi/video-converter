@@ -5,25 +5,19 @@
 
 set -e
 
-TEST_IMAGE=${TEST_IMAGE:-test}
+TEST_IMAGE=${TEST_IMAGE:-video-converter-test}
 TESTSUITES=${TESTSUITES:-unit-tests,integration-tests}
-TESTFILES=${TESTFILES:-}
+TESTS=${TESTS:-}
 if [[ "${USE_VAAPI:-false}" = "true" ]]; then
 	DEVICES="--device /dev/dri"
 fi
 mkdir testResults || true
 
-if [[ "${TESTFILES}" == "" ]]; then
-	TESTS="--testsuite ${TESTSUITES}"
+if [[ "${TESTS}" == "" ]]; then
+	TEST_ARG="--testsuite ${TESTSUITES}"
 else
-	#for i in $TESTFILES; do
-	#	printf "TESTS=%s\t\ti=%s\n" "${TESTS}" "$i"
-	#	TESTS="${TESTS} --filter $i";
-	#done
-	#TESTS=${TESTFILES}
-	TESTS="--filter /$(echo $TESTFILES | sed 's/\r\s/|/g' | sed 's/\r//g' )/"
+	TEST_ARG="--filter /$(echo $TESTS | sed 's/\r\s/|/g' | sed 's/\r//g' )/"
 fi
-echo "TESTS=${TESTS}"
 set -x
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
@@ -31,7 +25,8 @@ docker run --name test -d \
 	-v "$(pwd)/testResults:/opt/video-converter/testResults" \
 	-e LOG_LEVEL=100 \
 	-e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN?Missing TEST_SAMPLE_DOMAIN} \
-	${TEST_IMAGE} ${TESTS} ${ADDITIONAL_PHPUNIT_ARGS}
+	${TEST_IMAGE} ${TEST_ARG} ${ADDITIONAL_PHPUNIT_ARGS}
+set +x
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}
