@@ -125,7 +125,6 @@ jobs:
     parallelism: 5
     environment:
       DEBIAN_FRONTEND: noninteractive
-      PRIMARY_DOCKER_TAG: fix-test_parallel
     executor: docker/machine
     steps:
       - attach_workspace:
@@ -139,6 +138,7 @@ jobs:
       - run:
           name: Run tests
           command: |
+            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
