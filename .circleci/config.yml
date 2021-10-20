@@ -295,7 +295,5 @@ jobs:
 workflows:
   cicd:
     jobs:
-      - test-docker-parallel:
-          context: default
       - test-docker-parallel-2:
           context: default
