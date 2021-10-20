@@ -11,7 +11,7 @@ TESTSUITES=${TESTSUITES:-unit-tests,integration-tests}
 if [[ "" == "${CIRCLE_NODE_TOTAL}" ]]; then
 	TEST_ARG="--testsuite ${TESTSUITES}"
 else
-	printf "%s out of %s\n\n" "${CIRCLE_NODE_INDEX}" "${CIRCLE_NODE_TOTAL}"
+	printf "Using CircleCI nodes: %s out of %s\n\n" "${CIRCLE_NODE_INDEX}" "${CIRCLE_NODE_TOTAL}"
 	ALL_TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g')
 	ALL_TESTS=($ALL_TESTS)
 	len=${#ALL_TESTS[@]}
