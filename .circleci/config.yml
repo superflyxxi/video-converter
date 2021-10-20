@@ -258,7 +258,7 @@ jobs:
           path: testResults
 
   test-docker-parallel-2:
-    parallelism: 4
+    parallelism: 3
     environment:
       DEBIAN_FRONTEND: noninteractive
       PRIMARY_DOCKER_TAG: fix-test_parallel
@@ -284,7 +284,7 @@ jobs:
             start=$(($len * ${CIRCLE_NODE_INDEX} / ${CIRCLE_NODE_TOTAL}))
             end=$((${CIRCLE_NODE_INEX} + 1))
             end=$(($len * $end / ${CIRCLE_NODE_TOTAL}))
-            printf "Going %s to %s from %s total" "${start}" "${end}" "${len}"
+            printf "Going %s to %s from %s total" "${start}" "${end}" "${len}\n"
             declare -a TESTS_TO_CONSIDER
             for ((i=$start; i<$end; i++)); do
               TESTS_TO_CONSIDER+=(${ALL_TESTS[$i]})
