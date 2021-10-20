@@ -224,6 +224,9 @@ jobs:
       - run:
           name: Run tests
           command: |
+            if [[ "0" != "${CIRCLE_NODE_INDEX"} ]]; then
+              exit 0;
+            fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
             ./test.sh
       - store_test_results:
