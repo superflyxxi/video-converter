@@ -7,17 +7,30 @@ set -e
 
 TEST_IMAGE=${TEST_IMAGE:-video-converter-test}
 TESTSUITES=${TESTSUITES:-unit-tests,integration-tests}
-TESTS=${TESTS:-}
+
+if [[ "" == "${CIRCLE_NODE_TOTAL}" ]]; then
+	TEST_ARG="--testsuite ${TESTSUITES}"
+else
+	printf "%s out of %s\n\n" "${CIRCLE_NODE_INDEX}" "${CIRCLE_NODE_TOTAL}"
+	ALL_TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g')
+	ALL_TESTS=($ALL_TESTS)
+	len=${#ALL_TESTS[@]}
+	start=$(($len * ${CIRCLE_NODE_INDEX} / ${CIRCLE_NODE_TOTAL}))
+	end=$((${CIRCLE_NODE_INEX} + 1))
+	end=$(($len * $end / ${CIRCLE_NODE_TOTAL}))
+	printf "Going %s to %s from %s total" "${start}" "${end}" "${len}\n"
+	declare -a TESTS_TO_CONSIDER
+	for ((i=$start; i<$end; i++)); do
+	  TESTS_TO_CONSIDER+=(${ALL_TESTS[$i]})
+	done
+	TESTS=${TESTS_TO_CONSIDER[@]}
+	export TEST_ARG="--filter /${TESTS// /|}/"
+fi
 if [[ "${USE_VAAPI:-false}" = "true" ]]; then
 	DEVICES="--device /dev/dri"
 fi
 mkdir testResults || true
 
-if [[ "${TESTS}" == "" ]]; then
-	TEST_ARG="--testsuite ${TESTSUITES}"
-else
-	TEST_ARG="--filter /$(echo $TESTS | sed 's/\s/|/g' )/"
-fi
 set -x
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
