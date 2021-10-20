@@ -158,7 +158,7 @@ jobs:
             - short_version.txt
 
   test-docker:
-    parallelism: 3
+    parallelism: 5
     environment:
       DEBIAN_FRONTEND: noninteractive
       PRIMARY_DOCKER_TAG: fix-test_parallel
