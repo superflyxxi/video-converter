@@ -16,7 +16,7 @@ mkdir testResults || true
 if [[ "${TESTS}" == "" ]]; then
 	TEST_ARG="--testsuite ${TESTSUITES}"
 else
-	TEST_ARG="--filter /$(echo $TESTS | sed 's/\r\s/|/g' | sed 's/\r//g' )/"
+	TEST_ARG="--filter /$(echo $TESTS | sed 's/\s/|/g' )/"
 fi
 set -x
 docker run --name test -d \
