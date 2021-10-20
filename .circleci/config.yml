@@ -92,6 +92,7 @@ jobs:
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
+      - run: docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}/${PRIMARY_DOCKER_TAG} video-converter
       - docker/build:
           docker-context: .
           path: .
@@ -99,7 +100,7 @@ jobs:
           image: ${THIS_IMAGE}-test
           tag: ${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG} --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
+          extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
           step-name: Build test image
       - unless:
           condition:
