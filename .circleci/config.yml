@@ -218,6 +218,9 @@ jobs:
           name: Run tests
           command: |
             set -x
+            if [[ "0" != "${CIRCLE_NODE_INDEX}" ]]; then
+              exit 1;
+            fi
             export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
