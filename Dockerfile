@@ -14,9 +14,7 @@ RUN mkdir -p "${TMP_DIR}" && \
 	chmod -R ugo+rw "${TMP_DIR}" && \
 	chmod ugo+r /opt/BDSup2Sub.jar && \
 	apt-get update -y && \
-	apt-get install -y --no-install-recommends apt-utils curl php7.2-cli php7.2-json mkvtoolnix && \
-	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
-	apt-get purge -y curl && \
+	apt-get install -y --no-install-recommends apt-utils php7.2-cli php7.2-json mkvtoolnix && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # install tesseract, language packs, and java
