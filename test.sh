@@ -30,7 +30,7 @@ if [[ "${USE_VAAPI:-false}" = "true" ]]; then
 	DEVICES="--device /dev/dri"
 fi
 
-mkdir testResults || true
+mkdir -p testResults/coverage || true
 
 set -x
 docker run --name test -d \
