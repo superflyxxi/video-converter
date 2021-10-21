@@ -3,15 +3,12 @@ LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TEST_SAMPLE_DOMAIN
-RUN apt-get update && \
-	apt-get install -y php7.2-xml php7.2-mbstring curl && \
-	apt-get clean -y
 ENV DATA_DIR=/data \
 	TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples"
 RUN apt-get update && \
-	apt-get install -y curl && \
-	mkdir -m 777 "${DATA_DIR}" && \
-	apt-get clean -y
+	apt-get install -y php7.2-xml php7.2-mbstring curl && \
+	apt-get clean -y && \
+	mkdir -m 777 "${DATA_DIR}"
 
 ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml"]
 CMD [ "/opt/video-converter/tests" ]
