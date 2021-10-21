@@ -92,7 +92,7 @@ jobs:
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
-      - run: docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}/${PRIMARY_DOCKER_TAG} video-converter
+      - run: docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG} video-converter
       - docker/build:
           docker-context: .
           path: .
