@@ -26,16 +26,18 @@ you'll see in the working directory a file with the following naming:
 You may want to rip the bluray to mkv before running this tool as ffmpeg is not very good at metadata
 from blurays.
 
-### Arguments
+`docker run {image} [options] [filename]`
 
-All the command line arguments listed below can also be overridden using an environment variable. Any `-` will be
+### CLI Options
+
+All the command line options listed below can also be overridden using an environment variable. Any `-` will be
 replaced with `_`. Any `.` will be replaced with two `_`. For example, `--log-level` can be set using the
 `LOG_LEVEL` environment variable. The final argument will be the filename to process.
 
-Required Arguments:
+Required Options:
 - `--title`
 
-Argument (short) | Description | Default | Example
+Option (short) | Description | Default | Example
 --- | --- | --- | ---
 `--log-level` | The logging level to use. [Log Levels](https://github.com/Seldaek/monolog/blob/main/doc/01-usage.md#log-levels). | `250` | `100`
 `--disable-postfix` | Pass this to avoid having the input filename as a postfix to the output files. | | 
@@ -66,15 +68,15 @@ Argument (short) | Description | Default | Example
 ### CSV File
 
 If the `filename` is a CSV file, the files defined within the CSV will be converted based on the definition within.
-The arguments listed below are not supported; all others are supported in the CSV.
+The options listed below are not supported; all others are supported in the CSV.
 A `filename` header must be provided in order for this to function. If a header is provided, then every row must have a
-value for that header. Any setting not mentioned in the CSV will default to the CLI argument's value.
+value for that header. Any setting not mentioned in the CSV will default to the CLI option's value.
 
-- `disable-postfix`
-- `hdr`
-- `deinterlace-check`
-- `subtitle-conversion-output`
-- `subtitle-conversion-blacklist`
+- `--disable-postfix`
+- `--hdr`
+- `--deinterlace-check`
+- `--subtitle-conversion-output`
+- `--subtitle-conversion-blacklist`
 
 ### Examples
 
