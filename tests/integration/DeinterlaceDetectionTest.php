@@ -2,18 +2,14 @@
 require_once "common.php";
 
 final class DeinterlaceDetectionTest extends Test {
-
 	private function probeModes() {
-		return [
-				["probe"],
-				["idet"]
-			];
+		return [["probe"], ["idet"]];
 	}
 
 	/**
 	 * @test
 	 * @dataProvider probeModes
-	*/
+	 */
 	public function testAutoDeinterlace($check) {
 		$this->getFile("dvd");
 
@@ -40,7 +36,11 @@ final class DeinterlaceDetectionTest extends Test {
 		// doesn't exist... test("Stream 0 field_order", "progressive", $probe["streams"][0]["field_order"], $testOutput);
 		$this->assertEquals("24000/1001", $probe["streams"][0]["r_frame_rate"], "Stream 0 r_frame_rate");
 		$this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
-		$this->assertEquals("Test " . $check . " Auto Deinterlace", $probe["format"]["tags"]["title"], "Metadata title");
+		$this->assertEquals(
+			"Test " . $check . " Auto Deinterlace",
+			$probe["format"]["tags"]["title"],
+			"Metadata title"
+		);
 		$this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
 		$this->assertArrayNotHasKey("SEASON", $probe["format"]["tags"], "Metadata SEASON");
 		$this->assertArrayNotHasKey("EPISODE", $probe["format"]["tags"], "Metadata EPISODE");

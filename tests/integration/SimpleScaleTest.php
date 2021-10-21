@@ -2,18 +2,14 @@
 require_once "common.php";
 
 final class SimpleScaleTest extends Test {
-
 	private function scaling() {
-		return [
-			["1.5", "720", "1080"],
-			["0.5", "240", "360"]
-		];
+		return [["1.5", "720", "1080"], ["0.5", "240", "360"]];
 	}
 
 	/**
 	 * @test
 	 * @dataProvider scaling
-	*/
+	 */
 	public function testScaling($factor, $height, $width) {
 		$this->getFile("dvd");
 
@@ -37,7 +33,11 @@ final class SimpleScaleTest extends Test {
 		$this->assertEquals($height, $probe["streams"][0]["height"], "Stream 0 height");
 		$this->assertEquals($width, $probe["streams"][0]["width"], "Stream 0 width");
 		$this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
-		$this->assertEquals("Test " . $factor . "x Simple Upscale", $probe["format"]["tags"]["title"], "Metadata title");
+		$this->assertEquals(
+			"Test " . $factor . "x Simple Upscale",
+			$probe["format"]["tags"]["title"],
+			"Metadata title"
+		);
 	}
 }
 ?>

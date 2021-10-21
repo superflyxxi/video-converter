@@ -2,19 +2,14 @@
 require_once "common.php";
 
 final class SubtitleTest extends Test {
-
 	private function sourceFormats() {
-		return [
-			["dvd", "2", "subrip", "eng"],
-			["dvd", "3", "ass", "fre"],
-			["bluray", "2", "ass", "eng"]
-		];
+		return [["dvd", "2", "subrip", "eng"], ["dvd", "3", "ass", "fre"], ["bluray", "2", "ass", "eng"]];
 	}
 
 	/**
 	 * @test
 	 * @dataProvider sourceFormats
-	*/
+	 */
 	public function testSubtitleConversion($source, $track, $format, $language) {
 		$this->getFile($source);
 
@@ -36,7 +31,11 @@ final class SubtitleTest extends Test {
 		$this->assertEquals($format, $probe["streams"][0]["codec_name"], "Stream 0 codec");
 		$this->assertEquals($language, $probe["streams"][0]["tags"]["language"], "Stream 0 language");
 		$this->assertArrayNotHasKey(1, $probe["streams"], "Stream 2 exists");
-		$this->assertEquals("Test Convert $source-$track Subtitle to $format", $probe["format"]["tags"]["title"], "Metadata title");
+		$this->assertEquals(
+			"Test Convert $source-$track Subtitle to $format",
+			$probe["format"]["tags"]["title"],
+			"Metadata title"
+		);
 	}
 
 	public function testBlacklist() {

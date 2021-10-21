@@ -2,12 +2,8 @@
 require_once "common.php";
 
 final class DeinterlaceModeTest extends Test {
-
 	private function dataProvider() {
-		return [
-			['01', '1901/317'],
-			['02', '30000/1001']
-		];
+		return [["01", "1901/317"], ["02", "30000/1001"]];
 	}
 
 	/** @test */
@@ -18,7 +14,7 @@ final class DeinterlaceModeTest extends Test {
 	/**
 	 * @test
 	 * @dataProvider dataProvider
-	*/
+	 */
 	public function testDeinterlaceModes($mode, $expectedFramerate) {
 		$this->getFile("dvd");
 
@@ -34,7 +30,7 @@ final class DeinterlaceModeTest extends Test {
 			"1m"
 		);
 
-		$probe = $this->probe("Test Deinterlace Mode ". $mode ." (2021).dvd.mkv.mkv");
+		$probe = $this->probe("Test Deinterlace Mode " . $mode . " (2021).dvd.mkv.mkv");
 
 		$this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
 		$this->assertEquals("hevc", $probe["streams"][0]["codec_name"], "Stream 0 codec");
