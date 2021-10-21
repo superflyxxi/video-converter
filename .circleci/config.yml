@@ -115,11 +115,11 @@ jobs:
           name: Export test image to tar
           command: |
             docker save -o video-converter-test.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
-            gzip -v video-converter-test.tar
+            #gzip -v video-converter-test.tar
       - persist_to_workspace:
           root: ./
           paths:
-            - video-converter-test.tar.gz
+            - video-converter-test.tar*
 
   test-docker:
     parallelism: 5
@@ -133,7 +133,7 @@ jobs:
       - run:
           name: Load docker test image
           command: |
-            gunzip -v /tmp/workspace/video-converter-test.tar.gz
+            #gunzip -v /tmp/workspace/video-converter-test.tar.gz
             docker load -i /tmp/workspace/video-converter-test.tar
       - run:
           name: Run tests
