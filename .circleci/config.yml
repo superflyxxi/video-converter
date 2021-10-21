@@ -93,17 +93,36 @@ jobs:
           registry: $DOCKER_REGISTRY
           image: ${THIS_IMAGE}
           tag: ${DOCKER_TAGS}
+      - run: docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG} video-converter
+      - docker/build:
+          docker-context: .
+          path: .
+          dockerfile: tests/Dockerfile
+          image: ${THIS_IMAGE}-test
+          tag: ${PRIMARY_DOCKER_TAG}
+          registry: ${DOCKER_REGISTRY}
+          extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
+          step-name: Build test image
+      - unless:
+          condition:
+            equal: [main, << pipeline.git.branch >>]
+          steps:
+            - docker/push:
+                step-name: Pushing test image
+                registry: $DOCKER_REGISTRY
+                image: ${THIS_IMAGE}-test
+                tag: ${PRIMARY_DOCKER_TAG}
       - run:
-          name: Export tar
+          name: Export test image to tar
           command: |
-            docker save -o video-converter.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-            gzip -v video-converter.tar
+            docker save -o video-converter-test.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
       - persist_to_workspace:
           root: ./
           paths:
-            - video-converter.tar.gz
+            - video-converter-test.tar*
 
   test-docker:
+    parallelism: 5
     environment:
       DEBIAN_FRONTEND: noninteractive
     executor: docker/machine
@@ -112,37 +131,13 @@ jobs:
           at: /tmp/workspace
       - checkout
       - run:
-          name: Custom enviroment variables
+          name: Load docker test image
           command: |
-            echo "export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)" >> ${BASH_ENV}
-      - run:
-          name: Load docker image
-          command: |
-            gunzip -v /tmp/workspace/video-converter.tar.gz
-            docker load -i /tmp/workspace/video-converter.tar
-      - docker/build:
-          docker-context: .
-          path: .
-          dockerfile: tests/Dockerfile
-          image: ${THIS_IMAGE}-test
-          tag: ${PRIMARY_DOCKER_TAG}
-          registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-          step-name: Build test image
-      - unless:
-          condition:
-            equal: [main, << pipeline.git.branch >>]
-          steps:
-            - docker/check:
-                registry: $DOCKER_REGISTRY
-            - docker/push:
-                step-name: Pushing test image
-                registry: $DOCKER_REGISTRY
-                image: ${THIS_IMAGE}-test
-                tag: ${PRIMARY_DOCKER_TAG}
+            docker load -i /tmp/workspace/video-converter-test.tar
       - run:
           name: Run tests
           command: |
+            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
@@ -189,6 +184,7 @@ jobs:
           paths:
             - full_version.txt
             - short_version.txt
+
 
 workflows:
   cicd:
