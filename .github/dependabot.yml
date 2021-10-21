@@ -19,3 +19,12 @@ updates:
       prefix-development: "fix(ci): "
     reviewers:
       - superflyxxi
+  - package-ecosystem: "docker"
+    directory: "/tests/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "fix(ci): "
+      prefix-development: "fix(ci): "
+    reviewers:
+      - superflyxxi
