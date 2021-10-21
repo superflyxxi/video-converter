@@ -17,4 +17,12 @@
       <directory>integration</directory>
     </testsuite>
   </testsuites>
+  <coverage pathCoverage="true" >
+    <report>
+      <html outputDirectory="testResults/coverage" showUncoveredFiles="true" />
+    </report>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </coverage>
 </phpunit>
