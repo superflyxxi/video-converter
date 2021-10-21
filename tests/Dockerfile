@@ -15,8 +15,8 @@ ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-convert
 CMD [ "/opt/video-converter/tests" ]
 WORKDIR /opt/video-converter
 
-RUN curl --progress-bar "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" -o "${DATA_DIR}/dvd.mkv"
-RUN curl --progress-bar "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/bluray.mkv"
+RUN curl -k -L "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" -o "${DATA_DIR}/dvd.mkv"
+RUN curl -k -L "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/bluray.mkv"
 
 COPY --from=composer /usr/bin/composer /usr/bin/
 COPY . /opt/video-converter
