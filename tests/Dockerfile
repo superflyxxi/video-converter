@@ -1,3 +1,4 @@
+FROM composer:2.1.9 AS composer
 FROM video-converter
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
@@ -17,7 +18,7 @@ WORKDIR /opt/video-converter
 RUN curl --progress-bar "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" -o "${DATA_DIR}/dvd.mkv"
 RUN curl --progress-bar "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/bluray.mkv"
 
-#COPY --from=composer /usr/bin/composer /usr/bin/
+COPY --from=composer /usr/bin/composer /usr/bin/
 COPY . /opt/video-converter
 
 RUN apt-get update && \
