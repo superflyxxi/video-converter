@@ -26,7 +26,7 @@ elif [[ "" != "${CIRCLE_NODE_TOTAL}" ]]; then
 	TEST_ARG="--filter /${TESTS// /|}/"
 fi
 
-if [[ "${USE_VAAPI:-false}" = "true" ]]; then
+if [[ "${USE_VAAPI:-false}" = "true" && -d /dev/dri ]]; then
 	DEVICES="--device /dev/dri"
 fi
 
