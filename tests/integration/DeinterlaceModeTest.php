@@ -10,12 +10,12 @@ final class DeinterlaceModeTest extends Test {
 		];
 	}
 
-	/* @test */
+	/** @test */
 	public function testDeinterlaceMode01() {
 		$this->assertTrue(true, "Already covered by auto-detection tests");
 	}
 
-	/*
+	/**
 	 * @test
 	 * @dataProvider dataProvider
 	*/
@@ -25,7 +25,7 @@ final class DeinterlaceModeTest extends Test {
 		$return = $this->ripvideo(
 			"dvd.mkv",
 			[
-				"--deinterlace" => $mode
+				"--deinterlace" => $mode,
 				"--audio-tracks" => -1,
 				"--subtitle-tracks" => -1,
 				"--title" => "Test Deinterlace Mode " . $mode,
