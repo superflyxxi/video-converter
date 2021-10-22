@@ -3,16 +3,8 @@
 use PHPUnit\Framework\TestCase;
 
 abstract class Test extends TestCase {
-	public function __construct() {
-		parent::__construct();
-		$this->sampleBaseUrl = getEnv("TEST_SAMPLE_BASE_URL");
-		$this->dataDir = getEnv("DATA_DIR");
-	}
-	private $sampleBaseUrl;
-	private $dataDir;
-
 	protected function getDataDir() {
-		return $this->dataDir;
+		return getEnv("DATA_DIR");
 	}
 
 	protected function setUp(): void {
@@ -51,14 +43,14 @@ abstract class Test extends TestCase {
 			default:
 				break;
 		}
-		if (!file_exists($this->dataDir . DIRECTORY_SEPARATOR . $localFilename)) {
+		if (!file_exists($this->getDataDir() . DIRECTORY_SEPARATOR . $localFilename)) {
 			$command =
 				'curl -k -L -o "' .
-				$this->dataDir .
+				$this->getDataDir() .
 				DIRECTORY_SEPARATOR .
 				$localFilename .
 				'" "' .
-				$this->sampleBaseUrl .
+				getEnv("TEST_SAMPLE_BASE_URL") .
 				"/" .
 				$URLpath .
 				'"';
@@ -77,10 +69,10 @@ abstract class Test extends TestCase {
 			}
 		}
 		if (null !== $filename) {
-			$command .= ' "' . $this->dataDir . DIRECTORY_SEPARATOR . $filename . '"';
+			$command .= ' "' . $this->getDataDir() . DIRECTORY_SEPARATOR . $filename . '"';
 		}
 		print "Executing command: " . $command . "\n";
-		passthru("cd \"" . $this->dataDir . "\"; " . $command, $return);
+		passthru("cd \"" . $this->getDataDir() . "\"; " . $command, $return);
 		print $command . " => returned value " . $return . "\n";
 		return $return;
 	}
