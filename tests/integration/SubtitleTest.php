@@ -1,4 +1,5 @@
 <?php
+
 require_once "common.php";
 
 final class SubtitleTest extends Test {
@@ -84,4 +85,3 @@ final class SubtitleTest extends Test {
 		$this->assertEquals("Test Convert Bluray Subtitle", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 }
-?>

@@ -1,4 +1,5 @@
 <?php
+
 require_once "LogWrapper.php";
 
 class ExecutionException extends Exception {
@@ -14,4 +15,3 @@ class ExecutionException extends Exception {
 }
 
 ExecutionException::$log = new LogWrapper("ExecutionException");
-?>

@@ -1,4 +1,5 @@
 <?php
+
 require_once "common.php";
 
 final class ConvertVideoTest extends Test {
@@ -23,4 +24,3 @@ final class ConvertVideoTest extends Test {
 		$this->assertEquals("Test x265 Conversion", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 }
-?>

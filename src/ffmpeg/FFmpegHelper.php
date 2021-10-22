@@ -1,4 +1,5 @@
 <?php
+
 require_once "request/Request.php";
 require_once "functions.php";
 require_once "OutputFile.php";
@@ -185,4 +186,3 @@ class FFmpegHelper {
 }
 
 FFmpegHelper::$log = new LogWrapper("FFmpegHelper");
-?>

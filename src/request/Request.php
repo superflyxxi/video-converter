@@ -1,4 +1,5 @@
 <?php
+
 require_once "LogWrapper.php";
 require_once "InputFile.php";
 require_once "functions.php";
@@ -249,4 +250,3 @@ class Request {
 }
 
 Request::$log = new LogWrapper("Request");
-?>

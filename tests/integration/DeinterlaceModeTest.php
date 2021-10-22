@@ -1,4 +1,5 @@
 <?php
+
 require_once "common.php";
 
 final class DeinterlaceModeTest extends Test {
@@ -56,4 +57,3 @@ final class DeinterlaceModeTest extends Test {
 		$this->assertEquals("2021", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
 	}
 }
-?>

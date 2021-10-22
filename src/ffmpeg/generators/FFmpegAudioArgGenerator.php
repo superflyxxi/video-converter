@@ -1,4 +1,5 @@
 <?php
+
 require_once "ffmpeg/generators/FFmpegArgGenerator.php";
 require_once "InputFile.php";
 require_once "request/Request.php";
@@ -70,4 +71,3 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator {
 }
 
 FFmpegAudioArgGenerator::$log = new LogWrapper("FFmpegArgGenerator");
-?>

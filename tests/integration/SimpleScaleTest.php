@@ -1,4 +1,5 @@
 <?php
+
 require_once "common.php";
 
 final class SimpleScaleTest extends Test {
@@ -50,4 +51,3 @@ final class SimpleScaleTest extends Test {
 		$this->assertEquals("Test 0.5x Downscale", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 }
-?>

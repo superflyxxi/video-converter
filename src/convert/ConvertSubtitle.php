@@ -1,4 +1,5 @@
 <?php
+
 require_once "request/Request.php";
 require_once "InputFile.php";
 require_once "functions.php";
@@ -156,4 +157,3 @@ class ConvertSubtitle {
 }
 
 ConvertSubtitle::$log = new LogWrapper("ConvertSubtitle");
-?>

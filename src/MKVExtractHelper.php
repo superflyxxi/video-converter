@@ -1,4 +1,5 @@
 <?php
+
 require_once "LogWrapper.php";
 require_once "exceptions/ExecutionException.php";
 
@@ -25,4 +26,3 @@ class MKVExtractHelper {
 }
 
 MKVExtractHelper::$log = new LogWrapper("MKVExtractHelper");
-?>

@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+
 abstract class Test extends TestCase {
 	public function __construct() {
 		parent::__construct();
@@ -84,4 +85,3 @@ abstract class Test extends TestCase {
 		return $return;
 	}
 }
-?>

@@ -62,4 +62,3 @@ class Options {
 	}
 }
 Options::init();
-?>

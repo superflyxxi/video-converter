@@ -1,4 +1,5 @@
 <?php
+
 require_once "common.php";
 
 final class AudioTest extends Test {
@@ -51,4 +52,3 @@ final class AudioTest extends Test {
 		$this->assertEquals("Test Normalize Track 1", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 }
-?>
