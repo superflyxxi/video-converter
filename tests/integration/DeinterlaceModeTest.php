@@ -3,7 +3,7 @@ require_once "common.php";
 
 final class DeinterlaceModeTest extends Test {
 	public function dataProvider(): array {
-		return [["01", "1901/317"], ["02", "30000/1001"]];
+		return [["01", "19001/317"], ["02", "30000/1001"]];
 	}
 
 	/** @test */

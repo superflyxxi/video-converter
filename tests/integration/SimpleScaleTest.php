@@ -34,7 +34,7 @@ final class SimpleScaleTest extends Test {
 		$this->assertEquals($width, $probe["streams"][0]["width"], "Stream 0 width");
 		$this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
 		$this->assertEquals(
-			"Test " . $factor . "x Simple Upscale",
+			"Test " . $factor . "x Scale",
 			$probe["format"]["tags"]["title"],
 			"Metadata title"
 		);
