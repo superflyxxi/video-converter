@@ -2,7 +2,7 @@
 require_once "common.php";
 
 final class SubtitleTest extends Test {
-	private function sourceFormats() {
+	public function sourceFormats(): array {
 		return [["dvd", "2", "subrip", "eng"], ["dvd", "3", "ass", "fre"], ["bluray", "2", "ass", "eng"]];
 	}
 
