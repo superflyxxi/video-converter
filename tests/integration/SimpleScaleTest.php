@@ -2,7 +2,7 @@
 require_once "common.php";
 
 final class SimpleScaleTest extends Test {
-	private function scaling() {
+	public function scaling(): array {
 		return [["1.5", "720", "1080"], ["0.5", "240", "360"]];
 	}
 
