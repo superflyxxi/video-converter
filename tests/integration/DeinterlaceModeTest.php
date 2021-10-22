@@ -7,7 +7,7 @@ final class DeinterlaceModeTest extends Test {
 	}
 
 	/** @test */
-	public function testDeinterlaceMode01() {
+	public function testDeinterlaceMode00() {
 		$this->assertTrue(true, "Already covered by auto-detection tests");
 	}
 
