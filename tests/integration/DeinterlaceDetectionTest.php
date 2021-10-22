@@ -3,7 +3,7 @@ require_once "common.php";
 
 final class DeinterlaceDetectionTest extends Test {
 	public function probeModes(): array {
-		return [["probe"], ["idet"]];
+		return ["probe" => ["probe"], "idet" => ["idet"]];
 	}
 
 	/**
