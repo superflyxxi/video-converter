@@ -26,6 +26,7 @@ jobs:
       - php/install-composer
       - php/install-packages
       - run: composer run-script lint
+      - run: composer run-script check-format
       - run: rm -rvf vendor
       - php/install-packages:
           install-flags: "--no-interaction --prefer-dist --no-dev"
@@ -191,8 +192,6 @@ workflows:
           name: pre-release
           context: default
           prerelease: true
-      - validate-format:
-          context: default
       - build-phar:
           context: default
       - docker/hadolint:
@@ -203,7 +202,6 @@ workflows:
           requires:
             - pre-release
             - validate-dockerfile
-            - validate-format
             - build-phar
       - test-docker:
           context: default

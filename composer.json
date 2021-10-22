@@ -10,7 +10,8 @@
 		"src/rip-video.php"
 	],
 	"scripts": {
-		"lint": "phplint src/ tests/ -vvv -w"
+		"lint": "phplint src/ tests/ -vvv -w",
+		"check-format": "php-cs-fixer fix --dry-run src/ test/"
 	},
 	"config": {
 		"platform": {
