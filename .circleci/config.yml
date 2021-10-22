@@ -8,14 +8,6 @@ orbs:
 
 # Orchestrate or schedule a set of jobs
 jobs:
-  validate-format:
-    executor:
-      name: node/default
-      tag: "16.10"
-    steps:
-      - checkout
-      - run: npm install prettier @prettier/plugin-php
-      - run: npx prettier src/ --check
 
   build-phar:
     executor:
