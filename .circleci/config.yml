@@ -55,7 +55,7 @@ jobs:
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:latest"
             fi
-            export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
+            export DOCKER_TAGS="${PRIMARY_DOCKER_TAG},${CIRCLE_BRANCH}"
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
                 NOW="$PREV.$A"
