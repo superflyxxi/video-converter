@@ -1,4 +1,5 @@
 <?php
+
 require_once "common.php";
 
 final class SimpleScaleTest extends Test {
@@ -36,4 +37,3 @@ final class SimpleScaleTest extends Test {
 		$this->assertEquals("Test " . $factor . "x Scale", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 }
-?>

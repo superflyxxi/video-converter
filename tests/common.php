@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+
 abstract class Test extends TestCase {
 	protected function getDataDir() {
 		return getEnv("DATA_DIR");
@@ -76,4 +77,3 @@ abstract class Test extends TestCase {
 		return $return;
 	}
 }
-?>

@@ -1,4 +1,5 @@
 <?php
+
 require_once "Stream.php";
 require_once "ffmpeg/FFmpegHelper.php";
 
@@ -87,5 +88,3 @@ class InputFile {
 		}
 	}
 }
-
-?>

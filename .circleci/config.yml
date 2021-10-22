@@ -8,14 +8,6 @@ orbs:
 
 # Orchestrate or schedule a set of jobs
 jobs:
-  validate-format:
-    executor:
-      name: node/default
-      tag: "16.10"
-    steps:
-      - checkout
-      - run: npm install prettier @prettier/plugin-php
-      - run: npx prettier src/ --check
 
   build-phar:
     executor:
@@ -26,6 +18,7 @@ jobs:
       - php/install-composer
       - php/install-packages
       - run: composer run-script lint
+      - run: composer run-script check-format
       - run: rm -rvf vendor
       - php/install-packages:
           install-flags: "--no-interaction --prefer-dist --no-dev"
@@ -191,8 +184,6 @@ workflows:
           name: pre-release
           context: default
           prerelease: true
-      - validate-format:
-          context: default
       - build-phar:
           context: default
       - docker/hadolint:
@@ -203,7 +194,6 @@ workflows:
           requires:
             - pre-release
             - validate-dockerfile
-            - validate-format
             - build-phar
       - test-docker:
           context: default

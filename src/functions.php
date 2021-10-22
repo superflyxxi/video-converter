@@ -7,5 +7,3 @@ function getEnvWithDefault($env, $default) {
 		return $default;
 	}
 }
-
-?>

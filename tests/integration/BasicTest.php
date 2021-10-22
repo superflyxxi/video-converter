@@ -130,4 +130,3 @@ final class BasicTest extends Test {
 		$this->assertArrayNotHasKey("SUBTITLE", $probe["format"]["tags"], "Metadata SUBTITLE");
 	}
 }
-?>

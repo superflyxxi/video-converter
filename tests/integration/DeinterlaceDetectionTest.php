@@ -1,4 +1,5 @@
 <?php
+
 require_once "common.php";
 
 final class DeinterlaceDetectionTest extends Test {
@@ -47,4 +48,3 @@ final class DeinterlaceDetectionTest extends Test {
 		$this->assertArrayNotHasKey("SUBTITLE", $probe["format"]["tags"], "Metadata SUBTITLE");
 	}
 }
-?>

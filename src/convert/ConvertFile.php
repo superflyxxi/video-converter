@@ -1,4 +1,5 @@
 <?php
+
 require_once "LogWrapper.php";
 require_once "request/Request.php";
 require_once "OutputFile.php";
@@ -49,4 +50,3 @@ class ConvertFile {
 }
 
 ConvertFile::$log = new LogWrapper("ConvertFile");
-?>

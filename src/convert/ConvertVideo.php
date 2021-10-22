@@ -1,4 +1,5 @@
 <?php
+
 require_once "LogWrapper.php";
 
 class ConvertVideo {
@@ -10,4 +11,3 @@ class ConvertVideo {
 }
 
 ConvertVideo::$log = new LogWrapper("ConvertVideo");
-?>

@@ -1,4 +1,5 @@
 <?php
+
 require_once "common.php";
 
 final class SubtitleTest extends Test {
@@ -76,4 +77,3 @@ final class SubtitleTest extends Test {
 		$this->assertFileExists($testfile, "File for 3-fre missing");
 	}
 }
-?>
