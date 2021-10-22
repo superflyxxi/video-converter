@@ -53,14 +53,14 @@ jobs:
             echo "export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g')
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${THIS_IMAGE}:latest"
+              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:latest"
             fi
             export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
                 NOW="$PREV.$A"
                 export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${THIS_IMAGE}:${NOW:1}"
+                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${NOW:1}"
                 PREV=$NOW
               done
               export DOCKER_TAGS="${DOCKER_TAGS},latest"
@@ -71,7 +71,7 @@ jobs:
       - docker/check:
           registry: $DOCKER_REGISTRY
       - docker/build:
-          image: ${THIS_IMAGE}
+          image: ${CIRCLE_PROJECT_REPONAME}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
@@ -79,15 +79,17 @@ jobs:
       - docker/push:
           step-name: Pushing image
           registry: $DOCKER_REGISTRY
-          image: ${THIS_IMAGE}
+          image: ${CIRCLE_PROJECT_REPONAME}
           tag: ${DOCKER_TAGS}
-      - run: docker tag ${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG} video-converter
+      - run:
+          name: Tag docker
+          command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${CIRCLE_PROJECT_REPONAME}
       - docker/build:
           docker-context: .
           path: .
           dockerfile: tests/Dockerfile
-          image: ${THIS_IMAGE}-test
-          tag: ${PRIMARY_DOCKER_TAG}
+          image: ${CIRCLE_PROJECT_REPONAME}
+          tag: test-${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
           step-name: Build test image
@@ -98,12 +100,12 @@ jobs:
             - docker/push:
                 step-name: Pushing test image
                 registry: $DOCKER_REGISTRY
-                image: ${THIS_IMAGE}-test
-                tag: ${PRIMARY_DOCKER_TAG}
+                image: ${CIRCLE_PROJECT_REPONAME}
+                tag: test-${PRIMARY_DOCKER_TAG}
       - run:
           name: Export test image to tar
           command: |
-            docker save -o video-converter-test.tar ${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
+            docker save -o video-converter-test.tar ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
       - persist_to_workspace:
           root: ./
           paths:
@@ -129,7 +131,7 @@ jobs:
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
-            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
+            export TEST_IMAGE=${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
             printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
@@ -175,7 +177,6 @@ jobs:
           paths:
             - full_version.txt
             - short_version.txt
-
 
 workflows:
   cicd:
