@@ -38,7 +38,7 @@ jobs:
   build-docker:
     environment:
       DEBIAN_FRONTEND: noninteractive
-      TESSERACT_LANGUAGES: 'eng\|por\|spa\|fra'
+      TESSERACT_LANGUAGES: 'eng\|por\|spa\|fra\|chs'
     executor: docker/machine
     steps:
       - attach_workspace:
