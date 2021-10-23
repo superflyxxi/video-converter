@@ -14,11 +14,12 @@ RUN mkdir -p "${TMP_DIR}" && \
 	chmod -R ugo+rw "${TMP_DIR}" && \
 	chmod ugo+r /opt/BDSup2Sub.jar && \
 	apt-get update -y && \
-	apt-get install -y --no-install-recommends apt-utils php7.2-cli php7.2-json mkvtoolnix && \
+	apt-get install -y --no-install-recommends apt-utils php7.4-cli php7.4-json mkvtoolnix && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # install tesseract, language packs, and java
 RUN apt-get update && \
+	apt-get install -y --reinstall --purge fontconfig-config && \
 	apt-get install -y --no-install-recommends libtesseract4 openjdk-11-jre-headless && \
 	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y --no-install-recommends && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
