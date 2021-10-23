@@ -1,55 +1,47 @@
 <?php
+
 require_once "functions.php";
 
-class OutputFile
-{
+class OutputFile {
+	public function __construct($postfix = null, $out = null) {
+		$this->postfix = $postfix;
+		$this->envOutput = $out == null ? getEnv("OUTPUT") : $out;
+	}
 
-    public function __construct($postfix = NULL, $out = NULL, $dir = NULL)
-    {
-        $this->postfix = $postfix;
-        $this->envOutput = $out == NULL ? getEnv("OUTPUT") : $out;
-        $this->outputDir = $dir == NULL ? getEnvWithDefault("OUTPUT_DIR", "/data") : $dir;
-    }
+	public $title = null;
 
-    public $title = NULL;
+	public $showTitle = null;
 
-    public $subtitle = NULL;
+	public $year = null;
 
-    public $year = NULL;
+	public $season = null;
 
-    public $season = NULL;
+	public $episode = null;
 
-    public $episode = NULL;
+	public $format = null;
 
-    public $format = NULL;
+	private $envOutput = null;
 
-    private $envOutput = NULL;
+	private $postfix = null;
 
-    private $outputDir = NULL;
-
-    private $postfix = NULL;
-
-    public function getFileName()
-    {
-        if (NULL != $this->envOutput) {
-            return $this->envOutput;
-        }
-        $out = $this->outputDir . "/" . $this->title;
-        if (NULL != $this->year) {
-            $out .= " (" . $this->year . ")";
-        }
-        if (NULL != $this->season) {
-            $out .= " - s" . $this->season . "e" . $this->episode;
-        }
-        if (NULL != $this->subtitle) {
-            $out .= " - " . $this->subtitle;
-        }
-        if (NULL != $this->postfix) {
-            $out .= "." . $this->postfix;
-        }
-        $out .= ".mkv";
-        return $out;
-    }
+	public function getFileName() {
+		if (null != $this->envOutput) {
+			return $this->envOutput;
+		}
+		$out = $this->title;
+		if (null != $this->year) {
+			$out .= " (" . $this->year . ")";
+		}
+		if (null != $this->season) {
+			$out .= " - s" . $this->season . "e" . $this->episode;
+		}
+		if (null != $this->showTitle) {
+			$out .= " - " . $this->showTitle;
+		}
+		if (null != $this->postfix) {
+			$out .= "." . $this->postfix;
+		}
+		$out .= ".mkv";
+		return $out;
+	}
 }
-
-?>

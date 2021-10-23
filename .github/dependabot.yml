@@ -1,14 +1,30 @@
 version: 2
+
 updates:
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
       interval: "monthly"
+    commit-message:
+      prefix: "fix: "
+      prefix-development: "fix(ci): "
     reviewers:
       - superflyxxi
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "monthly"
+    commit-message:
+      prefix: "fix: "
+      prefix-development: "fix(ci): "
+    reviewers:
+      - superflyxxi
+  - package-ecosystem: "docker"
+    directory: "/tests/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "fix(ci): "
+      prefix-development: "fix(ci): "
     reviewers:
       - superflyxxi

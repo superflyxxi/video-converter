@@ -5,22 +5,38 @@
 
 set -e
 
-TEST_IMAGE=${TEST_IMAGE:-test}
-TESTSUITES=${TESTSUITES:-units,basic,audio,video}
-if [[ "${BUILD_SUBTITLE_SUPPORT}" = "true" ]]; then
-	TESTSUITES="${TESTSUITES},subtitles"
+TEST_IMAGE=${TEST_IMAGE:-video-converter-test}
+
+if [[ "" != "${CLASSES}" ]]; then
+	printf "Using test classes: %s\n" "${CLASSES}"
+	TEST_ARG="--filter /$(xargs echo <<< $CLASSES | sed 's/ /|/g')/"
+elif [[ "" != "${CIRCLE_NODE_TOTAL}" ]]; then
+	printf "Using CircleCI nodes: index=%s; total=%s\n" "${CIRCLE_NODE_INDEX}" "${CIRCLE_NODE_TOTAL}"
+	ALL_TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g')
+	ALL_TESTS=($ALL_TESTS)
+	multiplier=$(( ((10 * ${#ALL_TESTS[@]} / ${CIRCLE_NODE_TOTAL} ) + 5 ) / 10))
+	start=$((${CIRCLE_NODE_INDEX} * $multiplier))
+	end=$((( ${CIRCLE_NODE_INDEX} + 1 ) * $multiplier))
+	printf "Going %s (inclusive) to %s (exclusive) from %s total with multiplier=%s\n" "${start}" "${end}" "${len}" "$multiplier"
+	declare -a TESTS_TO_CONSIDER
+	for ((i=$start; i<$end; i++)); do
+		TESTS_TO_CONSIDER+=(${ALL_TESTS[$i]})
+	done
+	TESTS=${TESTS_TO_CONSIDER[@]}
+	TEST_ARG="--filter /${TESTS// /|}/"
 fi
-if [[ "${USE_VAAPI:-false}" = "true" ]]; then
+
+if [[ "${USE_VAAPI:-false}" = "true" && -d /dev/dri ]]; then
 	DEVICES="--device /dev/dri"
 fi
+
 mkdir testResults || true
+
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
-	-v "$(pwd)/testResults:/testResults" \
-	-e LOG_LEVEL=100 \
-	-e TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN?Missing TEST_SAMPLE_DOMAIN} \
-	${TEST_IMAGE} --testsuite ${TESTSUITES} ${ADDITIONAL_PHPUNIT_ARGS}
+	-v "$(pwd)/testResults:/opt/video-converter/testResults" \
+	${TEST_IMAGE} ${TEST_ARG} ${ADDITIONAL_PHPUNIT_ARGS}
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}
@@ -32,7 +48,6 @@ if [[ ${EXIT_CODE} -ne 0 ]]; then
 	docker logs test
 fi
 docker rm test
-printf "Test results\n"
-printf "============\n\n"
+printf "Test results\n============\n\n"
 cat testResults/testdox.txt
 exit ${EXIT_CODE}

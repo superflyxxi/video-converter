@@ -2,31 +2,50 @@
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:
-    docker: circleci/docker@1
-
-parameters:
-  latest-from-tag:
-    type: string
-    default: '4.3-vaapi1804'
+  docker: circleci/docker@1
+  node: circleci/node@4
+  php: circleci/php@1
 
 # Orchestrate or schedule a set of jobs
 jobs:
-  validate:
-    machine: true
+
+  build-phar:
+    executor:
+      name: php/default
+      tag: "7.2"
     steps:
       - checkout
+      - php/install-composer
+      - php/install-packages
+      - run: composer run-script lint
+      - run: composer run-script check-format
+      - run: rm -rvf vendor
+      - php/install-packages:
+          install-flags: "--no-interaction --prefer-dist --no-dev"
+      - run: curl -o phar-composer -JL "https://github.com/clue/phar-composer/releases/download/v1.2.0/phar-composer-1.2.0.phar"
       - run:
-          name: Verify files
-          command: docker run -v "$(pwd):/data" -e INPUT_PATH=/data -e INPUT_OPTIONS="-vvv -w"  overtrue/phplint:latest
+          name: Build phar
+          command: |
+            php ./phar-composer --version
+            php ./phar-composer build .
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - video-converter.phar
+      - store_artifacts:
+          path: video-converter.phar
 
-  build:
+  build-docker:
     environment:
       DEBIAN_FRONTEND: noninteractive
-    machine: true
+    executor: docker/machine
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
+      - run:
+          name: Move phar to docker dir
+          command: cp -v /tmp/workspace/video-converter.phar ./
       - run:
           name: Custom enviroment variables
           command: |
@@ -34,57 +53,88 @@ jobs:
             echo "export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g')
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${THIS_IMAGE}:latest"
+              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:latest"
             fi
-            echo "export CACHE_FROM_IMAGES=${CACHE_FROM_IMAGES}" >> ${BASH_ENV}
-            export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
+            export DOCKER_TAGS="${PRIMARY_DOCKER_TAG},${CIRCLE_BRANCH}"
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
                 NOW="$PREV.$A"
                 export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
+                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${NOW:1}"
                 PREV=$NOW
               done
               export DOCKER_TAGS="${DOCKER_TAGS},latest"
             fi
+            echo "export CACHE_FROM_IMAGES=${CACHE_FROM_IMAGES}" >> ${BASH_ENV}
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           registry: $DOCKER_REGISTRY
       - docker/build:
-          image: ${THIS_IMAGE}
+          image: ${CIRCLE_PROJECT_REPONAME}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
           step-name: Build docker image
-      - docker/build:
-          docker-context: tests/
-          path: tests/
-          image: ${THIS_IMAGE}-test
-          tag: ${PRIMARY_DOCKER_TAG}
-          registry: ${DOCKER_REGISTRY}
-          extra_build_args: --build-arg BUILD_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}:${PRIMARY_DOCKER_TAG}
-          step-name: Build unit test image
       - docker/push:
-          step-name: Pushing actual image
+          step-name: Pushing image
           registry: $DOCKER_REGISTRY
-          image: ${THIS_IMAGE}
+          image: ${CIRCLE_PROJECT_REPONAME}
           tag: ${DOCKER_TAGS}
+      - run:
+          name: Tag docker
+          command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${CIRCLE_PROJECT_REPONAME}
+      - docker/build:
+          docker-context: .
+          path: .
+          dockerfile: tests/Dockerfile
+          image: ${CIRCLE_PROJECT_REPONAME}
+          tag: test-${PRIMARY_DOCKER_TAG}
+          registry: ${DOCKER_REGISTRY}
+          extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
+          step-name: Build test image
       - unless:
           condition:
-            equal: [ main, << pipeline.git.branch >> ]
+            equal: [main, << pipeline.git.branch >>]
           steps:
             - docker/push:
-                step-name: Pushing unit test image
+                step-name: Pushing test image
                 registry: $DOCKER_REGISTRY
-                image: ${THIS_IMAGE}-test
-                tag: ${PRIMARY_DOCKER_TAG}
+                image: ${CIRCLE_PROJECT_REPONAME}
+                tag: test-${PRIMARY_DOCKER_TAG}
       - run:
-          name: Run unit tests
+          name: Export test image to tar
           command: |
+            docker save -o video-converter-test.tar ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - video-converter-test.tar*
+
+  test-docker:
+    parallelism: 5
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    executor: docker/machine
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Load docker test image
+          command: |
+            docker load -i /tmp/workspace/video-converter-test.tar
+      - run:
+          name: Run tests
+          command: |
+            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
-            export TEST_IMAGE=${DOCKER_REGISTRY}/${THIS_IMAGE}-test:${PRIMARY_DOCKER_TAG}
+            export TEST_IMAGE=${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
+            export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
+            export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
+            printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
             ./test.sh
       - store_test_results:
           path: testResults
@@ -129,26 +179,35 @@ jobs:
             - short_version.txt
 
 workflows:
-  default:
+  cicd:
     jobs:
       - release:
           name: pre-release
           context: default
           prerelease: true
-      - validate:
+      - build-phar:
           context: default
-      - build:
-          name: build-test-push
+      - docker/hadolint:
+          name: validate-dockerfile
+          context: default
+      - build-docker:
           context: default
           requires:
             - pre-release
-            - validate
+            - validate-dockerfile
+            - build-phar
+      - test-docker:
+          context: default
+          requires:
+            - pre-release
+            - build-docker
       - release:
           name: release
           context: default
           prerelease: false
           requires:
-            - build-test-push
+            - build-docker
+            - test-docker
           filters:
             branches:
               only:

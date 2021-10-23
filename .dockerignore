@@ -1,6 +1,7 @@
-Dockerfile
+**/Dockerfile
 .git/
 **/*.mkv
 **/*.mpg
 **/*.iso
-**/vendor/
+vendor/
+node_modules/

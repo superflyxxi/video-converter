@@ -1,10 +1,7 @@
 <?php
 
-class Stream
-{
-
-	public function __construct($json)
-	{
+class Stream {
+	public function __construct($json) {
 		$this->index = $json["index"];
 		$this->codec_type = $json["codec_type"];
 		$this->codec_name = $json["codec_name"];
@@ -31,23 +28,23 @@ class Stream
 		}
 	}
 
-	public $codec_type = NULL;
+	public $codec_type = null;
 
-	public $codec_name = NULL;
+	public $codec_name = null;
 
 	public $index = 0;
 
-	public $language = NULL;
+	public $language = null;
 
-	public $channel_layout = NULL;
+	public $channel_layout = null;
 
-	public $channels = NULL;
+	public $channels = null;
 
-	public $audio_sample_rate = NULL;
+	public $audio_sample_rate = null;
 
-	public $frame_rate = NULL;
+	public $frame_rate = null;
 
-	public $height = NULL;
+	public $height = null;
 
-	public $width = NULL;
+	public $width = null;
 }

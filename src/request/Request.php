@@ -1,247 +1,252 @@
 <?php
+
 require_once "LogWrapper.php";
 require_once "InputFile.php";
 require_once "functions.php";
+require_once "Options.php";
 
-class Request
-{
-
+class Request {
 	public static $log;
 
-    public $title = NULL;
+	public $title = null;
 
-    public $year = NULL;
+	public $year = null;
 
-    public $season = NULL;
+	public $season = null;
 
-    public $episode = NULL;
+	public $episode = null;
 
-    public $subtitle = NULL;
+	public $showTitle = null;
 
-    public $oInputFile = NULL;
+	public $oInputFile = null;
 
-    public $playlist = NULL;
+	public $playlist = null;
 
-    private $subtitleTracks = array(
-        "*"
-    );
+	private $subtitleTracks = ["*"];
 
-    public $subtitleFormat = NULL;
+	public $subtitleFormat = null;
 
-    public $subtitleConversionBlacklist = NULL;
+	public $subtitleConversionBlacklist = null;
 
-    public $subtitleConversionOutput = NULL;
+	public $subtitleConversionOutput = null;
 
-    private $audioTracks = array(
-        "*"
-    );
+	private $audioTracks = ["*"];
 
-    public $audioFormat = NULL;
+	public $audioFormat = null;
 
-    public $audioQuality = NULL;
+	public $audioQuality = null;
 
-    public $audioChannelLayout = NULL;
+	public $audioChannelLayout = null;
 
-    private $audioChannelLayoutTracks = array();
+	private $audioChannelLayoutTracks = [];
 
-    public $audioSampleRate = NULL;
+	public $audioSampleRate = null;
 
-    public $normalizeAudioTracks = NULL;
+	public $normalizeAudioTracks = null;
 
-    private $hwaccel = false;
+	private $hwaccel = false;
 
-    public $deinterlace = false;
+	public $deinterlace = false;
 
-    public $deinterlaceMode = "02";
+	public $deinterlaceMode = "02";
 
-    private $videoTracks = array(
-        "*"
-    );
+	private $videoTracks = ["*"];
 
-    public $videoFormat = NULL;
+	public $videoFormat = null;
 
-    private $videoHdr = false;
+	private $videoHdr = false;
 
-    public $videoUpscale = 1;
+	public $videoUpscale = 1;
 
-    public function __construct($filename)
-    {
-        $this->oInputFile = new InputFile($filename);
-        $this->hwaccel = is_dir("/dev/dri");
-        $this->videoHdr = getEnvWithDefault("HDR", "false") == "true";
-    }
+	public function __construct($filename) {
+		$this->oInputFile = new InputFile($filename);
+		$this->hwaccel = is_dir("/dev/dri");
+		$this->videoHdr = Options::get("hdr");
+	}
 
-    public static function newInstanceFromEnv($filename)
-    {
-        $req = new Request($filename);
+	public static function newInstanceFromEnv($filename) {
+		$req = new Request($filename);
 
-        $req->title = getEnv("TITLE");
-        $req->year = getEnv("YEAR");
-        $req->season = getEnv("SEASON");
-        $req->episode = getEnv("EPISODE");
-        $req->subtitle = getEnv("SUBTITLE");
+		$req->title = Options::get("title");
+		$req->year = Options::get("year");
+		$req->season = Options::get("season");
+		$req->episode = Options::get("episode");
+		$req->showTitle = Options::get("show-title");
 
-        $req->playlist = getEnvWithDefault("PLAYLIST", NULL);
-        $req->setSubtitleTracks(getEnvWithDefault("SUBTITLE_TRACKS", "*"));
-        $req->subtitleFormat = getEnvWithDefault("SUBTITLE_FORMAT", "ass");
-        $req->subtitleConversionOutput = getEnvWithDefault("SUBTITLE_CONVERSION_OUTPUT", "MERGE");
-        $req->subtitleConversionBlacklist = getEnvWIthDefault("SUBTITLE_CONVERSION_BLACKLIST", "|\\~/\`_");
+		$req->playlist = Options::get("PLAYLIST", null);
 
-        $req->setAudioTracks(getEnvWithDefault("AUDIO_TRACKS", "*"));
-        $req->audioFormat = getEnvWithDefault("AUDIO_FORMAT", "aac");
-        $req->audioQuality = getEnvWithDefault("AUDIO_QUALITY", "2");
-        $req->audioSampleRate = getEnvWithDefault("AUDIO_SAMPLE_RATE", NULL);
-	    $req->setNormalizeAudioTracks(getEnvWithDefault("NORMALIZE_AUDIO_TRACKS", ""));;
-        $req->audioChannelLayout = getEnvWithDefault("AUDIO_CHANNEL_LAYOUT", "");
-        $req->setAudioChannelLayoutTracks(getEnvWithDefault("AUDIO_CHANNEL_LAYOUT_TRACKS", "*"));
+		$req->setVideoTracks(Options::get("video-tracks", "*"));
+		$req->videoFormat = Options::get("video-format", "notcopy");
+		$req->videoUpscale = Options::get("video-upscale", 1);
+		$req->setDeinterlace(Options::get("deinterlace", "off"));
 
-        $req->setVideoTracks(getEnvWithDefault("VIDEO_TRACKS", "*"));
-        $req->videoFormat = getEnvWithDefault("VIDEO_FORMAT", "notcopy");
-        $req->videoUpscale = getEnvWithDefault("VIDEO_UPSCALE", 1);
-        $req->setDeinterlace(getEnvWithDefault("DEINTERLACE", NULL));
-        $req->deinterlaceMode = getEnvWithDefault("DEINTERLACE_MODE", $req->deinterlaceMode);
+		$req->setAudioTracks(Options::get("audio-tracks", "*"));
+		$req->audioFormat = Options::get("audio-format", "aac");
+		$req->audioQuality = Options::get("audio-quality", "2");
+		$req->audioSampleRate = Options::get("audio-sample-rate", null);
+		$req->setNormalizeAudioTracks(Options::get("normalize-audio-tracks", ""));
+		$req->audioChannelLayout = Options::get("audio-channel-layout", "");
+		$req->setAudioChannelLayoutTracks(Options::get("audio-channel-layout-tracks", "*"));
 
-        $req->prepareStreams();
-        return $req;
-    }
-    
-    private function setTracks($req)
-    {
-        return ($req === NULL || trim($req) == "") ? array() : explode(' ', $req);
-    }
+		$req->setSubtitleTracks(Options::get("subtitle-tracks", "*"));
+		$req->subtitleFormat = Options::get("subtitle-format", "ass");
+		$req->subtitleConversionOutput = Options::get("subtitle-conversion-output", "MERGE");
+		$req->subtitleConversionBlacklist = Options::get("subtitle-conversion-blacklist", "|\\~/\`_");
 
-    private function areAllTracksConsidered($tracks)
-    {
-        return in_array("*", $tracks);
-    }
+		$req->prepareStreams();
+		return $req;
+	}
 
-    public function setAudioChannelLayoutTracks($req)
-    {
-        $this->audioChannelLayoutTracks = $this->setTracks($req);
-    }
+	private function setTracks($req) {
+		return $req === null || trim($req) == "" ? [] : explode(" ", $req);
+	}
 
-    public function areAllAudioChannelLayoutTracksConsidered()
-    {
-        return $this->areAllTracksConsidered($this->audioChannelLayoutTracks);
-    }
+	private function areAllTracksConsidered($tracks) {
+		return in_array("*", $tracks);
+	}
 
-    public function getAudioChannelLayoutTracks()
-    {
-        return $this->audioChannelLayoutTracks;
-    }
+	public function setAudioChannelLayoutTracks($req) {
+		$this->audioChannelLayoutTracks = $this->setTracks($req);
+	}
 
-    public function setAudioTracks($req)
-    {
-        $this->audioTracks = $this->setTracks($req);
-    }
+	public function areAllAudioChannelLayoutTracksConsidered() {
+		return $this->areAllTracksConsidered($this->audioChannelLayoutTracks);
+	}
 
-    public function areAllAudioTracksConsidered()
-    {
-        return $this->areAllTracksConsidered($this->audioTracks);
-    }
+	public function getAudioChannelLayoutTracks() {
+		return $this->audioChannelLayoutTracks;
+	}
 
-    public function getAudioTracks()
-    {
-        return $this->audioTracks;
-    }
+	public function setAudioTracks($req) {
+		$this->audioTracks = $this->setTracks($req);
+	}
 
-    public function setNormalizeAudioTracks($req) {
-        $this->normalizeAudioTracks = $this->setTracks($req);
-    }
+	public function areAllAudioTracksConsidered() {
+		return $this->areAllTracksConsidered($this->audioTracks);
+	}
 
-    public function setVideoTracks($req)
-    {
-        $this->videoTracks = $this->setTracks($req);
-    }
+	public function getAudioTracks() {
+		return $this->audioTracks;
+	}
 
-    public function areAllVideoTracksConsidered()
-    {
-        return $this->areAllTracksConsidered($this->videoTracks);
-    }
+	public function setNormalizeAudioTracks($req) {
+		$this->normalizeAudioTracks = $this->setTracks($req);
+	}
 
-    public function getVideoTracks()
-    {
-        return $this->videoTracks;
-    }
+	public function setVideoTracks($req) {
+		$this->videoTracks = $this->setTracks($req);
+	}
 
-    public function setSubtitleTracks($req)
-    {
-        $this->subtitleTracks = $this->setTracks($req);
-    }
+	public function areAllVideoTracksConsidered() {
+		return $this->areAllTracksConsidered($this->videoTracks);
+	}
 
-    public function areAllSubtitleTracksConsidered()
-    {
-        return $this->areAllTracksConsidered($this->subtitleTracks);
-    }
+	public function getVideoTracks() {
+		return $this->videoTracks;
+	}
 
-    public function getSubtitleTracks()
-    {
-        return $this->subtitleTracks;
-    }
+	public function setSubtitleTracks($req) {
+		$this->subtitleTracks = $this->setTracks($req);
+	}
 
-    public function setDeinterlace($val) {
-        $this->deinterlace = $val;
-        if ($this->deinterlace != NULL) {
-            $this->deinterlace = ($this->deinterlace == "true");
-        } else if ("copy" != $this->videoFormat) {
-            $this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile) ? TRUE : FALSE;
-        } else {
-            $this->deinterlace = FALSE;
-        }
-    }
+	public function areAllSubtitleTracksConsidered() {
+		return $this->areAllTracksConsidered($this->subtitleTracks);
+	}
 
-    public function prepareStreams()
-    {
-        self::$log->debug("Preparing streams.", array('filename'=>$this->oInputFile->getFileName()));
-        if (! $this->areAllSubtitleTracksConsidered()) {
-            self::$log->debug("Not considering all subtitle streams.", array('subtitleTracks'=>$this->getSubtitleTracks()));
-            // if not * (all subtitles), then remove all track except the desired
-            foreach ($this->oInputFile->getSubtitleStreams() as $track) {
-                if (! in_array($track->index, $this->getSubtitleTracks())) {
-                    self::$log->debug("Removing subtitle track from input.", array('index'=>$track->index));
-                    $this->oInputFile->removeSubtitleStream($track->index);
-                } else {
-                    self::$log->debug("Keeping subtitle track in input.", array('index'=>$track->index));
-                }
-            }
-        }
-        if (! $this->areAllAudioTracksConsidered()) {
-            self::$log->debug("Not considering all audio streams.", array('audioTracks'=>$this->getAudioTracks()));
-            // if not * (all audio), then remove all track except the desired
-            foreach ($this->oInputFile->getAudioStreams() as $track) {
-                if (! in_array($track->index, $this->getAudioTracks())) {
-                    self::$log->debug("Removing audio track from input.", array('index'=>$track->index));
-                    $this->oInputFile->removeAudioStream($track->index);
-                } else {
-                    self::$log->debug("Keeping audio track in input.", array('index'=>$track->index));
-                }
-            }
-        }
-        if (! $this->areAllVideoTracksConsidered()) {
-            self::$log->debug("Not considering all video streams.", array('videoTracks'=>$this->getVideoTracks()));
-            // if not * (all videos), then remove all track except the desired
-            foreach ($this->oInputFile->getVideoStreams() as $track) {
-                if (! in_array($track->index, $this->getVideoTracks())) {
-                    self::$log->debug("Removing video track from input.", array('index'=>$track->index));
-                    $this->oInputFile->removeVideoStream($track->index);
-                } else {
-                    self::$log->debug("Keeping video track in input.", array('index'=>$track->index));
-                }
-            }
-        }
-    }
+	public function getSubtitleTracks() {
+		return $this->subtitleTracks;
+	}
 
-    public function isHwaccel()
-    {
-        return $this->hwaccel;
-    }
+	public function setDeinterlace($val) {
+		$this->deinterlace = $val;
+		if ("off" != $this->deinterlace && "copy" != $this->videoFormat) {
+			$this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile);
+			$this->deinterlaceMode = $val;
+		} else {
+			$this->deinterlace = false;
+			$this->deinterlaceMode = null;
+		}
+	}
 
-    public function isHDR()
-    {
-        return $this->videoHdr;
-    }
+	public function prepareStreams() {
+		self::$log->debug("Preparing streams.", [
+			"filename" => $this->oInputFile->getFileName(),
+		]);
+		$this->prepareSubtitleStreams();
+		$this->prepareAudioStreams();
+		$this->prepareVideoStreams();
+	}
 
+	private function prepareSubtitleStreams() {
+		if (!$this->areAllSubtitleTracksConsidered()) {
+			self::$log->debug("Not considering all subtitle streams.", [
+				"subtitleTracks" => $this->getSubtitleTracks(),
+			]);
+			// if not * (all subtitles), then remove all track except the desired
+			foreach ($this->oInputFile->getSubtitleStreams() as $track) {
+				if (!in_array($track->index, $this->getSubtitleTracks())) {
+					self::$log->debug("Removing subtitle track from input.", [
+						"index" => $track->index,
+					]);
+					$this->oInputFile->removeSubtitleStream($track->index);
+				} else {
+					self::$log->debug("Keeping subtitle track in input.", [
+						"index" => $track->index,
+					]);
+				}
+			}
+		}
+	}
+
+	private function prepareAudioStreams() {
+		if (!$this->areAllAudioTracksConsidered()) {
+			self::$log->debug("Not considering all audio streams.", [
+				"audioTracks" => $this->getAudioTracks(),
+			]);
+			// if not * (all audio), then remove all track except the desired
+			foreach ($this->oInputFile->getAudioStreams() as $track) {
+				if (!in_array($track->index, $this->getAudioTracks())) {
+					self::$log->debug("Removing audio track from input.", [
+						"index" => $track->index,
+					]);
+					$this->oInputFile->removeAudioStream($track->index);
+				} else {
+					self::$log->debug("Keeping audio track in input.", [
+						"index" => $track->index,
+					]);
+				}
+			}
+		}
+	}
+
+	private function prepareVideoStreams() {
+		if (!$this->areAllVideoTracksConsidered()) {
+			self::$log->debug("Not considering all video streams.", [
+				"videoTracks" => $this->getVideoTracks(),
+			]);
+			// if not * (all videos), then remove all track except the desired
+			foreach ($this->oInputFile->getVideoStreams() as $track) {
+				if (!in_array($track->index, $this->getVideoTracks())) {
+					self::$log->debug("Removing video track from input.", [
+						"index" => $track->index,
+					]);
+					$this->oInputFile->removeVideoStream($track->index);
+				} else {
+					self::$log->debug("Keeping video track in input.", [
+						"index" => $track->index,
+					]);
+				}
+			}
+		}
+	}
+
+	public function isHwaccel() {
+		return $this->hwaccel;
+	}
+
+	public function isHDR() {
+		return $this->videoHdr;
+	}
 }
 
-Request::$log = new LogWrapper('Request');
-?>
+Request::$log = new LogWrapper("Request");

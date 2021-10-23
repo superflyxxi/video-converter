@@ -1,2 +1,7 @@
 testResults/
 vendor/
+.phplint-cache
+**/*.phar
+
+# Prettier stuff
+.php-cs-fixer.cache

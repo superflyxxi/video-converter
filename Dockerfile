@@ -1,74 +1,40 @@
 FROM jrottenberg/ffmpeg:4.4-vaapi
-MAINTAINER SuperFlyXXI <superflyxxi@yahoo.com>
-
-ENV DEBIAN_FRONTEND=noninteractive
-WORKDIR /app/ripvideo/
-
-ENV TMP_DIR=/tmp/wip
-RUN mkdir -p ${TMP_DIR}/data && chmod -R ugo+rw ${TMP_DIR}
-RUN apt-get update -y && \
-	apt-get install -y apt-utils && \
-	apt-get install -y php-cli php-json mkvtoolnix && \
-	apt-get clean -y
-RUN apt-get update -y && \
-	apt-get install -y curl && \
-	curl -s "https://getcomposer.org/installer" | php -- --install-dir=/bin --filename=composer && \
-	apt-get purge -y curl && \
-	apt-get clean -y
+LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
 # Support bash as the deafult shell
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TMP_DIR=/tmp/wip
+
+# Install DBSup2Sub
+ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /opt/
+
+RUN mkdir -p "${TMP_DIR}" && \
+	chmod -R ugo+rw "${TMP_DIR}" && \
+	chmod ugo+r /opt/BDSup2Sub.jar && \
+	apt-get update -y && \
+	apt-get install -y --no-install-recommends apt-utils php7.2-cli php7.2-json mkvtoolnix && \
+	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # install tesseract, language packs, and java
-ARG BUILD_SUBTITLE_SUPPORT=true
-ARG SUBTITLE_LANGUAGES=*
-RUN apt-get update
-RUN apt-get install -y openjdk-11-jre-headless
-RUN apt-get install -y libtesseract4
-RUN apt-get install -y tesseract-ocr
-RUN apt-get install -y tesseract-ocr-eng
-RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
-	apt-get update && \
-	echo "font-config reinstall" && apt-get install -y --reinstall --purge fontconfig-config && \
-	echo "openjdk install" && apt-get install -y openjdk-11-jre-headless && \
-	echo "tesseract install" && apt-get install -y libtesseract4 && \
-	echo "tesseract-ocr install" && apt-get install -y tesseract-ocr && \
-	echo "tesseract languages install" && apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep "${SUBTITLE_LANGUAGES}" | grep -v "\-old" | xargs apt-get install -y && \
-	apt-get clean -y ; \
-    fi
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends libtesseract4 openjdk-11-jre-headless && \
+	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y --no-install-recommends && \
+	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-RUN if [[ "${BUILD_SUBTITLE_SUPPORT}" == "true" ]]; then \
-	DIR=$(mktemp -d) && cd ${DIR} && \
-        BUILD_DEPS="git libleptonica-dev libtiff5-dev build-essential cmake pkg-config" && \
-	if [[ ! "${FROM_IMAGE}" == *1804 ]]; then \
-		BUILD_DEPS="${BUILD_DEPS} libtesseract-dev"; \
-	else \
-		BUILD_DEPS="${BUILD_DEPS} tesseract-ocr-dev"; \
-	fi && \
-	printf "FROM_IMAGE=${FROM_IMAGE}\nBUILD_DEPS=${BUILD_DEPS}\n" && \
+RUN DIR=$(mktemp -d) && cd "${DIR}" && \
+    BUILD_DEPS="git libtesseract-dev libleptonica-dev libtiff5-dev build-essential cmake pkg-config" && \
 	apt-get update && \
-	apt-get install -y ${BUILD_DEPS} &&  \
-	git clone --depth 1 https://github.com/bubonic/VobSub2SRT.git && \
+	apt-get install -y --no-install-recommends ${BUILD_DEPS} &&  \
+	git clone --depth 1 "https://github.com/bubonic/VobSub2SRT.git" && \
 	cd VobSub2SRT && \
 	./configure && \
 	make && \
 	make install && \
 	apt-get purge -y ${BUILD_DEPS} && \
-	apt-get clean -y && \
-	rm -rf ${DIR} ; \
-   fi
+	apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+	rm -rf "${DIR}"
 
-# Install DBSup2Sub
-ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /app/ripvideo/
-
-ENTRYPOINT /app/ripvideo/rip-video.php
-COPY src/ /app/ripvideo/
-COPY composer* /app/ripvideo/
-
-RUN apt-get update && \
-	apt-get install -y git && \
-	composer install --no-dev && \
-	composer clear-cache && \
-	apt-get purge -y git && \
-	apt-get clean -y && \
-	chmod -R ugo+r /app/ripvideo
+ENTRYPOINT ["/usr/bin/video-converter"]
+COPY video-converter.phar /usr/bin/video-converter
