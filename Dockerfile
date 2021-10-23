@@ -19,7 +19,7 @@ RUN mkdir -p "${TMP_DIR}" && \
 
 # install tesseract, language packs, and java
 RUN apt-get update && \
-	apt-get install -y --reinstall --purge fontconfig-config && \
+	apt-get install -y --no-install-recommends --reinstall --purge fontconfig-config && \
 	apt-get install -y --no-install-recommends libtesseract4 openjdk-11-jre-headless && \
 	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y --no-install-recommends && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
