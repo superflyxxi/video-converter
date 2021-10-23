@@ -38,6 +38,7 @@ jobs:
   build-docker:
     environment:
       DEBIAN_FRONTEND: noninteractive
+      TESSERACT_LANGUAGES: "eng\|por\|spa\|fra"
     executor: docker/machine
     steps:
       - attach_workspace:
@@ -71,11 +72,12 @@ jobs:
       - docker/check:
           registry: $DOCKER_REGISTRY
       - docker/build:
+          step-name: Build docker image
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
-          step-name: Build docker image
+          extra_build_args: --build-arg TESSERACT_LANGUAGES=${TESSERACT_LANGUAGES}
       - docker/push:
           step-name: Pushing image
           registry: $DOCKER_REGISTRY
@@ -85,6 +87,7 @@ jobs:
           name: Tag docker
           command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${CIRCLE_PROJECT_REPONAME}
       - docker/build:
+          step-name: Build test image
           docker-context: .
           path: .
           dockerfile: tests/Dockerfile
@@ -92,7 +95,6 @@ jobs:
           tag: test-${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
-          step-name: Build test image
       - unless:
           condition:
             equal: [main, << pipeline.git.branch >>]
