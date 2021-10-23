@@ -7,7 +7,7 @@ ARG TEST_SAMPLE_DOMAIN
 ENV DATA_DIR=/data \
 	TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples"
 RUN apt-get update && \
-	apt-get install -y php7.2-xml php7.2-mbstring curl && \
+	apt-get install -y php7.4-xml php7.4-mbstring curl && \
 	apt-get clean -y && \
 	mkdir -m 777 "${DATA_DIR}"
 
