@@ -19,11 +19,12 @@ RUN mkdir -p "${TMP_DIR}" && \
 
 # install tesseract, language packs, and java
 RUN apt-get update && \
-	apt-get install -y --no-install-recommends --reinstall --purge fontconfig-config && \
 	apt-get install -y --no-install-recommends libtesseract4 openjdk-11-jre-headless && \
-	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract" | grep -v "\-old" | xargs apt-get install -y --no-install-recommends && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
+ARG TESSERACT_LANGUAGES=all
+RUN apt-get update && \
+	apt-cache search tesseract-ocr | awk '{ print $1; }' | grep "^tesseract\-ocr\-" | grep -v "\-old" | grep "${TESSERACT_LANGUAGES}" | xargs apt-get install -y --no-install-recommends && \
+	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 RUN DIR=$(mktemp -d) && cd "${DIR}" && \
     BUILD_DEPS="git libtesseract-dev libleptonica-dev libtiff5-dev build-essential cmake pkg-config" && \
 	apt-get update && \
