@@ -172,6 +172,7 @@ jobs:
               cp -v version.txt /tmp/workspace/full_version.txt
               cp -v version.txt /tmp/workspace/short_version.txt
             fi
+            cat /tmp/workspace/short_version.txt /tmp/workspace/full_version.txt
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
