@@ -55,7 +55,7 @@ jobs:
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:latest"
             fi
-            export DOCKER_TAGS="${PRIMARY_DOCKER_TAG},${CIRCLE_BRANCH}"
+            export DOCKER_TAGS="${PRIMARY_DOCKER_TAG}"
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
                 NOW="$PREV.$A"
@@ -172,7 +172,6 @@ jobs:
               cp -v version.txt /tmp/workspace/full_version.txt
               cp -v version.txt /tmp/workspace/short_version.txt
             fi
-            cat /tmp/workspace/short_version.txt /tmp/workspace/full_version.txt
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
