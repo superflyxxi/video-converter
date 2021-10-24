@@ -38,7 +38,6 @@ jobs:
   build-docker:
     environment:
       DEBIAN_FRONTEND: noninteractive
-      TESSERACT_LANGUAGES: 'eng\|por\|spa\|fra\|chs'
     executor: docker/machine
     steps:
       - attach_workspace:
@@ -77,7 +76,6 @@ jobs:
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
-          extra_build_args: --build-arg TESSERACT_LANGUAGES=${TESSERACT_LANGUAGES}
       - docker/push:
           step-name: Pushing image
           registry: $DOCKER_REGISTRY
