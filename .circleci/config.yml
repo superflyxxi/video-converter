@@ -37,7 +37,7 @@ jobs:
           path: video-converter.phar
 
   build-docker:
-    resource_class: small
+    resource_class: medium
     environment:
       DEBIAN_FRONTEND: noninteractive
     executor: docker/machine
@@ -114,6 +114,7 @@ jobs:
             - video-converter-test.tar*
 
   test-docker:
+    resource_class: medium
     parallelism: 5
     environment:
       DEBIAN_FRONTEND: noninteractive
