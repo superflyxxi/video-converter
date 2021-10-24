@@ -108,6 +108,7 @@ class ConvertSubtitle {
 	}
 
 	private static function convertSrtSubtitle($dvdFile, $subtitle, $oRequest, $index, $oOutput) {
+		$oNewRequest = null;
 		if (!file_exists($dvdFile . ".srt")) {
 			self::$log->info("Convert DVD sub to SRT.");
 			$command = "vobsub2srt ";
