@@ -10,6 +10,7 @@ orbs:
 jobs:
 
   build-phar:
+    resource_class: small
     executor:
       name: php/default
       tag: "7.4"
@@ -36,6 +37,7 @@ jobs:
           path: video-converter.phar
 
   build-docker:
+    resource_class: small
     environment:
       DEBIAN_FRONTEND: noninteractive
     executor: docker/machine
@@ -142,6 +144,7 @@ jobs:
           path: testResults
 
   release:
+    resource_class: small
     docker:
       - image: circleci/node
     parameters:
