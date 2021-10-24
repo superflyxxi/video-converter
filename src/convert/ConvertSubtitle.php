@@ -117,7 +117,6 @@ class ConvertSubtitle {
 			}
 			if (isset($subtitle->language)) {
 				$command .= " --tesseract-lang " . CountryToLanguageMapping::getCountry($subtitle->language) . " ";
-				$command .= " --lang " . CountryToLanguageMapping::getCountry($subtitle->language) . " ";
 			}
 			if (null != $oRequest->subtitleConversionBlacklist) {
 				$command .= " --blacklist '" . $oRequest->subtitleConversionBlacklist . "'";
