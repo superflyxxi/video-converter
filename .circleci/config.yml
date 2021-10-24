@@ -10,9 +10,10 @@ orbs:
 jobs:
 
   build-phar:
+    resource_class: small
     executor:
       name: php/default
-      tag: "7.2"
+      tag: "7.4"
     steps:
       - checkout
       - php/install-composer
@@ -36,6 +37,7 @@ jobs:
           path: video-converter.phar
 
   build-docker:
+    resource_class: small
     environment:
       DEBIAN_FRONTEND: noninteractive
     executor: docker/machine
@@ -55,7 +57,7 @@ jobs:
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:latest"
             fi
-            export DOCKER_TAGS="${PRIMARY_DOCKER_TAG},${CIRCLE_BRANCH}"
+            export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
                 NOW="$PREV.$A"
@@ -63,7 +65,7 @@ jobs:
                 export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${NOW:1}"
                 PREV=$NOW
               done
-              export DOCKER_TAGS="${DOCKER_TAGS},latest"
+              export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
             fi
             echo "export CACHE_FROM_IMAGES=${CACHE_FROM_IMAGES}" >> ${BASH_ENV}
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
@@ -71,11 +73,11 @@ jobs:
       - docker/check:
           registry: $DOCKER_REGISTRY
       - docker/build:
+          step-name: Build docker image
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
-          step-name: Build docker image
       - docker/push:
           step-name: Pushing image
           registry: $DOCKER_REGISTRY
@@ -85,6 +87,7 @@ jobs:
           name: Tag docker
           command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${CIRCLE_PROJECT_REPONAME}
       - docker/build:
+          step-name: Build test image
           docker-context: .
           path: .
           dockerfile: tests/Dockerfile
@@ -92,7 +95,6 @@ jobs:
           tag: test-${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
-          step-name: Build test image
       - unless:
           condition:
             equal: [main, << pipeline.git.branch >>]
@@ -142,6 +144,7 @@ jobs:
           path: testResults
 
   release:
+    resource_class: small
     docker:
       - image: circleci/node
     parameters:
