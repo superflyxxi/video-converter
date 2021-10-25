@@ -5,16 +5,17 @@
     <env name="LOG_LEVEL" value="100" />
   </php>
   <logging>
-    <log type="testdox-html" target="/opt/video-converter/testResults/testdox.html"/>
-    <log type="testdox-text" target="/opt/video-converter/testResults/testdox.txt"/>
-    <log type="junit" target="/opt/video-converter/testResults/junit.xml"/>
+    <testdoxHtml outputFile="testResults/testdox.html"/>
+    <testdoxText outputFile="testResults/testdox.txt"/>
+    <junit outputFile="testResults/junit.xml"/>
   </logging>
   <coverage pathCoverage="true" >
     <report>
-      <html outputDirectory="testResults/coverage" showUncoveredFiles="true" />
+      <html outputDirectory="testResults/coverage" />
+      <clover outputFile="testResults/clover.xml" />
     </report>
     <include>
-      <directory suffix=".php">src</directory>
+      <directory suffix=".php">../src/</directory>
     </include>
   </coverage>
   <testsuites>
