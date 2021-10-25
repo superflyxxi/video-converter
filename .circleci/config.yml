@@ -76,7 +76,12 @@ jobs:
           step-name: Build parent image
           dockerfile: Dockerfile.parent
           image: ${CIRCLE_PROJECT_REPONAME}-parent
+          tag: latest
+          registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
+      - run:
+          name: Tag parent docker
+          command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}-parent:latest ${CIRCLE_PROJECT_REPONAME}-parent
       - docker/build:
           step-name: Build docker image
           image: ${CIRCLE_PROJECT_REPONAME}
