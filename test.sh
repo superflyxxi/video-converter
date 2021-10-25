@@ -6,12 +6,12 @@
 set -e
 
 TEST_IMAGE=${TEST_IMAGE:-video-converter-test}
-TESTSUITES=${TESTSUITES:-unit-tests,integration-tests}
 
-if [[ "" == "${CIRCLE_NODE_TOTAL}" ]]; then
-	TEST_ARG="--testsuite ${TESTSUITES}"
-else
-	printf "Using CircleCI nodes: %s out of %s\n\n" "${CIRCLE_NODE_INDEX}" "${CIRCLE_NODE_TOTAL}"
+if [[ "" != "${CLASSES}" ]]; then
+	printf "Using test classes: %s\n" "${CLASSES}"
+	TEST_ARG="--filter /$(xargs echo <<< $CLASSES | sed 's/ /|/g')/"
+elif [[ "" != "${CIRCLE_NODE_TOTAL}" ]]; then
+	printf "Using CircleCI nodes: index=%s; total=%s\n" "${CIRCLE_NODE_INDEX}" "${CIRCLE_NODE_TOTAL}"
 	ALL_TESTS=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^\s*-" | sed 's/^\s*-\s*//g' | sed 's/\r\s*/\n/g')
 	ALL_TESTS=($ALL_TESTS)
 	multiplier=$(( ((10 * ${#ALL_TESTS[@]} / ${CIRCLE_NODE_TOTAL} ) + 5 ) / 10))
@@ -26,19 +26,17 @@ else
 	TEST_ARG="--filter /${TESTS// /|}/"
 fi
 
-if [[ "${USE_VAAPI:-false}" = "true" ]]; then
+if [[ "${USE_VAAPI:-false}" = "true" && -d /dev/dri ]]; then
 	DEVICES="--device /dev/dri"
 fi
 
 mkdir -p testResults/coverage || true
 
-set -x
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
 	-v "$(pwd)/testResults:/opt/video-converter/testResults" \
 	${TEST_IMAGE} ${TEST_ARG} ${ADDITIONAL_PHPUNIT_ARGS}
-set +x
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}
@@ -50,7 +48,6 @@ if [[ ${EXIT_CODE} -ne 0 ]]; then
 	docker logs test
 fi
 docker rm test
-printf "Test results\n"
-printf "============\n\n"
+printf "Test results\n============\n\n"
 cat testResults/testdox.txt
 exit ${EXIT_CODE}

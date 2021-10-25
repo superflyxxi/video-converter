@@ -1,4 +1,5 @@
 <?php
+
 require_once "functions.php";
 
 class OutputFile {
@@ -44,5 +45,3 @@ class OutputFile {
 		return $out;
 	}
 }
-
-?>

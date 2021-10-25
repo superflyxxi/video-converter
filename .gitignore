@@ -4,6 +4,4 @@ vendor/
 **/*.phar
 
 # Prettier stuff
-node_modules/
-package.json
-package-lock.json
+.php-cs-fixer.cache

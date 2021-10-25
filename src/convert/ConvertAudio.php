@@ -1,4 +1,5 @@
 <?php
+
 require_once "LogWrapper.php";
 require_once "functions.php";
 require_once "request/Request.php";
@@ -135,4 +136,3 @@ class ConvertAudio {
 }
 
 ConvertAudio::$log = new LogWrapper("ConvertAudio");
-?>

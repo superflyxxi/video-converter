@@ -1,4 +1,5 @@
 <?php
+
 require_once "request/Request.php";
 require_once "InputFile.php";
 require_once "functions.php";
@@ -107,6 +108,7 @@ class ConvertSubtitle {
 	}
 
 	private static function convertSrtSubtitle($dvdFile, $subtitle, $oRequest, $index, $oOutput) {
+		$oNewRequest = null;
 		if (!file_exists($dvdFile . ".srt")) {
 			self::$log->info("Convert DVD sub to SRT.");
 			$command = "vobsub2srt ";
@@ -156,4 +158,3 @@ class ConvertSubtitle {
 }
 
 ConvertSubtitle::$log = new LogWrapper("ConvertSubtitle");
-?>
