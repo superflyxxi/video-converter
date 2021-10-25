@@ -138,6 +138,10 @@ jobs:
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
             printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
+            if [[ $(echo ${ALL_CLASSES} | wc -w) -eq 0 ]]; then
+              echo "Not enough classes. Something's wrong"
+              exit 1
+            fi
             ./test.sh
       - store_test_results:
           path: testResults
