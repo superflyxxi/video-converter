@@ -103,6 +103,7 @@ jobs:
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: test-${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
+          cache_from: ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
       - unless:
           condition:
