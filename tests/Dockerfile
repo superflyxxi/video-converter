@@ -12,7 +12,7 @@ RUN apt-get update && \
 	apt-get clean -y && \
 	mkdir -m 777 "${DATA_DIR}"
 
-ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml"]
+ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml", "--verbose"]
 CMD [ "/opt/video-converter/tests" ]
 WORKDIR /opt/video-converter
 

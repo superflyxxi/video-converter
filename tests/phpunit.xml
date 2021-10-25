@@ -5,14 +5,14 @@
     <env name="LOG_LEVEL" value="100" />
   </php>
   <logging>
-    <testdoxHtml outputFile="testResults/testdox.html"/>
-    <testdoxText outputFile="testResults/testdox.txt"/>
-    <junit outputFile="testResults/junit.xml"/>
+    <testdoxHtml outputFile="../testResults/testdox.html"/>
+    <testdoxText outputFile="../testResults/testdox.txt"/>
+    <junit outputFile="../testResults/junit.xml"/>
   </logging>
   <coverage pathCoverage="true" >
     <report>
-      <html outputDirectory="testResults/coverage" />
-      <clover outputFile="testResults/clover.xml" />
+      <html outputDirectory="../testResults/coverage" />
+      <clover outputFile="../testResults/clover.xml" />
     </report>
     <include>
       <directory suffix=".php">../src/</directory>
