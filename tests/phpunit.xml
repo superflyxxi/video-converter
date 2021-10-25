@@ -17,4 +17,9 @@
       <directory suffix=".php">src</directory>
     </include>
   </coverage>
+  <testsuites>
+    <testsuite name="all">
+      <directory>.</directory>
+    </testsuite>
+  </testsuites>
 </phpunit>
