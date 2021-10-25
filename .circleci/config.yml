@@ -73,11 +73,15 @@ jobs:
       - docker/check:
           registry: $DOCKER_REGISTRY
       - docker/build:
+          step-name: Build parent image
+          dockerfile: Dockerfile.parent
+          image: ${CIRCLE_PROJECT_REPONAME}-parent
+          cache_from: ${CACHE_FROM_IMAGES}
+      - docker/build:
           step-name: Build docker image
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
-          cache_from: ${CACHE_FROM_IMAGES}
       - docker/push:
           step-name: Pushing image
           registry: $DOCKER_REGISTRY
