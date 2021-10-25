@@ -73,11 +73,20 @@ jobs:
       - docker/check:
           registry: $DOCKER_REGISTRY
       - docker/build:
+          step-name: Build parent image
+          dockerfile: Dockerfile.parent
+          image: ${CIRCLE_PROJECT_REPONAME}-parent
+          tag: latest
+          registry: ${DOCKER_REGISTRY}
+          cache_from: ${CACHE_FROM_IMAGES}
+      - run:
+          name: Tag parent docker
+          command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}-parent:latest ${CIRCLE_PROJECT_REPONAME}-parent
+      - docker/build:
           step-name: Build docker image
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
-          cache_from: ${CACHE_FROM_IMAGES}
       - docker/push:
           step-name: Pushing image
           registry: $DOCKER_REGISTRY
@@ -94,6 +103,7 @@ jobs:
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: test-${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
+          cache_from: ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
       - unless:
           condition:

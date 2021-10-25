@@ -1,5 +1,6 @@
 FROM composer:2.1.9 AS composer
-FROM video-converter
+FROM video-converter AS video-converter
+FROM video-converter-parent
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -19,6 +20,7 @@ RUN curl -k -L "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" -o "${DATA_DIR}/dvd.mkv"
 RUN curl -k -L "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/bluray.mkv"
 
 COPY --from=composer /usr/bin/composer /usr/bin/
+COPY --from=video-converter /usr/bin/video-converter /usr/bin/
 COPY . /opt/video-converter
 
 RUN mkdir -m 777 /opt/video-converter/testResults || true && \
