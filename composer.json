@@ -13,13 +13,8 @@
 		"lint": "phplint src/ tests/ -vvv -w",
 		"check-format": "php-cs-fixer fix --config .php-cs-fixer.dist.php --dry-run src/ tests/"
 	},
-	"config": {
-		"platform": {
-			"php": "7.4.0"
-		}
-	},
 	"require": {
-		"php": "=7.4.0",
+		"php": "^7.4.0",
 		"monolog/monolog": "^2.3"
 	},
 	"require-dev": {
