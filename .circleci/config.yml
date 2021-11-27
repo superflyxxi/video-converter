@@ -5,6 +5,7 @@ orbs:
   docker: circleci/docker@1
   node: circleci/node@4
   php: circleci/php@1
+  sonarcloud: sonarsource/sonarcloud@1
 
 # Orchestrate or schedule a set of jobs
 jobs:
@@ -157,6 +158,26 @@ jobs:
           path: testResults
       - store_artifacts:
           path: testResults
+      - persist_to_workspace:
+          root: testResults
+          paths:
+            - clover.xml
+
+  sonar-scan:
+    executor: 
+      name: node/default
+      tag: '16.5.0'
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Configure sonar-project.properties
+          command: |
+            find . -name clover.xml
+            printf "sonar.php.coverage.reportPaths=%s\n" $(find . -name clover.xml -type f | xargs echo | sed 's/ /,/g') >> sonar-project.properties
+            cat sonar-project.properties
+      - sonarcloud/scan
 
   release:
     resource_class: small
@@ -219,6 +240,10 @@ workflows:
           requires:
             - pre-release
             - build-docker
+      - sonar-scan:
+          context: default
+          requires:
+            - test-docker
       - release:
           name: release
           context: default
@@ -226,6 +251,7 @@ workflows:
           requires:
             - build-docker
             - test-docker
+            - sonar-scan
           filters:
             branches:
               only:
