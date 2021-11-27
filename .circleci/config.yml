@@ -179,11 +179,14 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Configure sonar-project.properties
+          name: Correct report files
           command: |
             find . -name 'clover-*.xml' -type f | xargs -L1 -I{} sed -i 's#/opt/video-converter/##g' {}
+            npx jrm junit.xml "junit-*.xml"
+      - run:
+          name: Configure sonar-project.properties
+          command: |
             printf "sonar.php.coverage.reportPaths=%s\n" $(find . -name 'clover-*.xml' -type f | xargs echo | sed 's/ /,/g') >> sonar-project.properties
-            printf "sonar.php.tests.reportPath=%s\n" $(find . -name 'junit-*.xml' -type f | xargs echo | sed 's/ /,/g') >> sonar-project.properties
             cat sonar-project.properties
       - sonarcloud/scan
 
