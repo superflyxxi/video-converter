@@ -154,6 +154,7 @@ jobs:
               exit 1
             fi
             ./test.sh
+            cp -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
       - store_test_results:
           path: testResults
       - store_artifacts:
@@ -161,7 +162,7 @@ jobs:
       - persist_to_workspace:
           root: testResults
           paths:
-            - clover.xml
+            - clover-*.xml
 
   sonar-scan:
     executor: 
@@ -174,8 +175,9 @@ jobs:
       - run:
           name: Configure sonar-project.properties
           command: |
-            find . -name clover.xml
-            printf "sonar.php.coverage.reportPaths=%s\n" $(find . -name clover.xml -type f | xargs echo | sed 's/ /,/g') >> sonar-project.properties
+            find . -name 'clover-*.xml'
+            find . -name 'clover-*.xml' -type f | xargs -L1 -I{} sed -i 's#/opt/video-converter/##g' {}
+            printf "sonar.php.coverage.reportPaths=%s\n" $(find . -name 'clover-*.xml' -type f | xargs echo | sed 's/ /,/g') >> sonar-project.properties
             cat sonar-project.properties
       - sonarcloud/scan
 
