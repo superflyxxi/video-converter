@@ -58,6 +58,10 @@ jobs:
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
               export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:dev"
             fi
+            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g')
+            if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
+              export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-dev"
+            fi
             export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
@@ -104,7 +108,7 @@ jobs:
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: test-${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
-          cache_from: ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
+          cache_from: ${TEST_CACHE_FROM_IMAGES}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
       - unless:
           condition:
