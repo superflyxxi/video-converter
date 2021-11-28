@@ -185,6 +185,10 @@ jobs:
             find . -name 'clover-*.xml' -type f | xargs -L1 -I{} sed -i 's#/opt/video-converter/##g' {}
             npm install --include=dev junit-report-merger
             npx jrm junit.xml "junit-*.xml"
+      - store_artifacts:
+          path: junit.xml
+      - store_artifacts:
+          path: clover-*.xml
       - run:
           name: Configure sonar-project.properties
           command: |
