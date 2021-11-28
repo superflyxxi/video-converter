@@ -183,7 +183,7 @@ jobs:
           name: Correct report files
           command: |
             find . -name 'clover-*.xml' -type f | xargs -L1 -I{} sed -i 's#/opt/video-converter/##g' {}
-            npm install --dev jrm
+            npm install --include=dev junit-report-merger
             npx jrm junit.xml "junit-*.xml"
       - run:
           name: Configure sonar-project.properties
