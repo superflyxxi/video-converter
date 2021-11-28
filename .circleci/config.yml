@@ -183,12 +183,16 @@ jobs:
           name: Correct report files
           command: |
             find . -name 'clover-*.xml' -type f -exec sed -i 's#/opt/video-converter/##g' {} \;
+            find . -name 'clover-*.xml' -type f -exec cat {} \;
             npm install --include=dev junit-report-merger
             npx jrm junit.xml "junit-*.xml"
+            cat junit.xml
       - store_artifacts:
           path: junit.xml
       - store_artifacts:
           path: clover-*.xml
+      - store_artifacts:
+          path: clover-0.xml
       - run:
           name: Configure sonar-project.properties
           command: |
