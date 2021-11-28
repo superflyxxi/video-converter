@@ -5,6 +5,7 @@ orbs:
   docker: circleci/docker@1
   node: circleci/node@4
   php: circleci/php@1
+  sonarcloud: sonarsource/sonarcloud@1
 
 # Orchestrate or schedule a set of jobs
 jobs:
@@ -54,8 +55,12 @@ jobs:
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             echo "export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g')
-            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:latest"
+            if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
+              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:dev"
+            fi
+            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g')
+            if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
+              export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-dev"
             fi
             export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
@@ -68,6 +73,7 @@ jobs:
               export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
             fi
             echo "export CACHE_FROM_IMAGES=${CACHE_FROM_IMAGES}" >> ${BASH_ENV}
+            echo "export TEST_CACHE_FROM_IMAGES=${TEST_CACHE_FROM_IMAGES}" >> ${BASH_ENV}
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
@@ -103,7 +109,7 @@ jobs:
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: test-${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
-          cache_from: ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
+          cache_from: ${TEST_CACHE_FROM_IMAGES}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
       - unless:
           condition:
@@ -148,11 +154,43 @@ jobs:
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
             printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
+            if [[ $(echo ${ALL_CLASSES} | wc -w) -eq 0 ]]; then
+              echo "Not enough classes. Something's wrong"
+              exit 1
+            fi
             ./test.sh
+            cp -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
+            cp -v testResults/junit.xml testResults/junit-${CIRCLE_NODE_INDEX}.xml
       - store_test_results:
           path: testResults
       - store_artifacts:
           path: testResults
+      - persist_to_workspace:
+          root: testResults
+          paths:
+            - clover-*.xml
+            - junit-*.xml
+
+  sonar-scan:
+    executor: 
+      name: node/default
+      tag: '16.5.0'
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Correct report files
+          command: |
+            find . -name 'clover-*.xml' -type f | xargs -L1 -I{} sed -i 's#/opt/video-converter/##g' {}
+            npm install --include=dev junit-report-merger
+            npx jrm junit.xml "junit-*.xml"
+      - run:
+          name: Configure sonar-project.properties
+          command: |
+            printf "sonar.php.coverage.reportPaths=%s\n" $(find . -name 'clover-*.xml' -type f | xargs echo | sed 's/ /,/g') >> sonar-project.properties
+            cat sonar-project.properties
+      - sonarcloud/scan
 
   release:
     resource_class: small
@@ -215,6 +253,10 @@ workflows:
           requires:
             - pre-release
             - build-docker
+      - sonar-scan:
+          context: default
+          requires:
+            - test-docker
       - release:
           name: release
           context: default
@@ -222,6 +264,7 @@ workflows:
           requires:
             - build-docker
             - test-docker
+            - sonar-scan
           filters:
             branches:
               only:

@@ -54,7 +54,8 @@ class FFmpegHelper {
 				return self::isInterlacedBasedOnProbe($inputFile);
 				break;
 			default:
-				return false;
+				// function will return
+				break;
 		}
 		return false;
 	}
