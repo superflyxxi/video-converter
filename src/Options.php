@@ -1,4 +1,5 @@
 <?php
+
 // have to make this something we can create our own on testing and use during runtime
 // perhaps use empty constructor to do current init
 // and use array constructor for setting other things during test
