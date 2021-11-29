@@ -2,6 +2,8 @@
 
 use PHPUnit\Framework\TestCase;
 
+require_once "rip-video.php";
+
 abstract class Test extends TestCase {
 	protected function getDataDir() {
 		return getEnv("DATA_DIR");
@@ -60,7 +62,7 @@ abstract class Test extends TestCase {
 		return true;
 	}
 
-	public function ripvideo($filename, $args, $timeout = "8m") {
+	public function ripvideoBackup($filename, $args, $timeout = "8m") {
 		$command = "timeout -s15 " . $timeout . " /opt/video-converter/src/rip-video.php --log-level=100";
 		foreach ($args as $key => $value) {
 			$command .= " " . $key;
@@ -75,5 +77,15 @@ abstract class Test extends TestCase {
 		passthru("cd \"" . $this->getDataDir() . "\"; " . $command, $return);
 		print $command . " => returned value " . $return . "\n";
 		return $return;
+	}
+
+	public function ripvideo($filename, $args, $timeout = "8m") {
+		$options = [];
+		foreach ($args as $key => $value) {
+			$options[substr($key, 2)] = $value;
+		}
+		$options["filename"] = $filename;
+		Options::init($options);
+		return rip();
 	}
 }

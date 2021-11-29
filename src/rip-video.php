@@ -24,34 +24,35 @@ function error_handler(int $errno, string $errstr, $errfile = null, $errline = 0
 }
 set_error_handler("error_handler");
 
-if (null == Options::get("title")) {
-	$log->error("title missing");
-	exit(1);
-}
+function rip() {
+	if (null == Options::get("title")) {
+		$log->error("title missing");
+		exit(1);
+	}
 
-$envInput = Options::getInputFile();
-$csvRequest = null;
-if (strcasecmp(substr($envInput, -4), ".csv") === 0) {
-	$csvRequest = new CSVRequest(new SplFileObject($envInput, "r"));
-} else {
-	if (null == $envInput) {
-		$arrFiles = array_diff(scandir("."), ["..", "."]);
+	$envInput = Options::getInputFile();
+	$csvRequest = null;
+	if (strcasecmp(substr($envInput, -4), ".csv") === 0) {
+		$csvRequest = new CSVRequest(new SplFileObject($envInput, "r"));
 	} else {
-		$arrFiles[] = $envInput;
+		if (null == $envInput) {
+			$arrFiles = array_diff(scandir("."), ["..", "."]);
+		} else {
+			$arrFiles[] = $envInput;
+		}
+		$log->debug("Files to process", ["arrFiles" => $arrFiles]);
+		$csvFile = new SplTempFileObject();
+		$csvFile->fputcsv(["filename", "dummy"]);
+		foreach ($arrFiles as $infile) {
+			$log->debug("Adding to CSV", ["filename" => $infile]);
+			$csvFile->fputcsv([$infile, "dummy"]);
+		}
+		$csvFile->rewind();
+		$csvRequest = new CSVRequest($csvFile);
 	}
-	$log->debug("Files to process", ["arrFiles" => $arrFiles]);
-	$csvFile = new SplTempFileObject();
-	$csvFile->fputcsv(["filename", "dummy"]);
-	foreach ($arrFiles as $infile) {
-		$log->debug("Adding to CSV", ["filename" => $infile]);
-		$csvFile->fputcsv([$infile, "dummy"]);
-	}
-	$csvFile->rewind();
-	$csvRequest = new CSVRequest($csvFile);
+
+	return $csvRequest->convert();
 }
 
-$finalResult = $csvRequest->convert();
-exit($finalResult);
-
-
+exit(rip());
 ?>
