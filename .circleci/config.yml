@@ -131,7 +131,7 @@ jobs:
 
   test-docker:
     resource_class: medium
-    parallelism: 1
+    parallelism: 2
     environment:
       DEBIAN_FRONTEND: noninteractive
     executor: docker/machine
