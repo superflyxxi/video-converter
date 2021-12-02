@@ -38,7 +38,7 @@ class CSVRequest {
 								$req->episode = $value;
 								break;
 
-							case "showTitle":
+							case "show-title":
 								$req->showTitle = $value;
 								break;
 
@@ -46,47 +46,47 @@ class CSVRequest {
 								$req->playlist = $value;
 								break;
 
-							case "subtitleTracks":
+							case "subtitle-tracks":
 								$req->setSubtitleTracks($value);
 								break;
 
-							case "subtitleFormat":
+							case "subtitle-format":
 								$req->subtitleFormat = $value;
 								break;
 
-							case "audioTracks":
+							case "audio-tracks":
 								$req->setAudioTracks($value);
 								break;
 
-							case "audioFormat":
+							case "audio-format":
 								$req->audioFormat = $value;
 								break;
 
-							case "audioQuality":
+							case "audio-quality":
 								$req->audioQuality = $value;
 								break;
 
-							case "audioChannelLayout":
+							case "audio-channel-layout":
 								$req->audioChannelLayout = $value;
 								break;
 
-							case "audioChannelLayoutTracks":
+							case "audio-channel-layout-tracks":
 								$req->setAudioChannelLayoutTracks($value);
 								break;
 
-							case "audioSampleRate":
+							case "audio-sample-rate":
 								$req->audioSampleRate = $value;
 								break;
 
-							case "normalizeAudioTracks":
+							case "normalize-audio-tracks":
 								$req->setNormalizeAudioTracks($value);
 								break;
 
-							case "videoTracks":
+							case "video-tracks":
 								$req->setVideoTracks($value);
 								break;
 
-							case "videoFormat":
+							case "video-format":
 								$req->videoFormat = $value;
 								break;
 
