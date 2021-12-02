@@ -62,23 +62,6 @@ abstract class Test extends TestCase {
 		return true;
 	}
 
-	public function ripvideoBackup($filename, $args, $timeout = "8m") {
-		$command = "timeout -s15 " . $timeout . " /opt/video-converter/src/rip-video.php --log-level=100";
-		foreach ($args as $key => $value) {
-			$command .= " " . $key;
-			if (!is_bool($value)) {
-				$command .= '="' . $value . '"';
-			}
-		}
-		if (null !== $filename) {
-			$command .= ' "' . $this->getDataDir() . DIRECTORY_SEPARATOR . $filename . '"';
-		}
-		print "Executing command: " . $command . "\n";
-		passthru("cd \"" . $this->getDataDir() . "\"; " . $command, $return);
-		print $command . " => returned value " . $return . "\n";
-		return $return;
-	}
-
 	public function ripvideo($filename, $args, $timeout = "8m") {
 		$options = [];
 		foreach ($args as $key => $value) {
