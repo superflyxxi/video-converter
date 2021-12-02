@@ -1,12 +1,5 @@
 <?php
 
-// have to make this something we can create our own on testing and use during runtime
-// perhaps use empty constructor to do current init
-// and use array constructor for setting other things during test
-// and have tests/common.php call the rip-video.php main method instead of separate command
-// currently, with separate command, the clover code coverage doens't know what's being touched
-// so we have to change code to be able to call the class method directly from tests and not executable
-
 class Options {
 	private static $opts;
 	private static $inputfile;
