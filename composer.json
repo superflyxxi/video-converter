@@ -7,7 +7,7 @@
 	"homepage": "https://github.com/superflyxxi/video-converter",
 	"license": "Apache-2.0",
 	"bin": [
-		"src/rip-video.php"
+		"src/cli.php"
 	],
 	"scripts": {
 		"lint": "phplint src/ tests/ -vvv -w",
