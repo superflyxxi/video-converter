@@ -54,11 +54,11 @@ jobs:
           command: |
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             echo "export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
-            export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile.parent | sed 's/FROM //g' | sed 's/ AS .*$//g')
+            export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile.parent | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
               export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:dev"
             fi
-            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/AS.*$//g')
+            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
               export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-dev"
             fi
