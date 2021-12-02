@@ -11,7 +11,7 @@ class RipVideo {
 	public function rip() {
 		if (null == Options::get("title")) {
 			self::$log->error("title missing");
-			exit(1);
+			return 1;
 		}
 
 		$envInput = Options::getInputFile();
