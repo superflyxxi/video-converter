@@ -250,6 +250,7 @@ workflows:
       - docker/hadolint:
           name: validate-dockerfile
           context: default
+          dockerfiles: Dockerfile:Dockerfile.parent:tests/Dockerfile
       - build-docker:
           context: default
           requires:
