@@ -23,7 +23,7 @@ COPY . /opt/video-converter
 
 RUN mkdir -m 777 /opt/video-converter/testResults || true && \
 	apt-get update && \
-	COMPOSER_DEPS="git zip" && \
+	COMPOSER_DEPS="git zip php-zip" && \
 	apt-get install -y --no-install-recommends ${COMPOSER_DEPS} && \
 	composer install && \
 	composer clear-cache && \
