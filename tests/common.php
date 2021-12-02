@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once "index.php";
+require_once "RipVideo.php";
 
 abstract class Test extends TestCase {
 	protected function getDataDir() {
@@ -86,6 +86,7 @@ abstract class Test extends TestCase {
 		}
 		$options["filename"] = $filename;
 		Options::init($options);
-		return rip();
+		$rip = new RipVideo();
+		return $rip->rip();
 	}
 }
