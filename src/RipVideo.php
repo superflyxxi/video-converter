@@ -8,9 +8,6 @@ require_once "Options.php";
 class RipVideo {
 	public static $log;
 
-	public function __construct() {
-	}
-
 	public function rip() {
 		if (null == Options::get("title")) {
 			self::$log->error("title missing");
