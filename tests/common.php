@@ -84,7 +84,7 @@ abstract class Test extends TestCase {
 		foreach ($args as $key => $value) {
 			$options[substr($key, 2)] = $value;
 		}
-		$options["filename"] = $filename;
+		$options["inputfile"] = $filename;
 		Options::init($options);
 		$rip = new RipVideo();
 		return $rip->rip();
