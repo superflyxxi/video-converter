@@ -8,7 +8,7 @@ ENV DATA_DIR=/data \
 	TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples"
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends php7.4-xml php7.4-mbstring curl php-xdebug && \
-	apt-get clean -y && \
+	apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
 	mkdir -m 777 "${DATA_DIR}"
 
 ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml", "--verbose"]
@@ -28,5 +28,5 @@ RUN mkdir -m 777 /opt/video-converter/testResults || true && \
 	composer install && \
 	composer clear-cache && \
 	apt-get purge -y ${COMPOSER_DEPS} && \
-	apt-get clean -y
+	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 	
