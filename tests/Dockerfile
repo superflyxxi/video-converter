@@ -7,7 +7,7 @@ ARG TEST_SAMPLE_DOMAIN
 ENV DATA_DIR=/data \
 	TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples"
 RUN apt-get update && \
-	apt-get install -y php7.4-xml php7.4-mbstring curl php-xdebug && \
+	apt-get install -y --no-install-recommends php7.4-xml php7.4-mbstring curl php-xdebug && \
 	apt-get clean -y && \
 	mkdir -m 777 "${DATA_DIR}"
 
@@ -24,7 +24,7 @@ COPY . /opt/video-converter
 RUN mkdir -m 777 /opt/video-converter/testResults || true && \
 	apt-get update && \
 	COMPOSER_DEPS="git zip" && \
-	apt-get install -y ${COMPOSER_DEPS} && \
+	apt-get install -y --no-install-recommends ${COMPOSER_DEPS} && \
 	composer install && \
 	composer clear-cache && \
 	apt-get purge -y ${COMPOSER_DEPS} && \
