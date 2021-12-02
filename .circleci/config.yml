@@ -115,7 +115,7 @@ jobs:
           name: Run sanity test
           command: |
             docker volume create data
-            docker run --rm -v data:/vol --entrypoint sh ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} -c 'copy -v /dvd.mkv /data/'
+            docker run --rm -v data:/vol --entrypoint sh ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} -c 'cp -v /dvd.mkv /data/'
             docker run --rm -v data:/data -w /data ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} \
               --title=Test --video-format=copy --audio-format=copy --subtitle-format=copy dvd.mkv
       - unless:
