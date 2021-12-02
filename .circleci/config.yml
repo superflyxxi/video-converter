@@ -121,6 +121,13 @@ jobs:
                 image: ${CIRCLE_PROJECT_REPONAME}
                 tag: test-${PRIMARY_DOCKER_TAG}
       - run:
+          name: Run sanity test
+          command: |
+            docker volume create data
+            docker run --rm -v data:/vol --entrypoint copy ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} -v /dvd.mkv /data/
+            docker run --rm -v data:/data -w /data ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} \
+              --title=Test --video-format=copy --audio-format=copy --subtitle-format=copy dvd.mkv
+      - run:
           name: Export test image to tar
           command: |
             docker save -o video-converter-test.tar ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
@@ -168,25 +175,6 @@ jobs:
           paths:
             - clover-*.xml
             - junit-*.xml
-
-  sanity-test:
-    resource_class: medium
-    executor: docker/machine
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - checkout
-      - run:
-          name: Load docker test image
-          command: |
-            docker load -i /tmp/workspace/video-converter-test.tar
-      - run:
-          name: Run sanity test
-          command: |
-            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
-            export TEST_IMAGE=${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
-            docker run --rm --entrypoint /usr/bin/video-converter ${TEST_IMAGE} \
-              --title=Test --video-format=copy --audio-format=copy --subtitle-format=copy dvd.mkv
 
   sonar-scan:
     executor: 
@@ -273,10 +261,6 @@ workflows:
           requires:
             - pre-release
             - build-docker
-      - sanity-test:
-          context: default
-          requires:
-            - test-docker
       - sonar-scan:
           context: default
           requires:
@@ -289,7 +273,6 @@ workflows:
             - build-docker
             - test-docker
             - sonar-scan
-            - sanity-test
           filters:
             branches:
               only:
