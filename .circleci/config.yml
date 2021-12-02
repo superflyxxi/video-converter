@@ -169,6 +169,25 @@ jobs:
             - clover-*.xml
             - junit-*.xml
 
+  sanity-test:
+    resource_class: medium
+    executor: docker/machine
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Load docker test image
+          command: |
+            docker load -i /tmp/workspace/video-converter-test.tar
+      - run:
+          name: Run sanity test
+          command: |
+            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
+            export TEST_IMAGE=${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
+            docker run --rm --entrypoint /usr/bin/video-converter ${TEST_IMAGE} \
+              --title=Test --video-format=copy --audio-format=copy --subtitle-format=copy dvd.mkv
+
   sonar-scan:
     executor: 
       name: node/default
@@ -260,6 +279,10 @@ workflows:
           requires:
             - pre-release
             - build-docker
+      - sanity-test:
+          context: default
+          requires:
+            - test-docker
       - sonar-scan:
           context: default
           requires:
