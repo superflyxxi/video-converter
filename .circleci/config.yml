@@ -187,8 +187,8 @@ jobs:
       - run:
           name: Correct report files
           command: |
-            npm install --include=dev junit-report-merger
-            npx jrm junit.xml "junit-*.xml"
+            npm install --include=dev junit-merge
+            find . -name 'junit-*.xml' | xargs npx junit-merge -o junit.xml
             find . -name 'clover-*.xml' -type f -exec sed -i 's#/opt/video-converter/##g' {} \;
             sed -i 's#/opt/video-converter/##g' junit.xml 
       - store_artifacts:
