@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once "rip-video.php";
+require_once "index.php";
 
 abstract class Test extends TestCase {
 	protected function getDataDir() {
