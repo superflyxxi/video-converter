@@ -5,6 +5,7 @@
 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=bugs)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=code_smells)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=coverage)](https://sonarcloud.io/summary/new_code?id=superflyxxi_video-converter)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=sqale_index)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=superflyxxi_video-converter&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=superflyxxi_video-converter):
