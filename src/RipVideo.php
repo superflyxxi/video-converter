@@ -9,11 +9,6 @@ class RipVideo {
 	public static $log;
 
 	public function rip() {
-		if (null == Options::get("title")) {
-			self::$log->error("title missing");
-			return 1;
-		}
-
 		$envInput = Options::getInputFile();
 		$csvRequest = null;
 		if (strcasecmp(substr($envInput, -4), ".csv") === 0) {

@@ -7,9 +7,7 @@ require_once "common.php";
 final class CSVTest extends Test {
 	public function test_Running_Against_CSV() {
 		$this->getFile("dvd");
-		$return = $this->ripvideo("test.csv", [
-			"--title" => "CSV Request CMD",
-		]);
+		$return = $this->ripvideo("test.csv", []);
 
 		$this->assertEquals(0, $return, "Exit status not expected");
 
