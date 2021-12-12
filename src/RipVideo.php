@@ -15,7 +15,7 @@ class RipVideo {
 			$csvRequest = new CSVRequest(new SplFileObject($envInput, "r"));
 		} else {
 			if (null == $envInput) {
-				$arrFiles = array_diff(scandir("."), ["..", "."]);
+				$arrFiles = scandir(".");
 			} else {
 				$arrFiles[] = $envInput;
 			}
@@ -23,8 +23,10 @@ class RipVideo {
 			$csvFile = new SplTempFileObject();
 			$csvFile->fputcsv(["filename", "dummy"]);
 			foreach ($arrFiles as $infile) {
-				self::$log->debug("Adding to CSV", ["filename" => $infile]);
-				$csvFile->fputcsv([$infile, "dummy"]);
+				if (!is_dir($infile)) {
+					self::$log->debug("Adding to CSV", ["filename" => $infile]);
+					$csvFile->fputcsv([$infile, "dummy"]);
+				}
 			}
 			$csvFile->rewind();
 			$csvRequest = new CSVRequest($csvFile);

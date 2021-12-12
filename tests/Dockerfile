@@ -21,7 +21,7 @@ RUN curl -k -L "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/blura
 COPY --from=composer /usr/bin/composer /usr/bin/
 COPY . /opt/video-converter
 
-RUN mv -v /opt/video-converter/tests/data/* ${DATA_DIR} && \
+RUN mv -v /opt/video-converter/tests/csvs ${DATA_DIR} && \
 	mkdir -m 777 /opt/video-converter/testResults || true && \
 	apt-get update && \
 	COMPOSER_DEPS="git zip unzip php-zip" && \
