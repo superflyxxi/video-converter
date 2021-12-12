@@ -94,13 +94,19 @@ class CSVRequest {
 								$req->setDeinterlace($value);
 								break;
 
+							case "filename":
+								// valid but do nothing
+								break;
+
 							default:
-								// invalid or already processed
+								// invalid
+								self::$log->debug("Invalid CSV Header", ["header"=>$key, "value"=>$value]);
 								break;
 						}
 					}
 				}
 			}
+			$req->prepareStreams();
 		}
 	}
 
