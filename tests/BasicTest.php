@@ -129,4 +129,11 @@ final class BasicTest extends Test {
 		$this->assertArrayNotHasKey("EPISODE", $probe["format"]["tags"], "Metadata EPISODE");
 		$this->assertArrayNotHasKey("SUBTITLE", $probe["format"]["tags"], "Metadata SUBTITLE");
 	}
+
+	public function testMissingTitle() {
+		$this->getFile("dvd");
+
+		$return = $this->ripvideo("dvd.mkv", []);
+		$this->assertEquals(1, $return, "ripvideo exit code");
+	}
 }
