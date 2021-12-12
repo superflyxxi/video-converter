@@ -34,6 +34,11 @@ class ConvertFile {
 		$oOutput->episode = $this->req->episode;
 		$oOutput->year = $this->req->year;
 
+		if (null == $this->req->title) {
+			self::$log->error("title missing");
+			return 1;
+		}
+
 		self::$log->debug("Conversion output", [
 			"request" => $this->req,
 			"output" => $oOutput,
