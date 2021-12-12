@@ -28,7 +28,7 @@ final class CSVTest extends Test {
 		$this->assertEquals("01", $probe["format"]["tags"]["SEASON"], "Metadata SEASON");
 		$this->assertEquals("01", $probe["format"]["tags"]["EPISODE"], "Metadata EPISODE");
 		$this->assertEquals("Row 1", $probe["format"]["tags"]["SHOWTITLE"], "Metadata SUBTITLE");
-		
+
 		$probe = $this->probe("CSV Request (2021) - s01e02 - Row 2.dvd.mkv.mkv", true);
 
 		$this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 code_type");
