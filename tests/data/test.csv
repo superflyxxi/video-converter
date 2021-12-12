@@ -1,0 +1,3 @@
+filename,title,year,season,episode,show-title,playlist,audio-tracks,audio-format,audio-quality,audio-channel-layout,audio-channel-layout-tracks,audio-sample-rate,normalize-audio-tracks,video-tracks,video-format,video-upscale,deinterlace,deinterlace-check,subtitle-tracks,subtitle-format
+dvd.mkv,"CSV Request",2021,01,01,"Row 1",0,1,copy,0,stereo,1,48000,1,0,copy,1,off,probe,2,srt
+dvd.mkv,"CSV Request",2021,01,02,"Row 2",0,1,eac3,560,stereo,1,48000,1,0,hevc,0.5,00,idet,2,ass
