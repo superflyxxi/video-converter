@@ -330,7 +330,3 @@ workflows:
             - test-docker
             - publish-docker
             - sonar-scan
-          filters:
-            branches:
-              only:
-                - main
