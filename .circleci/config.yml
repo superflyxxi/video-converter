@@ -56,11 +56,11 @@ jobs:
             echo "export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile.parent | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:dev"
+              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:dev"
             fi
             export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
-              export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-dev"
+              export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:test-dev"
             fi
             export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
@@ -78,6 +78,10 @@ jobs:
             cat ${BASH_ENV}
       - docker/check:
           registry: $DOCKER_REGISTRY
+      - docker/check:
+          registry: ghcr.io
+          docker-password: GHCR_TOKEN
+          docker-username: CIRCLE_PROJECT_USERNAME
       - docker/build:
           step-name: Build parent image
           dockerfile: Dockerfile.parent
@@ -94,9 +98,14 @@ jobs:
           tag: ${DOCKER_TAGS}
           registry: ${DOCKER_REGISTRY}
       - docker/push:
-          step-name: Pushing image
+          step-name: Pushing image to private repo
           registry: $DOCKER_REGISTRY
           image: ${CIRCLE_PROJECT_REPONAME}
+          tag: ${DOCKER_TAGS}
+      - docker/push:
+          step-name: Pushing image to GitHub Container Registry
+          registry: ghcr.io
+          image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
           tag: ${DOCKER_TAGS}
       - run:
           name: Tag docker
@@ -123,9 +132,14 @@ jobs:
             equal: [main, << pipeline.git.branch >>]
           steps:
             - docker/push:
-                step-name: Pushing test image
+                step-name: Pushing test image to private repo
                 registry: $DOCKER_REGISTRY
                 image: ${CIRCLE_PROJECT_REPONAME}
+                tag: test-${PRIMARY_DOCKER_TAG}
+            - docker/push:
+                step-name: Pushing test image to GitHub Container Registry
+                registry: ghcr.io
+                image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
                 tag: test-${PRIMARY_DOCKER_TAG}
       - run:
           name: Export test image to tar
