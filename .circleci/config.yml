@@ -120,7 +120,7 @@ jobs:
           paths:
             - video-converter-images.tar*
 
-  publish-doker:
+  publish-docker:
     resource_class: medium
     executor: docker/machine
     steps:
