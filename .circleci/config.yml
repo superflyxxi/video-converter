@@ -203,7 +203,7 @@ jobs:
       - run:
           name: Load docker test image
           command: |
-            docker load -i /tmp/workspace/video-converter-test.tar
+            docker load -i /tmp/workspace/video-converter-images.tar
       - run:
           name: Run tests
           command: |
