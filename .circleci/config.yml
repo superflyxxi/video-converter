@@ -52,20 +52,20 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
-            echo "export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile.parent | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
+            export CACHE_ROOT_IMAGE="ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:dev"
+              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:dev"
             fi
             export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
-              export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:test-dev"
+              export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:test-dev"
             fi
+            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
                 NOW="$PREV.$A"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${NOW:1}"
+                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:${NOW:1}"
                 PREV=$NOW
               done
             fi
@@ -81,40 +81,31 @@ jobs:
           dockerfile: Dockerfile.parent
           image: ${CIRCLE_PROJECT_REPONAME}-parent
           tag: latest
-          registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
-      - run:
-          name: Tag parent docker
-          command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}-parent:latest ${CIRCLE_PROJECT_REPONAME}-parent
       - docker/build:
           step-name: Build docker image
           image: ${CIRCLE_PROJECT_REPONAME}
-          tag: ${PRIMARY_DOCKER_TAG}
-          registry: ${DOCKER_REGISTRY}
-      - run:
-          name: Tag docker
-          command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${CIRCLE_PROJECT_REPONAME}
+          tag: latest
       - docker/build:
           step-name: Build test image
           docker-context: .
           path: .
           dockerfile: tests/Dockerfile
-          image: ${CIRCLE_PROJECT_REPONAME}
-          tag: test-${PRIMARY_DOCKER_TAG}
-          registry: ${DOCKER_REGISTRY}
+          image: test-${CIRCLE_PROJECT_REPONAME}
+          tag: latest
           cache_from: ${TEST_CACHE_FROM_IMAGES}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
       - run:
           name: Run sanity test
           command: |
             docker volume create data
-            docker run --rm -v data:/vol --entrypoint sh ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} -c 'cp -v /data/dvd.mkv /vol/'
-            docker run --rm -v data:/data -w /data ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} \
+            docker run --rm -v data:/vol --entrypoint sh test-${CIRCLE_PROJECT_REPONAME} -c 'cp -v /data/dvd.mkv /vol/'
+            docker run --rm -v data:/data -w /data ${CIRCLE_PROJECT_REPONAME} \
               --title=Test --video-format=copy --audio-format=copy --subtitle-format=copy dvd.mkv
       - run:
           name: Export images to tar
           command: |
-            docker save -o video-converter-images.tar ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
+            docker save -o video-converter-images.tar ${CIRCLE_PROJECT_REPONAME} test-${CIRCLE_PROJECT_REPONAME}
       - persist_to_workspace:
           root: ./
           paths:
@@ -153,7 +144,6 @@ jobs:
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
                 NOW="$PREV.$A"
                 export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${NOW:1}"
                 PREV=$NOW
               done
               export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
@@ -175,9 +165,9 @@ jobs:
             IFS="," read -ra LOOP_TAGS \<<< "${DOCKER_TAGS}"
             set -x
             for TAG in "${LOOP_TAGS[@]}"; do
-              docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} << parameters.registry >>/${FINAL_IMAGE_NAME}:${TAG}
+              docker tag ${CIRCLE_PROJECT_REPONAME} << parameters.registry >>/${FINAL_IMAGE_NAME}:${TAG}
             done
-            docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} << parameters.registry >>/${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
+            docker tag test-${CIRCLE_PROJECT_REPONAME} << parameters.registry >>/${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
             set +x
       - docker/push:
           step-name: Pushing image to desired repo
@@ -209,11 +199,10 @@ jobs:
       - run:
           name: Run tests
           command: |
-            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
-            export TEST_IMAGE=${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
+            export TEST_IMAGE=test-${CIRCLE_PROJECT_REPONAME}
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
             printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
