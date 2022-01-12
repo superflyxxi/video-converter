@@ -76,12 +76,6 @@ jobs:
             echo "export TEST_CACHE_FROM_IMAGES=${TEST_CACHE_FROM_IMAGES}" >> ${BASH_ENV}
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             cat ${BASH_ENV}
-      - docker/check:
-          registry: $DOCKER_REGISTRY
-      - docker/check:
-          registry: ghcr.io
-          docker-password: GHCR_TOKEN
-          docker-username: CIRCLE_PROJECT_USERNAME
       - docker/build:
           step-name: Build parent image
           dockerfile: Dockerfile.parent
@@ -95,18 +89,8 @@ jobs:
       - docker/build:
           step-name: Build docker image
           image: ${CIRCLE_PROJECT_REPONAME}
-          tag: ${DOCKER_TAGS}
+          tag: ${PRIMARY_DOCKER_TAG}
           registry: ${DOCKER_REGISTRY}
-      - docker/push:
-          step-name: Pushing image to private repo
-          registry: $DOCKER_REGISTRY
-          image: ${CIRCLE_PROJECT_REPONAME}
-          tag: ${DOCKER_TAGS}
-      - docker/push:
-          step-name: Pushing image to GitHub Container Registry
-          registry: ghcr.io
-          image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
-          tag: ${DOCKER_TAGS}
       - run:
           name: Tag docker
           command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${CIRCLE_PROJECT_REPONAME}
@@ -127,6 +111,66 @@ jobs:
             docker run --rm -v data:/vol --entrypoint sh ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} -c 'cp -v /data/dvd.mkv /vol/'
             docker run --rm -v data:/data -w /data ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} \
               --title=Test --video-format=copy --audio-format=copy --subtitle-format=copy dvd.mkv
+      - run:
+          name: Export images to tar
+          command: |
+            docker save -o video-converter-images.tar ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - video-converter-images.tar*
+
+  publish-doker:
+    resource_class: medium
+    executor: docker/machine
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Custom enviroment variables
+          command: |
+            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
+            echo "export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
+            export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
+            if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
+              for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
+                NOW="$PREV.$A"
+                export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
+                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${NOW:1}"
+                PREV=$NOW
+              done
+              export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
+            fi
+            echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
+            cat ${BASH_ENV}
+      - docker/check:
+          registry: $DOCKER_REGISTRY
+      - docker/check:
+          registry: ghcr.io
+          docker-password: GHCR_TOKEN
+          docker-username: CIRCLE_PROJECT_USERNAME
+      - run:
+          name: Load docker images
+          command: |
+            docker load -i /tmp/workspace/video-converter-images.tar
+      - run:
+          name: Tag docker images for repos
+          command: |
+            IFS="," read -ra LOOP_TAGS \<<< "${DOCKER_TAGS}"
+            for TAG in "${LOOP_TAGS[@]}"; do
+              docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${TAG} 
+              docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ghcr.io/${CIRLCE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:${TAG}
+            done
+      - docker/push:
+          step-name: Pushing image to private repo
+          registry: $DOCKER_REGISTRY
+          image: ${CIRCLE_PROJECT_REPONAME}
+          tag: ${DOCKER_TAGS}
+      - docker/push:
+          step-name: Pushing image to GitHub Container Registry
+          registry: ghcr.io
+          image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+          tag: ${DOCKER_TAGS}
       - unless:
           condition:
             equal: [main, << pipeline.git.branch >>]
@@ -141,14 +185,6 @@ jobs:
                 registry: ghcr.io
                 image: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
                 tag: test-${PRIMARY_DOCKER_TAG}
-      - run:
-          name: Export test image to tar
-          command: |
-            docker save -o video-converter-test.tar ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - video-converter-test.tar*
 
   test-docker:
     resource_class: medium
@@ -271,6 +307,11 @@ workflows:
             - pre-release
             - validate-dockerfile
             - build-phar
+      - publish-docker:
+          context: default
+          requires:
+            - pre-release
+            - build-docker
       - test-docker:
           context: default
           requires:
@@ -287,6 +328,7 @@ workflows:
           requires:
             - build-docker
             - test-docker
+            - publish-docker
             - sonar-scan
           filters:
             branches:
