@@ -62,19 +62,15 @@ jobs:
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
               export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:test-dev"
             fi
-            export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
                 NOW="$PREV.$A"
-                export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
                 export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${NOW:1}"
                 PREV=$NOW
               done
-              export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
             fi
             echo "export CACHE_FROM_IMAGES=${CACHE_FROM_IMAGES}" >> ${BASH_ENV}
             echo "export TEST_CACHE_FROM_IMAGES=${TEST_CACHE_FROM_IMAGES}" >> ${BASH_ENV}
-            echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           registry: ghcr.io
@@ -127,6 +123,23 @@ jobs:
   publish-docker:
     resource_class: medium
     executor: docker/machine
+    parameters:
+      registry:
+        description: The registry to publish docker images.
+        type: string
+        default: docker.io
+      image-prefix:
+        description: The prefix to use for the image.
+        type: string
+        default: ""
+      docker-username-env:
+        description: The docker registry username env variable to use.
+        type: string
+        default: DOCKER_LOGIN
+      docker-password-env:
+        description: The docker registery password env variable to use.
+        type: string
+        default: DOCKER_PASSWORD
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -146,9 +159,14 @@ jobs:
               export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
             fi
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
+            echo "export FINAL_IMAGE_NAME=<< parameters.registry >>/<< paremters.image-prefix >>${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           registry: $DOCKER_REGISTRY
+      - docker/check:
+          registry: << parameters.registry >>
+          docker-password: << parameters.docker-password >>
+          docker-username: << parameters.docker-username >>
       - docker/check:
           registry: ghcr.io
           docker-password: GHCR_TOKEN
@@ -165,9 +183,16 @@ jobs:
             for TAG in "${LOOP_TAGS[@]}"; do
               docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${TAG} 
               docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:${TAG}
+              docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${FINAL_IMAGE_NAME}:${TAG}
             done
             docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} 
+            docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} ${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
             set +x
+      - docker/push:
+          step-name: Pushing image to desired repo
+          registry: << parameters.registry >>
+          image: ${FINAL_IMAGE_NAME}
+          tag: ${DOCKER_TAGS}
       - docker/push:
           step-name: Pushing image to private repo
           registry: $DOCKER_REGISTRY
@@ -182,6 +207,11 @@ jobs:
           condition:
             equal: [main, << pipeline.git.branch >>]
           steps:
+            - docker/push:
+                step-name: Pushing test image to desired repo
+                registry: << parametesr.registry >>
+                image: ${FINAL_IMAGE_NAME}
+                tag: test-${PRIMARY_DOCKER_TAG}
             - docker/push:
                 step-name: Pushing test image to private repo
                 registry: $DOCKER_REGISTRY
@@ -315,7 +345,19 @@ workflows:
             - validate-dockerfile
             - build-phar
       - publish-docker:
+          name: publish-docker-ghcr
           context: default
+          registry: ghcr.io
+          docker-username-env: CIRCLE_PROJECT_USERNAME
+          docker-password-env: GHCR_TOKEN
+          image-prefix: "superflyxxi/"
+          requires:
+            - pre-release
+            - build-docker
+      - publish-docker:
+          name: publish-docker-private
+          context: default
+          registry: superflyxxi.ddns.net:5000
           requires:
             - pre-release
             - build-docker
