@@ -161,10 +161,12 @@ jobs:
           name: Tag docker images for repos
           command: |
             IFS="," read -ra LOOP_TAGS \<<< "${DOCKER_TAGS}"
+            set -x
             for TAG in "${LOOP_TAGS[@]}"; do
               docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${TAG} 
-              docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ghcr.io/${CIRLCE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:${TAG}
+              docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:${TAG}
             done
+            set +x
       - docker/push:
           step-name: Pushing image to private repo
           registry: $DOCKER_REGISTRY
