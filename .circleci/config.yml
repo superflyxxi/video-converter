@@ -159,7 +159,7 @@ jobs:
               export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
             fi
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
-            echo "export FINAL_IMAGE_NAME=<< parameters.registry >>/<< paremters.image-prefix >>${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
+            echo "export FINAL_IMAGE_NAME=<< parameters.registry >>/<< parameters.image-prefix >>${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           registry: << parameters.registry >>
@@ -348,5 +348,6 @@ workflows:
           requires:
             - build-docker
             - test-docker
-            - publish-docker
+            - publish-docker-ghcr
+            - publish-docker-private
             - sonar-scan
