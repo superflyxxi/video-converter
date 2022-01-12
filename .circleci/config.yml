@@ -76,6 +76,10 @@ jobs:
             echo "export TEST_CACHE_FROM_IMAGES=${TEST_CACHE_FROM_IMAGES}" >> ${BASH_ENV}
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             cat ${BASH_ENV}
+      - docker/check:
+          registry: ghcr.io
+          docker-password: GHCR_TOKEN
+          docker-username: CIRCLE_PROJECT_USERNAME
       - docker/build:
           step-name: Build parent image
           dockerfile: Dockerfile.parent
