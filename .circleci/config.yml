@@ -190,7 +190,7 @@ jobs:
           steps:
             - docker/push:
                 step-name: Pushing test image to desired repo
-                registry: << parametesr.registry >>
+                registry: << parameters.registry >>
                 image: ${FINAL_IMAGE_NAME}
                 tag: test-${PRIMARY_DOCKER_TAG}
 
