@@ -6,6 +6,10 @@ jobs:
   remove_ghcr_image:
     runs-on: ubuntu-latest
     steps:
+      - name: Echo Event
+        run: echo ${{github.event}}
+      - name: Echo Delete
+        run: echo ${{github.event.delete}}
       - name: Remove image from GHCR
         uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
