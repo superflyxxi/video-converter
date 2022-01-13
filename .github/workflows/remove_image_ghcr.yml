@@ -3,7 +3,7 @@ name: Cleanup Docker Registries
 on: [delete]
 
 jobs:
-  remove_ghcr_image:
+  remove_ghcr_images:
     runs-on: ubuntu-latest
     steps:
       - name: Set Branch
@@ -13,7 +13,14 @@ jobs:
       - name: Remove image from GHCR
         uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
-          owner: bots-house
-          name: some-web-service
+          owner: superflyxxi
+          name: video-converter
           token: ${{ secrets.GHCR_TOKEN }}
           tag: ${{env.BRANCH}}
+      - name: Remove test image from GHCR
+        uses: bots-house/ghcr-delete-image-action@v1.0.1
+        with:
+          owner: superflyxxi
+          name: video-converter
+          token: ${{ secrets.GHCR_TOKEN }}
+          tag: test-${{env.BRANCH}}
