@@ -152,7 +152,7 @@ jobs:
             echo "export FINAL_IMAGE_NAME=<< parameters.image-prefix >>${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
-          registry: << parameters.registry >>
+          registry: ${<< parameters.registry-env >>}
           docker-password: << parameters.docker-password-env >>
           docker-username: << parameters.docker-username-env >>
       - run:
@@ -165,9 +165,9 @@ jobs:
             IFS="," read -ra LOOP_TAGS \<<< "${DOCKER_TAGS}"
             set -x
             for TAG in "${LOOP_TAGS[@]}"; do
-              docker tag ${CIRCLE_PROJECT_REPONAME} << parameters.registry >>/${FINAL_IMAGE_NAME}:${TAG}
+              docker tag ${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry-env >>}/${FINAL_IMAGE_NAME}:${TAG}
             done
-            docker tag test-${CIRCLE_PROJECT_REPONAME} << parameters.registry >>/${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
+            docker tag test-${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry >>}/${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
             set +x
       - docker/push:
           step-name: Pushing image to desired repo
@@ -180,7 +180,7 @@ jobs:
           steps:
             - docker/push:
                 step-name: Pushing test image to desired repo
-                registry: << parameters.registry-env >>
+                registry: ${<< parameters.registry-env >>}
                 image: ${FINAL_IMAGE_NAME}
                 tag: test-${PRIMARY_DOCKER_TAG}
 
