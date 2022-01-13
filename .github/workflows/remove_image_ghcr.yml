@@ -1,8 +1,6 @@
 name: Cleanup Docker Registries
 
-on:
-  delete:
-    types: [branch]
+on: [delete]
 
 jobs:
   remove_ghcr_image:
