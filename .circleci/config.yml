@@ -52,89 +52,137 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
-            echo "export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile.parent | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
+            export CACHE_ROOT_IMAGE="ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:dev"
+              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:dev"
             fi
             export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
-              export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-dev"
+              export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:test-dev"
             fi
-            export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
+            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
               for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
                 NOW="$PREV.$A"
-                export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${NOW:1}"
+                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:${NOW:1}"
                 PREV=$NOW
               done
-              export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
             fi
             echo "export CACHE_FROM_IMAGES=${CACHE_FROM_IMAGES}" >> ${BASH_ENV}
             echo "export TEST_CACHE_FROM_IMAGES=${TEST_CACHE_FROM_IMAGES}" >> ${BASH_ENV}
-            echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
-          registry: $DOCKER_REGISTRY
+          registry: ghcr.io
+          docker-password: GHCR_TOKEN
+          docker-username: CIRCLE_PROJECT_USERNAME
       - docker/build:
           step-name: Build parent image
           dockerfile: Dockerfile.parent
           image: ${CIRCLE_PROJECT_REPONAME}-parent
           tag: latest
-          registry: ${DOCKER_REGISTRY}
           cache_from: ${CACHE_FROM_IMAGES}
-      - run:
-          name: Tag parent docker
-          command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}-parent:latest ${CIRCLE_PROJECT_REPONAME}-parent
       - docker/build:
           step-name: Build docker image
           image: ${CIRCLE_PROJECT_REPONAME}
-          tag: ${DOCKER_TAGS}
-          registry: ${DOCKER_REGISTRY}
-      - docker/push:
-          step-name: Pushing image
-          registry: $DOCKER_REGISTRY
-          image: ${CIRCLE_PROJECT_REPONAME}
-          tag: ${DOCKER_TAGS}
-      - run:
-          name: Tag docker
-          command: docker tag ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} ${CIRCLE_PROJECT_REPONAME}
+          tag: latest
       - docker/build:
           step-name: Build test image
           docker-context: .
           path: .
           dockerfile: tests/Dockerfile
-          image: ${CIRCLE_PROJECT_REPONAME}
-          tag: test-${PRIMARY_DOCKER_TAG}
-          registry: ${DOCKER_REGISTRY}
+          image: test-${CIRCLE_PROJECT_REPONAME}
+          tag: latest
           cache_from: ${TEST_CACHE_FROM_IMAGES}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
       - run:
           name: Run sanity test
           command: |
             docker volume create data
-            docker run --rm -v data:/vol --entrypoint sh ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG} -c 'cp -v /data/dvd.mkv /vol/'
-            docker run --rm -v data:/data -w /data ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:${PRIMARY_DOCKER_TAG} \
+            docker run --rm -v data:/vol --entrypoint sh test-${CIRCLE_PROJECT_REPONAME} -c 'cp -v /data/dvd.mkv /vol/'
+            docker run --rm -v data:/data -w /data ${CIRCLE_PROJECT_REPONAME} \
               --title=Test --video-format=copy --audio-format=copy --subtitle-format=copy dvd.mkv
+      - run:
+          name: Export images to tar
+          command: |
+            docker save -o video-converter-images.tar ${CIRCLE_PROJECT_REPONAME} test-${CIRCLE_PROJECT_REPONAME}
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - video-converter-images.tar*
+
+  publish-docker:
+    resource_class: medium
+    executor: docker/machine
+    parameters:
+      registry-env:
+        description: The registry envirnment variable to use to publish docker images.
+        type: string
+        default: docker.io
+      image-prefix:
+        description: The prefix to use for the image.
+        type: string
+        default: ""
+      docker-username-env:
+        description: The docker registry username env variable to use.
+        type: string
+        default: DOCKER_LOGIN
+      docker-password-env:
+        description: The docker registery password env variable to use.
+        type: string
+        default: DOCKER_PASSWORD
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Custom enviroment variables
+          command: |
+            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
+            echo "export PRIMARY_DOCKER_TAG=${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
+            export DOCKER_TAGS=${PRIMARY_DOCKER_TAG}
+            if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
+              for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
+                NOW="$PREV.$A"
+                export DOCKER_TAGS="${DOCKER_TAGS},${NOW:1}"
+                PREV=$NOW
+              done
+              export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
+            fi
+            echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
+            echo "export FINAL_IMAGE_NAME=<< parameters.image-prefix >>${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
+            cat ${BASH_ENV}
+      - docker/check:
+          registry: ${<< parameters.registry-env >>}
+          docker-password: << parameters.docker-password-env >>
+          docker-username: << parameters.docker-username-env >>
+      - run:
+          name: Load docker images
+          command: |
+            docker load -i /tmp/workspace/video-converter-images.tar
+      - run:
+          name: Tag docker images for repos
+          command: |
+            IFS="," read -ra LOOP_TAGS \<<< "${DOCKER_TAGS}"
+            set -x
+            for TAG in "${LOOP_TAGS[@]}"; do
+              docker tag ${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry-env >>}/${FINAL_IMAGE_NAME}:${TAG}
+            done
+            docker tag test-${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry-env >>}/${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
+            set +x
+      - docker/push:
+          step-name: Pushing image to desired repo
+          registry: ${<< parameters.registry-env >>}
+          image: ${FINAL_IMAGE_NAME}
+          tag: ${DOCKER_TAGS}
       - unless:
           condition:
             equal: [main, << pipeline.git.branch >>]
           steps:
             - docker/push:
-                step-name: Pushing test image
-                registry: $DOCKER_REGISTRY
-                image: ${CIRCLE_PROJECT_REPONAME}
+                step-name: Pushing test image to desired repo
+                registry: ${<< parameters.registry-env >>}
+                image: ${FINAL_IMAGE_NAME}
                 tag: test-${PRIMARY_DOCKER_TAG}
-      - run:
-          name: Export test image to tar
-          command: |
-            docker save -o video-converter-test.tar ${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - video-converter-test.tar*
 
   test-docker:
     resource_class: medium
@@ -147,15 +195,14 @@ jobs:
       - run:
           name: Load docker test image
           command: |
-            docker load -i /tmp/workspace/video-converter-test.tar
+            docker load -i /tmp/workspace/video-converter-images.tar
       - run:
           name: Run tests
           command: |
-            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "<< pipeline.git.branch >>" != "main" ]]; then
               export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
             fi
-            export TEST_IMAGE=${DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}:test-${PRIMARY_DOCKER_TAG}
+            export TEST_IMAGE=test-${CIRCLE_PROJECT_REPONAME}
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
             printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
@@ -257,6 +304,23 @@ workflows:
             - pre-release
             - validate-dockerfile
             - build-phar
+      - publish-docker:
+          name: publish-docker-ghcr
+          context: default
+          registry-env: DOCKER_GHCR_REGISTRY
+          docker-username-env: CIRCLE_PROJECT_USERNAME
+          docker-password-env: GHCR_TOKEN
+          image-prefix: "superflyxxi/"
+          requires:
+            - pre-release
+            - build-docker
+      - publish-docker:
+          name: publish-docker-private
+          context: default
+          registry-env: DOCKER_REGISTRY
+          requires:
+            - pre-release
+            - build-docker
       - test-docker:
           context: default
           requires:
@@ -273,8 +337,6 @@ workflows:
           requires:
             - build-docker
             - test-docker
+            - publish-docker-ghcr
+            - publish-docker-private
             - sonar-scan
-          filters:
-            branches:
-              only:
-                - main
