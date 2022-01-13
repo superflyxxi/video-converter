@@ -1,0 +1,17 @@
+name: Cleanup Docker Registries
+
+on:
+  delete:
+    types: [branch]
+
+jobs:
+  remove_ghcr_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove image from GHCR
+        uses: bots-house/ghcr-delete-image-action@v1
+        with:
+          owner: bots-house
+          name: some-web-service
+          token: ${{ secrets.GHCR_TOKEN }}
+          tag: ${{github.event.delete.ref}}
