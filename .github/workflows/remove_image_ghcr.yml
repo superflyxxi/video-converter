@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Remove image from GHCR
-        uses: bots-house/ghcr-delete-image-action@v1
+        uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
           owner: bots-house
           name: some-web-service
