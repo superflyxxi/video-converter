@@ -9,7 +9,7 @@ jobs:
       - name: Echo Event
         run: echo ${{github.event}}
       - name: Echo Delete
-        run: echo ${{github.event.delete}}
+        run: echo ${{github.event.ref}}
       - name: Remove image from GHCR
         uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
