@@ -167,7 +167,7 @@ jobs:
             for TAG in "${LOOP_TAGS[@]}"; do
               docker tag ${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry-env >>}/${FINAL_IMAGE_NAME}:${TAG}
             done
-            docker tag test-${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry >>}/${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
+            docker tag test-${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry-env >>}/${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
             set +x
       - docker/push:
           step-name: Pushing image to desired repo
