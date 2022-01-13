@@ -7,13 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set Branch
-        run: export BRANCH=$( echo ${{github.event.ref}} | sed 's#/#-#g')
+        run: echo "BRANCH=$( echo ${{github.event.ref}} | sed 's#/#-#g')" >> $GITHUB_ENV
       - name: Debug Branch
-        run: echo ${BRANCH}
+        run: echo ${{env.BRANCH}}
       - name: Remove image from GHCR
         uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
           owner: bots-house
           name: some-web-service
           token: ${{ secrets.GHCR_TOKEN }}
-          tag: ${BRANCH}
+          tag: ${{env.BRANCH}}
