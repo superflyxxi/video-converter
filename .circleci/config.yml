@@ -115,8 +115,8 @@ jobs:
     resource_class: medium
     executor: docker/machine
     parameters:
-      registry:
-        description: The registry to publish docker images.
+      registry-env:
+        description: The registry envirnment variable to use to publish docker images.
         type: string
         default: docker.io
       image-prefix:
@@ -171,7 +171,7 @@ jobs:
             set +x
       - docker/push:
           step-name: Pushing image to desired repo
-          registry: << parameters.registry >>
+          registry: ${<< parameters.registry-env >>}
           image: ${FINAL_IMAGE_NAME}
           tag: ${DOCKER_TAGS}
       - unless:
@@ -180,7 +180,7 @@ jobs:
           steps:
             - docker/push:
                 step-name: Pushing test image to desired repo
-                registry: << parameters.registry >>
+                registry: << parameters.registry-env >>
                 image: ${FINAL_IMAGE_NAME}
                 tag: test-${PRIMARY_DOCKER_TAG}
 
@@ -307,7 +307,7 @@ workflows:
       - publish-docker:
           name: publish-docker-ghcr
           context: default
-          registry: ghcr.io
+          registry-env: DOCKER_GHCR_REGISTRY
           docker-username-env: CIRCLE_PROJECT_USERNAME
           docker-password-env: GHCR_TOKEN
           image-prefix: "superflyxxi/"
@@ -317,7 +317,7 @@ workflows:
       - publish-docker:
           name: publish-docker-private
           context: default
-          registry: superflyxxi.ddns.net:5000
+          registry-env: DOCKER_REGISTRY
           requires:
             - pre-release
             - build-docker
