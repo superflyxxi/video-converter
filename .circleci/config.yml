@@ -41,6 +41,8 @@ jobs:
     resource_class: medium
     environment:
       DEBIAN_FRONTEND: noninteractive
+      CACHE_REGISTRY: ${GHCR_REGISTRY}
+      CACHE_USERNAME: ${GHCR_USERNAME}
     executor: docker/machine
     steps:
       - attach_workspace:
@@ -53,7 +55,7 @@ jobs:
           name: Custom enviroment variables
           command: |
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile.parent | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
-            export CACHE_ROOT_IMAGE="ghcr.io/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+            export CACHE_ROOT_IMAGE="${CACHE_REGISTRY}/${CACHE_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
               export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:dev"
             fi
@@ -119,10 +121,6 @@ jobs:
         description: The registry envirnment variable to use to publish docker images.
         type: string
         default: docker.io
-      image-prefix:
-        description: The prefix to use for the image.
-        type: string
-        default: ""
       docker-username-env:
         description: The docker registry username env variable to use.
         type: string
@@ -149,7 +147,7 @@ jobs:
               export DOCKER_TAGS="${DOCKER_TAGS},main,latest"
             fi
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
-            echo "export FINAL_IMAGE_NAME=<< parameters.image-prefix >>${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
+            echo "export FINAL_IMAGE_NAME=${<< parameters.docker-username-env >>}/${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
           registry: ${<< parameters.registry-env >>}
@@ -307,17 +305,18 @@ workflows:
       - publish-docker:
           name: publish-docker-ghcr
           context: default
-          registry-env: DOCKER_GHCR_REGISTRY
-          docker-username-env: CIRCLE_PROJECT_USERNAME
+          registry-env: GHCR_REGISTRY
+          docker-username-env: GHCR_USERNAME
           docker-password-env: GHCR_TOKEN
-          image-prefix: "superflyxxi/"
           requires:
             - pre-release
             - build-docker
       - publish-docker:
           name: publish-docker-private
           context: default
-          registry-env: DOCKER_REGISTRY
+          registry-env: PRIVATE_DOCKER_REGISTRY
+          docker-username-env: PRIVATE_DOCKER_USERNAME
+          docker-password-env: PRIVATE_DOCKER_PASSWORD
           requires:
             - pre-release
             - build-docker
@@ -327,7 +326,6 @@ workflows:
           registry-env: DOCKER_IO_REGISTRY
           docker-username-env: DOCKER_IO_USERNAME
           docker-password-env: DOCKER_IO_PASSWORD
-          image-prefix: "superflyxxi/"
           requires:
             - pre-release
             - build-docker
