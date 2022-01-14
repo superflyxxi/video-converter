@@ -17,11 +17,12 @@ jobs:
           container: video-converter
           token: ${{ secrets.GHCR_TOKEN }}
           tag-regex: "^${{env.BRANCH}}$"
-          dry-run: true
-      - name: Remove test image from GHCR
-        uses: bots-house/ghcr-delete-image-action@v1.0.1
+          dry-run: false
+      - name: Remove image from GHCR
+        uses: vlaurin/action-ghcr-prune@v0.3.0
         with:
-          owner: superflyxxi
-          name: video-converter
+          oganization: superflyxxi
+          container: video-converter
           token: ${{ secrets.GHCR_TOKEN }}
-          tag: test-${{env.BRANCH}}
+          tag-regex: "^test-${{env.BRANCH}}$"
+          dry-run: false
