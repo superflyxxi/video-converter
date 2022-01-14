@@ -303,15 +303,6 @@ workflows:
             - validate-dockerfile
             - build-phar
       - publish-docker:
-          name: publish-docker-ghcr
-          context: default
-          registry-env: GHCR_REGISTRY
-          docker-username-env: GHCR_USERNAME
-          docker-password-env: GHCR_TOKEN
-          requires:
-            - pre-release
-            - build-docker
-      - publish-docker:
           name: publish-docker-private
           context: default
           registry-env: PRIVATE_DOCKER_REGISTRY
@@ -321,6 +312,20 @@ workflows:
             - pre-release
             - build-docker
       - publish-docker:
+          name: publish-docker-ghcr
+          context: default
+          registry-env: GHCR_REGISTRY
+          docker-username-env: GHCR_USERNAME
+          docker-password-env: GHCR_TOKEN
+          requires:
+            - pre-release
+            - build-docker
+          filters:
+            branches:
+              only:
+                - main
+                - dev
+      - publish-docker:
           name: publish-docker-hub
           context: default
           registry-env: DOCKER_IO_REGISTRY
@@ -329,6 +334,11 @@ workflows:
           requires:
             - pre-release
             - build-docker
+          filters:
+            branches:
+              only:
+                - main
+                - dev
       - test-docker:
           context: default
           requires:
@@ -345,6 +355,7 @@ workflows:
           requires:
             - build-docker
             - test-docker
-            - publish-docker-ghcr
             - publish-docker-private
+            - publish-docker-ghcr
+            - publish-docker-hub
             - sonar-scan
