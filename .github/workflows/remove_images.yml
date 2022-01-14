@@ -11,7 +11,7 @@ jobs:
       - name: Debug Branch
         run: echo ${{env.BRANCH}}
       - name: Remove image from GHCR
-        uses: uses: vlaurin/action-ghcr-prune@v0.3.0
+        uses: vlaurin/action-ghcr-prune@v0.3.0
         with:
           oganization: superflyxxi
           container: video-converter
