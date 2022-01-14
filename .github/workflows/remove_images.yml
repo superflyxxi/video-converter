@@ -13,7 +13,7 @@ jobs:
       - name: Remove image from GHCR
         uses: vlaurin/action-ghcr-prune@v0.3.0
         with:
-          oganization: superflyxxi
+          organization: superflyxxi
           container: video-converter
           token: ${{ secrets.GHCR_TOKEN }}
           tag-regex: "^${{env.BRANCH}}$"
@@ -21,7 +21,7 @@ jobs:
       - name: Remove image from GHCR
         uses: vlaurin/action-ghcr-prune@v0.3.0
         with:
-          oganization: superflyxxi
+          organization: superflyxxi
           container: video-converter
           token: ${{ secrets.GHCR_TOKEN }}
           tag-regex: "^test-${{env.BRANCH}}$"
