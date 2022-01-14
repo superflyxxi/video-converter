@@ -321,6 +321,16 @@ workflows:
           requires:
             - pre-release
             - build-docker
+      - publish-docker:
+          name: publish-docker-hub
+          context: default
+          registry-env: DOCKER_IO_REGISTRY
+          docker-username-env: DOCKER_IO_USERNAME
+          docker-password-env: DOCKER_IO_PASSWORD
+          image-prefix: "superflyxxi/"
+          requires:
+            - pre-release
+            - build-docker
       - test-docker:
           context: default
           requires:
