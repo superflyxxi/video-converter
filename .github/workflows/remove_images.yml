@@ -11,12 +11,13 @@ jobs:
       - name: Debug Branch
         run: echo ${{env.BRANCH}}
       - name: Remove image from GHCR
-        uses: bots-house/ghcr-delete-image-action@v1.0.1
+        uses: uses: vlaurin/action-ghcr-prune@v0.3.0
         with:
-          owner: superflyxxi
-          name: video-converter
+          oganization: superflyxxi
+          container: video-converter
           token: ${{ secrets.GHCR_TOKEN }}
-          tag: ${{env.BRANCH}}
+          tag-regex: ${{env.BRANCH}}
+          dry-run: true
       - name: Remove test image from GHCR
         uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
