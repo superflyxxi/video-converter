@@ -16,7 +16,7 @@ jobs:
           oganization: superflyxxi
           container: video-converter
           token: ${{ secrets.GHCR_TOKEN }}
-          tag-regex: ${{env.BRANCH}}
+          tag-regex: "^${{env.BRANCH}}$"
           dry-run: true
       - name: Remove test image from GHCR
         uses: bots-house/ghcr-delete-image-action@v1.0.1
