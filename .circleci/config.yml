@@ -39,12 +39,14 @@ jobs:
 
   build-docker:
     resource_class: medium
-    environment:
-      DEBIAN_FRONTEND: noninteractive
-      CACHE_REGISTRY: ${GHCR_REGISTRY}
-      CACHE_USERNAME: ${GHCR_USERNAME}
     executor: docker/machine
     steps:
+      - run:
+          name: Define cache env variables
+          command: |
+            echo "CACHE_REGISTRY=${GHCR_REGISTRY}" >> ${BASH_ENV}
+            echo "CACHE_USERNAME=${GHCR_USERNAME}" >> ${BASH_ENV}
+            echo "CACHE_PASSWORD=${GHCR_TOKEN}" >> ${BASH_ENV}
       - attach_workspace:
           at: /tmp/workspace
       - checkout
@@ -75,9 +77,9 @@ jobs:
             echo "export TEST_CACHE_FROM_IMAGES=${TEST_CACHE_FROM_IMAGES}" >> ${BASH_ENV}
             cat ${BASH_ENV}
       - docker/check:
-          registry: ghcr.io
-          docker-password: GHCR_TOKEN
-          docker-username: CIRCLE_PROJECT_USERNAME
+          registry: ${CACHE_REGISTRY}
+          docker-username: ${CACHE_USERNAME}
+          docker-password: ${CACHE_PASSWORD}
       - docker/build:
           step-name: Build parent image
           dockerfile: Dockerfile.parent
