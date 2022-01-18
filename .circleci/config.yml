@@ -78,8 +78,8 @@ jobs:
             cat ${BASH_ENV}
       - docker/check:
           registry: ${CACHE_REGISTRY}
-          docker-username: ${CACHE_USERNAME}
-          docker-password: ${CACHE_PASSWORD}
+          docker-username: CACHE_USERNAME
+          docker-password: CACHE_PASSWORD
       - docker/build:
           step-name: Build parent image
           dockerfile: Dockerfile.parent
