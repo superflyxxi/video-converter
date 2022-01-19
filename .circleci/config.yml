@@ -342,7 +342,6 @@ workflows:
             branches:
               only:
                 - main
-                - dev
       - test-docker:
           context: default
           requires:
