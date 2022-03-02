@@ -159,16 +159,16 @@
     "packages-dev": [
         {
             "name": "clue/phar-composer",
-            "version": "v1.3.0",
+            "version": "v1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/clue/phar-composer.git",
-                "reference": "5804b84777cd4f7561da183d6f3667c5b9a1f54b"
+                "reference": "0cae6984e0da45639881d3b26442d525b8b65406"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/clue/phar-composer/zipball/5804b84777cd4f7561da183d6f3667c5b9a1f54b",
-                "reference": "5804b84777cd4f7561da183d6f3667c5b9a1f54b",
+                "url": "https://api.github.com/repos/clue/phar-composer/zipball/0cae6984e0da45639881d3b26442d525b8b65406",
+                "reference": "0cae6984e0da45639881d3b26442d525b8b65406",
                 "shasum": ""
             },
             "require": {
@@ -211,7 +211,7 @@
             ],
             "support": {
                 "issues": "https://github.com/clue/phar-composer/issues",
-                "source": "https://github.com/clue/phar-composer/tree/v1.3.0"
+                "source": "https://github.com/clue/phar-composer/tree/v1.4.0"
             },
             "funding": [
                 {
@@ -223,7 +223,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-12-29T12:58:53+00:00"
+            "time": "2022-02-14T11:28:08+00:00"
         },
         {
             "name": "composer/pcre",
@@ -884,12 +884,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -991,12 +991,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Promise\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Promise\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1165,16 +1165,16 @@
         },
         {
             "name": "knplabs/packagist-api",
-            "version": "v1.7.1",
+            "version": "v1.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/packagist-api.git",
-                "reference": "be6295ec879cc1e822af4adf07a74f0c361888a0"
+                "reference": "4feae228a4505c1cd817da61e752e5dea2b22c2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/packagist-api/zipball/be6295ec879cc1e822af4adf07a74f0c361888a0",
-                "reference": "be6295ec879cc1e822af4adf07a74f0c361888a0",
+                "url": "https://api.github.com/repos/KnpLabs/packagist-api/zipball/4feae228a4505c1cd817da61e752e5dea2b22c2d",
+                "reference": "4feae228a4505c1cd817da61e752e5dea2b22c2d",
                 "shasum": ""
             },
             "require": {
@@ -1216,9 +1216,9 @@
             ],
             "support": {
                 "issues": "https://github.com/KnpLabs/packagist-api/issues",
-                "source": "https://github.com/KnpLabs/packagist-api/tree/v1.7.1"
+                "source": "https://github.com/KnpLabs/packagist-api/tree/v1.7.2"
             },
-            "time": "2020-12-03T18:20:13+00:00"
+            "time": "2022-03-01T08:20:15+00:00"
         },
         {
             "name": "myclabs/deep-copy",
