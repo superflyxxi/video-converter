@@ -253,7 +253,7 @@ jobs:
             cat sonar-project.properties
       - sonarcloud/scan
 
-  release:
+  release-notes:
     resource_class: small
     docker:
       - image: circleci/node
@@ -294,7 +294,7 @@ jobs:
 workflows:
   default:
     jobs:
-      - release:
+      - release-notes:
           name: pre-release
           context: default
           prerelease: true
@@ -318,6 +318,7 @@ workflows:
           docker-password-env: PRIVATE_DOCKER_PASSWORD
           requires:
             - pre-release
+            - release-notes
             - build-docker
       - publish-docker:
           name: publish-docker-ghcr
@@ -327,6 +328,7 @@ workflows:
           docker-password-env: GHCR_TOKEN
           requires:
             - pre-release
+            - release-notes
             - build-docker
             - test-docker
           filters:
@@ -342,6 +344,7 @@ workflows:
           docker-password-env: DOCKER_IO_PASSWORD
           requires:
             - pre-release
+            - release-notes
             - build-docker
             - test-docker
           filters:
@@ -357,14 +360,11 @@ workflows:
           context: default
           requires:
             - test-docker
-      - release:
+      - release-notes:
           name: release
           context: default
           prerelease: false
           requires:
             - build-docker
             - test-docker
-            - publish-docker-private
-            - publish-docker-ghcr
-            - publish-docker-hub
             - sonar-scan
