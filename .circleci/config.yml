@@ -2,7 +2,7 @@
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:
-  docker: circleci/docker@1
+  docker: circleci/docker@2
   node: circleci/node@4
   php: circleci/php@1
   sonarcloud: sonarsource/sonarcloud@1
@@ -39,7 +39,9 @@ jobs:
 
   build-docker:
     resource_class: medium
-    executor: docker/machine
+    executor: 
+      name: docker/machine
+      dlc: false
     steps:
       - run:
           name: Define cache env variables
@@ -117,7 +119,9 @@ jobs:
 
   publish-docker:
     resource_class: medium
-    executor: docker/machine
+    executor: 
+      name: docker/machine
+      dlc: false
     parameters:
       registry-env:
         description: The registry envirnment variable to use to publish docker images.
@@ -187,7 +191,9 @@ jobs:
   test-docker:
     resource_class: medium
     parallelism: 5
-    executor: docker/machine
+    executor: 
+      name: docker/machine
+      dlc: false
     steps:
       - attach_workspace:
           at: /tmp/workspace
