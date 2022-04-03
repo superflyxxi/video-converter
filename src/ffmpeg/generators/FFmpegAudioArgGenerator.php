@@ -22,7 +22,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator {
 			) {
 				self::$log->debug("Taking channel layout from request");
 				$channelLayout = $request->audioChannelLayout;
-				if (null != $channelLayout && preg_match("/(0-9]+)\.([0-9]+)/", $channelLayout, $matches)) {
+				if (null != $channelLayout && preg_match("/(\d+)\.(\d+)/", $channelLayout, $matches)) {
 					$channels = $matches[1] + $matches[2];
 				}
 			}

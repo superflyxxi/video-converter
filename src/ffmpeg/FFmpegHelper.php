@@ -85,11 +85,11 @@ class FFmpegHelper {
 [Parsed_idet_0 @ 0x559b53b4b700] Single frame detection: TFF:    10 BFF:    13 Progressive:  8535 Undetermined:  5830
 [Parsed_idet_0 @ 0x559b53b4b700] Multi frame detection: TFF:     0 BFF:     0 Progressive: 14365 Undetermined:    23
 	*/
-		preg_match("/Progressive:[ ]+([0-9]+)/", $out, $matches);
+		preg_match("/Progressive:\s+(\d+)/", $out, $matches);
 		$progressive = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
-		preg_match("/TFF:[ ]+([0-9]+)/", $out, $matches);
+		preg_match("/TFF:\s+(\d+)/", $out, $matches);
 		$tff = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
-		preg_match("/BFF:[ ]+([0-9]+)/", $out, $matches);
+		preg_match("/BFF:\s+(\d+)/", $out, $matches);
 		$bff = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
 		$total = $progressive + $tff + $bff;
 		self::$log->debug("Interlacing probe results", [
