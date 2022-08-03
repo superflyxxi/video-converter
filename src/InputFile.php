@@ -28,7 +28,7 @@ class InputFile {
 						$this->subtitleStreams[$oStream->index] = $oStream;
 						break;
 					default:
-				}
+					}
 			}
 		}
 	}
