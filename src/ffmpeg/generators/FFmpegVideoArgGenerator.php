@@ -13,7 +13,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator {
 		} elseif ($request->isHDR()) {
 			$args .=
 				" libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
-		} elseif ("hevc_vaapi" == "$request->videoFormat()) {
+		} elseif ("hevc_vaapi" == $request->videoFormat) {
 			$filters = "";
 			if ($request->deinterlace) {
 				switch ($request->deinterlaceMode) {
