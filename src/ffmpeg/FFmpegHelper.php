@@ -144,11 +144,18 @@ class FFmpegHelper {
 		return $finalCommand;
 	}
 
-	private static function generateHardwareAccelArgs() {
-		return " " .
-			(file_exists("/dev/dri")
-				? "-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
-				: " ");
+	private static function generateHardwareAccelArgs($listRequests) {
+		$decode = "";
+		$encode = "";
+		foreach ($listRequests as $tmpRequest) {
+			if ($decode=="" && $tmpRequest->isHwAccelDecode()) {
+				$decode = "-hwaccel vaapi -hwaccel_device /dev/dri/renderD128";
+			}
+			if ($encode=="" && $tmpRequest->isHwAccelEncode()) {
+				$encode="-vaapi_device /dev/dri/renderD128";
+			}
+		}
+		return $decode . " " . $encode;
 	}
 
 	private static function generateGlobalMetadataArgs($outputFile) {

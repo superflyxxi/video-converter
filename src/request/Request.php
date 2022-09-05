@@ -240,8 +240,12 @@ class Request {
 		}
 	}
 
-	public function isHwaccel() {
+	public function isHwAccelDecode() {
 		return $this->hwaccel;
+	}
+
+	public function isHwAccelEncode() {
+		return $this->hwaccel && strpos($this->videoFormat, "vaapi");
 	}
 
 	public function isHDR() {
