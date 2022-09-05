@@ -46,7 +46,7 @@ class FFmpegHelper {
 	}
 
 	public static function isInterlaced($inputFile) {
-		switch (Options::get("deinterlace-check", "off")) {
+		switch (Options::get("deinterlace-check", "probe")) {
 			case "idet":
 				return self::isInterlacedBasedOnIdet($inputFile);
 				break;
