@@ -60,8 +60,10 @@ jobs:
           command: |
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile.parent | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             export CACHE_ROOT_IMAGE="${CACHE_REGISTRY}/${CACHE_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
-            if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
+            if ! [[ "<< pipeline.git.branch >>" =~ (main|dev) ]]; then
               export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:dev"
+            elif [[ "<< pipeline.git.branch >>" =~ (dev) ]]; then
+              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:latest"
             fi
             export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
@@ -318,7 +320,6 @@ workflows:
           docker-password-env: PRIVATE_DOCKER_PASSWORD
           requires:
             - pre-release
-            - release-notes
             - build-docker
       - publish-docker:
           name: publish-docker-ghcr

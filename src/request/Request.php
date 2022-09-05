@@ -76,7 +76,7 @@ class Request {
 		$req->playlist = Options::get("PLAYLIST", null);
 
 		$req->setVideoTracks(Options::get("video-tracks", "*"));
-		$req->videoFormat = Options::get("video-format", "notcopy");
+		$req->videoFormat = Options::get("video-format", "libx265");
 		$req->videoUpscale = Options::get("video-upscale", 1);
 		$req->setDeinterlace(Options::get("deinterlace", "off"));
 
@@ -240,8 +240,12 @@ class Request {
 		}
 	}
 
-	public function isHwaccel() {
+	public function isHwAccelDecode() {
 		return $this->hwaccel;
+	}
+
+	public function isHwAccelEncode() {
+		return $this->hwaccel && strpos($this->videoFormat, "vaapi");
 	}
 
 	public function isHDR() {
