@@ -160,7 +160,7 @@ class Request {
 	public function setDeinterlace($val) {
 		$this->deinterlace = $val;
 		if ("off" != $this->deinterlace && "copy" != $this->videoFormat) {
-			$this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile);
+			$this->deinterlace = true;// FFmpegHelper::isInterlaced($this->oInputFile);
 			$this->deinterlaceMode = $val;
 		} else {
 			$this->deinterlace = false;
