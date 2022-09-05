@@ -46,13 +46,17 @@ class FFmpegHelper {
 	}
 
 	public static function isInterlaced($inputFile) {
-		switch (Options::get("deinterlace-check", "probe")) {
+		switch (Options::get("deinterlace-check", "off")) {
 			case "idet":
 				return self::isInterlacedBasedOnIdet($inputFile);
 				break;
 			case "probe":
 				return self::isInterlacedBasedOnProbe($inputFile);
 				break;
+			case "force":
+				return true;
+				break;
+
 			default:
 				// function will return
 				break;
