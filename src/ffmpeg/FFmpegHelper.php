@@ -118,7 +118,7 @@ class FFmpegHelper {
 		if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
 			$finalCommand .= "-y ";
 		}
-		$finalCommand .= self::generateHardwareAccelArgs();
+		$finalCommand .= self::generateHardwareAccelArgs($listRequests);
 
 		// generate input args
 		foreach ($listRequests as $tmpRequest) {
