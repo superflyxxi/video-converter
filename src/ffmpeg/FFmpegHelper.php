@@ -104,7 +104,7 @@ class FFmpegHelper {
 
 	public static function execute($listRequests, $outputFile) {
 		$command = self::generate($listRequests, $outputFile);
-		self::$log->info("Executing ffmpeg", ["command" => $command]);
+		self::$log->notice("Executing ffmpeg", ["command" => $command]);
 		passthru($command . " 2>&1", $ret);
 		self::$log->debug("Command return result", ["result" => $ret]);
 		if ($ret > 0) {
@@ -118,7 +118,7 @@ class FFmpegHelper {
 		if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
 			$finalCommand .= "-y ";
 		}
-		$finalCommand .= self::generateHardwareAccelArgs();
+		$finalCommand .= self::generateHardwareAccelArgs($listRequests);
 
 		// generate input args
 		foreach ($listRequests as $tmpRequest) {
@@ -144,11 +144,18 @@ class FFmpegHelper {
 		return $finalCommand;
 	}
 
-	private static function generateHardwareAccelArgs() {
-		return " " .
-			(file_exists("/dev/dri")
-				? "-hwaccel vaapi -hwaccel_output_format vaapi -hwaccel_device /dev/dri/renderD128"
-				: " ");
+	private static function generateHardwareAccelArgs($listRequests) {
+		$decode = "";
+		$encode = "";
+		foreach ($listRequests as $tmpRequest) {
+			if ($decode=="" && $tmpRequest->isHwAccelDecode()) {
+				$decode = "-hwaccel vaapi -hwaccel_device /dev/dri/renderD128";
+			}
+			if ($encode=="" && $tmpRequest->isHwAccelEncode()) {
+				$encode="-vaapi_device /dev/dri/renderD128";
+			}
+		}
+		return $decode . " " . $encode;
 	}
 
 	private static function generateGlobalMetadataArgs($outputFile) {

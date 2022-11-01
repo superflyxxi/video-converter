@@ -13,7 +13,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator {
 		} elseif ($request->isHDR()) {
 			$args .=
 				" libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
-		} elseif ($request->isHwaccel()) {
+		} elseif ($request->isHwAccelEncode()) {
 			$filters = "";
 			if ($request->deinterlace) {
 				switch ($request->deinterlaceMode) {
@@ -43,7 +43,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator {
 			if (strlen($filters) > 0) {
 				$args = ' -vf "' . substr($filters, 1) . '"' . $args;
 			}
-			$args .= " hevc_vaapi -qp 20 -level:v 4";
+			$args .= " " . $request->videoFormat . " -qp 20 -level:v 4";
 		} else {
 			$filters = "";
 			if ($request->deinterlace) {
@@ -71,7 +71,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator {
 			if (strlen($filters) > 0) {
 				$args = ' -vf "' . substr($filters, 1) . '"' . $args;
 			}
-			$args .= " libx265 -crf 20 -level:v 4";
+			$args .= " " . $request->videoFormat . " -crf 20 -level:v 4";
 		}
 		$args .= " -metadata:s:v:" . $outTrack . " language=" . $stream->language;
 		return $args;
