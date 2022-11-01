@@ -3,8 +3,10 @@
 require_once "Stream.php";
 require_once "ffmpeg/FFmpegHelper.php";
 
-class InputFile {
-	public function __construct($filename) {
+class InputFile
+{
+	public function __construct($filename)
+	{
 		$this->filename = $filename;
 		if (is_dir($filename) || substr($filename, -strlen($filename)) === ".iso") {
 			$this->prefix = "bluray:";
@@ -45,42 +47,51 @@ class InputFile {
 
 	private $prefix = null;
 
-	public function getSubtitleStreams() {
+	public function getSubtitleStreams()
+	{
 		return $this->subtitleStreams;
 	}
 
-	public function removeSubtitleStream($index) {
+	public function removeSubtitleStream($index)
+	{
 		unset($this->subtitleStreams[$index]);
 		unset($this->streams[$index]);
 	}
 
-	public function getVideoStreams() {
+	public function getVideoStreams()
+	{
 		return $this->videoStreams;
 	}
 
-	public function removeVideoStream($index) {
+	public function removeVideoStream($index)
+	{
 		unset($this->videoStreams[$index]);
 		unset($this->streams[$index]);
 	}
 
-	public function getAudioStreams() {
+	public function getAudioStreams()
+	{
 		return $this->audioStreams;
 	}
 
-	public function removeAudioStream($index) {
+	public function removeAudioStream($index)
+	{
 		unset($this->audioStreams[$index]);
 		unset($this->streams[$index]);
 	}
 
-	public function getFileName() {
+	public function getFileName()
+	{
 		return $this->filename;
 	}
 
-	public function getPrefix() {
+	public function getPrefix()
+	{
 		return $this->prefix;
 	}
 
-	public function getTemporaryFileNamePrefix() {
+	public function getTemporaryFileNamePrefix()
+	{
 		if ($this->prefix != null) {
 			return str_replace(DIRECTORY_SEPARATOR, "-", realpath($this->getFileName())) . "-dir-";
 		} else {

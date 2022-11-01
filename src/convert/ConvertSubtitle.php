@@ -11,10 +11,12 @@ require_once "CountryToLanguageMapping.php";
 
 use Monolog\Logger;
 
-class ConvertSubtitle {
+class ConvertSubtitle
+{
 	public static $log;
 
-	public static function convert($oRequest, $oOutput) {
+	public static function convert($oRequest, $oOutput)
+	{
 		$dir = getEnvWithDefault("TMP_DIR", "/tmp");
 		$arrAdditionalRequests = [];
 		if ($oRequest->subtitleFormat != "copy") {
@@ -61,7 +63,8 @@ class ConvertSubtitle {
 		return $arrAdditionalRequests;
 	}
 
-	private static function convertBluraySubtitle($oRequest, $dir, $filename, $index) {
+	private static function convertBluraySubtitle($oRequest, $dir, $filename, $index)
+	{
 		// convert to dvd
 		$dvdFile = $dir . DIRECTORY_SEPARATOR . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index;
 		$pgsFile = new OutputFile(null, $dvdFile . ".sup");
@@ -93,7 +96,8 @@ class ConvertSubtitle {
 		return $dvdFile;
 	}
 
-	private static function convertDvdSubtitle($oRequest, $dir, $filename, $index) {
+	private static function convertDvdSubtitle($oRequest, $dir, $filename, $index)
+	{
 		// extract vobsub
 		$dvdFile = $dir . DIRECTORY_SEPARATOR . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index;
 		if (!file_exists($dvdFile . ".sub")) {
@@ -107,7 +111,8 @@ class ConvertSubtitle {
 		return $dvdFile;
 	}
 
-	private static function convertSrtSubtitle($dvdFile, $subtitle, $oRequest, $index, $oOutput) {
+	private static function convertSrtSubtitle($dvdFile, $subtitle, $oRequest, $index, $oOutput)
+	{
 		$oNewRequest = null;
 		if (!file_exists($dvdFile . ".srt")) {
 			self::$log->info("Convert DVD sub to SRT.");

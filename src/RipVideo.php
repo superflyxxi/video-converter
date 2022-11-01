@@ -5,10 +5,12 @@ require_once "request/CSVRequest.php";
 require_once "LogWrapper.php";
 require_once "Options.php";
 
-class RipVideo {
+class RipVideo
+{
 	public static $log;
 
-	public function rip() {
+	public function rip()
+	{
 		$envInput = Options::getInputFile();
 		$csvRequest = null;
 		if (strcasecmp(substr($envInput, -4), ".csv") === 0) {

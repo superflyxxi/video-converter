@@ -11,13 +11,15 @@ require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
 require_once "exceptions/ExecutionException.php";
 require_once "Options.php";
 
-class FFmpegHelper {
+class FFmpegHelper
+{
 	public static $log;
 	private static $INTERLACED_REPLACEMENT_REGEX = "/[A-Za-z]+:[ ]+([0-9]+)/";
 
 	private static $probeCache = [];
 
-	public static function probe($inputFile) {
+	public static function probe($inputFile)
+	{
 		if (!array_key_exists($inputFile->getFileName(), self::$probeCache)) {
 			$command =
 				'ffprobe -v quiet -print_format json -show_format -show_streams "' .
@@ -45,7 +47,8 @@ class FFmpegHelper {
 		return $json;
 	}
 
-	public static function isInterlaced($inputFile) {
+	public static function isInterlaced($inputFile)
+	{
 		switch (Options::get("deinterlace-check", "probe")) {
 			case "idet":
 				return self::isInterlacedBasedOnIdet($inputFile);
@@ -60,13 +63,15 @@ class FFmpegHelper {
 		return false;
 	}
 
-	private static function isInterlacedBasedOnProbe($inputFile) {
+	private static function isInterlacedBasedOnProbe($inputFile)
+	{
 		$json = self::probe($inputFile);
 		$stream = $json["streams"][0];
 		return array_key_exists("field_order", $stream) && $stream["field_order"] != "progressive";
 	}
 
-	private static function isInterlacedBasedOnIdet($inputFile) {
+	private static function isInterlacedBasedOnIdet($inputFile)
+	{
 		self::$log->info("Checking for interlacing", [
 			"filename" => $inputFile->getFileName(),
 		]);
@@ -102,7 +107,8 @@ class FFmpegHelper {
 		return $tff / $total > 0.01 || $bff / $total > 0.01;
 	}
 
-	public static function execute($listRequests, $outputFile) {
+	public static function execute($listRequests, $outputFile)
+	{
 		$command = self::generate($listRequests, $outputFile);
 		self::$log->notice("Executing ffmpeg", ["command" => $command]);
 		passthru($command . " 2>&1", $ret);
@@ -113,7 +119,8 @@ class FFmpegHelper {
 		return $ret;
 	}
 
-	public static function generate($listRequests, $outputFile) {
+	public static function generate($listRequests, $outputFile)
+	{
 		$finalCommand = "ffmpeg ";
 		if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
 			$finalCommand .= "-y ";
@@ -144,7 +151,8 @@ class FFmpegHelper {
 		return $finalCommand;
 	}
 
-	private static function generateHardwareAccelArgs($listRequests) {
+	private static function generateHardwareAccelArgs($listRequests)
+	{
 		$decode = "";
 		$encode = "";
 		foreach ($listRequests as $tmpRequest) {
@@ -158,7 +166,8 @@ class FFmpegHelper {
 		return $decode . " " . $encode;
 	}
 
-	private static function generateGlobalMetadataArgs($outputFile) {
+	private static function generateGlobalMetadataArgs($outputFile)
+	{
 		return " " .
 			(null != $outputFile->title ? '-metadata "title=' . $outputFile->title . '"' : " ") .
 			" " .
@@ -173,7 +182,8 @@ class FFmpegHelper {
 			getEnvWithDefault("OTHER_METADATA", " ");
 	}
 
-	private static function generateArgs($listRequests, FFmpegArgGenerator $generator) {
+	private static function generateArgs($listRequests, FFmpegArgGenerator $generator)
+	{
 		$fileno = 0;
 		$outTrack = 0;
 		$args = " ";

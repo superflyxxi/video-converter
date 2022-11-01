@@ -1,6 +1,7 @@
 <?php
 
-function getEnvWithDefault($env, $default) {
+function getEnvWithDefault($env, $default)
+{
 	if (getEnv($env)) {
 		return getEnv($env);
 	} else {

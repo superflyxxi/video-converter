@@ -2,8 +2,10 @@
 
 require_once "functions.php";
 
-class OutputFile {
-	public function __construct($postfix = null, $out = null) {
+class OutputFile
+{
+	public function __construct($postfix = null, $out = null)
+	{
 		$this->postfix = $postfix;
 		$this->envOutput = $out == null ? getEnv("OUTPUT") : $out;
 	}
@@ -24,7 +26,8 @@ class OutputFile {
 
 	private $postfix = null;
 
-	public function getFileName() {
+	public function getFileName()
+	{
 		if (null != $this->envOutput) {
 			return $this->envOutput;
 		}

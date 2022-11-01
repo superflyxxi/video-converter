@@ -1,10 +1,12 @@
 <?php
 
-class Options {
+class Options
+{
 	private static $opts;
 	private static $inputfile;
 
-	public static function init($args = null) {
+	public static function init($args = null)
+	{
 		global $argv;
 		if (null === $args) {
 			$otherArgs = null;
@@ -47,11 +49,13 @@ class Options {
 		}
 	}
 
-	public static function getInputFile() {
+	public static function getInputFile()
+	{
 		return self::$inputfile;
 	}
 
-	public static function get($arg, $default = null) {
+	public static function get($arg, $default = null)
+	{
 		$env = getEnv(strtoupper(str_replace(["-", "."], ["_", "__"], $arg)));
 		if ($env) {
 			return $env;
