@@ -6,10 +6,12 @@ require_once "request/Request.php";
 require_once "Stream.php";
 require_once "exceptions/ExecutionException.php";
 
-class ConvertAudio {
+class ConvertAudio
+{
 	public static $log;
 
-	public static function convert($oRequest) {
+	public static function convert($oRequest)
+	{
 		$arrAdditionalRequests = [];
 		if ("copy" != $oRequest->audioFormat && count($oRequest->normalizeAudioTracks)) {
 			// only do this there are tracks to normalize
@@ -58,7 +60,8 @@ class ConvertAudio {
 		return $arrAdditionalRequests;
 	}
 
-	private static function normalize($oRequest, $index, $dir, $inFileName, $stream) {
+	private static function normalize($oRequest, $index, $dir, $inFileName, $stream)
+	{
 		// if the track is to be normalized, now let's normalize it and put it in
 		self::$log->info("Normalizing track", [
 			"filename" => $oRequest->oInputFile->getFileName(),

@@ -5,8 +5,10 @@ require_once "InputFile.php";
 require_once "request/Request.php";
 require_once "Stream.php";
 
-class FFmpegVideoArgGenerator implements FFmpegArgGenerator {
-	public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream) {
+class FFmpegVideoArgGenerator implements FFmpegArgGenerator
+{
+	public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream)
+	{
 		$args = " -c:v:" . $outTrack;
 		if ("copy" == $request->videoFormat) {
 			$args .= " copy";
@@ -77,7 +79,8 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator {
 		return $args;
 	}
 
-	public function getStreams(InputFile $inputFile) {
+	public function getStreams(InputFile $inputFile)
+	{
 		return $inputFile->getVideoStreams();
 	}
 }

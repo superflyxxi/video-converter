@@ -3,10 +3,12 @@
 require_once "LogWrapper.php";
 require_once "exceptions/ExecutionException.php";
 
-class MKVExtractHelper {
+class MKVExtractHelper
+{
 	public static $log;
 
-	public static function extractTracks($oInputFile, $arrTracks) {
+	public static function extractTracks($oInputFile, $arrTracks)
+	{
 		self::$log->info("Extracting", [
 			"filename" => $oInputFile->getFileName(),
 		]);
