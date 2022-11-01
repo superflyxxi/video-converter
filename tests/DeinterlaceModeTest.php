@@ -2,13 +2,16 @@
 
 require_once "common.php";
 
-final class DeinterlaceModeTest extends Test {
-	public function dataProvider(): array {
+final class DeinterlaceModeTest extends Test
+{
+	public function dataProvider(): array
+	{
 		return ["double framerate" => ["01", "19001/317"], "same framerate" => ["02", "30000/1001"]];
 	}
 
 	/** @test */
-	public function testDeinterlaceMode00() {
+	public function testDeinterlaceMode00()
+	{
 		$this->assertTrue(true, "Already covered by auto-detection tests");
 	}
 
@@ -16,7 +19,8 @@ final class DeinterlaceModeTest extends Test {
 	 * @test
 	 * @dataProvider dataProvider
 	 */
-	public function testDeinterlaceModes($mode, $expectedFramerate) {
+	public function testDeinterlaceModes($mode, $expectedFramerate)
+	{
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo(

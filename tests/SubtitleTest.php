@@ -2,8 +2,10 @@
 
 require_once "common.php";
 
-final class SubtitleTest extends Test {
-	public function sourceFormats(): array {
+final class SubtitleTest extends Test
+{
+	public function sourceFormats(): array
+	{
 		return [
 			"dvd subrip english" => ["dvd", "2", "subrip", "eng"],
 			"dvd ass french" => ["dvd", "3", "ass", "fre"],
@@ -15,7 +17,8 @@ final class SubtitleTest extends Test {
 	 * @test
 	 * @dataProvider sourceFormats
 	 */
-	public function testSubtitleConversion($source, $track, $format, $language) {
+	public function testSubtitleConversion($source, $track, $format, $language)
+	{
 		$this->getFile($source);
 
 		$return = $this->ripvideo($source . ".mkv", [
@@ -43,7 +46,8 @@ final class SubtitleTest extends Test {
 		);
 	}
 
-	public function testBlacklist() {
+	public function testBlacklist()
+	{
 		$this->markTestIncomplete("Blacklist doesn't work the way you think it should.");
 		$this->getFile("dvd");
 

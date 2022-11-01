@@ -4,8 +4,10 @@
  */
 require_once "common.php";
 
-final class BasicTest extends Test {
-	public function testNoInputSpecifiedWithOnlyOneFile() {
+final class BasicTest extends Test
+{
+	public function testNoInputSpecifiedWithOnlyOneFile()
+	{
 		$this->getFile("dvd");
 		$return = $this->ripvideo(null, [
 			"--title" => "Test No Input",
@@ -39,7 +41,8 @@ final class BasicTest extends Test {
 		$this->assertArrayNotHasKey("SUBTITLE", $probe["format"]["tags"], "Metadata SUBTITLE exists");
 	}
 
-	public function testInputWithCopy() {
+	public function testInputWithCopy()
+	{
 		$this->getFile("dvd");
 		$return = $this->ripvideo("dvd.mkv", [
 			"--title" => "Test Input",
@@ -70,7 +73,8 @@ final class BasicTest extends Test {
 		$this->assertArrayNotHasKey("SUBTITLE", $probe["format"]["tags"], "Metadata SUBTITLE exists");
 	}
 
-	public function testTvShowMetadata() {
+	public function testTvShowMetadata()
+	{
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo("dvd.mkv", [
@@ -105,7 +109,8 @@ final class BasicTest extends Test {
 		$this->assertEquals("The One Where Things", $probe["format"]["tags"]["SHOWTITLE"], "Metadata SHOWTITLE");
 	}
 
-	public function testNotApplyingPostfix() {
+	public function testNotApplyingPostfix()
+	{
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo("dvd.mkv", [
@@ -130,7 +135,8 @@ final class BasicTest extends Test {
 		$this->assertArrayNotHasKey("SUBTITLE", $probe["format"]["tags"], "Metadata SUBTITLE");
 	}
 
-	public function testMissingTitle() {
+	public function testMissingTitle()
+	{
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo("dvd.mkv", []);

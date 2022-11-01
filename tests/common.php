@@ -4,19 +4,23 @@ use PHPUnit\Framework\TestCase;
 
 require_once "RipVideo.php";
 
-abstract class Test extends TestCase {
-	protected function getDataDir() {
+abstract class Test extends TestCase
+{
+	protected function getDataDir()
+	{
 		return getEnv("DATA_DIR");
 	}
 
-	protected function setUp(): void {
+	protected function setUp(): void
+	{
 		parent::setUp();
 		$tmpDir = exec("mktemp -d");
 		exec("mkdir -p " . $tmpDir . DIRECTORY_SEPARATOR . "data");
 		putenv("TMP_DIR=" . $tmpDir);
 	}
 
-	public function probe($filename) {
+	public function probe($filename)
+	{
 		$file = $this->getDataDir() . DIRECTORY_SEPARATOR . $filename;
 		$this->assertFileExists($file, "File missing, cannot probe");
 		$command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $file . '"';
@@ -28,7 +32,8 @@ abstract class Test extends TestCase {
 		return null;
 	}
 
-	public function getFile($file) {
+	public function getFile($file)
+	{
 		switch ($file) {
 			case "dvd.mkv":
 			case "dvd":
@@ -62,7 +67,8 @@ abstract class Test extends TestCase {
 		return true;
 	}
 
-	public function ripvideo($filename, $args, $timeout = "8m") {
+	public function ripvideo($filename, $args, $timeout = "8m")
+	{
 		$options = [];
 		foreach ($args as $key => $value) {
 			$options[substr($key, 2)] = $value;
