@@ -2,8 +2,10 @@
 
 require_once "common.php";
 
-final class ConvertVideoTest extends Test {
-	public function test_x265_Conversion() {
+final class ConvertVideoTest extends Test
+{
+	public function test_x265_Conversion()
+	{
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo("dvd.mkv", [

@@ -2,8 +2,10 @@
 
 require_once "common.php";
 
-final class DeinterlaceDetectionTest extends Test {
-	public function probeModes(): array {
+final class DeinterlaceDetectionTest extends Test
+{
+	public function probeModes(): array
+	{
 		return ["probe" => ["probe"], "idet" => ["idet"]];
 	}
 
@@ -11,7 +13,8 @@ final class DeinterlaceDetectionTest extends Test {
 	 * @test
 	 * @dataProvider probeModes
 	 */
-	public function testAutoDeinterlace($check) {
+	public function testAutoDeinterlace($check)
+	{
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo(

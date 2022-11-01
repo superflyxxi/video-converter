@@ -2,8 +2,10 @@
 
 require_once "common.php";
 
-final class AudioTest extends Test {
-	public function testChannelMappingOverrideToLowerValue() {
+final class AudioTest extends Test
+{
+	public function testChannelMappingOverrideToLowerValue()
+	{
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo("dvd.mkv", [
@@ -25,7 +27,8 @@ final class AudioTest extends Test {
 		$this->assertEquals("Test Channel Mapping", $probe["format"]["tags"]["title"], "Metadata title");
 	}
 
-	public function testNormalizing() {
+	public function testNormalizing()
+	{
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo("dvd.mkv", [
