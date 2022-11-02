@@ -6,7 +6,7 @@ require_once "Stream.php";
 
 interface FFmpegArgGenerator
 {
-	public function getStreams(InputFile $inputFile);
+    public function getStreams(InputFile $inputFile);
 
-	public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream);
+    public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream);
 }
