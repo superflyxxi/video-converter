@@ -1,9 +1,11 @@
 <?php
 
-final class CountryToLanguageMapping {
+final class CountryToLanguageMapping
+{
 	public static $mapLanguageCountry = null;
 
-	public static function getCountry($language) {
+	public static function getCountry($language)
+	{
 		if (array_key_exists($language, self::$mapLanguageCountry)) {
 			return self::$mapLanguageCountry[$language];
 		}
@@ -11,7 +13,8 @@ final class CountryToLanguageMapping {
 	}
 
 	/** No need to execute this manually. Runs on load of class.**/
-	public static function init() {
+	public static function init()
+	{
 		self::$mapLanguageCountry = [];
 		// https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 		self::$mapLanguageCountry["alb"] = "sqi";

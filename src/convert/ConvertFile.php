@@ -10,19 +10,22 @@ require_once "convert/ConvertAudio.php";
 require_once "ffmpeg/FFmpegHelper.php";
 require_once "Options.php";
 
-class ConvertFile {
+class ConvertFile
+{
 	public static $log;
 
 	private $inputFilename = null;
 
 	private $req = null;
 
-	public function __construct($req) {
+	public function __construct($req)
+	{
 		$this->req = $req;
 		$this->inputFilename = $this->req->oInputFile->getFileName();
 	}
 
-	public function convert() {
+	public function convert()
+	{
 		self::$log->info("Starting conversion for file", [
 			"filename" => $this->inputFilename,
 		]);

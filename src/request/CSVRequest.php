@@ -4,12 +4,14 @@ require_once "LogWrapper.php";
 require_once "request/Request.php";
 require_once "convert/ConvertFile.php";
 
-class CSVRequest {
+class CSVRequest
+{
 	public static $log;
 
 	public $arrConvertFiles = [];
 
-	public function __construct(SplFileObject $file) {
+	public function __construct(SplFileObject $file)
+	{
 		$columns = $file->fgetcsv();
 		while (!$file->eof()) {
 			$row = $file->fgetcsv();
@@ -110,7 +112,8 @@ class CSVRequest {
 		}
 	}
 
-	private static function getArrayForRow($columns, $row) {
+	private static function getArrayForRow($columns, $row)
+	{
 		self::$log->debug("Get array for row", [
 			"columns" => $columns,
 			"row" => $row,
@@ -122,7 +125,8 @@ class CSVRequest {
 		return $data;
 	}
 
-	public function convert() {
+	public function convert()
+	{
 		self::$log->info("Starting conversion");
 		$finalResult = 0;
 		foreach ($this->arrConvertFiles as $req) {

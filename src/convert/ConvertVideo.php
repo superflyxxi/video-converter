@@ -2,10 +2,12 @@
 
 require_once "LogWrapper.php";
 
-class ConvertVideo {
+class ConvertVideo
+{
 	public static $log;
 
-	public static function convert($oRequest): array {
+	public static function convert($oRequest): array
+	{
 		return [];
 	}
 }

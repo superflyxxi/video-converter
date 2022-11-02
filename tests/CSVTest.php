@@ -4,8 +4,10 @@
  */
 require_once "common.php";
 
-final class CSVTest extends Test {
-	public function test_Running_Against_CSV() {
+final class CSVTest extends Test
+{
+	public function test_Running_Against_CSV()
+	{
 		$this->getFile("dvd");
 		$return = $this->ripvideo("csvs/test.csv", []);
 

@@ -2,8 +2,10 @@
 
 require_once "common.php";
 
-final class SimpleScaleTest extends Test {
-	public function scaling(): array {
+final class SimpleScaleTest extends Test
+{
+	public function scaling(): array
+	{
 		return ["Upscale" => ["1.5", "720", "1080"], "Downscale" => ["0.5", "240", "360"]];
 	}
 
@@ -11,7 +13,8 @@ final class SimpleScaleTest extends Test {
 	 * @test
 	 * @dataProvider scaling
 	 */
-	public function testScaling($factor, $height, $width) {
+	public function testScaling($factor, $height, $width)
+	{
 		$this->getFile("dvd");
 
 		$return = $this->ripvideo(

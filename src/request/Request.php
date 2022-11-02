@@ -5,7 +5,8 @@ require_once "InputFile.php";
 require_once "functions.php";
 require_once "Options.php";
 
-class Request {
+class Request
+{
 	public static $log;
 
 	public $title = null;
@@ -58,13 +59,15 @@ class Request {
 
 	public $videoUpscale = 1;
 
-	public function __construct($filename) {
+	public function __construct($filename)
+	{
 		$this->oInputFile = new InputFile($filename);
 		$this->hwaccel = is_dir("/dev/dri");
 		$this->videoHdr = Options::get("hdr");
 	}
 
-	public static function newInstanceFromEnv($filename) {
+	public static function newInstanceFromEnv($filename)
+	{
 		$req = new Request($filename);
 
 		$req->title = Options::get("title");
@@ -97,67 +100,83 @@ class Request {
 		return $req;
 	}
 
-	private function setTracks($req) {
+	private function setTracks($req)
+	{
 		return $req === null || trim($req) == "" ? [] : explode(" ", $req);
 	}
 
-	private function areAllTracksConsidered($tracks) {
+	private function areAllTracksConsidered($tracks)
+	{
 		return in_array("*", $tracks);
 	}
 
-	public function setAudioChannelLayoutTracks($req) {
+	public function setAudioChannelLayoutTracks($req)
+	{
 		$this->audioChannelLayoutTracks = $this->setTracks($req);
 	}
 
-	public function areAllAudioChannelLayoutTracksConsidered() {
+	public function areAllAudioChannelLayoutTracksConsidered()
+	{
 		return $this->areAllTracksConsidered($this->audioChannelLayoutTracks);
 	}
 
-	public function getAudioChannelLayoutTracks() {
+	public function getAudioChannelLayoutTracks()
+	{
 		return $this->audioChannelLayoutTracks;
 	}
 
-	public function setAudioTracks($req) {
+	public function setAudioTracks($req)
+	{
 		$this->audioTracks = $this->setTracks($req);
 	}
 
-	public function areAllAudioTracksConsidered() {
+	public function areAllAudioTracksConsidered()
+	{
 		return $this->areAllTracksConsidered($this->audioTracks);
 	}
 
-	public function getAudioTracks() {
+	public function getAudioTracks()
+	{
 		return $this->audioTracks;
 	}
 
-	public function setNormalizeAudioTracks($req) {
+	public function setNormalizeAudioTracks($req)
+	{
 		$this->normalizeAudioTracks = $this->setTracks($req);
 	}
 
-	public function setVideoTracks($req) {
+	public function setVideoTracks($req)
+	{
 		$this->videoTracks = $this->setTracks($req);
 	}
 
-	public function areAllVideoTracksConsidered() {
+	public function areAllVideoTracksConsidered()
+	{
 		return $this->areAllTracksConsidered($this->videoTracks);
 	}
 
-	public function getVideoTracks() {
+	public function getVideoTracks()
+	{
 		return $this->videoTracks;
 	}
 
-	public function setSubtitleTracks($req) {
+	public function setSubtitleTracks($req)
+	{
 		$this->subtitleTracks = $this->setTracks($req);
 	}
 
-	public function areAllSubtitleTracksConsidered() {
+	public function areAllSubtitleTracksConsidered()
+	{
 		return $this->areAllTracksConsidered($this->subtitleTracks);
 	}
 
-	public function getSubtitleTracks() {
+	public function getSubtitleTracks()
+	{
 		return $this->subtitleTracks;
 	}
 
-	public function setDeinterlace($val) {
+	public function setDeinterlace($val)
+	{
 		$this->deinterlace = $val;
 		if ("off" != $this->deinterlace && "copy" != $this->videoFormat) {
 			$this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile);
@@ -168,7 +187,8 @@ class Request {
 		}
 	}
 
-	public function prepareStreams() {
+	public function prepareStreams()
+	{
 		self::$log->debug("Preparing streams.", [
 			"filename" => $this->oInputFile->getFileName(),
 		]);
@@ -177,7 +197,8 @@ class Request {
 		$this->prepareVideoStreams();
 	}
 
-	private function prepareSubtitleStreams() {
+	private function prepareSubtitleStreams()
+	{
 		if (!$this->areAllSubtitleTracksConsidered()) {
 			self::$log->debug("Not considering all subtitle streams.", [
 				"subtitleTracks" => $this->getSubtitleTracks(),
@@ -198,7 +219,8 @@ class Request {
 		}
 	}
 
-	private function prepareAudioStreams() {
+	private function prepareAudioStreams()
+	{
 		if (!$this->areAllAudioTracksConsidered()) {
 			self::$log->debug("Not considering all audio streams.", [
 				"audioTracks" => $this->getAudioTracks(),
@@ -219,7 +241,8 @@ class Request {
 		}
 	}
 
-	private function prepareVideoStreams() {
+	private function prepareVideoStreams()
+	{
 		if (!$this->areAllVideoTracksConsidered()) {
 			self::$log->debug("Not considering all video streams.", [
 				"videoTracks" => $this->getVideoTracks(),
@@ -240,15 +263,18 @@ class Request {
 		}
 	}
 
-	public function isHwAccelDecode() {
+	public function isHwAccelDecode()
+	{
 		return $this->hwaccel;
 	}
 
-	public function isHwAccelEncode() {
+	public function isHwAccelEncode()
+	{
 		return $this->hwaccel && strpos($this->videoFormat, "vaapi");
 	}
 
-	public function isHDR() {
+	public function isHDR()
+	{
 		return $this->videoHdr;
 	}
 }

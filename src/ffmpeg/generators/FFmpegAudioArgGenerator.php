@@ -6,10 +6,12 @@ require_once "request/Request.php";
 require_once "Stream.php";
 require_once "LogWrapper.php";
 
-class FFmpegAudioArgGenerator implements FFmpegArgGenerator {
+class FFmpegAudioArgGenerator implements FFmpegArgGenerator
+{
 	public static $log;
 
-	public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream) {
+	public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream)
+	{
 		$args = " ";
 		if ("copy" != $request->audioFormat) {
 			self::$log->debug("Audio Channel Layout Tracks", [
@@ -65,7 +67,8 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator {
 		return $args;
 	}
 
-	public function getStreams(InputFile $inputFile) {
+	public function getStreams(InputFile $inputFile)
+	{
 		return $inputFile->getAudioStreams();
 	}
 }
