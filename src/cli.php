@@ -5,17 +5,17 @@ require_once __DIR__ . "/../vendor/autoload.php";
 
 function error_handler(int $errno, string $errstr, $errfile = null, $errline = 0, $errcontext = null)
 {
-	print_r("Error encountered! ");
-	print_r($errstr);
-	print_r(" at file ");
-	print_r($errfile);
-	print_r(":");
-	print_r($errline);
-	print_r("\n");
-	print_r($errcontext);
-	ob_flush();
-	flush();
-	exit($errno);
+    print_r("Error encountered! ");
+    print_r($errstr);
+    print_r(" at file ");
+    print_r($errfile);
+    print_r(":");
+    print_r($errline);
+    print_r("\n");
+    print_r($errcontext);
+    ob_flush();
+    flush();
+    exit($errno);
 }
 set_error_handler("error_handler");
 
