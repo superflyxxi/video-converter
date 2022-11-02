@@ -2,9 +2,9 @@
 
 function getEnvWithDefault($env, $default)
 {
-	if (getEnv($env)) {
-		return getEnv($env);
-	} else {
-		return $default;
-	}
+    if (getEnv($env)) {
+        return getEnv($env);
+    } else {
+        return $default;
+    }
 }
