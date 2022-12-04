@@ -24,11 +24,11 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                         $filters .=
                             ",hwdownload,dejudder,fps=" .
                             $stream->frame_rate .
-                            ",fieldmatch,yadif=deint=interlaced,decimate,hwupload"; 
-	                    // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                            ",fieldmatch,yadif=deint=interlaced,decimate,hwupload";
+                        // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
                     case "01":
-                        // each field is a frame (double framerate) 
+                        // each field is a frame (double framerate)
                         // https://www.mltframework.org/plugins/FilterAvfilter-deinterlace_vaapi/
                         $filters .= ",deinterlace_vaapi=rate=field:auto=1";
                         break;
