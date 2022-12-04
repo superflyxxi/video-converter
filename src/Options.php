@@ -62,7 +62,7 @@ class Options
         }
         if (array_key_exists($arg, self::$opts)) {
             $value = self::$opts[$arg];
-	    return null == $value ? true : $value;
+            return null == $value ? true : $value;
         }
         return $default;
     }
