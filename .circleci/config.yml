@@ -390,3 +390,11 @@ workflows:
             - build-docker
             - test-docker
             - sonar-scan
+      - snyk:
+          context: default
+          requires:
+            - release-notes
+          filters:
+            branches:
+              ignore:
+                - main
