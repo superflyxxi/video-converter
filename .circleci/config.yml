@@ -47,9 +47,11 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
-      - php/install-php
+      - php/install-php:
+          version: "7.4"
       - php/install-composer
-      - php/install-packages
+      - php/install-packages:
+          install-flags: "--no-interaction --prefer-dist --no-dev"
       - snyk/scan:
           project: ${CIRCLE_PROJECT_REPONAME}
       - run:
