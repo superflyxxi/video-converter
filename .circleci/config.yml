@@ -60,6 +60,7 @@ jobs:
       - snyk/scan:
           project: ${CIRCLE_PROJECT_REPONAME}
           docker-image-name: ${CIRCLE_PROJECT_REPONAME}:latest
+          severity-threshold: high
 
   build-docker:
     resource_class: medium
