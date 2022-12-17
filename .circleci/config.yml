@@ -47,6 +47,7 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
+      - php/install-php
       - php/install-composer
       - php/install-packages
       - snyk/scan:
