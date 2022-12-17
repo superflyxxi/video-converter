@@ -6,6 +6,7 @@ orbs:
   node: circleci/node@5
   php: circleci/php@1
   sonarcloud: sonarsource/sonarcloud@1
+  snyk: snyk/snyk@1
 
 # Orchestrate or schedule a set of jobs
 jobs:
@@ -36,6 +37,30 @@ jobs:
             - video-converter.phar
       - store_artifacts:
           path: video-converter.phar
+
+  snyk:
+    resource_class: medium
+    executor: 
+      name: docker/machine
+      dlc: false
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - php/install-php:
+          version: "7.4"
+      - php/install-composer
+      - php/install-packages:
+          install-flags: "--no-interaction --prefer-dist --no-dev"
+      - snyk/scan:
+          project: ${CIRCLE_PROJECT_REPONAME}
+      - run:
+          name: Load docker images
+          command: docker load -i /tmp/workspace/video-converter-images.tar
+      - snyk/scan:
+          project: ${CIRCLE_PROJECT_REPONAME}
+          docker-image-name: ${CIRCLE_PROJECT_REPONAME}:latest
+          severity-threshold: high
 
   build-docker:
     resource_class: medium
@@ -369,3 +394,11 @@ workflows:
             - build-docker
             - test-docker
             - sonar-scan
+      - snyk:
+          context: default
+          requires:
+            - release-notes
+          filters:
+            branches:
+              ignore:
+                - main
