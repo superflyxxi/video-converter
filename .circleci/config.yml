@@ -396,7 +396,7 @@ workflows:
       - snyk:
           context: default
           requires:
-            - build-docker
+            - release-notes
           filters:
             branches:
               ignore:
