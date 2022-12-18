@@ -38,7 +38,7 @@ jobs:
       - store_artifacts:
           path: video-converter.phar
 
-  snyk:
+  snyk-scan:
     resource_class: medium
     executor: 
       name: docker/machine
@@ -53,12 +53,12 @@ jobs:
       - php/install-packages:
           install-flags: "--no-interaction --prefer-dist --no-dev"
       - snyk/scan:
-          project: ${CIRCLE_PROJECT_REPONAME}
+          project: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
       - run:
           name: Load docker images
           command: docker load -i /tmp/workspace/video-converter-images.tar
       - snyk/scan:
-          project: ${CIRCLE_PROJECT_REPONAME}
+          project: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
           docker-image-name: ${CIRCLE_PROJECT_REPONAME}:latest
           severity-threshold: high
 
@@ -394,7 +394,7 @@ workflows:
             - build-docker
             - test-docker
             - sonar-scan
-      - snyk:
+      - snyk-scan:
           context: default
           requires:
             - test-docker
