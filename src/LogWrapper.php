@@ -14,7 +14,8 @@ class LogWrapper extends Logger
         $this->pushHandler(new StreamHandler("php://stdout", Options::get("log-level", Logger::INFO)));
     }
     
-    public function isDebugEnabled() {
+    public function isDebugEnabled()
+    {
         return $this->isHandling(Logger::DEBUG);
     }
 }
