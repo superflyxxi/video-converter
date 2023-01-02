@@ -9,8 +9,6 @@ require_once "MKVExtractHelper.php";
 require_once "exceptions/ExecutionException.php";
 require_once "CountryToLanguageMapping.php";
 
-use Monolog\Logger;
-
 class ConvertSubtitle
 {
     public static $log;
@@ -117,7 +115,7 @@ class ConvertSubtitle
         if (!file_exists($dvdFile . ".srt")) {
             self::$log->info("Convert DVD sub to SRT.");
             $command = "vobsub2srt ";
-            if (self::$log->isHandling(Logger::DEBUG)) {
+            if (self::$log->isDebugEnabled()) {
                 $command .= " --verbose";
             }
             if (isset($subtitle->language)) {
