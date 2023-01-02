@@ -1,5 +1,4 @@
 <?php
-
 require_once "request/Request.php";
 require_once "InputFile.php";
 require_once "functions.php";
@@ -28,10 +27,13 @@ class ConvertSubtitle
                     } elseif ("vobsub" == $codecName || "dvd_subtitle" == $codecName) {
                         $dvdFile = self::convertDvdSubtitle($oRequest, $dir, $filename, $index);
                     } elseif ("subrip" == $codecName) {
-                        self::$log->info("Adding subrip to request", [
-                            "index" => $index,
-                            "filename" => $oRequest->oInputFile->getFileName(),
-                        ]);
+                        self::$log->info(
+                            "Adding subrip to request",
+                            [
+                                "index" => $index,
+                                "filename" => $oRequest->oInputFile->getFileName()
+                            ]
+                        );
                         $oNewRequest = new Request($oRequest->oInputFile->getFileName());
                         $oNewRequest->setSubtitleTracks($index);
                         $oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
@@ -51,7 +53,7 @@ class ConvertSubtitle
                     }
                 } catch (ExecutionException $ex) {
                     self::$log->warning("Skipping track due to error", [
-                        "errorMessage" => $ex->getMessage(),
+                        "errorMessage" => $ex->getMessage()
                     ]);
                 }
             }
@@ -66,10 +68,10 @@ class ConvertSubtitle
         // convert to dvd
         $dvdFile = $dir . DIRECTORY_SEPARATOR . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index;
         $pgsFile = new OutputFile(null, $dvdFile . ".sup");
-        if (!file_exists($pgsFile->getFileName())) {
+        if (! file_exists($pgsFile->getFileName())) {
             self::$log->info("Generating PGS sup file for file.", [
                 "index" => $index,
-                "filename" => $filename,
+                "filename" => $filename
             ]);
             $pgsRequest = new Request($filename);
             $pgsRequest->setSubtitleTracks($index);
@@ -77,14 +79,16 @@ class ConvertSubtitle
             $pgsRequest->setVideoTracks(null);
             $pgsRequest->subtitleFormat = "copy";
             $pgsRequest->prepareStreams();
-            FFmpegHelper::execute([$pgsRequest], $pgsFile, false);
+            FFmpegHelper::execute([
+                $pgsRequest
+            ], $pgsFile, false);
         }
 
-        if (!file_exists($dvdFile . ".sub")) {
+        if (! file_exists($dvdFile . ".sub")) {
             self::$log->info("Converting pgs to dvd subtitle.");
             $command = 'java -jar /opt/BDSup2Sub.jar -o "' . $dvdFile . '.sub" "' . $pgsFile->getFileName() . '"';
             self::$log->debug("Executing command", [
-                "command" => $command,
+                "command" => $command
             ]);
             passthru($command . " 2>&1", $return);
             if ($return != 0) {
@@ -98,12 +102,14 @@ class ConvertSubtitle
     {
         // extract vobsub
         $dvdFile = $dir . DIRECTORY_SEPARATOR . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index;
-        if (!file_exists($dvdFile . ".sub")) {
+        if (! file_exists($dvdFile . ".sub")) {
             self::$log->info("Generating DVD sub file.", [
                 "index" => $index,
-                "filename" => $filename,
+                "filename" => $filename
             ]);
-            $arrOutput = [$index => $dvdFile . ".sub"];
+            $arrOutput = [
+                $index => $dvdFile . ".sub"
+            ];
             MKVExtractHelper::extractTracks($oRequest->oInputFile, $arrOutput);
         }
         return $dvdFile;
@@ -112,7 +118,7 @@ class ConvertSubtitle
     private static function convertSrtSubtitle($dvdFile, $subtitle, $oRequest, $index, $oOutput)
     {
         $oNewRequest = null;
-        if (!file_exists($dvdFile . ".srt")) {
+        if (! file_exists($dvdFile . ".srt")) {
             self::$log->info("Convert DVD sub to SRT.");
             $command = "vobsub2srt ";
             if (self::$log->isDebugEnabled()) {
@@ -126,7 +132,7 @@ class ConvertSubtitle
             }
             $command .= ' "' . $dvdFile . '" ';
             self::$log->debug("Using command", [
-                "command" => $command,
+                "command" => $command
             ]);
             exec($command, $out, $return);
             if ($return != 0) {
@@ -135,7 +141,7 @@ class ConvertSubtitle
         }
         if ($oRequest->subtitleConversionOutput == "MERGE") {
             self::$log->info("Merging srt into mkv.", [
-                "dvdfile" => $dvdFile,
+                "dvdfile" => $dvdFile
             ]);
             $oNewRequest = new Request($dvdFile . ".srt");
             $oNewRequest->setSubtitleTracks("0");
@@ -145,13 +151,13 @@ class ConvertSubtitle
             $oNewRequest->prepareStreams();
             $oNewRequest->oInputFile->getSubtitleStreams()[0]->language = $subtitle->language;
             self::$log->debug("Using language for final stream.", [
-                "language" => $subtitle->language,
+                "language" => $subtitle->language
             ]);
         } else {
             $newFile = $oOutput->getFileName() . "." . $index . "-" . $subtitle->language . ".srt";
             self::$log->info("Keeping file outside", [
                 "dvdfile" => $dvdFile,
-                "newfile" => $newFile,
+                "newfile" => $newFile
             ]);
             rename($dvdFile . ".srt", $newFile);
         }

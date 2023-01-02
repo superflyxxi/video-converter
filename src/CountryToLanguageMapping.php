@@ -12,7 +12,10 @@ final class CountryToLanguageMapping
         return $language;
     }
 
-    /** No need to execute this manually. Runs on load of class.**/
+    /**
+     * No need to execute this manually.
+     * Runs on load of class.*
+     */
     public static function init()
     {
         self::$mapLanguageCountry = [];

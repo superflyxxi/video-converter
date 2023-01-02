@@ -1,5 +1,4 @@
 <?php
-
 use PHPUnit\Framework\TestCase;
 
 require_once "RipVideo.php";
@@ -50,17 +49,9 @@ abstract class Test extends TestCase
             default:
                 break;
         }
-        if (!file_exists($this->getDataDir() . DIRECTORY_SEPARATOR . $localFilename)) {
-            $command =
-                'curl -k -L -o "' .
-                $this->getDataDir() .
-                DIRECTORY_SEPARATOR .
-                $localFilename .
-                '" "' .
-                getEnv("TEST_SAMPLE_BASE_URL") .
-                "/" .
-                $URLpath .
-                '"';
+        if (! file_exists($this->getDataDir() . DIRECTORY_SEPARATOR . $localFilename)) {
+            $command = 'curl -k -L -o "' . $this->getDataDir() . DIRECTORY_SEPARATOR . $localFilename . '" "' .
+                getEnv("TEST_SAMPLE_BASE_URL") . "/" . $URLpath . '"';
             passthru($command, $ret);
             return 0 < $ret;
         }

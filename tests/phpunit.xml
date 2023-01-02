@@ -1,26 +1,26 @@
 <phpunit testdox="true" noInteraction="true" cacheResult="false">
-  <php>
-    <includePath>/opt/video-converter/src</includePath>
-    <includePath>/opt/video-converter/tests</includePath>
-    <env name="LOG_LEVEL" value="100" />
-  </php>
-  <logging>
-    <testdoxHtml outputFile="../testResults/testdox.html"/>
-    <testdoxText outputFile="../testResults/testdox.txt"/>
-    <junit outputFile="../testResults/junit.xml"/>
-  </logging>
-  <coverage pathCoverage="true" >
-    <report>
-      <html outputDirectory="../testResults/coverage" />
-      <clover outputFile="../testResults/clover.xml" />
-    </report>
-    <include>
-      <directory suffix=".php">../src/</directory>
-    </include>
-  </coverage>
-  <testsuites>
-    <testsuite name="all">
-      <directory>.</directory>
-    </testsuite>
-  </testsuites>
+	<php>
+		<includePath>/opt/video-converter/src</includePath>
+		<includePath>/opt/video-converter/tests</includePath>
+		<env name="LOG_LEVEL" value="100" />
+	</php>
+	<logging>
+		<testdoxHtml outputFile="../testResults/testdox.html" />
+		<testdoxText outputFile="../testResults/testdox.txt" />
+		<junit outputFile="../testResults/junit.xml" />
+	</logging>
+	<coverage pathCoverage="true">
+		<report>
+			<html outputDirectory="../testResults/coverage" />
+			<clover outputFile="../testResults/clover.xml" />
+		</report>
+		<include>
+			<directory suffix=".php">../src/</directory>
+		</include>
+	</coverage>
+	<testsuites>
+		<testsuite name="all">
+			<directory>.</directory>
+		</testsuite>
+	</testsuites>
 </phpunit>

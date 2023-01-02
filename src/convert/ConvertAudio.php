@@ -1,5 +1,4 @@
 <?php
-
 require_once "LogWrapper.php";
 require_once "functions.php";
 require_once "request/Request.php";
@@ -19,10 +18,13 @@ class ConvertAudio
             // any track that is not needed, just copy it to its own file
             foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
                 // copy original always and add to list of additional requests
-                self::$log->info("Converting audio track", [
-                    "filename" => $oRequest->oInputFile->getFileName(),
-                    "index" => $index,
-                ]);
+                self::$log->info(
+                    "Converting audio track",
+                    [
+                        "filename" => $oRequest->oInputFile->getFileName(),
+                        "index" => $index
+                    ]
+                );
 
                 if (in_array($index, $oRequest->normalizeAudioTracks)) {
                     $arrAdditionalRequests[] = self::normalize(
@@ -43,16 +45,13 @@ class ConvertAudio
         // if the track is to be normalized, now let's normalize it and put it in
         self::$log->info("Normalizing track", [
             "filename" => $oRequest->oInputFile->getFileName(),
-            "index" => $index,
+            "index" => $index
         ]);
         $json = self::analyzeAudio($inFileName, $index);
 
         $normFile = $dir . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index . "-norm.mkv";
-        $normChannelMap =
-            $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
-            in_array($index, $oRequest->getAudioChannelLayoutTracks())
-                ? $oRequest->audioChannelLayout
-                : $stream->channel_layout;
+        $normChannelMap = $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
+            in_array($index, $oRequest->getAudioChannelLayoutTracks()) ? $oRequest->audioChannelLayout : $stream->channel_layout;
         if (null == $normChannelMap) {
             $normChannelMap = $stream->channel_layout;
         }
@@ -64,15 +63,8 @@ class ConvertAudio
         }
 
         $command = 'ffmpeg -i "' . $inFileName . '" -y -map 0:' . $index;
-        $command .=
-            ' -filter:a "loudnorm=measured_I=' .
-            $json["input_i"] .
-            ":measured_TP=" .
-            $json["input_tp"] .
-            ":measured_LRA=" .
-            $json["input_lra"] .
-            ":measured_thresh=" .
-            $json["input_thresh"];
+        $command .= ' -filter:a "loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
+            ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
         if (null != $normChannelMap) {
             $command .= ",channelmap=channel_layout=" . $normChannelMap;
         }
@@ -85,12 +77,15 @@ class ConvertAudio
         $command .= ' -metadata:s:a:0 "title=Normalized ' . $stream->language . " " . $normChannelMap . '"';
         $command .= ' -f matroska "' . $normFile . '" 2>&1';
 
-        self::$log->debug("Normalizing track with command", [
-            "filename" => $oRequest->oInputFile->getFileName(),
-            "index" => $index,
-        ]);
+        self::$log->debug(
+            "Normalizing track with command",
+            [
+                "filename" => $oRequest->oInputFile->getFileName(),
+                "index" => $index
+            ]
+        );
         self::$log->notice("Executing command", [
-            "command" => $command,
+            "command" => $command
         ]);
         passthru($command, $return);
         if ($return != 0) {
@@ -105,25 +100,29 @@ class ConvertAudio
     }
 
     /**
-     * @param inFileName The filename to analyze
+     *
+     * @param
+     *            inFileName The filename to analyze
      */
     private static function analyzeAudio($inFileName, $index)
     {
-        $command =
-            'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0:' . $index . ' -filter:a loudnorm=print_format=json -f null - 2>&1';
+        $command = 'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0:' . $index .
+            ' -filter:a loudnorm=print_format=json -f null - 2>&1';
         self::$log->debug("Analyzing audio for normalization", [
-        "filename" => $inFileName,
-            "index" => $index,
+            "filename" => $inFileName,
+            "index" => $index
         ]);
         self::$log->notice("Executing command", [
-            "command" => $command,
+            "command" => $command
         ]);
         exec($command, $out, $return);
         if ($return != 0) {
             throw new ExecutionException("ffmpeg", $return, $command);
         }
-        self::$log->debug("Command output", ["output" => $out]);
-        $out = implode(array_slice($out, -12));
+        self::$log->debug("Command output", [
+            "output" => $out
+        ]);
+        $out = implode(array_slice($out, - 12));
         $json = json_decode($out, true);
         return $json;
     }
