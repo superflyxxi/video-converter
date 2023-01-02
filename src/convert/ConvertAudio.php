@@ -67,7 +67,7 @@ class ConvertAudio
             "filename" => $oRequest->oInputFile->getFileName(),
             "index" => $index,
         ]);
-        $json = self::analyzeAudio($inFileName);
+        $json = self::analyzeAudio($inFileName, $index);
 
         $normFile = $dir . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index . "-norm.mkv";
         $normChannelMap =
@@ -85,7 +85,7 @@ class ConvertAudio
             $sampleRate = $stream->audio_sample_rate;
         }
 
-        $command = 'ffmpeg -i "' . $inFileName . '" -y -map 0';
+        $command = 'ffmpeg -i "' . $inFileName . '" -y -map 0:' . $index;
         $command .=
             ' -filter:a "loudnorm=measured_I=' .
             $json["input_i"] .
@@ -129,12 +129,13 @@ class ConvertAudio
     /**
      * @param inFileName The filename to analyze
      */
-    private static function analyzeAudio($inFileName)
+    private static function analyzeAudio($inFileName, $index)
     {
         $command =
-            'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
+            'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0:' . $index . ' -filter:a loudnorm=print_format=json -f null - 2>&1';
         self::$log->debug("Analyzing audio for normalization", [
-            "filename" => $inFileName,
+        "filename" => $inFileName,
+            "index" => $index,
         ]);
         self::$log->notice("Executing command", [
             "command" => $command,
