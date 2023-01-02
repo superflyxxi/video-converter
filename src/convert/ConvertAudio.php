@@ -23,35 +23,13 @@ class ConvertAudio
                     "filename" => $oRequest->oInputFile->getFileName(),
                     "index" => $index,
                 ]);
-                /*$tmpRequest = new Request($oRequest->oInputFile->getFileName());
-                $tmpRequest->setVideoTracks(null);
-                $tmpRequest->setAudioTracks($index);
-                $tmpRequest->setSubtitleTracks(null);
-                $tmpRequest->audioFormat = $oRequest->audioFormat;
-                $tmpRequest->audioQuality = $oRequest->audioQuality;
-                $tmpRequest->audioChannelLayout = $oRequest->audioChannelLayout;
-                $tmpRequest->setAudioChannelLayoutTracks(implode(" ", $oRequest->getAudioChannelLayoutTracks()));
-                $tmpRequest->prepareStreams();
-                $convOutFile = new OutputFile(
-                    null,
-                    $dir . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index . "-conv.mkv"
-                );
-                FFmpegHelper::execute([$tmpRequest], $convOutFile);
-                $oNewRequest = new Request($convOutFile->getFileName());
-                $oNewRequest->setVideoTracks(null);
-                $oNewRequest->setSubtitleTracks(null);
-                $oNewRequest->setAudioTracks("0");
-                $oNewRequest->audioFormat = "copy";
-                $oNewRequest->prepareStreams();
-                $arrAdditionalRequests[] = $oNewRequest;
-                $oRequest->oInputFile->removeAudioStream($index);*/
 
                 if (in_array($index, $oRequest->normalizeAudioTracks)) {
                     $arrAdditionalRequests[] = self::normalize(
                         $oRequest,
                         $index,
                         $dir,
-                        $oRequest->oInputFile->getFileName(), // $convOutFile->getFileName(),
+                        $oRequest->oInputFile->getFileName(),
                         $stream
                     );
                 }
