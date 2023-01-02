@@ -138,6 +138,7 @@ class CSVRequest
             } catch (Exception $ex) {
                 self::$log->error("Got exception for file", [
                     "errorMessage" => $ex->getMessage(),
+                    "trace" => $ex->getTraceAsString(),
                 ]);
             } finally {
                 $finalResult = max($finalResult, $result);
