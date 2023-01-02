@@ -386,14 +386,6 @@ workflows:
           context: default
           requires:
             - test-docker
-      - release-notes:
-          name: release-notes
-          context: default
-          prerelease: false
-          requires:
-            - build-docker
-            - test-docker
-            - sonar-scan
       - snyk-scan:
           context: default
           requires:
@@ -402,3 +394,10 @@ workflows:
             branches:
               ignore:
                 - main
+      - release-notes:
+          name: release-notes
+          context: default
+          prerelease: false
+          requires:
+            - build-docker
+            - test-docker
