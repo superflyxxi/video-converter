@@ -133,10 +133,8 @@ class ConvertAudio
     {
         $command =
             'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
-        self::$log->debug("Measuring audio with command", [
-            "filename" => $oRequest->oInputFile->getFileName(),
-            "index" => $index,
-            "command" => $command,
+        self::$log->debug("Analyzing audio for normalization", [
+            "filename" => $inFileName,
         ]);
         self::$log->notice("Executing command", [
             "command" => $command,
