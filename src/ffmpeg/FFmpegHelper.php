@@ -1,5 +1,4 @@
 <?php
-
 require_once "request/Request.php";
 require_once "functions.php";
 require_once "OutputFile.php";
@@ -14,19 +13,19 @@ require_once "Options.php";
 class FFmpegHelper
 {
     public static $log;
+
     private static $INTERLACED_REPLACEMENT_REGEX = "/[A-Za-z]+:[ ]+([0-9]+)/";
 
     private static $probeCache = [];
 
     public static function probe($inputFile)
     {
-        if (!array_key_exists($inputFile->getFileName(), self::$probeCache)) {
-            $command =
-                'ffprobe -v quiet -print_format json -show_format -show_streams "' .
-                $inputFile->getPrefix() .
-                $inputFile->getFileName() .
-                '"';
-            self::$log->info("Executing ffprobe", ["command" => $command]);
+        if (! array_key_exists($inputFile->getFileName(), self::$probeCache)) {
+            $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $inputFile->getPrefix() .
+                $inputFile->getFileName() . '"';
+            self::$log->info("Executing ffprobe", [
+                "command" => $command
+            ]);
             exec($command, $out, $ret);
             if ($ret > 0) {
                 self::$log->error(print_r($out, true));
@@ -35,12 +34,12 @@ class FFmpegHelper
             $json = json_decode(implode($out), true);
             self::$log->debug("Adding to probe cache", [
                 "filename" => $inputFile->getFileName(),
-                "result" => $json,
+                "result" => $json
             ]);
             self::$probeCache[$inputFile->getFileName()] = $json;
         } else {
             self::$log->debug("Found in probe cache", [
-                "filename" => $inputFile->getFileName(),
+                "filename" => $inputFile->getFileName()
             ]);
             $json = self::$probeCache[$inputFile->getFileName()];
         }
@@ -73,23 +72,26 @@ class FFmpegHelper
     private static function isInterlacedBasedOnIdet($inputFile)
     {
         self::$log->info("Checking for interlacing", [
-            "filename" => $inputFile->getFileName(),
+            "filename" => $inputFile->getFileName()
         ]);
-        $args =
-            '-i "' . $inputFile->getFileName() . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
+        $args = '-i "' . $inputFile->getFileName() . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
         $command = "ffmpeg " . $args;
-        self::$log->info("Checking for interlace", ["command" => $command]);
+        self::$log->info("Checking for interlace", [
+            "command" => $command
+        ]);
         exec($command, $out, $ret);
         if ($ret > 0) {
             throw new ExecutionException("ffmpeg", $ret, $args);
         }
-        self::$log->debug("Interlacing output", ["output" => $out]);
+        self::$log->debug("Interlacing output", [
+            "output" => $out
+        ]);
         $out = implode($out);
         /*
-[Parsed_idet_0 @ 0x559b53b4b700] Repeated Fields: Neither: 14385 Top:     1 Bottom:     2
-[Parsed_idet_0 @ 0x559b53b4b700] Single frame detection: TFF:    10 BFF:    13 Progressive:  8535 Undetermined:  5830
-[Parsed_idet_0 @ 0x559b53b4b700] Multi frame detection: TFF:     0 BFF:     0 Progressive: 14365 Undetermined:    23
-    */
+         * [Parsed_idet_0 @ 0x559b53b4b700] Repeated Fields: Neither: 14385 Top: 1 Bottom: 2
+         * [Parsed_idet_0 @ 0x559b53b4b700] Single frame detection: TFF: 10 BFF: 13 Progressive: 8535 Undetermined: 5830
+         * [Parsed_idet_0 @ 0x559b53b4b700] Multi frame detection: TFF: 0 BFF: 0 Progressive: 14365 Undetermined: 23
+         */
         preg_match("/Progressive:\s+(\d+)/", $out, $matches);
         $progressive = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
         preg_match("/TFF:\s+(\d+)/", $out, $matches);
@@ -97,12 +99,15 @@ class FFmpegHelper
         preg_match("/BFF:\s+(\d+)/", $out, $matches);
         $bff = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
         $total = $progressive + $tff + $bff;
-        self::$log->debug("Interlacing probe results", [
-            "progressive" => $progressive,
-            "tff" => $tff,
-            "bff" => $bff,
-            "total" => $total,
-        ]);
+        self::$log->debug(
+            "Interlacing probe results",
+            [
+                "progressive" => $progressive,
+                "tff" => $tff,
+                "bff" => $bff,
+                "total" => $total
+            ]
+        );
         // if percentage of frames are > 1% interlaced, then de-interlace
         return $tff / $total > 0.01 || $bff / $total > 0.01;
     }
@@ -110,9 +115,13 @@ class FFmpegHelper
     public static function execute($listRequests, $outputFile)
     {
         $command = self::generate($listRequests, $outputFile);
-        self::$log->notice("Executing ffmpeg", ["command" => $command]);
+        self::$log->notice("Executing ffmpeg", [
+            "command" => $command
+        ]);
         passthru($command . " 2>&1", $ret);
-        self::$log->debug("Command return result", ["result" => $ret]);
+        self::$log->debug("Command return result", [
+            "result" => $ret
+        ]);
         if ($ret > 0) {
             throw new ExecutionException("ffmpeg", $ret, $command);
         }
@@ -129,8 +138,8 @@ class FFmpegHelper
 
         // generate input args
         foreach ($listRequests as $tmpRequest) {
-            $finalCommand .=
-                ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() . '" ';
+            $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() .
+                '" ';
         }
 
         self::$log->debug("Generating video args");
@@ -156,11 +165,11 @@ class FFmpegHelper
         $decode = "";
         $encode = "";
         foreach ($listRequests as $tmpRequest) {
-            if ($decode=="" && $tmpRequest->isHwAccelDecode()) {
+            if ($decode == "" && $tmpRequest->isHwAccelDecode()) {
                 $decode = "-hwaccel vaapi -hwaccel_device /dev/dri/renderD128";
             }
-            if ($encode=="" && $tmpRequest->isHwAccelEncode()) {
-                $encode="-vaapi_device /dev/dri/renderD128";
+            if ($encode == "" && $tmpRequest->isHwAccelEncode()) {
+                $encode = "-vaapi_device /dev/dri/renderD128";
             }
         }
         return $decode . " " . $encode;
@@ -168,17 +177,11 @@ class FFmpegHelper
 
     private static function generateGlobalMetadataArgs($outputFile)
     {
-        return " " .
-            (null != $outputFile->title ? '-metadata "title=' . $outputFile->title . '"' : " ") .
-            " " .
-            (null != $outputFile->showTitle ? '-metadata "showTitle=' . $outputFile->showTitle . '"' : " ") .
-            " " .
-            (null != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") .
-            " " .
-            (null != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") .
-            " " .
-            (null != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") .
-            " " .
+        return " " . (null != $outputFile->title ? '-metadata "title=' . $outputFile->title . '"' : " ") . " " .
+            (null != $outputFile->showTitle ? '-metadata "showTitle=' . $outputFile->showTitle . '"' : " ") . " " .
+            (null != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") . " " .
+            (null != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") . " " .
+            (null != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") . " " .
             getEnvWithDefault("OTHER_METADATA", " ");
     }
 
@@ -189,15 +192,18 @@ class FFmpegHelper
         $args = " ";
         foreach ($listRequests as $tmpRequest) {
             $streamList = $generator->getStreams($tmpRequest->oInputFile);
-            self::$log->debug("Generating args", [
-                "filename" => $tmpRequest->oInputFile->getFileName(),
-                "streamList" => $streamList,
-            ]);
+            self::$log->debug(
+                "Generating args",
+                [
+                    "filename" => $tmpRequest->oInputFile->getFileName(),
+                    "streamList" => $streamList
+                ]
+            );
             foreach ($streamList as $index => $stream) {
                 $args .= " -map " . $fileno . ":" . $index;
-                $args .= " " . $generator->getAdditionalArgs($outTrack++, $tmpRequest, $index, $stream);
+                $args .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $index, $stream);
             }
-            $fileno++;
+            $fileno ++;
         }
         return $args;
     }

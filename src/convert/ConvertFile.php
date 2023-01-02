@@ -1,5 +1,4 @@
 <?php
-
 require_once "LogWrapper.php";
 require_once "request/Request.php";
 require_once "OutputFile.php";
@@ -27,7 +26,7 @@ class ConvertFile
     public function convert()
     {
         self::$log->info("Starting conversion for file", [
-            "filename" => $this->inputFilename,
+            "filename" => $this->inputFilename
         ]);
         // use inputfile as the postfix only if disable-postfix is not set
         $oOutput = new OutputFile(Options::get("disable-postfix") ? null : basename($this->inputFilename));
@@ -44,7 +43,7 @@ class ConvertFile
 
         self::$log->debug("Conversion output", [
             "request" => $this->req,
-            "output" => $oOutput,
+            "output" => $oOutput
         ]);
         $allRequests[] = $this->req;
         $allRequests = array_merge($allRequests, ConvertVideo::convert($this->req));

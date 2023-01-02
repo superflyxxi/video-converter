@@ -1,5 +1,4 @@
 <?php
-
 require_once "common.php";
 
 final class ConvertVideoTest extends Test
@@ -8,12 +7,15 @@ final class ConvertVideoTest extends Test
     {
         $this->getFile("dvd");
 
-        $return = $this->ripvideo("dvd.mkv", [
-            "--title" => "Test x265 Conversion",
-            "--audio-tracks" => -1,
-            "--subtitle-tracks" => -1,
-            "--deinterlace" => "off",
-        ]);
+        $return = $this->ripvideo(
+            "dvd.mkv",
+            [
+                "--title" => "Test x265 Conversion",
+                "--audio-tracks" => - 1,
+                "--subtitle-tracks" => - 1,
+                "--deinterlace" => "off"
+            ]
+        );
         $this->assertEquals(0, $return, "ripvideo exit code");
 
         $probe = $this->probe("Test x265 Conversion.dvd.mkv.mkv");

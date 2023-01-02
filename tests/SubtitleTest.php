@@ -1,5 +1,4 @@
 <?php
-
 require_once "common.php";
 
 final class SubtitleTest extends Test
@@ -7,13 +6,29 @@ final class SubtitleTest extends Test
     public function sourceFormats(): array
     {
         return [
-            "dvd subrip english" => ["dvd", "2", "subrip", "eng"],
-            "dvd ass french" => ["dvd", "3", "ass", "fre"],
-            "bluray ass english" => ["bluray", "2", "ass", "eng"],
+            "dvd subrip english" => [
+                "dvd",
+                "2",
+                "subrip",
+                "eng"
+            ],
+            "dvd ass french" => [
+                "dvd",
+                "3",
+                "ass",
+                "fre"
+            ],
+            "bluray ass english" => [
+                "bluray",
+                "2",
+                "ass",
+                "eng"
+            ]
         ];
     }
 
     /**
+     *
      * @test
      * @dataProvider sourceFormats
      */
@@ -21,15 +36,18 @@ final class SubtitleTest extends Test
     {
         $this->getFile($source);
 
-        $return = $this->ripvideo($source . ".mkv", [
-            "--disable-postfix" => true,
-            "--title" => "Test Convert $source-$track Subtitle to $format",
-            "--video-tracks" => -1,
-            "--audio-tracks" => -1,
-            "--subtitle-tracks" => $track,
-            "--subtitle-format" => $format,
-            "--year" => 2019,
-        ]);
+        $return = $this->ripvideo(
+            $source . ".mkv",
+            [
+                "--disable-postfix" => true,
+                "--title" => "Test Convert $source-$track Subtitle to $format",
+                "--video-tracks" => - 1,
+                "--audio-tracks" => - 1,
+                "--subtitle-tracks" => $track,
+                "--subtitle-format" => $format,
+                "--year" => 2019
+            ]
+        );
 
         $this->assertEquals(0, $return, "ripvideo exit code");
 
@@ -51,18 +69,21 @@ final class SubtitleTest extends Test
         $this->markTestIncomplete("Blacklist doesn't work the way you think it should.");
         $this->getFile("dvd");
 
-        $return = $this->ripvideo("dvd.mkv", [
-            "--disable-postfix" => true,
-            "--title" => "Test Subtitle Files",
-            "--video-format" => "copy",
-            "--audio-tracks" => -1,
-            "--subtitle-format" => "srt",
-            "--subtitle-conversion-output" => "FILE",
-            "--subtitle-conversion-blacklist" => "’!\�~@~",
-            "--year" => 2019,
-        ]);
+        $return = $this->ripvideo(
+            "dvd.mkv",
+            [
+                "--disable-postfix" => true,
+                "--title" => "Test Subtitle Files",
+                "--video-format" => "copy",
+                "--audio-tracks" => - 1,
+                "--subtitle-format" => "srt",
+                "--subtitle-conversion-output" => "FILE",
+                "--subtitle-conversion-blacklist" => "’!\�~@~",
+                "--year" => 2019
+            ]
+        );
 
-        $this->assertEquals(0, $return, "ripvideo exit code"); //test("ffmpeg code", 0, $return, $output);
+        $this->assertEquals(0, $return, "ripvideo exit code"); // test("ffmpeg code", 0, $return, $output);
 
         $probe = $this->probe("Test Subtitle Files (2019).mkv");
 

@@ -1,5 +1,4 @@
 <?php
-
 require_once "LogWrapper.php";
 
 class ExecutionException extends Exception

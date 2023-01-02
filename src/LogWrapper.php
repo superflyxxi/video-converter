@@ -1,5 +1,4 @@
 <?php
-
 require_once "functions.php";
 require_once "Options.php";
 
@@ -13,7 +12,7 @@ class LogWrapper extends Logger
         parent::__construct($name);
         $this->pushHandler(new StreamHandler("php://stdout", Options::get("log-level", Logger::INFO)));
     }
-    
+
     public function isDebugEnabled()
     {
         return $this->isHandling(Logger::DEBUG);
