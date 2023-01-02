@@ -15,7 +15,7 @@ class ConvertAudio
         $arrAdditionalRequests = [];
         if ("copy" != $oRequest->audioFormat && count($oRequest->normalizeAudioTracks)) {
             // only do this there are tracks to normalize
-            $dir = getEnvWithDefault("TMP_DIR", "/tmp");
+            $dir = getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR;
             // any track that is not needed, just copy it to its own file
             foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
                 // copy original always and add to list of additional requests
@@ -23,7 +23,7 @@ class ConvertAudio
                     "filename" => $oRequest->oInputFile->getFileName(),
                     "index" => $index,
                 ]);
-                $tmpRequest = new Request($oRequest->oInputFile->getFileName());
+                /*$tmpRequest = new Request($oRequest->oInputFile->getFileName());
                 $tmpRequest->setVideoTracks(null);
                 $tmpRequest->setAudioTracks($index);
                 $tmpRequest->setSubtitleTracks(null);
@@ -44,14 +44,14 @@ class ConvertAudio
                 $oNewRequest->audioFormat = "copy";
                 $oNewRequest->prepareStreams();
                 $arrAdditionalRequests[] = $oNewRequest;
-                $oRequest->oInputFile->removeAudioStream($index);
+                $oRequest->oInputFile->removeAudioStream($index);*/
 
                 if (in_array($index, $oRequest->normalizeAudioTracks)) {
                     $arrAdditionalRequests[] = self::normalize(
                         $oRequest,
                         $index,
                         $dir,
-                        $convOutFile->getFileName(),
+                        $oRequest->oInputFile->getFileName(), // $convOutFile->getFileName(),
                         $stream
                     );
                 }
@@ -67,20 +67,7 @@ class ConvertAudio
             "filename" => $oRequest->oInputFile->getFileName(),
             "index" => $index,
         ]);
-        $command =
-            'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
-        self::$log->debug("Measuring audio with command", [
-            "filename" => $oRequest->oInputFile->getFileName(),
-            "index" => $index,
-            "command" => $command,
-        ]);
-        exec($command, $out, $return);
-        if ($return != 0) {
-            throw new ExecutionException("ffmpeg", $return, $command);
-        }
-        self::$log->debug("Command output", ["output" => $out]);
-        $out = implode(array_slice($out, -12));
-        $json = json_decode($out, true);
+        $json = self::analyzeAudio($inFileName);
 
         $normFile = $dir . $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index . "-norm.mkv";
         $normChannelMap =
@@ -123,6 +110,8 @@ class ConvertAudio
         self::$log->debug("Normalizing track with command", [
             "filename" => $oRequest->oInputFile->getFileName(),
             "index" => $index,
+        ]);
+        self::$log->notice("Executing command", [
             "command" => $command,
         ]);
         passthru($command, $return);
@@ -135,6 +124,31 @@ class ConvertAudio
         $oNewRequest->setSubtitleTracks(null);
         $oNewRequest->audioFormat = "copy";
         return $oNewRequest;
+    }
+
+    /**
+     * @param inFileName The filename to analyze
+     */
+    private static function analyzeAudio($inFileName)
+    {
+        $command =
+            'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0 -filter:a loudnorm=print_format=json -f null - 2>&1';
+        self::$log->debug("Measuring audio with command", [
+            "filename" => $oRequest->oInputFile->getFileName(),
+            "index" => $index,
+            "command" => $command,
+        ]);
+        self::$log->notice("Executing command", [
+            "command" => $command,
+        ]);
+        exec($command, $out, $return);
+        if ($return != 0) {
+            throw new ExecutionException("ffmpeg", $return, $command);
+        }
+        self::$log->debug("Command output", ["output" => $out]);
+        $out = implode(array_slice($out, -12));
+        $json = json_decode($out, true);
+        return $json;
     }
 }
 
