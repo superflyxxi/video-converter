@@ -79,7 +79,7 @@ class InputFile
         unset($this->streams[$index]);
     }
 
-    public function getFileName()
+    public function getFileName(): string
     {
         return $this->filename;
     }
