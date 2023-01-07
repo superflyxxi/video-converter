@@ -282,8 +282,9 @@ jobs:
 
   release-notes:
     resource_class: small
-    docker:
-      - image: circleci/node
+    executor:
+      name: node/default
+      tag: "18"
     parameters:
       prerelease:
         description: Whether it's a pre-release and not actually release.
