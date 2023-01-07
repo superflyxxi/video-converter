@@ -16,25 +16,14 @@ class ConvertAudio
             // only do this there are tracks to normalize
             $dir = getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR;
             // any track that is not needed, just copy it to its own file
-            foreach ($oRequest->oInputFile->getAudioStreams() as $index => $stream) {
-                // copy original always and add to list of additional requests
-                self::$log->info(
-                    "Converting audio track",
-                    [
-                        "filename" => $oRequest->oInputFile->getFileName(),
-                        "index" => $index
-                    ]
+            foreach ($oRequest->normalizeAudioTracks as $index => $stream) {
+                $arrAdditionalRequests[] = self::normalize(
+                    $oRequest,
+                    $index,
+                    $dir,
+                    $oRequest->oInputFile->getFileName(),
+                    $stream
                 );
-
-                if (in_array($index, $oRequest->normalizeAudioTracks)) {
-                    $arrAdditionalRequests[] = self::normalize(
-                        $oRequest,
-                        $index,
-                        $dir,
-                        $oRequest->oInputFile->getFileName(),
-                        $stream
-                    );
-                }
             }
         }
         return $arrAdditionalRequests;
