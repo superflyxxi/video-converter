@@ -284,7 +284,6 @@ jobs:
     resource_class: small
     executor:
       name: node/default
-      tag: "18"
     parameters:
       prerelease:
         description: Whether it's a pre-release and not actually release.
