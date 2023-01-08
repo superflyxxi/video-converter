@@ -14,20 +14,12 @@ class ConvertAudio
         $arrAdditionalRequests = [];
         if ("copy" != $oRequest->audioFormat && count($oRequest->normalizeAudioTracks)) {
             // only do this there are tracks to normalize
-            foreach ($oRequest->normalizeAudioTracks as $index => $stream) {
-                $arrAdditionalRequests[] = self::normalize(
-                    $oRequest,
-                    $index,
-                    $dir,
-                    $oRequest->oInputFile->getFileName(),
-                    $stream
-                );
-            }
+            $arrAdditionalRequests[] = self::normalize($oRequest);
         }
         return $arrAdditionalRequests;
     }
 
-    private static function normalize(Request $oRequest): void
+    private static function normalize(Request $oRequest): Request
     {
         $normFile = getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR .
             $oRequest->oInputFile->getTemporaryFileNamePrefix() . "-norm.mkv";
@@ -35,8 +27,8 @@ class ConvertAudio
 
         $outindex = 0;
         $outaudiotracks = "";
-        foreach ($oRequest->normalizeAudioTracks as $index => $stream) {
-            self::appendNormalizedArgs($oRequest->oInputFile->getFileName(), $stream, $command, $outindex);
+        foreach ($oRequest->normalizeAudioTracks as $index) {
+            $command .= self::appendNormalizedArgs($oRequest, $index, $outindex);
             $outaudiotracks .= $outindex . ' ';
             $outindex ++;
         }
@@ -66,24 +58,25 @@ class ConvertAudio
         return $oNewRequest;
     }
 
-    private static function appendNormalizedArgs(Request $oRequest, Stream $instream, string $command, int $outindex): string
+    private static function appendNormalizedArgs(Request $oRequest, int $index, int $outindex): string
     {
-        $json = self::analyzeAudio($oRequest->oInputFile->getFileName(), $instream->index);
+        $stream = $oRequest->oInputFile->getAudioStreams()[$index];
+        $json = self::analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
         $normChannelMap = $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
-            in_array($instream->index, $oRequest->getAudioChannelLayoutTracks()) ? $oRequest->audioChannelLayout : $instream->channel_layout;
+            in_array($index, $oRequest->getAudioChannelLayoutTracks()) ? $oRequest->audioChannelLayout : $stream->channel_layout;
         if (null == $normChannelMap) {
-            $normChannelMap = $instream->channel_layout;
+            $normChannelMap = $stream->channel_layout;
         }
         $normChannelMap = preg_replace("/\(.+\)/", "", $normChannelMap);
 
-        $command .= ' -map 0:' . $instream->index;
+        $command .= ' -map 0:' . $index;
         $command .= ' -filter:a "loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
             ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
         if (null != $normChannelMap) {
             $command .= ',channelmap=channel_layout=' . $normChannelMap;
         }
-        $command .= '"  -metadata:s:a:' . $outindex . ' "title=Normalized ' . $instream->language . " " . $normChannelMap .
+        $command .= '"  -metadata:s:a:' . $outindex . ' "title=Normalized ' . $stream->language . " " . $normChannelMap .
             '"';
         return $command;
     }
