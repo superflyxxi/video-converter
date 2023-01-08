@@ -218,11 +218,12 @@ jobs:
 
   test-docker:
     parallelism: 5
-    resource_class: medium
-    executor: 
-      name: docker/machine
-      dlc: false
+    resource_class: small
+    docker:
+      - image: cimg/base:stable 
     steps:
+      - setup_remote_docker:
+          docker_layer_caching: false
       - attach_workspace:
           at: /tmp/workspace
       - checkout
