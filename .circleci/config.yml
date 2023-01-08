@@ -299,10 +299,10 @@ jobs:
       - when:
           condition: << parameters.prerelease >>
           steps:
-            run:
-              name: Define additional args
-              command: |
-                echo "ADDITIONAL_ARGS=--dry-run" >> ${BASH_ENV}
+            - run:
+                name: Define additional args
+                command: |
+                  echo "ADDITIONAL_ARGS=--dry-run" >> ${BASH_ENV}
       - run:
           name: Semantic-release
           command: |
