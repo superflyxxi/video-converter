@@ -34,11 +34,11 @@ docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
 	${TEST_IMAGE} ${TEST_ARG} ${ADDITIONAL_PHPUNIT_ARGS}
+sleep ${SLEEPTIME:-10s}
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 while kill -0 ${PID} 2> /dev/null; do
+	printf "Current Test: %s; Log: %s\n" "$(docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt)" "$(docker logs -n 1 test)"
 	sleep ${SLEEPTIME:-30s}
-	docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt 
-	docker logs -n 1 test
 done
 EXIT_CODE=$(docker inspect test | grep "ExitCode\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 if [[ ${EXIT_CODE} -ne 0 ]]; then
