@@ -39,8 +39,8 @@ sleep ${SLEEPTIME:-2s}
 #while ps -p ${PID} 2>&1 1> /dev/null
 until [[ "$( docker container inspect -f '{{.State.Running}}' test )" == "false" ]];
 do
-	printf "Current Test: %s; Log: %s\n" "$(docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt)" "$(docker logs -n 1 test)"
 	sleep ${SLEEPTIME:-30s}
+	printf "Current Test: %s; Log: %s\n" "$(docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt)" "$(docker logs -n 1 test)"
 done
 EXIT_CODE=$(docker inspect test | grep "ExitCode\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 docker inspect test
