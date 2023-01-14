@@ -3,8 +3,8 @@
 # Build beforehand
 # docker build --tag test --build-arg BUILD_IMAGE=${THIS_FULL_IMAGE:?Missing THIS_FULL_IMAGE} tests/
 
+mkdir testResults
 set -e
-
 TEST_IMAGE=${TEST_IMAGE:-video-converter-test}
 
 if [[ "" != "${CLASSES}" ]]; then
@@ -34,20 +34,19 @@ docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
 	${TEST_IMAGE} ${TEST_ARG} ${ADDITIONAL_PHPUNIT_ARGS}
-sleep 5s
+sleep 2s
 until [[ "$( docker container inspect -f '{{.State.Running}}' test )" == "false" ]];
 do
+	printf "Current Test: %s; %s\n" "$(docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt)" "$(docker logs -n 1 test)"
 	sleep ${SLEEPTIME:-30s}
-	printf "Current Test: %s; Log: %s\n" "$(docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt)" "$(docker logs -n 1 test)"
 done
 EXIT_CODE=$(docker inspect test | grep "ExitCode\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
 
 if [[ ${EXIT_CODE} -ne 0 ]]; then
 	docker logs test
 fi
-
-docker cp test:/opt/video-converter/testResults/testdox.txt ./testdox.txt
+docker cp test:/opt/video-converter/testResults ./
 docker rm test
 printf "Test results\n============\n\n"
-cat testdox.txt
+cat testResults/testdox.txt
 exit ${EXIT_CODE}
