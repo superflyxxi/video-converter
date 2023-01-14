@@ -34,9 +34,11 @@ docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
 	${TEST_IMAGE} ${TEST_ARG} ${ADDITIONAL_PHPUNIT_ARGS}
-sleep ${SLEEPTIME:-10s}
-PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
-while ps -p ${PID} 2>&1 1> /dev/null; do
+sleep ${SLEEPTIME:-2s}
+#PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
+#while ps -p ${PID} 2>&1 1> /dev/null
+until [[ "$( docker container inspect -f '{{.State.Running}}' test )" == "false" ]];
+do
 	printf "Current Test: %s; Log: %s\n" "$(docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt)" "$(docker logs -n 1 test)"
 	sleep ${SLEEPTIME:-30s}
 done
