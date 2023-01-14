@@ -41,6 +41,8 @@ while kill -0 ${PID} 2> /dev/null; do
 	sleep ${SLEEPTIME:-30s}
 done
 EXIT_CODE=$(docker inspect test | grep "ExitCode\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
+docker inspect test
+docker logs test
 if [[ ${EXIT_CODE} -ne 0 ]]; then
 	docker logs test
 fi
