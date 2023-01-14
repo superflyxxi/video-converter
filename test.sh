@@ -36,7 +36,7 @@ docker run --name test -d \
 	${TEST_IMAGE} ${TEST_ARG} ${ADDITIONAL_PHPUNIT_ARGS}
 sleep ${SLEEPTIME:-10s}
 PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
-while kill -0 ${PID} 2> /dev/null; do
+while ps -p ${PID} 2>&1 1> /dev/null; do
 	printf "Current Test: %s; Log: %s\n" "$(docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt)" "$(docker logs -n 1 test)"
 	sleep ${SLEEPTIME:-30s}
 done
