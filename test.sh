@@ -29,25 +29,23 @@ fi
 if [[ "${USE_VAAPI:-false}" = "true" && -d /dev/dri ]]; then
 	DEVICES="--device /dev/dri"
 fi
-set -x
+
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
 	${TEST_IMAGE} ${TEST_ARG} ${ADDITIONAL_PHPUNIT_ARGS}
-sleep ${SLEEPTIME:-2s}
-#PID=$(docker inspect test | grep "Pid\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
-#while ps -p ${PID} 2>&1 1> /dev/null
+sleep 5s
 until [[ "$( docker container inspect -f '{{.State.Running}}' test )" == "false" ]];
 do
 	sleep ${SLEEPTIME:-30s}
 	printf "Current Test: %s; Log: %s\n" "$(docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt)" "$(docker logs -n 1 test)"
 done
 EXIT_CODE=$(docker inspect test | grep "ExitCode\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
-docker inspect test
-docker logs test
+
 if [[ ${EXIT_CODE} -ne 0 ]]; then
 	docker logs test
 fi
+
 docker cp test:/opt/video-converter/testResults/testdox.txt ./testdox.txt
 docker rm test
 printf "Test results\n============\n\n"
