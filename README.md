@@ -52,8 +52,8 @@ Option (short) | Description | Default | Example
 `--video-format` | The desired output video format to use. | `libx265` | `hevc_vaapi`
 `--video-upscale` | The upscale multiplier to use for uscaling the video. | `1` | `2.25`
 `--hdr` | The input is in HDR and the desired output should also be HDR. | |
-`--deinterlace` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), default behavior of deinterlacing while keeping the same framerate (`02`), or avoid deinterlacing (`off`). | `02` | `00`
-`--deinterlace-check` | How to check for deinterlacing. `idet` will determine wether more than 1% of frames are interlaced. `probe` will be based on video data. | `probe` | `idet`
+`--deinterlace-mode` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), or default behavior of deinterlacing while keeping the same framerate (`02`). | `02` | `00`
+`--deinterlace` | Whether deinterlacing should be performed. `false` will disable deinterlacing. `true` will force deinterlacing. `check-idet` will determine wether more than 1% of frames are interlaced. `check-probe` will be based on video data. | `false` | `probe`
 `--audio-tracks` | The input audio tracks to convert. | `*` | `1`
 `--audio-format` | The desired output audio format. | `aac` | `eac3`
 `--audio-quality` | The desired output audio quality based on the `--audio-format`. | `2` | `560`

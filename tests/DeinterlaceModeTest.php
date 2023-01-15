@@ -38,7 +38,8 @@ final class DeinterlaceModeTest extends Test
         $return = $this->ripvideo(
             "dvd.mkv",
             [
-                "--deinterlace" => $mode,
+                "--deinterlace" => "true",
+                "--deinterlace-mode" => $mode,
                 "--audio-tracks" => - 1,
                 "--subtitle-tracks" => - 1,
                 "--title" => "Test Deinterlace Mode " . $mode,
