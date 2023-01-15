@@ -86,7 +86,10 @@ class Request
         $req->setVideoTracks(Options::get("video-tracks", "*"));
         $req->videoFormat = Options::get("video-format", "libx265");
         $req->videoUpscale = Options::get("video-upscale", 1);
-        $req->setDeinterlace(Options::get("deinterlace", "off"));
+        // deinterlace = true, false, check-probe, check-idet
+        // deinterlace-mode = 00, 01, 02
+        $req->deinterlaceMode = Options::get("deinterlace-mode", "02");
+        $req->setDeinterlace(Options::get("deinterlace", "false"));
 
         $req->setAudioTracks(Options::get("audio-tracks", "*"));
         $req->audioFormat = Options::get("audio-format", "aac");
@@ -182,13 +185,19 @@ class Request
 
     public function setDeinterlace($val): void
     {
-        $this->deinterlace = $val;
         if ("copy" != $this->videoFormat) {
-            $this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile);
-            $this->deinterlaceMode = $val;
+            switch ($val) {
+                case "false":
+                case "true":
+                    $this->deinterlace = ("true" == $val);
+                    break;
+
+                default:
+                    $this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile);
+                    break;
+            }
         } else {
-            $this->deinterlace = false;
-            $this->deinterlaceMode = null;
+            $this->deinterlace = $val;
         }
     }
 
