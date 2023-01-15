@@ -1,5 +1,4 @@
 <?php
-
 require_once "Stream.php";
 require_once "ffmpeg/FFmpegHelper.php";
 
@@ -8,7 +7,7 @@ class InputFile
     public function __construct($filename)
     {
         $this->filename = $filename;
-        if (is_dir($filename) || substr($filename, -strlen($filename)) === ".iso") {
+        if (is_dir($filename) || substr($filename, - strlen($filename)) === ".iso") {
             $this->prefix = "bluray:";
         }
         $json = FFmpegHelper::probe($this);
@@ -80,7 +79,7 @@ class InputFile
         unset($this->streams[$index]);
     }
 
-    public function getFileName()
+    public function getFileName(): string
     {
         return $this->filename;
     }

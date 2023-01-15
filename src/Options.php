@@ -3,6 +3,7 @@
 class Options
 {
     private static $opts;
+
     private static $inputfile;
 
     public static function init($args = null)
@@ -37,7 +38,7 @@ class Options
                     "subtitle-conversion-blacklist::",
                     "hdr",
                     "disable-postfix",
-                    "playlist::",
+                    "playlist::"
                 ],
                 $otherArgs
             );
@@ -56,7 +57,13 @@ class Options
 
     public static function get($arg, $default = null)
     {
-        $env = getEnv(strtoupper(str_replace(["-", "."], ["_", "__"], $arg)));
+        $env = getEnv(strtoupper(str_replace([
+            "-",
+            "."
+        ], [
+            "_",
+            "__"
+        ], $arg)));
         if ($env) {
             return $env;
         }

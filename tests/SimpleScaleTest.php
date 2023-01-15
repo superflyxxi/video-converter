@@ -1,15 +1,26 @@
 <?php
-
 require_once "common.php";
 
 final class SimpleScaleTest extends Test
 {
     public function scaling(): array
     {
-        return ["Upscale" => ["1.5", "720", "1080"], "Downscale" => ["0.5", "240", "360"]];
+        return [
+            "Upscale" => [
+                "1.5",
+                "720",
+                "1080"
+            ],
+            "Downscale" => [
+                "0.5",
+                "240",
+                "360"
+            ]
+        ];
     }
 
     /**
+     *
      * @test
      * @dataProvider scaling
      */
@@ -22,9 +33,9 @@ final class SimpleScaleTest extends Test
             [
                 "--title" => "Test " . $factor . "x Scale",
                 "--video-upscale" => $factor,
-                "--audio-tracks" => -1,
-                "--subtitle-tracks" => -1,
-                "--deinterlace" => "off",
+                "--audio-tracks" => - 1,
+                "--subtitle-tracks" => - 1,
+                "--deinterlace" => "off"
             ],
             "10m"
         );

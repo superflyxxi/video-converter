@@ -1,21 +1,33 @@
 <?php
-
 require_once "common.php";
 
 final class DeinterlaceModeTest extends Test
 {
     public function dataProvider(): array
     {
-        return ["double framerate" => ["01", "19001/317"], "same framerate" => ["02", "30000/1001"]];
+        return [
+            "double framerate" => [
+                "01",
+                "19001/317"
+            ],
+            "same framerate" => [
+                "02",
+                "30000/1001"
+            ]
+        ];
     }
 
-    /** @test */
+    /**
+     *
+     * @test
+     */
     public function testDeinterlaceMode00()
     {
         $this->assertTrue(true, "Already covered by auto-detection tests");
     }
 
     /**
+     *
      * @test
      * @dataProvider dataProvider
      */
@@ -27,10 +39,10 @@ final class DeinterlaceModeTest extends Test
             "dvd.mkv",
             [
                 "--deinterlace" => $mode,
-                "--audio-tracks" => -1,
-                "--subtitle-tracks" => -1,
+                "--audio-tracks" => - 1,
+                "--subtitle-tracks" => - 1,
                 "--title" => "Test Deinterlace Mode " . $mode,
-                "--year" => 2021,
+                "--year" => 2021
             ],
             "1m"
         );

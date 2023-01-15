@@ -1,5 +1,4 @@
 <?php
-
 require_once "convert/ConvertFile.php";
 require_once "request/CSVRequest.php";
 require_once "LogWrapper.php";
@@ -13,7 +12,7 @@ class RipVideo
     {
         $envInput = Options::getInputFile();
         $csvRequest = null;
-        if (strcasecmp(substr($envInput, -4), ".csv") === 0) {
+        if (strcasecmp(substr($envInput, - 4), ".csv") === 0) {
             $csvRequest = new CSVRequest(new SplFileObject($envInput, "r"));
         } else {
             if (null == $envInput) {
@@ -21,13 +20,23 @@ class RipVideo
             } else {
                 $arrFiles[] = $envInput;
             }
-            self::$log->debug("Files to process", ["arrFiles" => $arrFiles]);
+            self::$log->debug("Files to process", [
+                "arrFiles" => $arrFiles
+            ]);
             $csvFile = new SplTempFileObject();
-            $csvFile->fputcsv(["filename", "dummy"]);
+            $csvFile->fputcsv([
+                "filename",
+                "dummy"
+            ]);
             foreach ($arrFiles as $infile) {
-                if (!is_dir($infile)) {
-                    self::$log->debug("Adding to CSV", ["filename" => $infile]);
-                    $csvFile->fputcsv([$infile, "dummy"]);
+                if (! is_dir($infile)) {
+                    self::$log->debug("Adding to CSV", [
+                        "filename" => $infile
+                    ]);
+                    $csvFile->fputcsv([
+                        $infile,
+                        "dummy"
+                    ]);
                 }
             }
             $csvFile->rewind();
