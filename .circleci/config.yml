@@ -96,9 +96,11 @@ jobs:
             fi
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
-              for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
+            #VERSION="1.2.3"; PREV=${VERSION:0:1}; for A in $(echo ${VERSION:1} | tr "." "\n"); do NOW="$PREV.$A"; echo A=$A; echo PREV=${PREV}; echo caching=${NOW}; PREV=$NOW; done
+              PREV=${PRIMARY_DOCKER_TAG:0:1}
+              for A in $(echo ${PRIMARY_DOCKER_TAG:1} | tr "." "\n"); do 
                 NOW="$PREV.$A"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:${NOW:1}"
+                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:${NOW}"
                 PREV=$NOW
               done
             fi
