@@ -7,10 +7,10 @@ final class DeinterlaceDetectionTest extends Test
     {
         return [
             "probe" => [
-                "probe"
+                "check-probe"
             ],
             "idet" => [
-                "idet"
+                "check-idet"
             ]
         ];
     }
@@ -27,8 +27,8 @@ final class DeinterlaceDetectionTest extends Test
         $return = $this->ripvideo(
             "dvd.mkv",
             [
-                "--deinterlace" => "00",
-                "--deinterlace-check" => $check,
+                "--deinterlace-mode" => "00",
+                "--deinterlace" => $check,
                 "--audio-tracks" => - 1,
                 "--subtitle-tracks" => - 1,
                 "--title" => "Test " . $check . " Auto Deinterlace",
