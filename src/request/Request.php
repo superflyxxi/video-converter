@@ -180,8 +180,8 @@ class Request
         return $this->subtitleTracks;
     }
 
-	public function setDeinterlace($val): void
-	{
+    public function setDeinterlace($val): void
+    {
         $this->deinterlace = $val;
         if ("copy" != $this->videoFormat) {
             $this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile);
