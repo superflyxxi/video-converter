@@ -1,13 +1,12 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
+
 orbs:
   docker: circleci/docker@2.0
   node: circleci/node@5
   php: circleci/php@1
   sonarcloud: sonarsource/sonarcloud@1
+  snyk: snyk/snyk@1
 
-# Orchestrate or schedule a set of jobs
 jobs:
 
   build-phar:
@@ -37,12 +36,38 @@ jobs:
       - store_artifacts:
           path: video-converter.phar
 
-  build-docker:
-    resource_class: medium
-    executor: 
-      name: docker/machine
-      dlc: false
+  snyk-scan:
+    resource_class: small
+    docker:
+      - image: cimg/base:stable 
     steps:
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - php/install-php:
+          version: "7.4"
+      - php/install-composer
+      - php/install-packages:
+          install-flags: "--no-interaction --prefer-dist --no-dev"
+      - snyk/scan:
+          project: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+      - run:
+          name: Load docker images
+          command: docker load -i /tmp/workspace/video-converter-images.tar
+      - snyk/scan:
+          project: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+          docker-image-name: ${CIRCLE_PROJECT_REPONAME}:latest
+          severity-threshold: high
+
+  build-docker:
+    resource_class: small
+    docker:
+      - image: cimg/base:stable 
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: false
       - run:
           name: Define cache env variables
           command: |
@@ -71,9 +96,11 @@ jobs:
             fi
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
-              for A in $(echo ${PRIMARY_DOCKER_TAG} | tr "." "\n"); do 
+            #VERSION="1.2.3"; PREV=${VERSION:0:1}; for A in $(echo ${VERSION:1} | tr "." "\n"); do NOW="$PREV.$A"; echo A=$A; echo PREV=${PREV}; echo caching=${NOW}; PREV=$NOW; done
+              PREV=${PRIMARY_DOCKER_TAG:0:1}
+              for A in $(echo ${PRIMARY_DOCKER_TAG:1} | tr "." "\n"); do 
                 NOW="$PREV.$A"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:${NOW:1}"
+                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:${NOW}"
                 PREV=$NOW
               done
             fi
@@ -120,10 +147,9 @@ jobs:
             - video-converter-images.tar*
 
   publish-docker:
-    resource_class: medium
-    executor: 
-      name: docker/machine
-      dlc: false
+    resource_class: small
+    docker:
+      - image: cimg/base:stable 
     parameters:
       registry-env:
         description: The registry envirnment variable to use to publish docker images.
@@ -138,6 +164,8 @@ jobs:
         type: string
         default: DOCKER_PASSWORD
     steps:
+      - setup_remote_docker:
+          docker_layer_caching: false
       - attach_workspace:
           at: /tmp/workspace
       - run:
@@ -191,12 +219,13 @@ jobs:
                 tag: test-${PRIMARY_DOCKER_TAG}
 
   test-docker:
-    resource_class: medium
     parallelism: 5
-    executor: 
-      name: docker/machine
-      dlc: false
+    resource_class: small
+    docker:
+      - image: cimg/base:stable 
     steps:
+      - setup_remote_docker:
+          docker_layer_caching: false
       - attach_workspace:
           at: /tmp/workspace
       - checkout
@@ -257,8 +286,8 @@ jobs:
 
   release-notes:
     resource_class: small
-    docker:
-      - image: circleci/node
+    executor:
+      name: node/default
     parameters:
       prerelease:
         description: Whether it's a pre-release and not actually release.
@@ -272,10 +301,10 @@ jobs:
       - when:
           condition: << parameters.prerelease >>
           steps:
-            run:
-              name: Define additional args
-              command: |
-                echo "ADDITIONAL_ARGS=--dry-run" >> ${BASH_ENV}
+            - run:
+                name: Define additional args
+                command: |
+                  echo "ADDITIONAL_ARGS=--dry-run" >> ${BASH_ENV}
       - run:
           name: Semantic-release
           command: |
@@ -361,6 +390,14 @@ workflows:
           context: default
           requires:
             - test-docker
+      - snyk-scan:
+          context: default
+          requires:
+            - test-docker
+          filters:
+            branches:
+              ignore:
+                - main
       - release-notes:
           name: release-notes
           context: default
@@ -368,4 +405,3 @@ workflows:
           requires:
             - build-docker
             - test-docker
-            - sonar-scan

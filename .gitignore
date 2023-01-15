@@ -2,6 +2,12 @@ testResults/
 vendor/
 .phplint-cache
 **/*.phar
+testdox.txt
 
 # Prettier stuff
 .php-cs-fixer.cache
+
+# Eclipse stuff
+.buildpath
+.project
+.settings/
