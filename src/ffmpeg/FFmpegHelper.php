@@ -18,7 +18,7 @@ class FFmpegHelper
 
     private static $probeCache = [];
 
-    public static function probe($inputFile)
+    public static function probe(InputFile $inputFile): array
     {
         if (! array_key_exists($inputFile->getFileName(), self::$probeCache)) {
             $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $inputFile->getPrefix() .
@@ -46,34 +46,14 @@ class FFmpegHelper
         return $json;
     }
 
-    public static function isInterlaced($inputFile): bool
-    {
-        switch (Options::get("deinterlace-check", "probe")) {
-            case "idet":
-                return self::isInterlacedBasedOnIdet($inputFile);
-                break;
-            case "probe":
-                return self::isInterlacedBasedOnProbe($inputFile);
-                break;
-            case "force":
-                return true;
-                break;
-
-            default:
-                // function will return
-                break;
-        }
-        return false;
-    }
-
-    private static function isInterlacedBasedOnProbe($inputFile): bool
+    public static function isInterlacedBasedOnProbe(InputFile $inputFile): bool
     {
         $json = self::probe($inputFile);
         $stream = $json["streams"][0];
         return array_key_exists("field_order", $stream) && $stream["field_order"] != "progressive";
     }
 
-    private static function isInterlacedBasedOnIdet($inputFile): bool
+    public static function isInterlacedBasedOnIdet(InputFile $inputFile): bool
     {
         self::$log->info("Checking for interlacing", [
             "filename" => $inputFile->getFileName()

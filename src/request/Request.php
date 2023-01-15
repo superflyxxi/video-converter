@@ -185,19 +185,22 @@ class Request
 
     public function setDeinterlace($val): void
     {
-        if ("copy" != $this->videoFormat) {
+        if ("copy" == $this->videoFormat) {
+            $this->deinterlace = false;
+        } else {
             switch ($val) {
-                case "false":
-                case "true":
-                    $this->deinterlace = ("true" == $val);
+                case "check-idet":
+                    $this->deinterlace = FFmpegHelper::isInterlacedBasedOnIdet($this->oInputFile);
+                    break;
+
+                case "check-probe":
+                    $this->deinterlace = FFmpegHelper::isInterlacedBasedOnProbe($this->oInputFile);
                     break;
 
                 default:
-                    $this->deinterlace = FFmpegHelper::isInterlaced($this->oInputFile);
+                    $this->deinterlace = ("true" == $val);
                     break;
             }
-        } else {
-            $this->deinterlace = $val;
         }
     }
 
