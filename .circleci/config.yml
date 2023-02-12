@@ -50,7 +50,6 @@ jobs:
           name: Load docker images
           command: docker load -i /tmp/workspace/video-converter-images.tar
       - snyk/scan:
-          project: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
           docker-image-name: ${CIRCLE_PROJECT_REPONAME}:latest
           fail-on-issues: false
 
