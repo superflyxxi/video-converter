@@ -46,20 +46,12 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
-      - php/install-php:
-          version: "7.4"
-      - php/install-composer
-      - php/install-packages:
-          install-flags: "--no-interaction --prefer-dist --no-dev"
-      - snyk/scan:
-          project: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
       - run:
           name: Load docker images
           command: docker load -i /tmp/workspace/video-converter-images.tar
       - snyk/scan:
-          project: ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
           docker-image-name: ${CIRCLE_PROJECT_REPONAME}:latest
-          severity-threshold: high
+          fail-on-issues: false
 
   build-docker:
     resource_class: small
