@@ -240,8 +240,9 @@ jobs:
               exit 1
             fi
             ./test.sh
-            cp -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
-            cp -v testResults/junit.xml testResults/junit-${CIRCLE_NODE_INDEX}.xml
+            cat testResults/clover.xml
+            mv -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
+            mv -v testResults/junit.xml testResults/junit-${CIRCLE_NODE_INDEX}.xml
       - store_test_results:
           path: testResults
       - store_artifacts:
