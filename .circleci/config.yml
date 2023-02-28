@@ -226,19 +226,23 @@ jobs:
           command: |
             docker load -i /tmp/workspace/video-converter-images.tar
       - run:
-          name: Run tests
+          name: Determine tests
           command: |
-            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
-              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
-            fi
-            export TEST_IMAGE=test-${CIRCLE_PROJECT_REPONAME}
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
+            echo "CLASSES=${CLASSES}" >> ${BASH_ENV}
             printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
             if [[ $(echo ${ALL_CLASSES} | wc -w) -eq 0 ]]; then
               echo "Not enough classes. Something's wrong"
               exit 1
             fi
+      - run:
+          name: Run tests ${CLASSES}
+          command: |
+            if [[ "<< pipeline.git.branch >>" != "main" ]]; then
+              export ADDITIONAL_PHPUNIT_ARGS="--fail-on-warning --fail-on-risky";
+            fi
+            export TEST_IMAGE=test-${CIRCLE_PROJECT_REPONAME}
             ./test.sh
             cat testResults/clover.xml
             mv -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
