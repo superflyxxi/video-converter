@@ -154,4 +154,35 @@ final class BasicTest extends Test
         $return = $this->ripvideo("dvd.mkv", []);
         $this->assertEquals(1, $return, "ripvideo exit code");
     }
+
+    public function testSubDirectory()
+    {
+        $this->getFile("dvd");
+
+        $subdir = "anotherdir";
+        passthru("mkdir -p -v " . $this->getDataDir() . DIRECTORY_SEPARATOR . $subdir);
+        passthru("cp -v " . $this->getDataDir() . DIRECTORY_SEPARATOR . "dvd.mkv " . $this->getDataDir() . DIRECTORY_SEPARATOR . $subdir . DIRECTORY_SEPARATOR);
+
+        $return = $this->ripvideo(
+            $subdir . DIRECTORY_SEPARATOR . "dvd.mkv",
+            [
+                "--title" => "Test Subdir",
+                "--year" => 2019,
+                "--audio-format" => "copy",
+                "--video-format" => "copy",
+                "--subtitle-format" => "copy"
+            ]
+        );
+        $this->assertEquals(0, $return, "ffmpeg exit code");
+
+        $probe = $this->probe("Test Subdir (2019).dvd.mkv.mkv");
+
+        $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
+        $this->assertEquals("audio", $probe["streams"][1]["codec_type"], "Stream 1 codec_type");
+        $this->assertEquals("subtitle", $probe["streams"][2]["codec_type"], "Stream 2 coded_type");
+        $this->assertEquals("subtitle", $probe["streams"][3]["codec_type"], "Stream 3 codec_type");
+        $this->assertArrayNotHasKey(4, $probe["streams"], "Stream 4 exists");
+        $this->assertEquals("Test Subdir", $probe["format"]["tags"]["title"], "Metadata title");
+        $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
+    }
 }

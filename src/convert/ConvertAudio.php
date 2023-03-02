@@ -71,7 +71,7 @@ class ConvertAudio
         $normChannelMap = preg_replace("/\(.+\)/", "", $normChannelMap);
 
         $command = ' -map 0:' . $index;
-        $command .= ' -filter:a "loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
+        $command .= ' -filter:a:' . $outindex .' "loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
             ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
         if (null != $normChannelMap) {
             $command .= ',channelmap=channel_layout=' . $normChannelMap;
