@@ -14,7 +14,7 @@ class ConvertAudio
         $arrAdditionalRequests = [];
         if ("copy" != $oRequest->audioFormat && count($oRequest->normalizeAudioTracks)) {
             // only do this there are tracks to normalize
-            $arrAdditionalRequests[] = self::generateNewRequestsForTracks($oRequest);
+            $arrAdditionalRequests = self::generateNewRequestsForTracks($oRequest);
         }
         return $arrAdditionalRequests;
     }
@@ -91,6 +91,8 @@ class ConvertAudio
 
         $request = new Request($oRequest->oInputFile->getFileName());
         $request->setAudioTracks($index);
+        $request->audioFormat = $oRequest->audioFormat;
+        $request->audioQuality = $oRequest->audioQuality;
         $request->setVideoTracks(null);
         $request->setSubtitleTracks(null);
         $request->setNormalizeAudioTracks(null);
