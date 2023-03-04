@@ -64,6 +64,8 @@ class Request
 
     public $videoUpscale = 1;
 
+    public $customFilter = null;
+
     public function __construct($filename)
     {
         $this->oInputFile = new InputFile($filename);

@@ -44,10 +44,17 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                     "channels" => $channels
                 ]
             );
+            $filter = $request->customFilter;
             if (null != $channelLayout && $channels <= $stream->channels) {
                 // only change the channel layout if the number of original channels is more than requested
                 $channelLayout = preg_replace("/\(.+\)/", "", $channelLayout);
-                $args .= " -filter:a:" . $outTrack . " channelmap=channel_layout=" . $channelLayout;
+                if (null != $filter) {
+                    $filter .= ',';
+                }
+                $filter .= 'channelmap=channel_layout=' . $channelLayout;
+            }
+            if (null != $filter) {
+                $args .= ' -filter:a:' . $outTrack . ' "' . $filter . '"';
             }
             $args .= " -c:a:" . $outTrack . " " . $request->audioFormat;
             $args .= " -q:a:" . $outTrack . " " . $request->audioQuality;
