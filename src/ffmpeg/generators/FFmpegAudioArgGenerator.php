@@ -54,6 +54,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 $filter .= 'channelmap=channel_layout=' . $channelLayout;
             }
             if (null != $filter) {
+                self::$log->debug("Filter available", ["outTrack"=>$outTrack,"filter"=>$filter]);
                 $args .= ' -filter:a:' . $outTrack . ' "' . $filter . '"';
             }
             $args .= " -c:a:" . $outTrack . " " . $request->audioFormat;
