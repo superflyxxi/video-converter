@@ -89,14 +89,11 @@ class ConvertAudio
     {
         $json = self::analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
-        $normChannelMap = self::getNormalizedChannelMap($oRequest, $index);
-
         $request = new Request($oRequest->oInputFile->getFileName());
         $request->setAudioTracks($index);
         $request->setVideoTracks(null);
         $request->setSubtitleTracks(null);
         $request->setNormalizeAudioTracks(null);
-        $request->audioChannelLayout = $normChannelMap;
         $request->customFilter = 'loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
             ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
         $request->prepareStreams();
