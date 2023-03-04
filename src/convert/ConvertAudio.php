@@ -14,7 +14,7 @@ class ConvertAudio
         $arrAdditionalRequests = [];
         if ("copy" != $oRequest->audioFormat && count($oRequest->normalizeAudioTracks)) {
             // only do this there are tracks to normalize
-            $arrAdditionalRequests[] = self::normalize($oRequest);
+            $arrAdditionalRequests[] = self::generateNewRequestsForTracks($oRequest);
         }
         return $arrAdditionalRequests;
     }
@@ -63,22 +63,63 @@ class ConvertAudio
         $stream = $oRequest->oInputFile->getAudioStreams()[$index];
         $json = self::analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
-        $normChannelMap = $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
-            in_array($index, $oRequest->getAudioChannelLayoutTracks()) ? $oRequest->audioChannelLayout : $stream->channel_layout;
-        if (null == $normChannelMap) {
-            $normChannelMap = $stream->channel_layout;
-        }
-        $normChannelMap = preg_replace("/\(.+\)/", "", $normChannelMap);
+        $normChannelMap = self::getNormalizedChannelMap($oRequest, $index);
 
         $command = ' -map 0:' . $index;
-        $command .= ' -filter:a:' . $outindex .' "loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
-            ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
+        $command .= ' -filter:a:' . $outindex . ' "loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" .
+            $json["input_tp"] . ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
         if (null != $normChannelMap) {
             $command .= ',channelmap=channel_layout=' . $normChannelMap;
         }
         $command .= '"  -metadata:s:a:' . $outindex . ' "title=Normalized ' . $stream->language . " " . $normChannelMap .
             '"';
         return $command;
+    }
+
+    private static function generateNewRequestsForTracks(Request $oRequest): array
+    {
+        $arrNewRequests = [];
+        foreach ($oRequest->normalizeAudioTracks as $index) {
+            $arrNewRequests[] = self::generateNewRequest($oRequest, $index);
+        }
+
+        return $arrNewRequests;
+    }
+    private static function generateNewRequest($oRequest, $index): Request
+    {
+        $json = self::analyzeAudio($oRequest->oInputFile->getFileName(), $index);
+
+        $normChannelMap = self::getNormalizedChannelMap($oRequest, $index);
+
+        $request = new Request($oRequest->oInputFile->getFileName());
+        $request->setAudioTracks($index);
+        $request->setVideoTracks(null);
+        $request->setSubtitleTracks(null);
+        $request->setNormalizeAudioTracks(null);
+        $request->audioChannelLayout = $normChannelMap;
+        $request->customFilter = 'loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
+            ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
+        $request->prepareStreams();
+
+        return $request;
+    }
+
+    /**
+     *
+     * @param
+     *            oRequest
+     * @param
+     *            index
+     */
+    private static function getNormalizedChannelMap($oRequest, $index)
+    {
+        $normChannelMap = $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
+            in_array($index, $oRequest->getAudioChannelLayoutTracks()) ? $oRequest->audioChannelLayout : $stream->channel_layout;
+        if (null == $normChannelMap) {
+            $normChannelMap = $stream->channel_layout;
+        }
+        $normChannelMap = preg_replace("/\(.+\)/", "", $normChannelMap);
+        return $normChannelMap;
     }
 
     /**
