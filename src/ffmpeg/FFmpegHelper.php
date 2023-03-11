@@ -179,13 +179,23 @@ class FFmpegHelper
             self::$log->debug(
                 "Generating args",
                 [
-                    "filename" => $tmpRequest->oInputFile->getFileName(),
-                    "streamList" => $streamList
+                    "fileno" => $fileno,
+                    "filename" => $tmpRequest->oInputFile->getFileName()
                 ]
             );
             foreach ($streamList as $index => $stream) {
-                $args .= " -map " . $fileno . ":" . $index;
-                $args .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $index, $stream);
+                self::$log->debug(
+                    "Generating stream specific args",
+                    [
+                        "fileno" => $fileno,
+                        "index" => $index,
+                        "stream" => $stream
+                    ]
+                );
+                $thisarg = " -map " . $fileno . ":" . $index;
+                $thisarg .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $index, $stream);
+                $args.=$thisarg;
+                self::$log->debug("Final argument generated", ["fileno"=>$fileno, "index"=>$index, "arg"=>$thisarg]);
             }
             $fileno ++;
         }
