@@ -10,7 +10,7 @@ TEST_IMAGE=${TEST_IMAGE:-video-converter-test}
 if [[ "" != "${TESTCASES}" ]]; then
 	printf "Using test cases: %s\n" "${TESTCASES}"
 	set -x
-	TEST_ARG="--filter \"/$(printf "%s" "$TESTCASES" | tr '\n' '|')/\""
+	TEST_ARG="--filter /$(xargs echo <<< ${TESTCASES} | sed 's/ /|/g')/"
 elif [[ "" != "${CLASSES}" ]]; then
 	printf "Using test classes: %s\n" "${CLASSES}"
 	TEST_ARG="--filter /$(xargs echo <<< $CLASSES | sed 's/ /|/g')/"
