@@ -78,6 +78,9 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
             $args .= " -c:a:" . $outTrack . " copy";
         }
         $args .= " -metadata:s:a:" . $outTrack . " language=" . $stream->language;
+        if (null != $request->audioTitle) {
+            $args .= " -metadata:s:a:" . $outTrack . " title='" . $request->audioTitle ."'";
+        }
         return $args;
     }
 

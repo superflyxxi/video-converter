@@ -46,6 +46,8 @@ class Request
 
     public $audioSampleRate = null;
 
+    public $audioTitle = null;
+
     public $normalizeAudioTracks = null;
 
     private $hwaccel = false;

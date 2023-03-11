@@ -87,6 +87,7 @@ class ConvertAudio
     }
     private static function generateNewRequest($oRequest, $index): Request
     {
+        $stream = $oRequest->oInputFile->getAudioStreams()[$index];
         $json = self::analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
         $request = new Request($oRequest->oInputFile->getFileName());
@@ -98,6 +99,7 @@ class ConvertAudio
         $request->setNormalizeAudioTracks(null);
         $request->customFilter = 'loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
             ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
+        $request->audioTitle = "Normalized " . $stream->title;
         $request->prepareStreams();
 
         return $request;
