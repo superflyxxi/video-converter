@@ -94,6 +94,10 @@ class ConvertAudio
         $request->setAudioTracks($index);
         $request->audioFormat = $oRequest->audioFormat;
         $request->audioQuality = $oRequest->audioQuality;
+        if ($oRequest->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $oRequest->getAudioChannelLayoutTracks())) {
+            $request->setAudioChannelLayoutTracks($index);
+            $request->audioChannelLayout = $oRequest->audioChannelLayout;
+        }
         $request->setVideoTracks(null);
         $request->setSubtitleTracks(null);
         $request->setNormalizeAudioTracks(null);
@@ -101,6 +105,11 @@ class ConvertAudio
             ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
         $request->audioTitle = "Normalized " . $stream->title;
         $request->prepareStreams();
+
+        self::$log->debug("Additional request created", [
+            "request" => $request,
+            "index" => $index
+        ]);
 
         return $request;
     }
