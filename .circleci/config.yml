@@ -251,13 +251,16 @@ jobs:
             mv -v testResults/junit.xml junitResults/junit-${CIRCLE_NODE_INDEX}.xml
       - store_test_results:
           path: junitResults
+      - persist_to_workspace:
+          root: junitResults
+          paths:
+            - junit-*.xml
       - store_artifacts:
           path: testResults
       - persist_to_workspace:
           root: testResults
           paths:
             - clover-*.xml
-            - junit-*.xml
 
   sonar-scan:
     executor: 
