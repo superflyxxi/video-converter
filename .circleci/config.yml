@@ -234,7 +234,9 @@ jobs:
             fi
             export TEST_IMAGE=test-${CIRCLE_PROJECT_REPONAME}
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
+            export ALL_TESTCASES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - .*::\(.*\)/\1/g' | sed 's/\(.*\)"\(.*\)"/\1 with data set "\2"/g' | sed 's/\r/\n/g')
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
+            export TESTCASES=$(echo "${ALL_TESTCASES}" | circleci tests split --split-by=timings --timings-type=testname)
             printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
             if [[ $(echo ${ALL_CLASSES} | wc -w) -eq 0 ]]; then
               echo "Not enough classes. Something's wrong"

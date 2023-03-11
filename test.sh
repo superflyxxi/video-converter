@@ -7,7 +7,10 @@ mkdir testResults
 set -e
 TEST_IMAGE=${TEST_IMAGE:-video-converter-test}
 
-if [[ "" != "${CLASSES}" ]]; then
+if [[ "" != "${TESTCASES}" ]]; then
+	printf "Using test cases: %s\n" "${TESTCASES}"
+	TEST_ARG="--filter /$(xargs echo <<< $TESTCASES | sed 's/ /|/g')/"
+elif [[ "" != "${CLASSES}" ]]; then
 	printf "Using test classes: %s\n" "${CLASSES}"
 	TEST_ARG="--filter /$(xargs echo <<< $CLASSES | sed 's/ /|/g')/"
 elif [[ "" != "${CIRCLE_NODE_TOTAL}" ]]; then
