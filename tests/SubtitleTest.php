@@ -6,19 +6,19 @@ final class SubtitleTest extends Test
     public function sourceFormats(): array
     {
         return [
-            "dvd subrip english" => [
+            "dvdSubripEng" => [
                 "dvd",
                 "2",
                 "subrip",
                 "eng"
             ],
-            "dvd ass french" => [
+            "dvdAssFre" => [
                 "dvd",
                 "3",
                 "ass",
                 "fre"
             ],
-            "bluray ass english" => [
+            "blurayAssEng" => [
                 "bluray",
                 "2",
                 "ass",
