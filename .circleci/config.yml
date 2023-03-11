@@ -236,9 +236,6 @@ jobs:
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
             export ALL_TESTCASES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/^ - .*::\(.*\)\r/\1/g' | sed 's/\(.*\)"\(.*\)"/\1 with data set "\2"/g')
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
-            echo "ALL_TESTCASES=${ALL_TESTCASES}"
-            echo "circleci output"
-            echo "${ALL_TESTCASES}" | circleci tests split --split-by=timings --timings-type=testname
             export TESTCASES=$(echo "${ALL_TESTCASES}" | circleci tests split --split-by=timings --timings-type=testname)
             printf "All Testcases=%s\n\nRunning with=%s\n\n" "${ALL_TESTCASES}" "${TESTCASES}"
             printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
