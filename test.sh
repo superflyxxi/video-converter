@@ -10,7 +10,8 @@ TEST_IMAGE=${TEST_IMAGE:-video-converter-test}
 if [[ "" != "${TESTCASES}" ]]; then
 	printf "Using test cases: %s\n" "${TESTCASES}"
 	set -x
-	TEST_ARG="--filter /$(xargs echo <<< ${TESTCASES} | sed 's/ /|/g')/"
+	# clean up with data set and replace with @
+	TEST_ARG="--filter /$(printf "%s" "${TESTCASES}" | sed 's/\(.*\) with data set "\(.*\)"/\1@\2/g'| xargs echo | sed 's/ /|/g')/"
 elif [[ "" != "${CLASSES}" ]]; then
 	printf "Using test classes: %s\n" "${CLASSES}"
 	TEST_ARG="--filter /$(xargs echo <<< $CLASSES | sed 's/ /|/g')/"
