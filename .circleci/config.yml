@@ -246,10 +246,11 @@ jobs:
               exit 1
             fi
             ./test.sh
-            cp -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
-            cp -v testResults/junit.xml testResults/junit-${CIRCLE_NODE_INDEX}.xml
+            mkdir junitResults
+            mv -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
+            mv -v testResults/junit.xml junitResults/junit-${CIRCLE_NODE_INDEX}.xml
       - store_test_results:
-          path: testResults
+          path: junitResults
       - store_artifacts:
           path: testResults
       - persist_to_workspace:
