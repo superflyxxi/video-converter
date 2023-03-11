@@ -33,6 +33,7 @@ if [[ "${USE_VAAPI:-false}" = "true" && -d /dev/dri ]]; then
 	DEVICES="--device /dev/dri"
 fi
 
+echo "TEST_ARG=${TEST_ARG}"
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
