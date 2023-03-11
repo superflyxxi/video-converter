@@ -44,10 +44,18 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                     "channels" => $channels
                 ]
             );
+            $filter = $request->customFilter;
             if (null != $channelLayout && $channels <= $stream->channels) {
                 // only change the channel layout if the number of original channels is more than requested
                 $channelLayout = preg_replace("/\(.+\)/", "", $channelLayout);
-                $args .= " -filter:a:" . $outTrack . " channelmap=channel_layout=" . $channelLayout;
+                if (null != $filter) {
+                    $filter .= ',';
+                }
+                $filter .= 'channelmap=channel_layout=' . $channelLayout;
+            }
+            if (null != $filter) {
+                self::$log->debug("Filter available", ["outTrack"=>$outTrack,"filter"=>$filter]);
+                $args .= ' -filter:a:' . $outTrack . ' "' . $filter . '"';
             }
             $args .= " -c:a:" . $outTrack . " " . $request->audioFormat;
             $args .= " -q:a:" . $outTrack . " " . $request->audioQuality;
@@ -70,6 +78,9 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
             $args .= " -c:a:" . $outTrack . " copy";
         }
         $args .= " -metadata:s:a:" . $outTrack . " language=" . $stream->language;
+        if (null != $request->audioTitle) {
+            $args .= " -metadata:s:a:" . $outTrack . " title='" . $request->audioTitle ."'";
+        }
         return $args;
     }
 

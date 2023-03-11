@@ -46,6 +46,8 @@ class Request
 
     public $audioSampleRate = null;
 
+    public $audioTitle = null;
+
     public $normalizeAudioTracks = null;
 
     private $hwaccel = false;
@@ -63,6 +65,8 @@ class Request
     private $videoHdr = false;
 
     public $videoUpscale = 1;
+
+    public $customFilter = null;
 
     public function __construct($filename)
     {
@@ -108,9 +112,9 @@ class Request
         return $req;
     }
 
-    private function setTracks($req)
+    private function setTracks($track)
     {
-        return $req === null || trim($req) == "" ? [] : explode(" ", $req);
+        return $track === null || trim($track) == "" ? [] : explode(" ", $track);
     }
 
     private function areAllTracksConsidered($tracks)
@@ -118,9 +122,9 @@ class Request
         return in_array("*", $tracks);
     }
 
-    public function setAudioChannelLayoutTracks($req)
+    public function setAudioChannelLayoutTracks($track)
     {
-        $this->audioChannelLayoutTracks = $this->setTracks($req);
+        $this->audioChannelLayoutTracks = $this->setTracks($track);
     }
 
     public function areAllAudioChannelLayoutTracksConsidered()

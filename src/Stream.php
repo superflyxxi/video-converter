@@ -7,8 +7,14 @@ class Stream
         $this->index = $json["index"];
         $this->codec_type = $json["codec_type"];
         $this->codec_name = $json["codec_name"];
-        if (array_key_exists("tags", $json) && array_key_exists("language", $json["tags"])) {
-            $this->language = $json["tags"]["language"];
+        if (array_key_exists("tags", $json)) {
+            $tags = $json["tags"];
+            if (array_key_exists("language", $tags)) {
+                $this->language = $tags["language"];
+            }
+            if (array_key_exists("title", $tags)) {
+                $this->title = $tags["title"];
+            }
         }
         if (array_key_exists("channel_layout", $json)) {
             $this->channel_layout = $json["channel_layout"];
@@ -49,4 +55,6 @@ class Stream
     public $height = null;
 
     public $width = null;
+
+    public $title = null;
 }
