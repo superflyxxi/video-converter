@@ -257,7 +257,7 @@ jobs:
       - persist_to_workspace:
           root: testResults
           paths:
-            - junit-*.xml
+            - junitResults/junit-*.xml
             - clover-*.xml
 
   sonar-scan:
