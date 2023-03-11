@@ -24,7 +24,7 @@ jobs:
       - run: rm -rvf vendor
       - php/install-packages:
           install-flags: "--no-interaction --prefer-dist --no-dev"
-      - run: curl -o phar-composer -JL "https://github.com/clue/phar-composer/releases/download/v1.2.0/phar-composer-1.4.0.phar"
+      - run: curl -o phar-composer -JL "https://github.com/clue/phar-composer/releases/download/v1.4.0/phar-composer-1.4.0.phar"
       - run:
           name: Build phar
           command: |
