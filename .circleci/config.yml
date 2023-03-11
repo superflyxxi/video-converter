@@ -234,24 +234,30 @@ jobs:
             fi
             export TEST_IMAGE=test-${CIRCLE_PROJECT_REPONAME}
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
+            export ALL_TESTCASES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/^ - .*::\(.*\)\r/\1/g' | sed 's/\(.*\)"\(.*\)"/\1 with data set "\2"/g')
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
+            #export TESTCASES=$(echo "${ALL_TESTCASES}" | circleci tests split --split-by=timings --timings-type=testname)
+            printf "All Testcases=%s\n\nRunning with=%s\n\n" "${ALL_TESTCASES}" "${TESTCASES}"
             printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
             if [[ $(echo ${ALL_CLASSES} | wc -w) -eq 0 ]]; then
               echo "Not enough classes. Something's wrong"
               exit 1
             fi
             ./test.sh
-            cp -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
-            cp -v testResults/junit.xml testResults/junit-${CIRCLE_NODE_INDEX}.xml
+            mkdir testResults/junitResults
+            mv -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
+            mv -v testResults/junit.xml testResults/junitResults/junit-${CIRCLE_NODE_INDEX}.xml
+            tar -cjf testResults/coverage.tar.bz2 testResults/coverage
+            rm -rfv testResults/coverage
       - store_test_results:
-          path: testResults
+          path: testResults/junitResults
       - store_artifacts:
           path: testResults
       - persist_to_workspace:
           root: testResults
           paths:
+            - junitResults/junit-*.xml
             - clover-*.xml
-            - junit-*.xml
 
   sonar-scan:
     executor: 

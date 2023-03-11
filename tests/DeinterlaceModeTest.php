@@ -6,11 +6,11 @@ final class DeinterlaceModeTest extends Test
     public function dataProvider(): array
     {
         return [
-            "double framerate" => [
+            "doubleFramerate" => [
                 "01",
                 "19001/317"
             ],
-            "same framerate" => [
+            "sameFramerate" => [
                 "02",
                 "30000/1001"
             ]
