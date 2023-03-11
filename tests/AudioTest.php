@@ -51,7 +51,8 @@ final class AudioTest extends Test
         $this->assertEquals("aac", $probe["streams"][0]["codec_name"], "Stream 0 codec");
         $this->assertEquals(6, $probe["streams"][0]["channels"], "Stream 0 channels");
         $this->assertEquals("5.1", $probe["streams"][0]["channel_layout"], "Stream 0 channel_layout");
-        $this->assertEquals("Normalized eng 5.1", $probe["streams"][1]["tags"]["title"], "Stream 1 title");
+        $this->assertEquals("Normalized Surround 5.1", $probe["streams"][1]["tags"]["title"], "Stream 1 title");
+        $this->assertEquals("eng", $probe["streams"][1]["tags"]["language"], "Stream 1 language");
         $this->assertEquals("audio", $probe["streams"][1]["codec_type"], "Stream 1 codec_type");
         $this->assertEquals("aac", $probe["streams"][1]["codec_name"], "Stream 1 codec");
         $this->assertEquals("5.1", $probe["streams"][1]["channel_layout"], "Stream 1 channel_layout");
