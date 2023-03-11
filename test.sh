@@ -7,7 +7,11 @@ mkdir testResults
 set -e
 TEST_IMAGE=${TEST_IMAGE:-video-converter-test}
 
-if [[ "" != "${CLASSES}" ]]; then
+if [[ "" != "${TESTCASES}" ]]; then
+	printf "Using test cases: %s\n" "${TESTCASES}"
+	# clean up with data set and replace with .*
+	TEST_ARG="--filter /$(printf "%s" "${TESTCASES}" | sed 's/\(.*\) with data set "\(.*\)"/\1.*\2/g'| xargs echo | sed 's/ /|/g')/"
+elif [[ "" != "${CLASSES}" ]]; then
 	printf "Using test classes: %s\n" "${CLASSES}"
 	TEST_ARG="--filter /$(xargs echo <<< $CLASSES | sed 's/ /|/g')/"
 elif [[ "" != "${CIRCLE_NODE_TOTAL}" ]]; then
@@ -30,6 +34,7 @@ if [[ "${USE_VAAPI:-false}" = "true" && -d /dev/dri ]]; then
 	DEVICES="--device /dev/dri"
 fi
 
+echo "TEST_ARG=${TEST_ARG}"
 docker run --name test -d \
 	--user $(id -u):$(id -g) \
 	${DEVICES} \
