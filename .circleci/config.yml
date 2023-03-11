@@ -234,7 +234,7 @@ jobs:
             fi
             export TEST_IMAGE=test-${CIRCLE_PROJECT_REPONAME}
             export ALL_CLASSES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - \(.*\)::.*/\1/g' | uniq)
-            export ALL_TESTCASES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - .*::\(.*\)/\1/g' | sed 's/\(.*\)"\(.*\)"/\1 with data set "\2"/g' | sed 's/\r/\n/g')
+            export ALL_TESTCASES=$(docker run --rm -it ${TEST_IMAGE} --list-tests | grep "^ -" | sed 's/ - .*::\(.*\)/\1/g' | sed 's/\(.*\)"\(.*\)"/\1 with data set "\2"/g' | sed 's/\r//g')
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
             echo "ALL_TESTCASES=${ALL_TESTCASES}"
             echo "${ALL_TESTCASES}" | circleci tests split --split-by=timings --timings-type=testname
