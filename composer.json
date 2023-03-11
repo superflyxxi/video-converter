@@ -20,7 +20,6 @@
 	"require-dev" : {
 		"phpunit/phpunit" : "~9",
 		"overtrue/phplint" : "~3",
-		"clue/phar-composer" : "~1",
 		"friendsofphp/php-cs-fixer" : "~3"
 	}
 }
