@@ -252,12 +252,14 @@ jobs:
             mv -v testResults/junit.xml junitResults/junit-${CIRCLE_NODE_INDEX}.xml
       - store_test_results:
           path: junitResults
+      - store_artifacts:
+          path: junitResults
+      - store_artifacts:
+          path: testResults
       - persist_to_workspace:
           root: junitResults
           paths:
             - junit-*.xml
-      - store_artifacts:
-          path: testResults
       - persist_to_workspace:
           root: testResults
           paths:
