@@ -260,6 +260,7 @@ jobs:
             - clover-*.xml
 
   sonar-scan:
+    resource_class: small
     executor: 
       name: node/default
       tag: '16.5.0'
