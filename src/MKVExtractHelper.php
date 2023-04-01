@@ -1,7 +1,6 @@
 <?php
 use SuperFlyXXI\VideoConverter\LogWrapper;
-
-require_once "exceptions/ExecutionException.php";
+use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 
 class MKVExtractHelper
 {

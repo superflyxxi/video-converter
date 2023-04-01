@@ -1,6 +1,6 @@
 <?php
 use SuperFlyXXI\VideoConverter\LogWrapper;
-use SuperFlyXXI\VideoConverter\Output\OutputFile;
+use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 
 require_once "request/Request.php";
 require_once "functions.php";
@@ -8,7 +8,6 @@ require_once "ffmpeg/generators/FFmpegArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
-require_once "exceptions/ExecutionException.php";
 
 class FFmpegHelper
 {
