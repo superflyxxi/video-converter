@@ -2,8 +2,7 @@
 use SuperFlyXXI\VideoConverter\Input\Stream;
 use SuperFlyXXI\VideoConverter\Requests\Request;
 use SuperFlyXXI\VideoConverter\Input\InputFile;
-
-require_once "ffmpeg/generators/FFmpegArgGenerator.php";
+use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegArgGenerator;
 
 class FFmpegSubtitleArgGenerator implements FFmpegArgGenerator
 {
