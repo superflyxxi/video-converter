@@ -3,8 +3,7 @@ namespace SuperFlyXXI\VideoConverter\Requests;
 
 use SuperFlyXXI\VideoConverter\Options;
 use SuperFlyXXI\VideoConverter\LogWrapper;
-
-require_once "InputFile.php";
+use SuperFlyXXI\VideoConverter\Input\InputFile;
 
 class Request
 {

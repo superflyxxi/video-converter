@@ -1,5 +1,7 @@
 <?php
-use SuperFlyXXI\VideoConverter\Input\Stream;
+namespace SuperFlyXXI\VideoConverter\Input;
+
+use Exception;
 
 require_once "ffmpeg/FFmpegHelper.php";
 

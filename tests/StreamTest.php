@@ -1,9 +1,10 @@
 <?php
+use SuperFlyXXI\VideoConverter\Input\InputFile;
+
 /*
  * Tests when no input is given. It should product results for the file as expected.
  */
 require_once "common.php";
-require_once "InputFile.php";
 
 final class StreamTest extends Test
 {

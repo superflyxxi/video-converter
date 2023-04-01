@@ -2,9 +2,9 @@
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Input\Stream;
 use SuperFlyXXI\VideoConverter\Requests\Request;
+use SuperFlyXXI\VideoConverter\Input\InputFile;
 
 require_once "ffmpeg/generators/FFmpegArgGenerator.php";
-require_once "InputFile.php";
 
 class FFmpegAudioArgGenerator implements FFmpegArgGenerator
 {
