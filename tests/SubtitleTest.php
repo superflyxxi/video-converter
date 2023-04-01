@@ -123,7 +123,7 @@ final class SubtitleTest extends Test
 
         $this->assertEquals(0, $return, "ripvideo exit code");
 
-        $probe = $this->probe("Test Convert to Ass.mkv");
+        $probe = $this->probe("Test Convert to Ass (2019).mkv");
 
         $this->assertEquals("subtitle", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("ass", $probe["streams"][0]["codec_name"], "Stream 0 codec");
