@@ -1,5 +1,5 @@
 <?php
-require_once "functions.php";
+namespace SuperFlyXXI\VideoConverter\Output;
 
 class OutputFile
 {
