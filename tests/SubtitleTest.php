@@ -6,12 +6,13 @@ final class SubtitleTest extends Test
     public function sourceFormats(): array
     {
         return [
+            /* cover by testSrtToAss
             "dvdSubripEng" => [
                 "dvd",
                 "2",
                 "subrip",
                 "eng"
-            ],
+            ],*/
             "dvdAssFre" => [
                 "dvd",
                 "3",
@@ -100,5 +101,33 @@ final class SubtitleTest extends Test
 
         $testfile = $this->getDataDir() . DIRECTORY_SEPARATOR . "Test Subtitle Files (2019).mkv.3-fre.srt";
         $this->assertFileExists($testfile, "File for 3-fre missing");
+    }
+
+    public function testSrtToAss()
+    {
+        $track ="2";
+        $this->testSubtitleConversion("dvd", $track, "subrip", "eng");
+
+        $return = $this->ripvideo(
+            "Test Convert dvd-$track Subtitle to subrip (2019).mkv",
+            [
+                "--disable-postfix" => true,
+                "--title" => "Test Convert to Ass",
+                "--video-tracks" => - 1,
+                "--audio-tracks" => - 1,
+                "--subtitle-tracks" => $track,
+                "--subtitle-format" => "ass",
+                "--year" => 2019
+            ]
+        );
+
+        $this->assertEquals(0, $return, "ripvideo exit code");
+
+        $probe = $this->probe("Test Convert to Ass.mkv");
+
+        $this->assertEquals("subtitle", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
+        $this->assertEquals("ass", $probe["streams"][0]["codec_name"], "Stream 0 codec");
+        $this->assertEquals("eng", $probe["streams"][0]["tags"]["language"], "Stream 0 language");
+        $this->assertArrayNotHasKey(1, $probe["streams"], "Stream 2 exists");
     }
 }
