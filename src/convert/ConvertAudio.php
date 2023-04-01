@@ -1,10 +1,9 @@
 <?php
+use SuperFlyXXI\VideoConverter\LogWrapper;
+use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 
 require_once "functions.php";
 require_once "request/Request.php";
-require_once "exceptions/ExecutionException.php";
-
-use SuperFlyXXI\VideoConverter\LogWrapper;
 
 class ConvertAudio
 {
