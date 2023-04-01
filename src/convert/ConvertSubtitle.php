@@ -6,7 +6,6 @@ use SuperFlyXXI\VideoConverter\Output\OutputFile;
 use SuperFlyXXI\VideoConverter\Helpers\MKVExtractHelper;
 use SuperFlyXXI\VideoConverter\Requests\Request;
 
-require_once "InputFile.php";
 require_once "ffmpeg/FFmpegHelper.php";
 
 class ConvertSubtitle
