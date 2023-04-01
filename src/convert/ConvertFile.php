@@ -3,7 +3,6 @@ use SuperFlyXXI\VideoConverter\Options;
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Output\OutputFile;
 
-require_once "request/Request.php";
 require_once "convert/ConvertVideo.php";
 require_once "convert/ConvertSubtitle.php";
 require_once "convert/ConvertAudio.php";

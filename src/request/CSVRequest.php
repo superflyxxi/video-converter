@@ -1,7 +1,7 @@
 <?php
 use SuperFlyXXI\VideoConverter\LogWrapper;
+use SuperFlyXXI\VideoConverter\Requests\Request;
 
-require_once "request/Request.php";
 require_once "convert/ConvertFile.php";
 
 class CSVRequest

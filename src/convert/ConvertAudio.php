@@ -1,8 +1,7 @@
 <?php
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
-
-require_once "request/Request.php";
+use SuperFlyXXI\VideoConverter\Requests\Request;
 
 class ConvertAudio
 {

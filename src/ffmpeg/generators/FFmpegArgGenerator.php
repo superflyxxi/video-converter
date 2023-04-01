@@ -1,8 +1,8 @@
 <?php
 use SuperFlyXXI\VideoConverter\Input\Stream;
+use SuperFlyXXI\VideoConverter\Requests\Request;
 
 require_once "InputFile.php";
-require_once "request/Request.php";
 
 interface FFmpegArgGenerator
 {
