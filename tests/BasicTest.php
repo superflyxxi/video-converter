@@ -185,4 +185,20 @@ final class BasicTest extends Test
         $this->assertEquals("Test Subdir", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
     }
+
+    public function testInvalidFormats()
+    {
+        $this->getFile("dvd");
+        $return = $this->ripvideo(
+            "dvd.mkv",
+            [
+                "--title" => "Test Input",
+                "--year" => 2019,
+                "--audio-format" => "invalidAudioFormat",
+                "--video-format" => "invalidVideoFormat",
+                "--subtitle-format" => "invalidSubtitleFormat"
+            ]
+        );
+        $this->assertEquals(1, $return, "ffmpeg exit code");
+    }
 }
