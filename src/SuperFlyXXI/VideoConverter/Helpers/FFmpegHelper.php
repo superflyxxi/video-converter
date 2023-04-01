@@ -5,10 +5,9 @@ use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 use SuperFlyXXI\VideoConverter\Input\InputFile;
 use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegArgGenerator;
-
-require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
-require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
-require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
+use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegAudioArgGenerator;
+use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegVideoArgGenerator;
+use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegSubtitleArgGenerator;
 
 class FFmpegHelper
 {

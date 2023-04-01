@@ -1,4 +1,6 @@
 <?php
+namespace SuperFlyXXI\VideoConverter\Generators\ffmpeg;
+
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Generators\Ffmpeg\FFmpegArgGenerator;
 use SuperFlyXXI\VideoConverter\Input\Stream;
