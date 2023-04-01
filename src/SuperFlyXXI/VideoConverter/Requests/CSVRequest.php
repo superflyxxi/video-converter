@@ -1,6 +1,8 @@
 <?php
+namespace SuperFlyXXI\VideoConverter\Requests;
+
 use SuperFlyXXI\VideoConverter\LogWrapper;
-use SuperFlyXXI\VideoConverter\Requests\Request;
+use SplFileObject;
 
 require_once "convert/ConvertFile.php";
 
