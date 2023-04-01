@@ -4,6 +4,7 @@ namespace SuperFlyXXI\VideoConverter\Requests;
 use SuperFlyXXI\VideoConverter\Options;
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Input\InputFile;
+use SuperFlyXXI\VideoConverter\Helpers\FFmpegHelper;
 
 class Request
 {

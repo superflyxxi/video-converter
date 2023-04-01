@@ -2,8 +2,7 @@
 namespace SuperFlyXXI\VideoConverter\Input;
 
 use Exception;
-
-require_once "ffmpeg/FFmpegHelper.php";
+use SuperFlyXXI\VideoConverter\Helpers\FFmpegHelper;
 
 class InputFile
 {
