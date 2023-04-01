@@ -6,10 +6,6 @@ use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Helpers\FFmpegHelper;
 use SuperFlyXXI\VideoConverter\Output\OutputFile;
 
-require_once "convert/ConvertVideo.php";
-require_once "convert/ConvertSubtitle.php";
-require_once "convert/ConvertAudio.php";
-
 class ConvertFile
 {
     public static $log;

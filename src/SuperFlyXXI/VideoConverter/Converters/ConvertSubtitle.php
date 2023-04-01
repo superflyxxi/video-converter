@@ -1,4 +1,6 @@
 <?php
+namespace SuperFlyXXI\VideoConverter\Converters;
+
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\CountryToLanguageMapping;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
