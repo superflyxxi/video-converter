@@ -1,6 +1,9 @@
 <?php
+namespace SuperFlyXXI\VideoConverter\Helpers;
+
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
+use SuperFlyXXI\VideoConverter\Input\InputFile;
 
 require_once "ffmpeg/generators/FFmpegArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
