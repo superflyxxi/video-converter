@@ -1,4 +1,6 @@
 <?php
+use SuperFlyXXI\VideoConverter\Options;
+
 require_once "LogWrapper.php";
 require_once "request/Request.php";
 require_once "OutputFile.php";
@@ -7,7 +9,6 @@ require_once "convert/ConvertVideo.php";
 require_once "convert/ConvertSubtitle.php";
 require_once "convert/ConvertAudio.php";
 require_once "ffmpeg/FFmpegHelper.php";
-require_once "Options.php";
 
 class ConvertFile
 {

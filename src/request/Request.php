@@ -1,8 +1,9 @@
 <?php
+use SuperFlyXXI\VideoConverter\Options;
+
 require_once "LogWrapper.php";
 require_once "InputFile.php";
 require_once "functions.php";
-require_once "Options.php";
 
 class Request
 {
