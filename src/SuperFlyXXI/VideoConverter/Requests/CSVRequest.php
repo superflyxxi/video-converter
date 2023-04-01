@@ -4,8 +4,7 @@ namespace SuperFlyXXI\VideoConverter\Requests;
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SplFileObject;
 use Exception;
-
-require_once "convert/ConvertFile.php";
+use SuperFlyXXI\VideoConverter\Converters\ConvertFile;
 
 class CSVRequest
 {
