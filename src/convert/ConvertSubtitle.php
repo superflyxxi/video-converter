@@ -4,8 +4,8 @@ use SuperFlyXXI\VideoConverter\CountryToLanguageMapping;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 use SuperFlyXXI\VideoConverter\Output\OutputFile;
 use SuperFlyXXI\VideoConverter\Helpers\MKVExtractHelper;
+use SuperFlyXXI\VideoConverter\Requests\Request;
 
-require_once "request/Request.php";
 require_once "InputFile.php";
 require_once "ffmpeg/FFmpegHelper.php";
 

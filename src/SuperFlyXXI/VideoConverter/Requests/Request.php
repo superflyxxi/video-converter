@@ -1,4 +1,6 @@
 <?php
+namespace SuperFlyXXI\VideoConverter\Requests;
+
 use SuperFlyXXI\VideoConverter\Options;
 use SuperFlyXXI\VideoConverter\LogWrapper;
 
