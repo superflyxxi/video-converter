@@ -48,7 +48,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                 switch ($request->deinterlaceMode) {
                     default:
                     case "00":
-                        $filters .= ",dejudder,fps=" . $stream->frame_rate 
+                        $filters .= ",dejudder,fps=" . $stream->frame_rate
                             . ",fieldmatch,yadif=deint=interlaced,decimate";
                         // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
