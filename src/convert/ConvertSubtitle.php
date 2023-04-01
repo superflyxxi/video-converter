@@ -1,4 +1,6 @@
 <?php
+use SuperFlyXXI\VideoConverter\CountryToLanguageMapping;
+
 require_once "request/Request.php";
 require_once "InputFile.php";
 require_once "functions.php";
@@ -6,7 +8,6 @@ require_once "LogWrapper.php";
 require_once "ffmpeg/FFmpegHelper.php";
 require_once "MKVExtractHelper.php";
 require_once "exceptions/ExecutionException.php";
-require_once "CountryToLanguageMapping.php";
 
 class ConvertSubtitle
 {
