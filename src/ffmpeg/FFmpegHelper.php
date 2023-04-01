@@ -58,7 +58,8 @@ class FFmpegHelper
         self::$log->info("Checking for interlacing", [
             "filename" => $inputFile->getFileName()
         ]);
-        $args = '-i "' . $inputFile->getFileName() . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
+	$args = '-i "' . $inputFile->getFileName() 
+            . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
         $command = "ffmpeg " . $args;
         self::$log->info("Checking for interlace", [
             "command" => $command

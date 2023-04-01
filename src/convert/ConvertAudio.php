@@ -71,8 +71,8 @@ class ConvertAudio
         if (null != $normChannelMap) {
             $command .= ',channelmap=channel_layout=' . $normChannelMap;
         }
-        $command .= '"  -metadata:s:a:' . $outindex . ' "title=Normalized ' . $stream->language . " " . $normChannelMap .
-            '"';
+	$command .= '"  -metadata:s:a:' . $outindex . ' "title=Normalized ' . $stream->language . " " . $normChannelMap
+            . '"';
         return $command;
     }
 
@@ -94,7 +94,8 @@ class ConvertAudio
         $request->setAudioTracks($index);
         $request->audioFormat = $oRequest->audioFormat;
         $request->audioQuality = $oRequest->audioQuality;
-        if ($oRequest->areAllAudioChannelLayoutTracksConsidered() || in_array($index, $oRequest->getAudioChannelLayoutTracks())) {
+	if ($oRequest->areAllAudioChannelLayoutTracksConsidered() 
+                || in_array($index, $oRequest->getAudioChannelLayoutTracks())) {
             $request->setAudioChannelLayoutTracks($index);
             $request->audioChannelLayout = $oRequest->audioChannelLayout;
         }
@@ -124,7 +125,9 @@ class ConvertAudio
     private static function getNormalizedChannelMap($oRequest, $index)
     {
         $normChannelMap = $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
-            in_array($index, $oRequest->getAudioChannelLayoutTracks()) ? $oRequest->audioChannelLayout : $stream->channel_layout;
+            in_array($index, $oRequest->getAudioChannelLayoutTracks()) 
+                ? $oRequest->audioChannelLayout
+                : $stream->channel_layout;
         if (null == $normChannelMap) {
             $normChannelMap = $stream->channel_layout;
         }
