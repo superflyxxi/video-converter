@@ -199,6 +199,6 @@ final class BasicTest extends Test
                 "--subtitle-format" => "invalidSubtitleFormat"
             ]
         );
-        $this->assertEquals(1, $return, "ffmpeg exit code");
+        $this->assertEquals(255, $return, "ffmpeg exit code");
     }
 }
