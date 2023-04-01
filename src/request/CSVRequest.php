@@ -1,5 +1,6 @@
 <?php
-require_once "LogWrapper.php";
+use SuperFlyXXI\VideoConverter\LogWrapper;
+
 require_once "request/Request.php";
 require_once "convert/ConvertFile.php";
 

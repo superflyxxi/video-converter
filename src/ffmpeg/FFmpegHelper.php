@@ -1,8 +1,9 @@
 <?php
+use SuperFlyXXI\VideoConverter\LogWrapper;
+
 require_once "request/Request.php";
 require_once "functions.php";
 require_once "OutputFile.php";
-require_once "LogWrapper.php";
 require_once "ffmpeg/generators/FFmpegArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";

@@ -1,9 +1,9 @@
 <?php
 use SuperFlyXXI\VideoConverter\Options;
+use SuperFlyXXI\VideoConverter\LogWrapper;
 
 require_once "convert/ConvertFile.php";
 require_once "request/CSVRequest.php";
-require_once "LogWrapper.php";
 
 class RipVideo
 {
