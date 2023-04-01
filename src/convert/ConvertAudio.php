@@ -1,9 +1,11 @@
 <?php
-require_once "LogWrapper.php";
+
 require_once "functions.php";
 require_once "request/Request.php";
 require_once "Stream.php";
 require_once "exceptions/ExecutionException.php";
+
+use SuperFlyXXI\VideoConverter\LogWrapper;
 
 class ConvertAudio
 {
