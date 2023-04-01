@@ -1,5 +1,5 @@
 <?php
-namespace SuperFlyXXI\VideoConverter;
+namespace SuperFlyXXI\VideoConverter\Helpers;
 
 function getEnvWithDefault($env, $default)
 {
