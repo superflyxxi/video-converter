@@ -1,4 +1,6 @@
 <?php
+namespace SuperFlyXXI\VideoConverter\Helpers;
+
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 

@@ -3,12 +3,12 @@ use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\CountryToLanguageMapping;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 use SuperFlyXXI\VideoConverter\Output\OutputFile;
+use SuperFlyXXI\VideoConverter\Helpers\MKVExtractHelper;
 
 require_once "request/Request.php";
 require_once "InputFile.php";
 require_once "functions.php";
 require_once "ffmpeg/FFmpegHelper.php";
-require_once "MKVExtractHelper.php";
 
 class ConvertSubtitle
 {
