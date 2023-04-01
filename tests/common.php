@@ -1,5 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
+use SuperFlyXXI\VideoConverter\Options;
 
 require_once "RipVideo.php";
 

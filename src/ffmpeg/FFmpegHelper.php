@@ -8,7 +8,6 @@ require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
 require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
 require_once "exceptions/ExecutionException.php";
-require_once "Options.php";
 
 class FFmpegHelper
 {
