@@ -1,8 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 use SuperFlyXXI\VideoConverter\Options;
-
-require_once "RipVideo.php";
+use SuperFlyXXI\VideoConverter\RipVideo;
 
 abstract class Test extends TestCase
 {
