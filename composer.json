@@ -21,5 +21,10 @@
 		"phpunit/phpunit" : "~9",
 		"overtrue/phplint" : "~3",
 		"friendsofphp/php-cs-fixer" : "~3"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"SuperFlyXXI" : "src"
+		}
 	}
 }
