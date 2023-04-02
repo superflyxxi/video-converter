@@ -1,11 +1,10 @@
 <?php
 use SuperFlyXXI\VideoConverter\Input\InputFile;
+require_once "Test.php";
 
 /*
  * Tests when no input is given. It should product results for the file as expected.
  */
-require_once "common.php";
-
 final class StreamTest extends Test
 {
     public function test_DVD_Video_Stream()

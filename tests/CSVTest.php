@@ -2,7 +2,7 @@
 /*
  * Tests when no input is given. It should product results for the file as expected.
  */
-require_once "common.php";
+require_once "Test.php";
 
 final class CSVTest extends Test
 {
