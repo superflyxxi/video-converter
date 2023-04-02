@@ -1,12 +1,14 @@
 <?php
-require_once "request/Request.php";
-require_once "InputFile.php";
-require_once "functions.php";
-require_once "LogWrapper.php";
-require_once "ffmpeg/FFmpegHelper.php";
-require_once "MKVExtractHelper.php";
-require_once "exceptions/ExecutionException.php";
-require_once "CountryToLanguageMapping.php";
+namespace SuperFlyXXI\VideoConverter\Converters;
+
+use SuperFlyXXI\VideoConverter\LogWrapper;
+use SuperFlyXXI\VideoConverter\CountryToLanguageMapping;
+use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
+use SuperFlyXXI\VideoConverter\Output\OutputFile;
+use SuperFlyXXI\VideoConverter\Helpers\MKVExtractHelper;
+use SuperFlyXXI\VideoConverter\Helpers\EnvHelper;
+use SuperFlyXXI\VideoConverter\Requests\Request;
+use SuperFlyXXI\VideoConverter\Helpers\FFmpegHelper;
 
 class ConvertSubtitle
 {
@@ -14,7 +16,7 @@ class ConvertSubtitle
 
     public static function convert($oRequest, $oOutput)
     {
-        $dir = getEnvWithDefault("TMP_DIR", "/tmp");
+        $dir = EnvHelper::getEnvWithDefault("TMP_DIR", "/tmp");
         $arrAdditionalRequests = [];
         if ($oRequest->subtitleFormat != "copy") {
             $filename = $oRequest->oInputFile->getFileName();

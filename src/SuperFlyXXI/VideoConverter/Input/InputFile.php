@@ -1,6 +1,8 @@
 <?php
-require_once "Stream.php";
-require_once "ffmpeg/FFmpegHelper.php";
+namespace SuperFlyXXI\VideoConverter\Input;
+
+use Exception;
+use SuperFlyXXI\VideoConverter\Helpers\FFmpegHelper;
 
 class InputFile
 {

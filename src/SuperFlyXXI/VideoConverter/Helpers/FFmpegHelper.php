@@ -1,14 +1,14 @@
 <?php
-require_once "request/Request.php";
-require_once "functions.php";
-require_once "OutputFile.php";
-require_once "LogWrapper.php";
-require_once "ffmpeg/generators/FFmpegArgGenerator.php";
-require_once "ffmpeg/generators/FFmpegVideoArgGenerator.php";
-require_once "ffmpeg/generators/FFmpegAudioArgGenerator.php";
-require_once "ffmpeg/generators/FFmpegSubtitleArgGenerator.php";
-require_once "exceptions/ExecutionException.php";
-require_once "Options.php";
+namespace SuperFlyXXI\VideoConverter\Helpers;
+
+use SuperFlyXXI\VideoConverter\LogWrapper;
+use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
+use SuperFlyXXI\VideoConverter\Input\InputFile;
+use SuperFlyXXI\VideoConverter\Helpers\EnvHelper;
+use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegArgGenerator;
+use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegAudioArgGenerator;
+use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegVideoArgGenerator;
+use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegSubtitleArgGenerator;
 
 class FFmpegHelper
 {
@@ -115,7 +115,7 @@ class FFmpegHelper
     public static function generate($listRequests, $outputFile)
     {
         $finalCommand = "ffmpeg ";
-        if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
+        if (EnvHelper::getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
             $finalCommand .= "-y ";
         }
         $finalCommand .= self::generateHardwareAccelArgs($listRequests);
@@ -166,7 +166,7 @@ class FFmpegHelper
             (null != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") . " " .
             (null != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") . " " .
             (null != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") . " " .
-            getEnvWithDefault("OTHER_METADATA", " ");
+            EnvHelper::getEnvWithDefault("OTHER_METADATA", " ");
     }
 
     private static function generateArgs($listRequests, FFmpegArgGenerator $generator)
