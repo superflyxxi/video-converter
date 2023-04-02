@@ -1,5 +1,6 @@
 <?php
 use SuperFlyXXI\VideoConverter\Input\InputFile;
+
 require_once "Test.php";
 
 /*
