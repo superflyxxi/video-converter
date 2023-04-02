@@ -6,6 +6,7 @@ use SuperFlyXXI\VideoConverter\CountryToLanguageMapping;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 use SuperFlyXXI\VideoConverter\Output\OutputFile;
 use SuperFlyXXI\VideoConverter\Helpers\MKVExtractHelper;
+use SuperFlyXXI\VideoConverter\Helpers\EnvHelper;
 use SuperFlyXXI\VideoConverter\Requests\Request;
 use SuperFlyXXI\VideoConverter\Helpers\FFmpegHelper;
 
@@ -15,7 +16,7 @@ class ConvertSubtitle
 
     public static function convert($oRequest, $oOutput)
     {
-        $dir = getEnvWithDefault("TMP_DIR", "/tmp");
+        $dir = EnvHelper::getEnvWithDefault("TMP_DIR", "/tmp");
         $arrAdditionalRequests = [];
         if ($oRequest->subtitleFormat != "copy") {
             $filename = $oRequest->oInputFile->getFileName();

@@ -4,6 +4,7 @@ namespace SuperFlyXXI\VideoConverter\Helpers;
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 use SuperFlyXXI\VideoConverter\Input\InputFile;
+use SuperFlyXXI\VideoConverter\Helpers\EnvHelper;
 use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegArgGenerator;
 use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegAudioArgGenerator;
 use SuperFlyXXI\VideoConverter\Generators\ffmpeg\FFmpegVideoArgGenerator;
@@ -114,7 +115,7 @@ class FFmpegHelper
     public static function generate($listRequests, $outputFile)
     {
         $finalCommand = "ffmpeg ";
-        if (getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
+        if (EnvHelper::getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
             $finalCommand .= "-y ";
         }
         $finalCommand .= self::generateHardwareAccelArgs($listRequests);
@@ -165,7 +166,7 @@ class FFmpegHelper
             (null != $outputFile->year ? '-metadata "year=' . $outputFile->year . '"' : " ") . " " .
             (null != $outputFile->season ? '-metadata "season=' . $outputFile->season . '"' : " ") . " " .
             (null != $outputFile->episode ? '-metadata "episode=' . $outputFile->episode . '"' : " ") . " " .
-            getEnvWithDefault("OTHER_METADATA", " ");
+            EnvHelper::getEnvWithDefault("OTHER_METADATA", " ");
     }
 
     private static function generateArgs($listRequests, FFmpegArgGenerator $generator)
