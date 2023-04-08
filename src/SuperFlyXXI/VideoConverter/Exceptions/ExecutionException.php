@@ -1,5 +1,8 @@
 <?php
-require_once "LogWrapper.php";
+namespace SuperFlyXXI\VideoConverter\Exceptions;
+
+use SuperFlyXXI\VideoConverter\LogWrapper;
+use Exception;
 
 class ExecutionException extends Exception
 {

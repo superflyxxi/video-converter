@@ -1,7 +1,10 @@
 <?php
-require_once "LogWrapper.php";
-require_once "request/Request.php";
-require_once "convert/ConvertFile.php";
+namespace SuperFlyXXI\VideoConverter\Requests;
+
+use SuperFlyXXI\VideoConverter\LogWrapper;
+use SplFileObject;
+use Exception;
+use SuperFlyXXI\VideoConverter\Converters\ConvertFile;
 
 class CSVRequest
 {

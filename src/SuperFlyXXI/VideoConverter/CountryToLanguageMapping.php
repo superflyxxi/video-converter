@@ -1,4 +1,5 @@
 <?php
+namespace SuperFlyXXI\VideoConverter;
 
 final class CountryToLanguageMapping
 {

@@ -1,9 +1,8 @@
 <?php
-require_once "functions.php";
-require_once "Options.php";
+namespace SuperFlyXXI\VideoConverter;
 
-use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class LogWrapper extends Logger
 {
