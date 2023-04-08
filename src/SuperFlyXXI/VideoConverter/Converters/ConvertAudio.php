@@ -1,9 +1,10 @@
 <?php
-require_once "LogWrapper.php";
-require_once "functions.php";
-require_once "request/Request.php";
-require_once "Stream.php";
-require_once "exceptions/ExecutionException.php";
+namespace SuperFlyXXI\VideoConverter\Converters;
+
+use SuperFlyXXI\VideoConverter\LogWrapper;
+use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
+use SuperFlyXXI\VideoConverter\Requests\Request;
+use SuperFlyXXI\VideoConverter\Helpers\EnvHelper;
 
 class ConvertAudio
 {
@@ -21,7 +22,7 @@ class ConvertAudio
 
     private static function normalize(Request $oRequest): Request
     {
-        $normFile = getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR .
+        $normFile = EnvHelper::getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR .
             $oRequest->oInputFile->getTemporaryFileNamePrefix() . "-norm.mkv";
         $command = 'ffmpeg -i "' . $oRequest->oInputFile->getFileName() . '" -y ';
 

@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+use SuperFlyXXI\VideoConverter\RipVideo;
+
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
 require_once __DIR__ . "/../vendor/autoload.php";
 
@@ -19,6 +21,5 @@ function error_handler(int $errno, string $errstr, $errfile = null, $errline = 0
 }
 set_error_handler("error_handler");
 
-require_once "RipVideo.php";
 $rip = new RipVideo();
 exit($rip->rip());

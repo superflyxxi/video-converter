@@ -1,5 +1,7 @@
 <?php
-require_once "LogWrapper.php";
+namespace SuperFlyXXI\VideoConverter\Converters;
+
+use SuperFlyXXI\VideoConverter\LogWrapper;
 
 class ConvertVideo
 {
