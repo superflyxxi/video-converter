@@ -5,7 +5,7 @@ use SuperFlyXXI\VideoConverter\RipVideo;
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
 require_once __DIR__ . "/../vendor/autoload.php";
 
-function error_handler(int $errno, string $errstr, $errfile = null, $errline = 0, $errcontext = null)
+function errorHandler(int $errno, string $errstr, $errfile = null, $errline = 0, $errcontext = null)
 {
     print_r("Error encountered! ");
     print_r($errstr);
@@ -19,7 +19,7 @@ function error_handler(int $errno, string $errstr, $errfile = null, $errline = 0
     flush();
     exit($errno);
 }
-set_error_handler("error_handler");
+set_error_handler("errorHandler");
 
 $rip = new RipVideo();
 exit($rip->rip());
