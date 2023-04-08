@@ -20,63 +20,6 @@ class ConvertAudio
         return $arrAdditionalRequests;
     }
 
-    private static function normalize(Request $oRequest): Request
-    {
-        $normFile = EnvHelper::getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR .
-            $oRequest->oInputFile->getTemporaryFileNamePrefix() . "-norm.mkv";
-        $command = 'ffmpeg -i "' . $oRequest->oInputFile->getFileName() . '" -y ';
-
-        $outindex = 0;
-        $outaudiotracks = "";
-        foreach ($oRequest->normalizeAudioTracks as $index) {
-            $command .= self::appendNormalizedArgs($oRequest, $index, $outindex);
-            $outaudiotracks .= $outindex . ' ';
-            $outindex ++;
-        }
-
-        $command .= " -c:a " . $oRequest->audioFormat;
-        $command .= " -q:a " . $oRequest->audioQuality;
-        if (null != $oRequest->audioSampleRate) {
-            $command .= " -ar " . $oRequest->audioSampleRate;
-        }
-        $command .= ' -f matroska "' . $normFile . '" 2>&1';
-
-        self::$log->info("Normalizing tracks with command", [
-            "filename" => $oRequest->oInputFile->getFileName()
-        ]);
-        self::$log->notice("Executing command", [
-            "command" => $command
-        ]);
-        passthru($command, $return);
-        if ($return != 0) {
-            throw new ExecutionException("ffmpeg", $return, $command);
-        }
-        $oNewRequest = new Request($normFile);
-        $oNewRequest->setAudioTracks(trim($outaudiotracks));
-        $oNewRequest->setVideoTracks(null);
-        $oNewRequest->setSubtitleTracks(null);
-        $oNewRequest->audioFormat = "copy";
-        return $oNewRequest;
-    }
-
-    private static function appendNormalizedArgs(Request $oRequest, int $index, int $outindex): string
-    {
-        $stream = $oRequest->oInputFile->getAudioStreams()[$index];
-        $json = self::analyzeAudio($oRequest->oInputFile->getFileName(), $index);
-
-        $normChannelMap = self::getNormalizedChannelMap($oRequest, $index);
-
-        $command = ' -map 0:' . $index;
-        $command .= ' -filter:a:' . $outindex . ' "loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" .
-            $json["input_tp"] . ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
-        if (null != $normChannelMap) {
-            $command .= ',channelmap=channel_layout=' . $normChannelMap;
-        }
-        $command .= '"  -metadata:s:a:' . $outindex . ' "title=Normalized ' . $stream->language . " " . $normChannelMap
-                . '"';
-        return $command;
-    }
-
     private static function generateNewRequestsForTracks(Request $oRequest): array
     {
         $arrNewRequests = [];
@@ -114,26 +57,6 @@ class ConvertAudio
         ]);
 
         return $request;
-    }
-
-    /**
-     *
-     * @param
-     *            oRequest
-     * @param
-     *            index
-     */
-    private static function getNormalizedChannelMap($oRequest, $index)
-    {
-        $normChannelMap = $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
-            in_array($index, $oRequest->getAudioChannelLayoutTracks())
-                ? $oRequest->audioChannelLayout
-                : $stream->channel_layout;
-        if (null == $normChannelMap) {
-            $normChannelMap = $stream->channel_layout;
-        }
-        $normChannelMap = preg_replace("/\(.+\)/", "", $normChannelMap);
-        return $normChannelMap;
     }
 
     /**
