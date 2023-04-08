@@ -13,7 +13,8 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
         if ("copy" == $request->videoFormat) {
             $args .= " copy";
         } elseif ($request->isHDR()) {
-            $args .= " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9 -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
+            $args .= " libx265 -crf 20 -level:v 51 -pix_fmt yuv420p10le -color_primaries 9"
+                . " -color_trc 16 -colorspace 9 -color_range 1 -profile:v main10";
         } elseif ($request->isHwAccelEncode()) {
             $filters = "";
             if ($request->deinterlace) {
@@ -48,11 +49,13 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                 switch ($request->deinterlaceMode) {
                     default:
                     case "00":
-                        $filters .= ",dejudder,fps=" . $stream->frame_rate .
-                            ",fieldmatch,yadif=deint=interlaced,decimate"; // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
+                        $filters .= ",dejudder,fps=" . $stream->frame_rate
+                            . ",fieldmatch,yadif=deint=interlaced,decimate";
+                        // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
                     case "01":
-                        $filters .= ",yadif=mode=1"; // each field is a frame (double framerate) https://ffmpeg.org/ffmpeg-filters.html#yadif-1
+                        $filters .= ",yadif=mode=1";
+                        // each field is a frame (double framerate) https://ffmpeg.org/ffmpeg-filters.html#yadif-1
                         break;
                     case "02":
                         $filters .= ",yadif"; // original
