@@ -9,7 +9,7 @@ ENV TMP_DIR=/tmp/wip
 
 # PHP
 RUN apt-get update -y && \
-	apt-get install -y --no-install-recommends apt-utils php7.4-cli php7.4-json mkvtoolnix openjdk-11-jre-headless && \
+	apt-get install -y --no-install-recommends apt-utils php7.4-cli php7.4-json mkvtoolnix openjdk-17-jre-headless && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Install DBSup2Sub
