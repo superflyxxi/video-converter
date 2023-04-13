@@ -115,7 +115,6 @@ final class SubtitleTest extends Test
                 "--title" => "Test Convert to Ass",
                 "--video-tracks" => - 1,
                 "--audio-tracks" => - 1,
-                "--subtitle-tracks" => $track,
                 "--subtitle-format" => "ass",
                 "--year" => 2019
             ]
