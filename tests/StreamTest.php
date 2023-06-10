@@ -37,7 +37,7 @@ final class StreamTest extends Test
         $this->assertEquals(1, $audioStreams[1]->index, "Index");
         $this->assertEquals("5.1(side)", $audioStreams[1]->channel_layout, "Channel layout");
         $this->assertEquals(6, $audioStreams[1]->channels, "Channels");
-        $this->assertEquals(null, $audioStreams[1]->audio_sample_rate, "Audio sample rate");
+        $this->assertEquals("48000", $audioStreams[1]->audio_sample_rate, "Audio sample rate");
         $this->assertEquals(null, $audioStreams[1]->width, "Width");
         $this->assertEquals(null, $audioStreams[1]->height, "Height");
         $this->assertEquals("eng", $audioStreams[1]->language, "Language");
