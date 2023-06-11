@@ -69,7 +69,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 ]
             );
             $sampleRate = $request->audioSampleRate;
-            if (null != $sampleRate) {
+            if (null == $sampleRate) {
                 $sampleRate = $stream->audio_sample_rate;
             }
             if (null != $sampleRate) {
