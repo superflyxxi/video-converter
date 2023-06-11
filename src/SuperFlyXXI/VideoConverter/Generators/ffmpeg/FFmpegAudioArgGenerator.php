@@ -73,7 +73,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 $sampleRate = $stream->audio_sample_rate;
             }
             if (null != $sampleRate) {
-                $args .= " -ar:" . $outTrack . " " . $sampleRate;
+                $args .= " -ar:a:" . $outTrack . " " . $sampleRate;
             }
         } else {
             // specify copy
