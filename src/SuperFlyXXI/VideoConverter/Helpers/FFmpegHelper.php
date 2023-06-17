@@ -115,7 +115,7 @@ class FFmpegHelper
 
     public static function generate($listRequests, $outputFile)
     {
-        $finalCommand = "ffmpeg ";
+        $finalCommand = "ffmpeg -stats_period 30 ";
         if (EnvHelper::getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
             $finalCommand .= "-y ";
         }
