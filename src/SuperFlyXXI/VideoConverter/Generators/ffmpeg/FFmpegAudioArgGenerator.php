@@ -59,8 +59,6 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 self::$log->debug("Filter available", ["outTrack"=>$outTrack,"filter"=>$filter]);
                 $args .= ' -filter:a:' . $outTrack . ' "' . $filter . '"';
             }
-            $args .= " -c:a:" . $outTrack . " " . $request->audioFormat;
-            $args .= " -q:a:" . $outTrack . " " . $request->audioQuality;
             self::$log->debug(
                 "Requsted sample rate vs input sample rate",
                 [
@@ -75,6 +73,8 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
             if (null != $sampleRate) {
                 $args .= " -ar:a:" . $outTrack . " " . $sampleRate;
             }
+            $args .= " -c:a:" . $outTrack . " " . $request->audioFormat;
+            $args .= " -q:a:" . $outTrack . " " . $request->audioQuality;
         } else {
             // specify copy
             $args .= " -c:a:" . $outTrack . " copy";
