@@ -46,7 +46,7 @@ class ConvertAudio
         $request->setVideoTracks(null);
         $request->setSubtitleTracks(null);
         $request->setNormalizeAudioTracks(null);
-        $request->customFilter = 'loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
+        $request->customFilter = 'loudnorm=linear=true:measured_I=' . $json["input_i"] . ":measured_TP=" . $json["input_tp"] .
             ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
         $request->audioTitle = "Normalized " . $stream->title;
         $request->prepareStreams();
