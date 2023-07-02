@@ -7,9 +7,9 @@ use SuperFlyXXI\VideoConverter\Input\InputFile;
 
 class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 {
-    public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream)
+    public function getAdditionalArgs($typeOutTrack, Request $request, $index, $typeInputTrack, Stream $stream)
     {
-        $args = " -c:v:" . $outTrack;
+        $args = " -c:v:" . $typeOutTrack;
         if ("copy" == $request->videoFormat) {
             $args .= " copy";
         } elseif ($request->isHDR()) {
@@ -71,7 +71,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
             }
             $args .= " " . $request->videoFormat . " -crf 20 -level:v 4";
         }
-        $args .= " -metadata:s:v:" . $outTrack . " language=" . $stream->language;
+        $args .= " -metadata:s:v:" . $typeOutTrack . " language=" . $stream->language;
         return $args;
     }
 

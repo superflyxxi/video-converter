@@ -17,6 +17,7 @@ Tools to convert video
 ## Limitations
 
 - Channel layouts that end in `(side)` will not be supported.
+- Cannot normalize audio and change the channel layouts in one pass.
 - DVD directory/ISO are not yet supported.
 
 ## Docker Image
