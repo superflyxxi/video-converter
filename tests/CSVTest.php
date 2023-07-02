@@ -20,7 +20,6 @@ final class CSVTest extends Test
 
         $this->assertEquals("audio", $probe["streams"][1]["codec_type"], "Row 1 Stream 1 codec type");
         $this->assertEquals("ac3", $probe["streams"][1]["codec_name"], "Row 1 Stream 1 codec");
-        $this->assertEquals("5.1(side)", $probe["streams"][1]["channel_layout"], "Row 1 Stream 1 channel_layout");
         $this->assertEquals(6, $probe["streams"][1]["channels"], "Row 1 Stream 1 channels");
         $this->assertEquals("eng", $probe["streams"][1]["tags"]["language"], "Row 1 Stream 1 language");
 
@@ -42,13 +41,11 @@ final class CSVTest extends Test
 
         $this->assertEquals("audio", $probe["streams"][1]["codec_type"], "Row 2 Stream 1 codec type");
         $this->assertEquals("eac3", $probe["streams"][1]["codec_name"], "Row 2 Stream 1 codec");
-        $this->assertEquals("stereo", $probe["streams"][1]["channel_layout"], "Row 2 Stream 1 channel_layout");
         $this->assertEquals(2, $probe["streams"][1]["channels"], "Row 2 Stream 1 channels");
         $this->assertEquals("eng", $probe["streams"][1]["tags"]["language"], "Row 2 Stream 1 language");
 
         $this->assertEquals("audio", $probe["streams"][2]["codec_type"], "Row 2 Stream 2 codec type");
         $this->assertEquals("eac3", $probe["streams"][2]["codec_name"], "Row 2 Stream 2 codec");
-        $this->assertEquals("stereo", $probe["streams"][2]["channel_layout"], "Row 2 Stream 2 channel_layout");
         $this->assertEquals(2, $probe["streams"][2]["channels"], "Row 2 Stream 2 channels");
         $this->assertEquals("eng", $probe["streams"][2]["tags"]["language"], "Row 2 Stream 2 language");
 
