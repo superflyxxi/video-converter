@@ -46,7 +46,7 @@ final class AudioTest extends Test
         $this->assertEquals(0, $return, "ripvideo exit code");
 
         $probe = $this->probe("Test Normalize Track 1 (2019).dvd.mkv.mkv");
-
+        print_r("Debugging probe"); print_r($probe);
         $this->assertEquals("audio", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("aac", $probe["streams"][0]["codec_name"], "Stream 0 codec");
         $this->assertEquals(6, $probe["streams"][0]["channels"], "Stream 0 channels");
