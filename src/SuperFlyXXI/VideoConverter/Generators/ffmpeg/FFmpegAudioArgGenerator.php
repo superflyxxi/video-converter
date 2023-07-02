@@ -31,8 +31,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 }
             }
             if (! isset($channelLayout)) {
-                //self::$log->debug("Using channel layout from original stream");
-                //$channelLayout = $stream->channel_layout;
+                self::$log->debug("Not setting any channel layout");
                 $channelLayout = null;
             }
             if (! isset($channels)) {
