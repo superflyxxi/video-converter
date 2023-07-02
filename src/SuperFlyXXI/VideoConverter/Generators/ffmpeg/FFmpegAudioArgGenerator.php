@@ -57,7 +57,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
             }
             if (null != $filter) {
                 self::$log->debug("Filter available", ["outTrack"=>$outTrack,"filter"=>$filter]);
-		$args .= ' -filter:a:' . $outTrack . ' "' . $filter . '"';
+		$args .= ' -filter:a:' . $inputTrack . ' "' . $filter . '"';
             }
             self::$log->debug(
                 "Requsted sample rate vs input sample rate",
