@@ -7,10 +7,10 @@ use SuperFlyXXI\VideoConverter\Input\InputFile;
 
 class FFmpegSubtitleArgGenerator implements FFmpegArgGenerator
 {
-    public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream)
+    public function getAdditionalArgs($typeOutTrack, Request $request, $index, $typeInputTrack, Stream $stream)
     {
-        $args = " -c:s:" . $outTrack . " " . $request->subtitleFormat;
-        $args .= " -metadata:s:s:" . $outTrack . " language=" . $stream->language;
+        $args = " -c:s:" . $typeOutTrack . " " . $request->subtitleFormat;
+        $args .= " -metadata:s:s:" . $typeOutTrack . " language=" . $stream->language;
         return $args;
     }
 

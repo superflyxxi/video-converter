@@ -173,7 +173,7 @@ class FFmpegHelper
     private static function generateArgs($listRequests, FFmpegArgGenerator $generator)
     {
         $fileno = 0;
-        $outTrack = 0;
+        $typeOutTrack = 0;
         $args = " ";
         foreach ($listRequests as $tmpRequest) {
             $streamList = $generator->getStreams($tmpRequest->oInputFile);
@@ -184,6 +184,7 @@ class FFmpegHelper
                     "filename" => $tmpRequest->oInputFile->getFileName()
                 ]
             );
+            $typeInputTrack=0;
             foreach ($streamList as $index => $stream) {
                 self::$log->debug(
                     "Generating stream specific args",
@@ -194,7 +195,7 @@ class FFmpegHelper
                     ]
                 );
                 $thisarg = " -map " . $fileno . ":" . $index;
-                $thisarg .= " " . $generator->getAdditionalArgs($outTrack ++, $tmpRequest, $index, $stream);
+                $thisarg .= " " . $generator->getAdditionalArgs($typeOutTrack ++, $tmpRequest, $index, $typeInputTrack ++, $stream);
                 $args.=$thisarg;
                 self::$log->debug("Final argument generated", ["fileno"=>$fileno, "index"=>$index, "arg"=>$thisarg]);
             }

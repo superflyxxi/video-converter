@@ -11,7 +11,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
 {
     public static $log;
 
-    public function getAdditionalArgs($outTrack, Request $request, $inputTrack, Stream $stream)
+    public function getAdditionalArgs($typeOutTrack, Request $request, $index, $typeInputTrack, Stream $stream)
     {
         $args = " ";
         if ("copy" != $request->audioFormat) {
@@ -23,7 +23,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
             );
             if ($request->audioChannelLayout != null &&
                 ($request->areAllAudioChannelLayoutTracksConsidered() ||
-                in_array($inputTrack, $request->getAudioChannelLayoutTracks()))) {
+                in_array($index, $request->getAudioChannelLayoutTracks()))) {
                 self::$log->debug("Taking channel layout from request");
                 $channelLayout = $request->audioChannelLayout;
                 if (null != $channelLayout && preg_match("/(\d+)\.(\d+)/", $channelLayout, $matches)) {
@@ -42,7 +42,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
             self::$log->debug(
                 "Audio has channelLayout and channels",
                 [
-                    "outputTrack" => $outTrack,
+                    "outputTrack" => $typeOutTrack,
                     "channelLayout" => $channelLayout,
                     "channels" => $channels
                 ]
@@ -57,8 +57,8 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 $filter .= 'channelmap=channel_layout=' . $channelLayout;
             }
             if (null != $filter) {
-                self::$log->debug("Filter available", ["outTrack"=>$outTrack,"filter"=>$filter]);
-                $args .= ' -filter:' . $inputTrack . ' "' . $filter . '"';
+                self::$log->debug("Filter available", ["typeOutTrack"=>$typeOutTrack,"filter"=>$filter]);
+                $args .= ' -filter:a:' . $typeInputTrack . ' "' . $filter . '"';
             }
             self::$log->debug(
                 "Requsted sample rate vs input sample rate",
@@ -72,17 +72,17 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 $sampleRate = $stream->audio_sample_rate;
             }
             if (null != $sampleRate) {
-                $args .= " -ar:a:" . $outTrack . " " . $sampleRate;
+                $args .= " -ar:a:" . $typeOutTrack . " " . $sampleRate;
             }
-            $args .= " -c:a:" . $outTrack . " " . $request->audioFormat;
-            $args .= " -q:a:" . $outTrack . " " . $request->audioQuality;
+            $args .= " -c:a:" . $typeOutTrack . " " . $request->audioFormat;
+            $args .= " -q:a:" . $typeOutTrack . " " . $request->audioQuality;
         } else {
             // specify copy
-            $args .= " -c:a:" . $outTrack . " copy";
+            $args .= " -c:a:" . $typeOutTrack . " copy";
         }
-        $args .= " -metadata:s:a:" . $outTrack . " language=" . $stream->language;
+        $args .= " -metadata:s:a:" . $typeOutTrack . " language=" . $stream->language;
         if (null != $request->audioTitle) {
-            $args .= " -metadata:s:a:" . $outTrack . " title='" . $request->audioTitle ."'";
+            $args .= " -metadata:s:a:" . $typeOutTrack . " title='" . $request->audioTitle ."'";
         }
         return $args;
     }
