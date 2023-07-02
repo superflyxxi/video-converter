@@ -31,8 +31,8 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 }
             }
             if (! isset($channelLayout)) {
-                self::$log->debug("Using channel layout from original stream");
-                $channelLayout = $stream->channel_layout;
+                //self::$log->debug("Using channel layout from original stream");
+                //$channelLayout = $stream->channel_layout;
             }
             if (! isset($channels)) {
                 self::$log->debug("Using channels from original stream");
@@ -57,7 +57,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
             }
             if (null != $filter) {
                 self::$log->debug("Filter available", ["outTrack"=>$outTrack,"filter"=>$filter]);
-                $args .= ' -filter:a:' . $outTrack . ' "' . $filter . '"';
+		$args .= ' -filter:a:' . $outTrack . ' "' . $filter . '"';
             }
             self::$log->debug(
                 "Requsted sample rate vs input sample rate",
