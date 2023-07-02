@@ -59,5 +59,26 @@ final class AudioTest extends Test
         $this->assertEquals("48000", $probe["streams"][1]["sample_rate"], "Stream 1 sample_rate");
         $this->assertArrayNotHasKey(2, $probe["streams"], "Stream 2 exists");
         $this->assertEquals("Test Normalize Track 1", $probe["format"]["tags"]["title"], "Metadata title");
+
+        // measure both and ensure they don't equal
+        // original measured_I=-28.59:measured_TP=-8.10:measured_LRA=11.70:measured_thresh=-39.21
+        // original results "input_i\" : \"-28.59\",","\t\"input_tp\" : \"-8.10\",","\t\"input_lra\" : \"11.70\",","\t\"input_thresh\" : \"-39.21\",
+        // normalized measured "input_i" : "-28.62",   "input_tp" : "-8.11",   "input_lra" : "11.70",  "input_thresh" : "-39.22",
+        // original aac measure "input_i" : "-23.85",   "input_tp" : "-1.99",   "input_lra" : "8.30",   "input_thresh" : "-34.16",
+        $output = "";
+        printf("Executing analysis 0\n");
+        exec("ffmpeg -hide_banner -i \"" . $this->getDataDir() . DIRECTORY_SEPARATOR . "Test Normalize Track 1 (2019).dvd.mkv.mkv\" -map 0:0 -filter:a loudnorm=print_format=json -f null - 2>&1", $output);
+        $output = implode(array_slice($output, - 12));
+        $jsonZero = json_decode($output, true);
+        print_r($jsonZero);
+        printf("Executing analysis 1\n");
+        exec("ffmpeg -hide_banner -i \"" . $this->getDataDir() . DIRECTORY_SEPARATOR . "Test Normalize Track 1 (2019).dvd.mkv.mkv\" -map 0:1 -filter:a loudnorm=print_format=json -f null - 2>&1", $output);
+        $output = implode(array_slice($output, - 12));
+        $jsonOne = json_decode($output, true);
+        print_r($jsonOne);
+        $this->assertNotEquals($jsonZero["input_i"], $jsonOne["input_i"], "input_i");
+        $this->assertNotEquals($jsonZero["input_tp"], $jsonOne["input_tp"], "input_tp");
+        $this->assertNotEquals($jsonZero["input_lra"], $jsonOne["input_lra"], "input_lra");
+        $this->assertNotEquals($jsonZero["input_thresh"], $jsonOne["input_thresh"], "input_thresh");
     }
 }
