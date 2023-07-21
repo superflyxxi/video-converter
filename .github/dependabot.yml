@@ -6,8 +6,9 @@ updates:
     schedule:
       interval: "monthly"
     commit-message:
-      prefix: "fix: "
-      prefix-development: "fix(ci): "
+      prefix: "fix"
+      prefix-development: "ci"
+      include: "scope"
     reviewers:
       - superflyxxi
     assignees:
@@ -17,8 +18,9 @@ updates:
     schedule:
       interval: "monthly"
     commit-message:
-      prefix: "fix: "
-      prefix-development: "fix(ci): "
+      prefix: "fix"
+      prefix-development: "ci"
+      include: "scope"
     reviewers:
       - superflyxxi
     assignees:
@@ -28,8 +30,9 @@ updates:
     schedule:
       interval: "monthly"
     commit-message:
-      prefix: "fix(ci): "
-      prefix-development: "fix(ci): "
+      prefix: "ci"
+      prefix-development: "ci"
+      include: "scope"
     reviewers:
       - superflyxxi
     assignees:
