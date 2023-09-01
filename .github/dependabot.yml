@@ -2,6 +2,7 @@ version: 2
 
 updates:
   - package-ecosystem: "composer"
+    open-pull-requests-limit: 1
     directory: "/"
     schedule:
       interval: "monthly"
@@ -14,6 +15,7 @@ updates:
     assignees:
       - superflyxxi
   - package-ecosystem: "docker"
+    open-pull-requests-limit: 1
     directory: "/"
     schedule:
       interval: "monthly"
@@ -26,6 +28,7 @@ updates:
     assignees:
       - superflyxxi
   - package-ecosystem: "docker"
+    open-pull-requests-limit: 1
     directory: "/tests/"
     schedule:
       interval: "monthly"
