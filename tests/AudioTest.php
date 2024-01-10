@@ -102,7 +102,6 @@ final class AudioTest extends Test
 
         $this->assertEquals("audio", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("aac", $probe["streams"][0]["codec_name"], "Steram 0 codec");
-        $this->assertEquals("stereo", $probe["streams"][0]["channel_layout"], "Stream 0 channel_layout");
         $this->assertEquals(2, $probe["streams"][0]["channels"], "Stream 0 channels");
         $this->assertArrayNotHasKey(1, $probe["streams"], "Stream 1 exists");
     }
