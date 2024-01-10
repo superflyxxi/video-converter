@@ -98,8 +98,8 @@ class Request
         $req->setDeinterlace(Options::get("deinterlace", "false"));
 
         $req->setAudioTracks(Options::get("audio-tracks", "*"));
-        $req->audioFormat = Options::get("audio-format", "aac");
-        $req->audioQuality = Options::get("audio-quality", "2");
+        $req->audioFormat = Options::get("audio-format", "ac3");
+        $req->audioQuality = Options::get("audio-quality", "576");
         $req->audioSampleRate = Options::get("audio-sample-rate", null);
         $req->setNormalizeAudioTracks(Options::get("normalize-audio-tracks", ""));
         $req->audioChannelLayout = Options::get("audio-channel-layout", "");
