@@ -1,10 +1,10 @@
 {
   "name": "video-converter",
   "description": "Video Converter",
-  "main": "src/index.js",
+  "main": "js/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node js/index.js",
     "test": "DATA_DIR=$(mktemp -d) c8 mocha",
     "int-test": "sleep 10s; mocha int-test/",
     "xo": "xo"
