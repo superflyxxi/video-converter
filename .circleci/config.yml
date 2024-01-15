@@ -7,6 +7,11 @@ orbs:
   sonarcloud: sonarsource/sonarcloud@2
   snyk: snyk/snyk@2
 
+anchors:
+  node-executor: &node-executor
+    name: node/default
+    tag: '20.11'
+
 jobs:
 
   build-phar:
