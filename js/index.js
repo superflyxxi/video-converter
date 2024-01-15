@@ -1,6 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
-//import RouteNotFoundError from './error-handler/route-not-found-error.js';
+import RouteNotFoundError from './errors/route-not-found-error.js';
 import {server} from './config.js';
 import errorHandler from './error-handler.js';
 //import phoneRouter from './routers/v1/phones/index.js';
