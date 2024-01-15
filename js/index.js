@@ -2,7 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 //import RouteNotFoundError from './error-handler/route-not-found-error.js';
 import {server} from './config.js';
-//import errorHandler from './error-handler/index.js';
+import errorHandler from './error-handler.js';
 //import phoneRouter from './routers/v1/phones/index.js';
 //import compareRouter from './routers/v1/phones/compare/index.js';
 //import apiDocsRouter from './routers/api-docs/index.js';
@@ -20,7 +20,7 @@ app.use(morgan('short'));
 app.use((req, _res, next) => {
 	next(new RouteNotFoundError(req));
 });
-//app.use(errorHandler);
+app.use(errorHandler);
 app.listen(server.port, () => {
 	console.log('Started version', server.version, 'listening on', server.port);
 });
