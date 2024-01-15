@@ -13,6 +13,30 @@ anchors:
     tag: '20.11'
 
 jobs:
+  unit-test:
+    executor: *node-executor 
+    resource_class: small
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Unit Tests
+          command: npm test -- --forbid-pending --forbid-only --reporter mocha-junit-reporter
+          environment:
+            MOCHA_FILE: ./mocha/test-results.xml
+      - run:
+          name: Tar coverage
+          command: tar -jvcf coverage.tar.bz2 coverage/
+      - store_test_results:
+          path: ./mocha
+      - store_artifacts:
+          path: ./mocha/test-results.xml
+      - store_artifacts:
+          path: ./coverage.tar.bz2
+      - run:
+          name: Verify XO
+          command: npm run xo
+      - sonarcloud/scan
 
   build-phar:
     resource_class: small
@@ -215,6 +239,52 @@ jobs:
                 registry: ${<< parameters.registry-env >>}
                 image: ${FINAL_IMAGE_NAME}
                 tag: test-${PRIMARY_DOCKER_TAG}
+
+  deploy-k8s:
+    parameters:
+      env:
+        description: Which environment to deploy
+        type: enum
+        default: "wip"
+        enum: ["wip", "prod"]
+    docker:
+      - image: cimg/deploy:2023.08.1
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - export-primary-docker-tag
+      - checkout
+      - when:
+          condition:
+            equal:
+              - prod
+              - << parameters.env >>
+          steps:
+            - run: |
+                echo "export DOCKER_REGISTRY=${DOCKER_IO_REGISTRY}" >> ${BASH_ENV}
+                echo "export DOCKER_USERNAME=${DOCKER_IO_USERNAME}" >> ${BASH_ENV}
+      - unless:
+          condition:
+            equal:
+              - prod
+              - << parameters.env >>
+          steps:
+            - run: |
+                echo "export DOCKER_REGISTRY=${PRIVATE_DOCKER_REGISTRY}" >> ${BASH_ENV}
+                echo "export DOCKER_USERNAME=${PRIVATE_DOCKER_USERNAME}" >> ${BASH_ENV}
+      - generate-file:
+          template_file: deployments/k8s-template.yml
+          output_file: ${CIRCLE_PROJECT_REPONAME}.yml
+          docker_registry: ${DOCKER_REGISTRY}
+          docker_username: ${DOCKER_USERNAME}
+          docker_tag: ${PRIMARY_DOCKER_TAG}
+          env: << parameters.env >>
+      - install-ssh-dependencies
+      - upload-file:
+          file: ${CIRCLE_PROJECT_REPONAME}.yml
+          remote_dir: k8s/ci/<< parameters.env >>
+      - execute-remote:
+          command: ci-deploy-k8s.sh << parameters.env >> video-converter
 
   test-docker:
     parallelism: 5
