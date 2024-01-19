@@ -3,3 +3,4 @@
 **/*.mkv
 **/*.mpg
 **/*.iso
+node_modules/
