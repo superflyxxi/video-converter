@@ -157,7 +157,7 @@ jobs:
           command: |
             docker volume create data
             docker run --rm -v data:/vol --entrypoint sh test-${CIRCLE_PROJECT_REPONAME} -c 'cp -v /data/dvd.mkv /vol/'
-            docker run --rm -v data:/data -w /data --entrypoint /usr/bin/video-converter ${CIRCLE_PROJECT_REPONAME} \
+            docker run --rm -v data:/data -w /data ${CIRCLE_PROJECT_REPONAME} \
               --title=Test --video-format=copy --audio-format=copy --subtitle-format=copy dvd.mkv
       - run:
           name: Export images to tar
