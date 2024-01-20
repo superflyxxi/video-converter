@@ -45,8 +45,8 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                     "channelLayout" => $channelLayout,
                     "channels" => $channels
                 ]
-	    );
-	    $filter = "";
+            );
+            $filter = "";
             if (null != $channelLayout && $channels <= $stream->channels) {
                 // only change the channel layout if the number of original channels is more than requested
                 $channelLayout = preg_replace("/\(.+\)/", "", $channelLayout);
