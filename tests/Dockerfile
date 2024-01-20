@@ -1,9 +1,13 @@
 FROM composer:2.6.6 AS composer
-FROM video-converter
+FROM video-converter-parent
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV DATA_DIR=/data
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends php7.4-xml php7.4-mbstring curl php-xdebug && \
+	apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
+	mkdir -m 777 "${DATA_DIR}"
 WORKDIR ${DATA_DIR}
 
 ARG TEST_SAMPLE_DOMAIN
@@ -11,15 +15,11 @@ ENV TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples"
 RUN curl --fail -k -L "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" -o "${DATA_DIR}/dvd.mkv"
 RUN curl --fail -k -L "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/bluray.mkv"
 
-RUN apt-get update && \
-	apt-get install -y --no-install-recommends php7.4-xml php7.4-mbstring curl php-xdebug && \
-	apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-	mkdir -m 777 "${DATA_DIR}"
-
 ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml", "--verbose"]
 CMD [ "/opt/video-converter/tests" ]
 
 COPY --from=composer /usr/bin/composer /usr/bin/
+COPY . /opt/video-converter
 RUN mv -v /opt/video-converter/tests/csvs ${DATA_DIR} && \
 	mkdir -m 777 /opt/video-converter/testResults || true && \
 	apt-get update && \
