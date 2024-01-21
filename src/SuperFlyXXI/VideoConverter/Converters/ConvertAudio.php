@@ -65,7 +65,7 @@ class ConvertAudio
         $stream = $oRequest->oInputFile->getAudioStreams()[$index];
         $json = self::analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
-        $normChannelMap = self::getNormalizedChannelMap($oRequest, $index);
+        $normChannelMap = self::getNormalizedChannelMap($oRequest, $index, $stream);
 
         $command = ' -map 0:' . $index;
         $command .= ' -filter:a:' . $outindex . ' "loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" .
@@ -124,7 +124,7 @@ class ConvertAudio
      * @param
      *            index
      */
-    private static function getNormalizedChannelMap($oRequest, $index)
+    private static function getNormalizedChannelMap($oRequest, $index, $stream)
     {
         $normChannelMap = $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
             in_array($index, $oRequest->getAudioChannelLayoutTracks())
