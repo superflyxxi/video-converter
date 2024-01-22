@@ -10,13 +10,8 @@ class ConvertAudio
 {
     public static LogWrapper $log;
 
-    private Normalizer $normalizer;
+    private static Normalizer $normalizer;
    
-    public function __construct()
-    {
-        $this->normalizer = new OneAtATimeNormalizer();
-    }
-
     public static function convert($oRequest)
     {
         $arrAdditionalRequests = [];
@@ -30,3 +25,4 @@ class ConvertAudio
 }
 
 ConvertAudio::$log = new LogWrapper("ConvertAudio");
+ConvertAudio::$normalizer = new OneAtATimeNormalizer();
