@@ -4,12 +4,18 @@ namespace SuperFlyXXI\VideoConverter\Converters;
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Requests\Request;
 use SuperFlyXXI\VideoConverter\Normalizers\OneAtATimeNormalizer;
+use SuperFlyXXI\VideoConverter\Normalizers\Normalizer;
 
 class ConvertAudio
 {
-    public static $log;
+    public static LogWrapper $log;
 
-    private $normalizer = new OneAtATimeNormalizer();
+    private Normalizer $normalizer;
+   
+    public function __construct()
+    {
+        $this->normalizer = new OneAtATimeNormalizer();
+    }
 
     public static function convert($oRequest)
     {

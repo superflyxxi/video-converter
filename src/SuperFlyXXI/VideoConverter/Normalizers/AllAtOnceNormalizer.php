@@ -9,14 +9,19 @@ use SuperFlyXXI\VideoConverter\Normalizers\VolumeAnalyzer;
 
 class AllAtOnceNormalizer extends Normalizer
 {
-    public static $log;
+    public static LogWrapper $log;
 
-    private $volAnalyzer = new VolumeAnalyzer();
+    private VolumeAnalyzer $volAnalyzer;
+   
+    public function __construct()
+    {
+        $this->volAnalyzer = new VolumeAnalyzer();
+    }
 
     private function normalize(Request $oRequest, int $index): Request
     {
         $stream = $oRequest->oInputFile->getAudioStreams()[$index];
-        $json = self::$volAnalyer->analyzeAudio($oRequest->oInputFile->getFileName(), $index);
+        $json = $this->volAnalyer->analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
         $request = new Request($oRequest->oInputFile->getFileName());
         $request->setAudioTracks($index);
@@ -50,7 +55,7 @@ class AllAtOnceNormalizer extends Normalizer
      * @param
      *            index
      */
-    private static function getNormalizedChannelMap($oRequest, $index, $stream)
+    private function getNormalizedChannelMap($oRequest, $index, $stream)
     {
         $normChannelMap = $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
             in_array($index, $oRequest->getAudioChannelLayoutTracks())

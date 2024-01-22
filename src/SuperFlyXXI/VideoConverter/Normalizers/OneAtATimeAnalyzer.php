@@ -10,17 +10,22 @@ use SuperFlyXXI\VideoConverter\Normalizers\VolumeAnalyzer;
 
 class OneAtATimeNormalizer implements Normalizer
 {
-    public static $log;
+    public static LogWrapper $log;
 
-    private $volAnalyzer = new VolumeAnalyzer();
+    private VolumeAnalyzer $volAnalyzer;
+   
+    public function __construct()
+    {
+        $this->volAnalyzer = new VolumeAnalyzer();
+    }
 
-    private static function normalize(Request $oRequest, int $index): Request
+    private function normalize(Request $oRequest, int $index): Request
     {
         $normFile = EnvHelper::getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR .
             $oRequest->oInputFile->getTemporaryFileNamePrefix() . "-" . $index . "-norm.mkv";
         $command = 'ffmpeg -i "' . $oRequest->oInputFile->getFileName() . '" -y ';
 
-        $command .= self::appendNormalizedArgs($oRequest, $index, $index);
+        $command .= $this->appendNormalizedArgs($oRequest, $index, $index);
 
         $command .= " -c:a " . $oRequest->audioFormat;
         $command .= " -q:a " . $oRequest->audioQuality;
@@ -47,12 +52,12 @@ class OneAtATimeNormalizer implements Normalizer
         return $oNewRequest;
     }
 
-    private static function appendNormalizedArgs(Request $oRequest, int $index, int $outindex): string
+    private function appendNormalizedArgs(Request $oRequest, int $index, int $outindex): string
     {
         $stream = $oRequest->oInputFile->getAudioStreams()[$index];
-        $json = self::$volAnalyzer->analyzeAudio($oRequest->oInputFile->getFileName(), $index);
+        $json = $this->volAnalyzer->analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
-        $normChannelMap = self::getNormalizedChannelMap($oRequest, $index, $stream);
+        $normChannelMap = $this->getNormalizedChannelMap($oRequest, $index, $stream);
 
         $command = ' -map 0:' . $index;
         $command .= ' -filter:a:' . $outindex . ' "';
@@ -66,6 +71,25 @@ class OneAtATimeNormalizer implements Normalizer
         return $command;
     }
 
+    /**
+     *
+     * @param
+     *            oRequest
+     * @param
+     *            index
+     */
+    private function getNormalizedChannelMap($oRequest, $index, $stream)
+    {
+        $normChannelMap = $oRequest->areAllAudioChannelLayoutTracksConsidered() ||
+            in_array($index, $oRequest->getAudioChannelLayoutTracks())
+                ? $oRequest->audioChannelLayout
+                : $stream->channel_layout;
+        if (null == $normChannelMap) {
+            $normChannelMap = $stream->channel_layout;
+        }
+        $normChannelMap = preg_replace("/\(.+\)/", "", $normChannelMap);
+        return $normChannelMap;
+    }
 }
 
 OneAtATimeNormalizer::$log = new LogWrapper("OneAtATimeNormalizer");
