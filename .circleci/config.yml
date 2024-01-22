@@ -79,13 +79,13 @@ jobs:
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile.parent | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             export CACHE_ROOT_IMAGE="${CACHE_REGISTRY}/${CACHE_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
             if ! [[ "<< pipeline.git.branch >>" =~ (main|dev) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:dev"
+              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:dev,${CACHE_FROM_IMAGES}"
             elif [[ "<< pipeline.git.branch >>" =~ (dev) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:latest"
+              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:latest,${CACHE_FROM_IMAGES}"
             fi
             export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
-              export TEST_CACHE_FROM_IMAGES="${TEST_CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:test-dev"
+              export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-dev,${TEST_CACHE_FROM_IMAGES}"
             fi
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
@@ -93,7 +93,7 @@ jobs:
               PREV=${PRIMARY_DOCKER_TAG:0:1}
               for A in $(echo ${PRIMARY_DOCKER_TAG:1} | tr "." "\n"); do 
                 NOW="$PREV.$A"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:${NOW}"
+                export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:${NOW},${CACHE_FROM_IMAGES}"
                 PREV=$NOW
               done
             fi
