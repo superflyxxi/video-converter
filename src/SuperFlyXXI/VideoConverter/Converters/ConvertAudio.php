@@ -68,11 +68,12 @@ class ConvertAudio
         $normChannelMap = self::getNormalizedChannelMap($oRequest, $index, $stream);
 
         $command = ' -map 0:' . $index;
-        $command .= ' -filter:a:' . $outindex . ' "loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" .
-            $json["input_tp"] . ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
+        $command .= ' -filter:a:' . $outindex . ' "';
         if (null != $normChannelMap) {
-            $command .= ',channelmap=channel_layout=' . $normChannelMap;
+            $command .= 'channelmap=channel_layout=' . $normChannelMap . ',';
         }
+        $command .= 'loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" .
+                $json["input_tp"] . ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
         $command .= '"  -metadata:s:a:' . $outindex . ' "title=Normalized ' . $stream->language . " " . $normChannelMap
                 . '"';
         return $command;
