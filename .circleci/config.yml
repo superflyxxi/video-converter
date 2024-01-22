@@ -243,12 +243,13 @@ jobs:
               echo "Not enough classes. Something's wrong"
               exit 1
             fi
-            ./test.sh
+            EXIT_RESULT=$(./test.sh)
             mkdir testResults/junitResults
             mv -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
             mv -v testResults/junit.xml testResults/junitResults/junit-${CIRCLE_NODE_INDEX}.xml
             tar -cjf testResults/coverage.tar.bz2 testResults/coverage
             rm -rfv testResults/coverage
+            exit ${EXIT_RESULT}
       - store_test_results:
           path: testResults/junitResults
       - store_artifacts:
