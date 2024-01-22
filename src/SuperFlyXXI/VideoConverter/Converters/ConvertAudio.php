@@ -10,7 +10,7 @@ class ConvertAudio
 {
     public static LogWrapper $log;
 
-    private static Normalizer $normalizer;
+    public static Normalizer $normalizer;
    
     public static function convert($oRequest)
     {
