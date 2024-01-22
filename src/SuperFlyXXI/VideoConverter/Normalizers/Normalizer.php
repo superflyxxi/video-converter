@@ -5,5 +5,5 @@ use SuperFlyXXI\VideoConverter\Requests\Request;
 
 interface Normalizer
 {
-    public function normalize(Request $oRequest, int $index): array;
+    public function normalize(Request $oRequest, int $index): Request;
 }
