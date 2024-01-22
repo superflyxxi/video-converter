@@ -18,7 +18,7 @@ class AllAtOnceNormalizer extends Normalizer
         $this->volAnalyzer = new VolumeAnalyzer();
     }
 
-    private function normalize(Request $oRequest, int $index): Request
+    public function normalize(Request $oRequest, int $index): Request
     {
         $stream = $oRequest->oInputFile->getAudioStreams()[$index];
         $json = $this->volAnalyer->analyzeAudio($oRequest->oInputFile->getFileName(), $index);

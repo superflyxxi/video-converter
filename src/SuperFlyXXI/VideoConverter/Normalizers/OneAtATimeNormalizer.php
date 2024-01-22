@@ -19,7 +19,7 @@ class OneAtATimeNormalizer implements Normalizer
         $this->volAnalyzer = new VolumeAnalyzer();
     }
 
-    private function normalize(Request $oRequest, int $index): Request
+    public function normalize(Request $oRequest, int $index): Request
     {
         $normFile = EnvHelper::getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR .
             $oRequest->oInputFile->getTemporaryFileNamePrefix() . "-" . $index . "-norm.mkv";
