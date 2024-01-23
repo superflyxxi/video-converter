@@ -31,7 +31,7 @@ class OneAtATimeNormalizer implements Normalizer
         $command .= " -q:a " . $oRequest->audioQuality;
         if (null != $oRequest->audioSampleRate) {
             $command .= " -ar " . $oRequest->audioSampleRate;
-	}
+        }
         $command .= ' -f matroska "' . $normFile . '" 2>&1';
 
         self::$log->info("Normalizing tracks with command", [
@@ -48,9 +48,9 @@ class OneAtATimeNormalizer implements Normalizer
         $oNewRequest->setAudioTracks($index);
         $oNewRequest->setVideoTracks(null);
         $oNewRequest->setSubtitleTracks(null);
-	$oNewRequest->audioFormat = "copy";
+        $oNewRequest->audioFormat = "copy";
         $stream = $oRequest->oInputFile->getAudioStreams()[$index];
-	$oNewRequest->audioTitle = "Normalized " . $stream->title;
+        $oNewRequest->audioTitle = "Normalized " . $stream->title;
         return $oNewRequest;
     }
 
