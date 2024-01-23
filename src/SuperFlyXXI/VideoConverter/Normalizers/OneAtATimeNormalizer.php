@@ -23,7 +23,7 @@ class OneAtATimeNormalizer implements Normalizer
     {
         $normFile = EnvHelper::getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR .
             $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index . "-norm.mkv";
-        $command = 'ffmpeg -i "' . $oRequest->oInputFile->getFileName() . '" -y ';
+        $command = 'ffmpeg -stats_period 30 -i "' . $oRequest->oInputFile->getFileName() . '" -y ';
 
         $command .= $this->appendNormalizedArgs($oRequest, $index, $index);
 
