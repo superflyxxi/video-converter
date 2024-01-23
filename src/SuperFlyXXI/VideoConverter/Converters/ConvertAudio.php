@@ -17,7 +17,7 @@ class ConvertAudio
         $arrAdditionalRequests = [];
         if ("copy" != $oRequest->audioFormat && count($oRequest->normalizeAudioTracks)) {
             foreach ($oRequest->normalizeAudioTracks as $index) {
-                $arrAdditinalRequests[] = self::$normalizer->normalize($oRequest, $index);
+                $arrAdditionalRequests[] = self::$normalizer->normalize($oRequest, $index);
             }
         }
         return $arrAdditionalRequests;

@@ -22,7 +22,7 @@ class OneAtATimeNormalizer implements Normalizer
     public function normalize(Request $oRequest, int $index): Request
     {
         $normFile = EnvHelper::getEnvWithDefault("TMP_DIR", "/tmp") . PATH_SEPARATOR .
-            $oRequest->oInputFile->getTemporaryFileNamePrefix() . "-" . $index . "-norm.mkv";
+            $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index . "-norm.mkv";
         $command = 'ffmpeg -i "' . $oRequest->oInputFile->getFileName() . '" -y ';
 
         $command .= $this->appendNormalizedArgs($oRequest, $index, $index);
@@ -31,7 +31,7 @@ class OneAtATimeNormalizer implements Normalizer
         $command .= " -q:a " . $oRequest->audioQuality;
         if (null != $oRequest->audioSampleRate) {
             $command .= " -ar " . $oRequest->audioSampleRate;
-        }
+	}
         $command .= ' -f matroska "' . $normFile . '" 2>&1';
 
         self::$log->info("Normalizing tracks with command", [
@@ -48,7 +48,9 @@ class OneAtATimeNormalizer implements Normalizer
         $oNewRequest->setAudioTracks($index);
         $oNewRequest->setVideoTracks(null);
         $oNewRequest->setSubtitleTracks(null);
-        $oNewRequest->audioFormat = "copy";
+	$oNewRequest->audioFormat = "copy";
+        $stream = $oRequest->oInputFile->getAudioStreams()[$index];
+	$oNewRequest->audioTitle = "Normalized " . $stream->title;
         return $oNewRequest;
     }
 
@@ -61,11 +63,11 @@ class OneAtATimeNormalizer implements Normalizer
 
         $command = ' -map 0:' . $index;
         $command .= ' -filter:a:' . $outindex . ' "';
-        if (null != $normChannelMap) {
-            $command .= 'channelmap=channel_layout=' . $normChannelMap . ',';
-        }
         $command .= 'loudnorm=measured_I=' . $json["input_i"] . ":measured_TP=" .
                 $json["input_tp"] . ":measured_LRA=" . $json["input_lra"] . ":measured_thresh=" . $json["input_thresh"];
+        if (null != $normChannelMap) {
+            $command .= ',channelmap=channel_layout=' . $normChannelMap;
+        }
         $command .= '"  -metadata:s:a:' . $outindex . ' "title=Normalized ' . $stream->language . " " . $normChannelMap
                 . '"';
         return $command;
