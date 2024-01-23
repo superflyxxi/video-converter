@@ -5,9 +5,10 @@ use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Exceptions\ExecutionException;
 use SuperFlyXXI\VideoConverter\Helpers\EnvHelper;
 use SuperFlyXXI\VideoConverter\Requests\Request;
+use SuperFlyXXI\VideoConverter\Normalizers\Normalizer;
 use SuperFlyXXI\VideoConverter\Normalizers\VolumeAnalyzer;
 
-class AllAtOnceNormalizer extends Normalizer
+class AllAtOnceNormalizer implements Normalizer
 {
     public static LogWrapper $log;
 
@@ -21,7 +22,7 @@ class AllAtOnceNormalizer extends Normalizer
     public function normalize(Request $oRequest, int $index): Request
     {
         $stream = $oRequest->oInputFile->getAudioStreams()[$index];
-        $json = $this->volAnalyer->analyzeAudio($oRequest->oInputFile->getFileName(), $index);
+        $json = $this->volAnalyzer->analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
         $request = new Request($oRequest->oInputFile->getFileName());
         $request->setAudioTracks($index);
