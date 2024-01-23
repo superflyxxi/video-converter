@@ -29,36 +29,51 @@ final class AudioTest extends Test
         $this->assertEquals("Test Channel Mapping", $probe["format"]["tags"]["title"], "Metadata title");
     }
 
-    public function testNormalizing()
+    public function testNormalizingDefaults()
+    {
+        $this->normalize("Test Normalize Track 1", null, 6);
+    }
+
+    public function testNormalizingChannelLayoutNotSide()
+    {
+        $this->normalize("Test Normalize with Channel Layout", "5.1", 6);
+    }
+
+    public function testNormalizingChannelLayoutSmaller()
+    {
+        $this->normalize("Test Normalize with Smaller Channel Layout", "2.1", 3);
+    }
+
+    public function normalize($title, $channelLayout, $channels)
     {
         $this->getFile("dvd");
-
-        $return = $this->ripvideo(
-            "dvd.mkv",
-            [
-                "--title" => "Test Normalize Track 1",
-                "--year" => 2019,
-                "--normalize-audio-tracks" => 1,
-                "--video-tracks" => - 1,
-                "--subtitle-tracks" => - 1
-            ]
-        );
+        $args = [
+                    "--title" => $title,
+                    "--year" => 2019,
+                    "--normalize-audio-tracks" => 1,
+                    "--video-tracks" => - 1,
+            "--subtitle-tracks" => - 1
+        ];
+        if (null != $channelLayout) {
+            $args["--audio-channel-layout"] = $channelLayout;
+        }
+        $return = $this->ripvideo("dvd.mkv", $args);
         $this->assertEquals(0, $return, "ripvideo exit code");
 
-        $probe = $this->probe("Test Normalize Track 1 (2019).dvd.mkv.mkv");
+        $probe = $this->probe($title . " (2019).dvd.mkv.mkv");
 
         $this->assertEquals("audio", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("ac3", $probe["streams"][0]["codec_name"], "Stream 0 codec");
-        $this->assertEquals(6, $probe["streams"][0]["channels"], "Stream 0 channels");
+        $this->assertEquals($channels, $probe["streams"][0]["channels"], "Stream 0 channels");
         $this->assertEquals("48000", $probe["streams"][0]["sample_rate"], "Stream 0 sample_rate");
         $this->assertEquals("Normalized Surround 5.1", $probe["streams"][1]["tags"]["title"], "Stream 1 title");
         $this->assertEquals("eng", $probe["streams"][1]["tags"]["language"], "Stream 1 language");
         $this->assertEquals("audio", $probe["streams"][1]["codec_type"], "Stream 1 codec_type");
         $this->assertEquals("ac3", $probe["streams"][1]["codec_name"], "Stream 1 codec");
-        $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
+        $this->assertEquals($channels, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("48000", $probe["streams"][1]["sample_rate"], "Stream 1 sample_rate");
         $this->assertArrayNotHasKey(2, $probe["streams"], "Stream 2 exists");
-        $this->assertEquals("Test Normalize Track 1", $probe["format"]["tags"]["title"], "Metadata title");
+        $this->assertEquals($title, $probe["format"]["tags"]["title"], "Metadata title");
 
         // measure both and ensure they don't equal
         // original measured_I=-28.59:measured_TP=-8.10:measured_LRA=11.70:measured_thresh=-39.21
@@ -67,12 +82,12 @@ final class AudioTest extends Test
         // original aac measure "input_i" : "-23.85",   "input_tp" : "-1.99",   "input_lra" : "8.30",   "input_thresh" : "-34.16",
         $output = "";
         printf("Executing analysis 0\n");
-        exec("ffmpeg -hide_banner -i \"" . $this->getDataDir() . DIRECTORY_SEPARATOR . "Test Normalize Track 1 (2019).dvd.mkv.mkv\" -map 0:0 -filter:a loudnorm=print_format=json -f null - 2>&1", $output);
+        exec("ffmpeg -hide_banner -i \"" . $this->getDataDir() . DIRECTORY_SEPARATOR . $title . " (2019).dvd.mkv.mkv\" -map 0:0 -filter:a loudnorm=print_format=json -f null - 2>&1", $output);
         $output = implode(array_slice($output, - 12));
         $jsonZero = json_decode($output, true);
         print_r($jsonZero);
         printf("Executing analysis 1\n");
-        exec("ffmpeg -hide_banner -i \"" . $this->getDataDir() . DIRECTORY_SEPARATOR . "Test Normalize Track 1 (2019).dvd.mkv.mkv\" -map 0:1 -filter:a loudnorm=print_format=json -f null - 2>&1", $output);
+        exec("ffmpeg -hide_banner -i \"" . $this->getDataDir() . DIRECTORY_SEPARATOR . $title . " (2019).dvd.mkv.mkv\" -map 0:1 -filter:a loudnorm=print_format=json -f null - 2>&1", $output);
         $output = implode(array_slice($output, - 12));
         $jsonOne = json_decode($output, true);
         print_r($jsonOne);
