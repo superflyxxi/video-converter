@@ -31,15 +31,20 @@ final class AudioTest extends Test
 
     public function testNormalizingDefaults()
     {
-        $this->normalize("Test Normalize Track 1", null);
+        $this->normalize("Test Normalize Track 1", null, 6);
     }
 
-    public function testNormalizingChannelLayoutOverride()
+    public function testNormalizingChannelLayoutNotSide()
     {
-        $this->normalize("Test Normalize with Channel Layout", "5.1");
+        $this->normalize("Test Normalize with Channel Layout", "5.1", 6);
     }
 
-    public function normalize($title, $channelLayout)
+    public function testNormalizingChannelLayoutSmaller()
+    {
+        $this->normalize("Test Normalize with Smaller Channel Layout", "2.1", 3);
+    }
+
+    public function normalize($title, $channelLayout, $channels)
     {
         $this->getFile("dvd");
         $args = [
@@ -59,13 +64,13 @@ final class AudioTest extends Test
 
         $this->assertEquals("audio", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals("ac3", $probe["streams"][0]["codec_name"], "Stream 0 codec");
-        $this->assertEquals(6, $probe["streams"][0]["channels"], "Stream 0 channels");
+        $this->assertEquals($channels, $probe["streams"][0]["channels"], "Stream 0 channels");
         $this->assertEquals("48000", $probe["streams"][0]["sample_rate"], "Stream 0 sample_rate");
         $this->assertEquals("Normalized Surround 5.1", $probe["streams"][1]["tags"]["title"], "Stream 1 title");
         $this->assertEquals("eng", $probe["streams"][1]["tags"]["language"], "Stream 1 language");
         $this->assertEquals("audio", $probe["streams"][1]["codec_type"], "Stream 1 codec_type");
         $this->assertEquals("ac3", $probe["streams"][1]["codec_name"], "Stream 1 codec");
-        $this->assertEquals(6, $probe["streams"][1]["channels"], "Stream 1 channels");
+        $this->assertEquals($channels, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("48000", $probe["streams"][1]["sample_rate"], "Stream 1 sample_rate");
         $this->assertArrayNotHasKey(2, $probe["streams"], "Stream 2 exists");
         $this->assertEquals($title, $probe["format"]["tags"]["title"], "Metadata title");
