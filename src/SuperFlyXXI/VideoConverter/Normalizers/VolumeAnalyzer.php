@@ -19,7 +19,7 @@ class VolumeAnalyzer
             "filename" => $inFileName,
             "index" => $index
         ]);
-        $command = 'ffmpeg -hide_banner -i "' . $inFileName . '" -map 0:' . $index .
+        $command = 'ffmpeg -stats_period 30 -hide_banner -i "' . $inFileName . '" -map 0:' . $index .
             ' -filter:a loudnorm=print_format=json -f null - 2>&1';
         self::$log->debug("Analyzing audio for normalization", [
             "filename" => $inFileName,
