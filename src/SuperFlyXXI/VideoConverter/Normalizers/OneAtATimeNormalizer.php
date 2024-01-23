@@ -25,7 +25,7 @@ class OneAtATimeNormalizer implements Normalizer
             $oRequest->oInputFile->getTemporaryFileNamePrefix() . $index . "-norm.mkv";
         $command = 'ffmpeg -stats_period 30 -i "' . $oRequest->oInputFile->getFileName() . '" -y ';
 
-        $command .= $this->appendNormalizedArgs($oRequest, $index, $index);
+        $command .= $this->appendNormalizedArgs($oRequest, $index, 0);
 
         $command .= " -c:a " . $oRequest->audioFormat;
         $command .= " -q:a " . $oRequest->audioQuality;
