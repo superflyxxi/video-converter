@@ -26,4 +26,4 @@ class ConvertAudio
 }
 
 ConvertAudio::$log = new LogWrapper("ConvertAudio");
-ConvertAudio::$normalizer = new AllAtOnceNormalizer();
+ConvertAudio::$normalizer = new OneAtATimeNormalizer();
