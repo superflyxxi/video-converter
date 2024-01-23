@@ -46,7 +46,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                     "channels" => $channels
                 ]
             );
-            $filter = $request->customFilter;
+            $filter = null;
             if (null != $channelLayout && $channels <= $stream->channels) {
                 // only change the channel layout if the number of original channels is more than requested
                 $channelLayout = preg_replace("/\(.+\)/", "", $channelLayout);
@@ -55,6 +55,7 @@ class FFmpegAudioArgGenerator implements FFmpegArgGenerator
                 }
                 $filter .= 'channelmap=channel_layout=' . $channelLayout;
             }
+            $filter .= (null != $filter ? ',' : '') . $request->customFilter;
             if (null != $filter) {
                 self::$log->debug("Filter available", ["typeOutTrack"=>$typeOutTrack,"filter"=>$filter]);
                 $args .= ' -filter:a:' . $typeInputTrack . ' "' . $filter . '"';
