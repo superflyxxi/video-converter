@@ -4,6 +4,7 @@ namespace SuperFlyXXI\VideoConverter\Converters;
 use SuperFlyXXI\VideoConverter\LogWrapper;
 use SuperFlyXXI\VideoConverter\Requests\Request;
 use SuperFlyXXI\VideoConverter\Normalizers\OneAtATimeNormalizer;
+use SuperFlyXXI\VideoConverter\Normalizers\AllAtOnceNormalizer;
 use SuperFlyXXI\VideoConverter\Normalizers\Normalizer;
 
 class ConvertAudio
@@ -25,4 +26,4 @@ class ConvertAudio
 }
 
 ConvertAudio::$log = new LogWrapper("ConvertAudio");
-ConvertAudio::$normalizer = new OneAtATimeNormalizer();
+ConvertAudio::$normalizer = new AllAtOnceNormalizer();
