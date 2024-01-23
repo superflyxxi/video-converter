@@ -94,6 +94,6 @@ class InputFile
     public function getTemporaryFileNamePrefix()
     {
         $res = null != $this->prefix ? realpath($this->getFileName()) . "-dir-" : $this->getFileName() . "-";
-        return str_replace(":", "-", str_replace(DIRECTORY_SEPARATOR, "-", $res));
+        return str_replace(DIRECTORY_SEPARATOR, "-", $res);
     }
 }
