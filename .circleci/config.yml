@@ -10,7 +10,7 @@ orbs:
 anchors:
   node-executor: &node-executor
     name: node/default
-    tag: '10.19'
+    tag: '20.11'
 
 jobs:
   unit-tests:
