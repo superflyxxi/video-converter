@@ -4,7 +4,7 @@ const config = {
 	server: {
 		port: 3000,
 		version: getVersion(),
-	}
+	},
 };
 
 function getVersion() {

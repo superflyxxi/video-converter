@@ -1,8 +1,9 @@
-import * as svc from '../services/task.js';
 import express from 'express';
+import * as svc from '../services/task.js';
+
 const router = express.Router();
 
-//import NotFoundError from '../errors/not-found-error.js';
+// Import NotFoundError from '../errors/not-found-error.js';
 
 /**
  * @openapi
@@ -34,7 +35,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/v1/tasks', async function(_req, res) {
+router.get('/v1/tasks', async function (_req, res) {
 	const taskList = await svc.getAllTasks();
 	res.set('cache-control', 'public, max-age=2419200').send(taskList);
 });
