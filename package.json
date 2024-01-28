@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node src/js/index.js",
-    "test": "DATA_DIR=$(mktemp -d) c8 mocha unit-test/",
-    "int-test": "sleep 10s; mocha int-test/",
+    "test": "c8 mocha test/",
+    "int-test": "mocha int-test/",
     "xo": "xo"
   },
   "repository": {

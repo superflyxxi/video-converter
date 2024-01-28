@@ -1,7 +1,7 @@
 <phpunit testdox="true" noInteraction="true" cacheResult="false">
 	<php>
 		<includePath>/opt/video-converter/src</includePath>
-		<includePath>/opt/video-converter/tests</includePath>
+		<includePath>/opt/video-converter/int-test</includePath>
 		<env name="LOG_LEVEL" value="100" />
 	</php>
 	<logging>

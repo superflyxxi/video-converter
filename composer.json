@@ -10,8 +10,8 @@
 		"src/cli.php"
 	],
 	"scripts" : {
-		"lint" : "phplint src/ tests/ -vvv -w",
-		"check-format" : "php-cs-fixer fix --config .php-cs-fixer.dist.php src/ tests/"
+		"lint" : "phplint src/ int-test/ -vvv -w",
+		"check-format" : "php-cs-fixer fix --config .php-cs-fixer.dist.php src/ int-test/"
 	},
 	"require" : {
 		"php" : "^7.4.0",

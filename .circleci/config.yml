@@ -145,7 +145,7 @@ jobs:
             elif [[ "<< pipeline.git.branch >>" =~ (dev) ]]; then
               export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:latest,${CACHE_FROM_IMAGES}"
             fi
-            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
+            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " int-test/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
               export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-dev,${TEST_CACHE_FROM_IMAGES}"
             fi
@@ -180,7 +180,7 @@ jobs:
           step-name: Build test image
           docker-context: .
           path: .
-          dockerfile: tests/Dockerfile
+          dockerfile: int-test/Dockerfile
           image: test-${CIRCLE_PROJECT_REPONAME}
           tag: latest
           cache_from: ${TEST_CACHE_FROM_IMAGES}
@@ -439,7 +439,7 @@ workflows:
       - docker/hadolint:
           name: validate-dockerfile
           context: default
-          dockerfiles: Dockerfile:Dockerfile.parent:tests/Dockerfile
+          dockerfiles: Dockerfile:Dockerfile.parent:int-test/Dockerfile
       - build-docker:
           context: default
           requires:
