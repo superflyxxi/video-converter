@@ -13,28 +13,15 @@ anchors:
     tag: '10.19'
 
 jobs:
-  node-unit-tests:
+  unit-tests:
+    executor: *node-executor 
     resource_class: small
-    docker:
-      - image: cimg/base:stable 
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: false
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
-      - run:
-          name: Load docker test image
-          command: |
-            docker load -i /tmp/workspace/video-converter-images.tar
+      - node/install-packages
       - run:
           name: Unit Tests
-          command: |
-            docker run --name test -it --user $(id -u):$(id -g) \
-              --entrypoint npm -w /opt/video-converter \
-              video-converter-test test
-            docker cp test:/opt/video-converter/testResults ./
-            docker rm test
+          command: npm test -- --forbid-pending --forbid-only --reporter mocha-junit-reporter
           environment:
             MOCHA_FILE: ./mocha/test-results.xml
       - run:
@@ -49,7 +36,40 @@ jobs:
       - run:
           name: Verify XO
           command: npm run xo
-      - sonarcloud/scan
+
+  integration-tests:
+    resource_class: small
+    docker:
+      - image: cimg/base:stable 
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Load docker test image
+          command: |
+            docker load -i /tmp/workspace/video-converter-images.tar
+      - run:
+          name: Integration Tests
+          command: |
+            docker run --name test -it --user $(id -u):$(id -g) \
+              --entrypoint npm -w /opt/video-converter \
+              test-${CIRCLE_PROJECT_REPONAME} run int-test
+            docker cp test:/opt/video-converter/testResults ./
+            docker rm test
+          environment:
+            MOCHA_FILE: ./mocha/test-results.xml
+      - run:
+          name: Tar coverage
+          command: tar -jvcf coverage.tar.bz2 coverage/
+      - store_test_results:
+          path: ./mocha
+      - store_artifacts:
+          path: ./mocha/test-results.xml
+      - store_artifacts:
+          path: ./coverage.tar.bz2
 
   build-phar:
     resource_class: small
@@ -412,6 +432,8 @@ workflows:
           name: pre-release
           context: default
           prerelease: true
+      - unit-tests:
+          context: default
       - build-phar:
           context: default
       - docker/hadolint:
@@ -424,6 +446,7 @@ workflows:
             - pre-release
             - validate-dockerfile
             - build-phar
+            - unit-tests
       - publish-docker:
           name: publish-docker-private
           context: default
@@ -464,7 +487,7 @@ workflows:
             branches:
               only:
                 - main
-      - node-unit-tests:
+      - integration-tests:
           context: default
           requires:
             - pre-release
