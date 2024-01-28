@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Integration Tests
           command: |
-            docker run --name test -it --user $(id -u):$(id -g) \
+            docker run --name test -it \
               --entrypoint npm -w /opt/${CIRCLE_PROJECT_REPONAME} \
               test-${CIRCLE_PROJECT_REPONAME} run int-test
             docker cp test:/opt/${CIRCLE_PROJECT_REPONAME}/testResults ./
