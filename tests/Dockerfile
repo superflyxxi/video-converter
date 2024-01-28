@@ -1,4 +1,5 @@
 FROM composer:2.6.6 AS composer
+FROM video-converter AS build
 FROM video-converter-parent
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
@@ -19,7 +20,8 @@ ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-convert
 CMD [ "/opt/video-converter/tests" ]
 
 COPY --from=composer /usr/bin/composer /usr/bin/
-COPY . /opt/video-converter
+COPY --from=build /opt/video-converter /opt/video-converter
+
 RUN mv -v /opt/video-converter/tests/csvs ${DATA_DIR} && \
 	mkdir -m 777 /opt/video-converter/testResults || true && \
 	apt-get update && \
