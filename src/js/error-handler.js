@@ -33,6 +33,7 @@ import {v4 as uuidv4} from 'uuid';
 export default function errrorHandler(error, _req, res, next) {
 	console.log('error encountered', error);
 	if (res.headersSent) {
+		debug('headers already sent, proceeding to next');
 		return next(error);
 	}
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import RouteNotFoundError from './errors/route-not-found-error.js';
-import {server} from './config.js';
+import config from './config.js';
 import errorHandler from './error-handler.js';
 import tasks from './controllers/tasks.js';
 //import compareRouter from './routers/v1/phones/compare/index.js';
@@ -21,8 +21,13 @@ app.use((req, _res, next) => {
 	next(new RouteNotFoundError(req));
 });
 app.use(errorHandler);
-app.listen(server.port, () => {
-	console.log('Started version', server.version, 'listening on', server.port);
+const server = app.listen(config.server.port, function() {
+	console.log('Started version', config.server.version, 'listening on', config.server.port);
 });
 
-export default app;
+process.on('SIGTERM', () => {
+  debug('SIGTERM signal received: closing HTTP server');
+  server.close(() => debug('HTTP server closed'));
+})
+
+export {app, server};

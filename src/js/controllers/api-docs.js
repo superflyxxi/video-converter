@@ -1,7 +1,7 @@
 import swaggerUi from 'swagger-ui-express';
 import express from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
-import {server} from '../config.js';
+import config from '../config.js';
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ const openapispec = swaggerJsdoc({
 		openapi: '3.0.0',
 		info: {
 			title: 'Video Converter',
-			version: server.version,
+			version: config.server.version,
 		},
 	},
 	apis: ['./js/controllers/**/*.js', './js/errors/*.js'],
