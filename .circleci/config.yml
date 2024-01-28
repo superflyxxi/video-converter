@@ -13,15 +13,28 @@ anchors:
     tag: '10.19'
 
 jobs:
-  unit-test:
-    executor: *node-executor 
+  node-unit-tests:
     resource_class: small
+    docker:
+      - image: cimg/base:stable 
     steps:
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - attach_workspace:
+          at: /tmp/workspace
       - checkout
-      - node/install-packages
+      - run:
+          name: Load docker test image
+          command: |
+            docker load -i /tmp/workspace/video-converter-images.tar
       - run:
           name: Unit Tests
-          command: npm test -- --forbid-pending --forbid-only --reporter mocha-junit-reporter
+          command: |
+            docker run --name test -it --user $(id -u):$(id -g) \
+              --entrypoint npm -w /opt/video-converter \
+              video-converter-test test
+            docker cp test:/opt/video-converter/testResults ./
+            docker rm test
           environment:
             MOCHA_FILE: ./mocha/test-results.xml
       - run:
@@ -451,6 +464,11 @@ workflows:
             branches:
               only:
                 - main
+      - node-unit-tests:
+          context: default
+          requires:
+            - pre-release
+            - build-docker
       - test-docker:
           context: default
           requires:
