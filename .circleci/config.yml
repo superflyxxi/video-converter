@@ -95,9 +95,9 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            - ${CIRCLE_PROJECT_REPONAME}.phar
+            - video-converter.phar
       - store_artifacts:
-          path: ${CIRCLE_PROJECT_REPONAME}.phar
+          path: video-converter.phar
 
   snyk-scan:
     resource_class: small
