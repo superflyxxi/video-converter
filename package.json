@@ -3,13 +3,9 @@
   "description": "Video Converter",
   "main": "src/js/index.js",
   "type": "module",
-  "engines": {
-    "npm": ">=6.14.0 <7.0.0",
-    "node": ">=10.0.0 <11.0.0"
-  },
   "scripts": {
     "start": "node src/js/index.js",
-    "test": "DATA_DIR=$(mktemp -d) c8 mocha",
+    "test": "DATA_DIR=$(mktemp -d) c8 mocha unit-test/",
     "int-test": "sleep 10s; mocha int-test/",
     "xo": "xo"
   },
