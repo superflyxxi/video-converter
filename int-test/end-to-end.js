@@ -12,7 +12,7 @@ chai.use(chaiAlmost(0.1));
 
 describe('End-to-end integration tests', () => {
 	it('Do nothing', async function () {
-		const res = await chai.request(BASE_URL).send();
+		const res = await chai.request(BASE_URL).get('/').send();
 		expect(res.status).to.equal(200);
 	}).timeout(30_000);
 });
