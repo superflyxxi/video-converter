@@ -16,13 +16,13 @@ ENV TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples"
 RUN curl --fail -k -L "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" -o "${DATA_DIR}/dvd.mkv"
 RUN curl --fail -k -L "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/bluray.mkv"
 
-ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml", "--verbose"]
-CMD [ "/opt/video-converter/tests" ]
+ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/int-test/phpunit.xml", "--verbose"]
+CMD [ "/opt/video-converter/int-test" ]
 
 COPY --from=composer /usr/bin/composer /usr/bin/
 COPY --from=build /opt/video-converter /opt/video-converter
 
-RUN mv -v /opt/video-converter/tests/csvs ${DATA_DIR} && \
+RUN mv -v /opt/video-converter/int-test/csvs ${DATA_DIR} && \
 	mkdir -m 777 /opt/video-converter/testResults || true && \
 	apt-get update && \
 	COMPOSER_DEPS="git zip unzip php-zip" && \
