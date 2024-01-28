@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  video-converter:
+    image: video-converter
+    restart: always
+    environment:
+      NODE_ENV: development
+  video-converter-int-test:
+    image: test-video-converter
+    depends_on:
+      - video-converter
+    restart: "no"
+    environment:
+      BASE_URL: "http://video-converter:3000"

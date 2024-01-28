@@ -52,15 +52,9 @@ jobs:
           command: |
             docker load -i /tmp/workspace/${CIRCLE_PROJECT_REPONAME}-images.tar
       - run:
-          name: Integration Tests
+          name: Bring up
           command: |
-            docker run --name test -it \
-              --entrypoint npm -w /opt/${CIRCLE_PROJECT_REPONAME} \
-              test-${CIRCLE_PROJECT_REPONAME} run int-test
-            docker cp test:/opt/${CIRCLE_PROJECT_REPONAME}/testResults ./
-            docker rm test
-          environment:
-            MOCHA_FILE: ./mocha/test-results.xml
+            docker-compose -f int-test/docker-compose.yml up --abort-on-container-exit --exit-code-from ${CIRCLE_PROJECT_REPONAME}-int-test
       - run:
           name: Tar coverage
           command: tar -jvcf coverage.tar.bz2 coverage/

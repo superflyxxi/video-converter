@@ -34,3 +34,20 @@ RUN mv -v /opt/video-converter/int-test/csvs ${DATA_DIR} && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 RUN cd /opt/video-converter && \
 	npm install
+
+# FROM video-converter AS build
+# FROM video-converter-parent
+# LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
+# ARG DEBIAN_FRONTEND=noninteractive
+# RUN apt-get update && \
+#	apt-get install -y --no-install-recommends curl && \
+#	apt-get clean -y && rm -rf /var/lib/apt/lists/*
+# ARG TEST_SAMPLE_DOMAIN
+# ENV TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples"
+# RUN curl --fail -k -L "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" -o "${DATA_DIR}/dvd.mkv"
+# RUN curl --fail -k -L "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/bluray.mkv"
+# COPY --from=build /opt/video-converter /opt/video-converter
+# ENV NODE_ENV=test
+# RUN npm install
+# ENTRYPOINT ["npm"]
+# CMD ["run", "int-test"]

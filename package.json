@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/js/index.js",
     "test": "c8 mocha test/",
-    "int-test": "mocha int-test/",
+    "int-test": "sleep 10s; mocha int-test/",
     "xo": "xo"
   },
   "repository": {
