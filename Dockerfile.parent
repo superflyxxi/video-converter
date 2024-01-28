@@ -38,6 +38,11 @@ RUN DIR=$(mktemp -d) && cd "${DIR}" && \
 	rm -rf "${DIR}"
 
 # Node
-RUN apt-get update -y && \
-	apt-get install -y --no-install-recommends nodejs npm && \
+ARG NODE_MAJOR=20
+RUN BUILD_DEPS="curl" && \
+	apt-get update -y && \
+	apt-get install -y --no-install-recommends ${BUILD_DEPS} && \
+	curl -sL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - && \
+	apt-get install -y --no-install-recommends nodejs && \
+	apt-get purge -y ${BUILD_DEPS} && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
