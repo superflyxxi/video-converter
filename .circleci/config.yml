@@ -50,14 +50,14 @@ jobs:
       - run:
           name: Load docker test image
           command: |
-            docker load -i /tmp/workspace/video-converter-images.tar
+            docker load -i /tmp/workspace/${CIRCLE_PROJECT_REPONAME}-images.tar
       - run:
           name: Integration Tests
           command: |
             docker run --name test -it --user $(id -u):$(id -g) \
-              --entrypoint npm -w /opt/video-converter \
+              --entrypoint npm -w /opt/${CIRCLE_PROJECT_REPONAME} \
               test-${CIRCLE_PROJECT_REPONAME} run int-test
-            docker cp test:/opt/video-converter/testResults ./
+            docker cp test:/opt/${CIRCLE_PROJECT_REPONAME}/testResults ./
             docker rm test
           environment:
             MOCHA_FILE: ./mocha/test-results.xml
@@ -95,9 +95,9 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            - video-converter.phar
+            - ${CIRCLE_PROJECT_REPONAME}.phar
       - store_artifacts:
-          path: video-converter.phar
+          path: ${CIRCLE_PROJECT_REPONAME}.phar
 
   snyk-scan:
     resource_class: small
@@ -111,7 +111,7 @@ jobs:
       - checkout
       - run:
           name: Load docker images
-          command: docker load -i /tmp/workspace/video-converter-images.tar
+          command: docker load -i /tmp/workspace/${CIRCLE_PROJECT_REPONAME}-images.tar
       - snyk/scan:
           docker-image-name: ${CIRCLE_PROJECT_REPONAME}:latest
           fail-on-issues: false
@@ -134,7 +134,7 @@ jobs:
       - checkout
       - run:
           name: Move phar to docker dir
-          command: cp -v /tmp/workspace/video-converter.phar ./
+          command: cp -v /tmp/workspace/${CIRCLE_PROJECT_REPONAME}.phar ./
       - run:
           name: Custom enviroment variables
           command: |
@@ -195,11 +195,11 @@ jobs:
       - run:
           name: Export images to tar
           command: |
-            docker save -o video-converter-images.tar ${CIRCLE_PROJECT_REPONAME} test-${CIRCLE_PROJECT_REPONAME}
+            docker save -o ${CIRCLE_PROJECT_REPONAME}-images.tar ${CIRCLE_PROJECT_REPONAME} test-${CIRCLE_PROJECT_REPONAME}
       - persist_to_workspace:
           root: ./
           paths:
-            - video-converter-images.tar*
+            - ${CIRCLE_PROJECT_REPONAME}-images.tar*
 
   publish-docker:
     resource_class: small
@@ -247,7 +247,7 @@ jobs:
       - run:
           name: Load docker images
           command: |
-            docker load -i /tmp/workspace/video-converter-images.tar
+            docker load -i /tmp/workspace/${CIRCLE_PROJECT_REPONAME}-images.tar
       - run:
           name: Tag docker images for repos
           command: |
@@ -317,7 +317,7 @@ jobs:
           file: ${CIRCLE_PROJECT_REPONAME}.yml
           remote_dir: k8s/ci/<< parameters.env >>
       - execute-remote:
-          command: ci-deploy-k8s.sh << parameters.env >> video-converter
+          command: ci-deploy-k8s.sh << parameters.env >> ${CIRCLE_PROJECT_REPONAME}
 
   test-docker:
     parallelism: 5
@@ -333,7 +333,7 @@ jobs:
       - run:
           name: Load docker test image
           command: |
-            docker load -i /tmp/workspace/video-converter-images.tar
+            docker load -i /tmp/workspace/${CIRCLE_PROJECT_REPONAME}-images.tar
       - run:
           name: Run tests
           command: |
@@ -376,8 +376,8 @@ jobs:
           command: |
             npm install --include=dev junit-report-merger
             npx jrm junit.xml "junitResults/junit-*.xml"
-            find . -name 'clover-*.xml' -type f -exec sed -i 's#/opt/video-converter/##g' {} \;
-            sed -i 's#/opt/video-converter/##g' junit.xml 
+            find . -name 'clover-*.xml' -type f -exec sed -i 's#/opt/${CIRCLE_PROJECT_REPONAME}/##g' {} \;
+            sed -i 's#/opt/${CIRCLE_PROJECT_REPONAME}/##g' junit.xml 
       - store_artifacts:
           path: junit.xml
       - run:
