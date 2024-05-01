@@ -42,8 +42,7 @@ jobs:
     docker:
       - image: cimg/base:stable 
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: false
+      - setup_remote_docker
       - attach_workspace:
           at: /tmp/workspace
       - checkout
@@ -59,8 +58,18 @@ jobs:
     docker:
       - image: cimg/base:stable 
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: false
+      - when:
+          condition:
+            equal: [main, << pipeline.git.branch >>]
+          steps:
+          - setup_remote_docker:
+              docker_layer_caching: false
+      - unless:
+          condition:
+            equal: [main, << pipeline.git.branch >>]
+          steps:
+          - setup_remote_docker:
+              docker_layer_caching: true
       - run:
           name: Define cache env variables
           command: |
@@ -157,8 +166,7 @@ jobs:
         type: string
         default: DOCKER_PASSWORD
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: false
+      - setup_remote_docker
       - attach_workspace:
           at: /tmp/workspace
       - run:
@@ -218,7 +226,7 @@ jobs:
       - image: cimg/base:stable 
     steps:
       - setup_remote_docker:
-          docker_layer_caching: false
+          docker_layer_caching: true
       - attach_workspace:
           at: /tmp/workspace
       - checkout
