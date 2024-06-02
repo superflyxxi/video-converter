@@ -1,4 +1,4 @@
-FROM jrottenberg/ffmpeg:6.0-vaapi2004
+FROM jrottenberg/ffmpeg:6.1-vaapi2004
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
 # Support bash as the deafult shell
