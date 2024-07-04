@@ -14,8 +14,6 @@ class FFmpegHelper
 {
     public static $log;
 
-    private static $INTERLACED_REPLACEMENT_REGEX = "/[A-Za-z]+:[ ]+([0-9]+)/";
-
     private static $probeCache = [];
 
     public static function probe(InputFile $inputFile): array
@@ -77,12 +75,12 @@ class FFmpegHelper
          * [Parsed_idet_0 @ 0x559b53b4b700] Single frame detection: TFF: 10 BFF: 13 Progressive: 8535 Undetermined: 5830
          * [Parsed_idet_0 @ 0x559b53b4b700] Multi frame detection: TFF: 0 BFF: 0 Progressive: 14365 Undetermined: 23
          */
-        preg_match("/Progressive:\s+(\d+)/", $out, $matches);
-        $progressive = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
-        preg_match("/TFF:\s+(\d+)/", $out, $matches);
-        $tff = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
-        preg_match("/BFF:\s+(\d+)/", $out, $matches);
-        $bff = preg_replace(self::$INTERLACED_REPLACEMENT_REGEX, "$1", $matches[0]);
+        preg_match_all("/Progressive:\s+(\d+)/", $out, $matches);
+        $progressive = $matches[1][count($matches[1]) - 1];
+        preg_match_all("/TFF:\s+(\d+)/", $out, $matches);
+        $tff = $matches[1][count($matches[1]) - 1];
+        preg_match_all("/BFF:\s+(\d+)/", $out, $matches);
+        $bff = $matches[1][count($matches[1]) - 1];
         $total = $progressive + $tff + $bff;
         self::$log->debug(
             "Interlacing probe results",
