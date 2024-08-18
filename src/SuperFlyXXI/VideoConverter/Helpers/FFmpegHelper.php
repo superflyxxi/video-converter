@@ -113,8 +113,7 @@ class FFmpegHelper
 
     public static function generate($listRequests, $outputFile)
     {
-        // -max_interleave_delta 0 to workaround starting new cluster warnings
-        $finalCommand = "ffmpeg -stats_period 30 -max_interleave_delta 0 ";
+        $finalCommand = "ffmpeg -stats_period 30 ";
         if (EnvHelper::getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
             $finalCommand .= "-y ";
         }
@@ -139,6 +138,8 @@ class FFmpegHelper
         if ($outputFile->format != null) {
             $finalCommand .= " -f " . $outputFile->format;
         }
+        // -max_interleave_delta 0 to workaround starting new cluster warnings
+        $finalCommand .= " -max_interleave_delta 0 ";
         $finalCommand .= ' "' . $outputFile->getFileName() . '"';
 
         return $finalCommand;
