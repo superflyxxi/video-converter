@@ -113,7 +113,8 @@ class FFmpegHelper
 
     public static function generate($listRequests, $outputFile)
     {
-        $finalCommand = "ffmpeg -stats_period 30 ";
+        // -max_interleave_delta 0 to workaround starting new cluster warnings
+        $finalCommand = "ffmpeg -stats_period 30 -max_interleave_delta 0 ";
         if (EnvHelper::getEnvWithDefault("OVERWRITE_FILE", "true") == "true") {
             $finalCommand .= "-y ";
         }
