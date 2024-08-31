@@ -351,7 +351,6 @@ workflows:
           docker-username-env: PRIVATE_DOCKER_USERNAME
           docker-password-env: PRIVATE_DOCKER_PASSWORD
           requires:
-            - pre-release
             - build-docker
       - publish-docker:
           name: publish-docker-ghcr
@@ -360,9 +359,6 @@ workflows:
           docker-username-env: GHCR_USERNAME
           docker-password-env: GHCR_TOKEN
           requires:
-            - pre-release
-            - release-notes
-            - build-docker
             - test-docker
           filters:
             branches:
@@ -376,9 +372,6 @@ workflows:
           docker-username-env: DOCKER_IO_USERNAME
           docker-password-env: DOCKER_IO_PASSWORD
           requires:
-            - pre-release
-            - release-notes
-            - build-docker
             - test-docker
           filters:
             branches:
@@ -387,7 +380,6 @@ workflows:
       - test-docker:
           context: default
           requires:
-            - pre-release
             - build-docker
       - sonar-scan:
           context: default
@@ -396,7 +388,7 @@ workflows:
       - snyk-scan:
           context: default
           requires:
-            - test-docker
+            - build-docker
           filters:
             branches:
               ignore:
@@ -406,5 +398,4 @@ workflows:
           context: default
           prerelease: false
           requires:
-            - build-docker
-            - test-docker
+            - publish-docker-private
