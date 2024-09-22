@@ -56,14 +56,14 @@ Option (short) | Description | Default | Example
 `--deinterlace-mode` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), or default behavior of deinterlacing while keeping the same framerate (`02`). | `02` | `00`
 `--deinterlace` | Whether deinterlacing should be performed. `false` will disable deinterlacing. `true` will force deinterlacing. `check-idet` will determine wether more than 1% of frames are interlaced. `check-probe` will be based on video data. | `false` | `probe`
 `--audio-tracks` | The input audio tracks to convert. | `*` | `1`
-`--audio-format` | The desired output audio format. | `aac` | `eac3`
-`--audio-quality` | The desired output audio quality based on the `--audio-format`. | `2` | `560`
+`--audio-format` | The desired output audio format. | `ac3` | `aac`
+`--audio-quality` | The desired output audio quality based on the `--audio-format`. | `576` | `2`
 `--audio-sample-rate` | The desired output audio sample rate. If not provided, input sample rate will be used. | | `48000`
-`--audio-channel-layout` | The desired output audio channel layout. | ` ` | `7.1`
+`--audio-channel-layout` | The desired output audio channel layout. | ` ` | `5.1`
 `--audio-channel-layout-tracks` | The space-separated list of input audio tracks that should have the `--audio-channel-layout` applied. | `*` | `1`
 `--normalize-audio-tracks` | The space-separated list of input audio tracks that should be normalized. | | `1 2`
 `--subtitle-tracks` | The input subtitle tracks to convert. | `*` | `1`
-`--subtitle-format` | The desired output subtitle format. | `ass` | `copy`
+`--subtitle-format` | The desired output subtitle format. | `ass` | `srt`
 `--subtitle-conversion-output` | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | `MERGE` | `FILE`
 `--subtitle-conversion-blacklist` | Characters to blacklist during subtitle conversion. Note: It's best to use single quote around the values when passing argument values. | `` \ |~/`_ `` | `\ |`
 
