@@ -13,7 +13,7 @@ class AllAtOnceNormalizer implements Normalizer
     public static LogWrapper $log;
 
     private VolumeAnalyzer $volAnalyzer;
-   
+
     public function __construct()
     {
         $this->volAnalyzer = new VolumeAnalyzer();
@@ -26,8 +26,8 @@ class AllAtOnceNormalizer implements Normalizer
 
         $request = new Request($oRequest->oInputFile->getFileName());
         $request->setAudioTracks($index);
-        $request->audioFormat = $oRequest->audioFormat;
-        $request->audioQuality = $oRequest->audioQuality;
+        $request->audioFormat = $oRequest->normalizeAudioFormat;
+        $request->audioQuality = $oRequest->normalizeAudioQuality;
         if ($oRequest->areAllAudioChannelLayoutTracksConsidered()
                     || in_array($index, $oRequest->getAudioChannelLayoutTracks())) {
             $request->setAudioChannelLayoutTracks($index);

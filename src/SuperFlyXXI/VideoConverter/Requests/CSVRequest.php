@@ -90,6 +90,14 @@ class CSVRequest
                                 $req->setNormalizeAudioTracks($value);
                                 break;
 
+                            case "normalize-audio-format":
+                                $req->normalizeAudioFormat = $value;
+                                break;
+
+                            case "normalize-audio-quality":
+                                $req->normalizeAudioQuality = $value;
+                                break;
+
                             case "video-tracks":
                                 $req->setVideoTracks($value);
                                 break;
