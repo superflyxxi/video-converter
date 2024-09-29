@@ -108,8 +108,8 @@ class Request
         $req->audioChannelLayout = Options::get("audio-channel-layout", "");
         $req->setAudioChannelLayoutTracks(Options::get("audio-channel-layout-tracks", "*"));
         $req->setNormalizeAudioTracks(Options::get("normalize-audio-tracks", ""));
-        $req->normalizeAudioFormat = Options::get("normalize-audio-format", $req->audioFormat);
-        $req->normalizeAudioQuality = Options::get("normalize-audio-quality", $req->audioQuality);
+        $req->normalizeAudioFormat = Options::get("normalize-audio-format", null);
+        $req->normalizeAudioQuality = Options::get("normalize-audio-quality", null);
 
         $req->setSubtitleTracks(Options::get("subtitle-tracks", "*"));
         $req->subtitleFormat = Options::get("subtitle-format", "ass");

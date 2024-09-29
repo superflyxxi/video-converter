@@ -23,9 +23,6 @@ class CSVRequest
                     "metadata" => $data
                 ]);
                 $req = Request::newInstanceFromEnv($data["filename"]);
-                // set normalize args to null
-                $req->normalizeAudioFormat = null;
-                $req->normalizeAudioQuality = null;
                 $this->arrConvertFiles[] = $req;
                 foreach (array_keys($data) as $key) {
                     $value = $data[$key];
@@ -125,14 +122,6 @@ class CSVRequest
                         }
                     }
                 }
-                // if normalize data still null, then set to defaults
-                if (null == $req->normalizeAudioFormat) {
-                    $req->normalizeAudioFormat = $req->audioFormat;
-                }
-                if (null == $req->normalizeAudioQuality) {
-                    $req->normalizeAudioQuality = $req->audioQuality;
-                }
-
             }
             $req->prepareStreams();
         }

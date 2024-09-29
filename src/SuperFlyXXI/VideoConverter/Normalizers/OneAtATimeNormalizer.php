@@ -27,8 +27,8 @@ class OneAtATimeNormalizer implements Normalizer
 
         $command .= $this->appendNormalizedArgs($oRequest, $index, 0);
 
-        $command .= " -c:a " . $oRequest->normalizeAudioFormat;
-        $command .= " -q:a " . $oRequest->normalizeAudioQuality;
+        $command .= " -c:a " . (null == $oRequest->normalizeAudioFormat ? $oRequest->audioFormat: $oRequest->normalizeAudioFormat);
+        $command .= " -q:a " . (null == $oRequest->normalizeAudioQuality ? $oRequest->audioQuality: $oRequest->normalizeAudioQuality);
         if (null != $oRequest->audioSampleRate) {
             $command .= " -ar " . $oRequest->audioSampleRate;
         }
