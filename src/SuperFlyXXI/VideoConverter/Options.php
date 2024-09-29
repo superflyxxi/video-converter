@@ -33,6 +33,8 @@ class Options
                     "audio-channel-layout::",
                     "audio-channel-layout-tracks::",
                     "normalize-audio-tracks::",
+                    "normalize-audio-format::",
+                    "normalize-audio-quality::",
                     "subtitle-tracks::",
                     "subtitle-format::",
                     "subtitle-conversion-output::",

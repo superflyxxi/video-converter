@@ -13,7 +13,7 @@ class OneAtATimeNormalizer implements Normalizer
     public static LogWrapper $log;
 
     private VolumeAnalyzer $volAnalyzer;
-   
+
     public function __construct()
     {
         $this->volAnalyzer = new VolumeAnalyzer();
@@ -27,8 +27,8 @@ class OneAtATimeNormalizer implements Normalizer
 
         $command .= $this->appendNormalizedArgs($oRequest, $index, 0);
 
-        $command .= " -c:a " . $oRequest->audioFormat;
-        $command .= " -q:a " . $oRequest->audioQuality;
+        $command .= " -c:a " . (null == $oRequest->normalizeAudioFormat ? $oRequest->audioFormat: $oRequest->normalizeAudioFormat);
+        $command .= " -q:a " . (null == $oRequest->normalizeAudioQuality ? $oRequest->audioQuality: $oRequest->normalizeAudioQuality);
         if (null != $oRequest->audioSampleRate) {
             $command .= " -ar " . $oRequest->audioSampleRate;
         }

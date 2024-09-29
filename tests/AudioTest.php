@@ -31,31 +31,40 @@ final class AudioTest extends Test
 
     public function testNormalizingDefaults()
     {
-        $this->normalize("Test Normalize Track 1", null, 6);
+        $this->normalize("Test Normalize Track 1", null, 6, null);
     }
 
     public function testNormalizingChannelLayoutNotSide()
     {
-        $this->normalize("Test Normalize with Channel Layout", "5.1", 6);
+        $this->normalize("Test Normalize with Channel Layout", "5.1", 6, null);
     }
 
     public function testNormalizingChannelLayoutSmaller()
     {
-        $this->normalize("Test Normalize with Smaller Channel Layout", "2.1", 3);
+        $this->normalize("Test Normalize with Smaller Channel Layout", "2.1", 3, null);
     }
 
-    public function normalize($title, $channelLayout, $channels)
+    public function testNormalizingWithCopy()
+    {
+        $this->normalize("Test Normalize with Copy", null, 6, "copy");
+    }
+
+    public function normalize($title, $channelLayout, $channels, $audioFormat)
     {
         $this->getFile("dvd");
         $args = [
-                    "--title" => $title,
-                    "--year" => 2019,
-                    "--normalize-audio-tracks" => 1,
-                    "--video-tracks" => - 1,
-            "--subtitle-tracks" => - 1
+            "--title" => $title,
+            "--year" => 2019,
+            "--normalize-audio-tracks" => 1,
+            "--video-tracks" => - 1,
+            "--subtitle-tracks" => - 1,
+            "--normalize-audio-format" => "eac3"
         ];
         if (null != $channelLayout) {
             $args["--audio-channel-layout"] = $channelLayout;
+        }
+        if (null != $audioFormat) {
+            $args["--audio-format"] = $audioFormat;
         }
         $return = $this->ripvideo("dvd.mkv", $args);
         $this->assertEquals(0, $return, "ripvideo exit code");
@@ -66,10 +75,11 @@ final class AudioTest extends Test
         $this->assertEquals("ac3", $probe["streams"][0]["codec_name"], "Stream 0 codec");
         $this->assertEquals($channels, $probe["streams"][0]["channels"], "Stream 0 channels");
         $this->assertEquals("48000", $probe["streams"][0]["sample_rate"], "Stream 0 sample_rate");
+
         $this->assertEquals("Normalized Surround 5.1", $probe["streams"][1]["tags"]["title"], "Stream 1 title");
         $this->assertEquals("eng", $probe["streams"][1]["tags"]["language"], "Stream 1 language");
         $this->assertEquals("audio", $probe["streams"][1]["codec_type"], "Stream 1 codec_type");
-        $this->assertEquals("ac3", $probe["streams"][1]["codec_name"], "Stream 1 codec");
+        $this->assertEquals("eac3", $probe["streams"][1]["codec_name"], "Stream 1 codec");
         $this->assertEquals($channels, $probe["streams"][1]["channels"], "Stream 1 channels");
         $this->assertEquals("48000", $probe["streams"][1]["sample_rate"], "Stream 1 sample_rate");
         $this->assertArrayNotHasKey(2, $probe["streams"], "Stream 2 exists");
@@ -96,7 +106,7 @@ final class AudioTest extends Test
         $this->assertNotEquals($jsonZero["input_lra"], $jsonOne["input_lra"], "input_lra");
         $this->assertNotEquals($jsonZero["input_thresh"], $jsonOne["input_thresh"], "input_thresh");
     }
-    
+
     public function testOverrideDefaults()
     {
         $this->getFile("dvd");

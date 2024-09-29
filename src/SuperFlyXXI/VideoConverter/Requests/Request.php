@@ -52,6 +52,10 @@ class Request
 
     public $normalizeAudioTracks = null;
 
+    public $normalizeAudioFormat = null;
+
+    public $normalizeAudioQuality = null;
+
     private $hwaccel = false;
 
     public $deinterlace = false;
@@ -101,9 +105,11 @@ class Request
         $req->audioFormat = Options::get("audio-format", "ac3");
         $req->audioQuality = Options::get("audio-quality", "576");
         $req->audioSampleRate = Options::get("audio-sample-rate", null);
-        $req->setNormalizeAudioTracks(Options::get("normalize-audio-tracks", ""));
         $req->audioChannelLayout = Options::get("audio-channel-layout", "");
         $req->setAudioChannelLayoutTracks(Options::get("audio-channel-layout-tracks", "*"));
+        $req->setNormalizeAudioTracks(Options::get("normalize-audio-tracks", ""));
+        $req->normalizeAudioFormat = Options::get("normalize-audio-format", null);
+        $req->normalizeAudioQuality = Options::get("normalize-audio-quality", null);
 
         $req->setSubtitleTracks(Options::get("subtitle-tracks", "*"));
         $req->subtitleFormat = Options::get("subtitle-format", "ass");

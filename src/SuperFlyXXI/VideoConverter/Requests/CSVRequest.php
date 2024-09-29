@@ -17,9 +17,7 @@ class CSVRequest
         $columns = $file->fgetcsv();
         while (! $file->eof()) {
             $row = $file->fgetcsv();
-            if ([
-                null
-            ] !== $row) {
+            if ([null] !== $row) {
                 $data = self::getArrayForRow($columns, $row);
                 self::$log->debug("Creating metadata", [
                     "metadata" => $data
@@ -88,6 +86,14 @@ class CSVRequest
 
                             case "normalize-audio-tracks":
                                 $req->setNormalizeAudioTracks($value);
+                                break;
+
+                            case "normalize-audio-format":
+                                $req->normalizeAudioFormat = $value;
+                                break;
+
+                            case "normalize-audio-quality":
+                                $req->normalizeAudioQuality = $value;
                                 break;
 
                             case "video-tracks":
