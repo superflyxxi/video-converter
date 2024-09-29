@@ -12,11 +12,11 @@ class ConvertAudio
     public static LogWrapper $log;
 
     public static Normalizer $normalizer;
-   
+
     public static function convert($oRequest)
     {
         $arrAdditionalRequests = [];
-        if ("copy" != $oRequest->audioFormat && count($oRequest->normalizeAudioTracks)) {
+        if (count($oRequest->normalizeAudioTracks)) {
             foreach ($oRequest->normalizeAudioTracks as $index) {
                 $arrAdditionalRequests[] = self::$normalizer->normalize($oRequest, $index);
             }
