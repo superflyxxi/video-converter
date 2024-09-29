@@ -67,10 +67,18 @@ class CSVRequest
                                 break;
 
                             case "audio-format":
+                                if ($req->audioFormat == $req->normalizeAudioFormat) {
+                                    // if normalize format same, then set it as it means it wasn't set. Big assumption.
+                                    $req->normalizeAudioFormat = $value;
+                                }
                                 $req->audioFormat = $value;
                                 break;
 
                             case "audio-quality":
+                                if ($req->audioQuality == $req->normalizeAudioQuality) {
+                                    // if normalize quality same, then set it as it means it wasn't set. Big assumption.
+                                    $req->normalizeAudioQuality = $value;
+                                }
                                 $req->audioQuality = $value;
                                 break;
 
