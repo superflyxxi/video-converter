@@ -62,6 +62,8 @@ Option (short) | Description | Default | Example
 `--audio-channel-layout` | The desired output audio channel layout. | ` ` | `5.1`
 `--audio-channel-layout-tracks` | The space-separated list of input audio tracks that should have the `--audio-channel-layout` applied. | `*` | `1`
 `--normalize-audio-tracks` | The space-separated list of input audio tracks that should be normalized. | | `1 2`
+`--normalize-audio-format` | The desired output audio format for normalized tracks. | --audio-format | `aac`
+`--normalize-audio-quality` | The desired output audio quality based on the `--normalize-audio-format` for normalized tracks. | --audio-quality | `2`
 `--subtitle-tracks` | The input subtitle tracks to convert. | `*` | `1`
 `--subtitle-format` | The desired output subtitle format. | `ass` | `srt`
 `--subtitle-conversion-output` | The mode for which the conversion of image subtitles to srt should be stored. `MERGE`: merge it with the mkv. `FILE`: keep each file separate. | `MERGE` | `FILE`
