@@ -17,14 +17,15 @@ class CSVRequest
         $columns = $file->fgetcsv();
         while (! $file->eof()) {
             $row = $file->fgetcsv();
-            if ([
-                null
-            ] !== $row) {
+            if ([null] !== $row) {
                 $data = self::getArrayForRow($columns, $row);
                 self::$log->debug("Creating metadata", [
                     "metadata" => $data
                 ]);
                 $req = Request::newInstanceFromEnv($data["filename"]);
+                // set normalize args to null
+                $req->normalizeAudioFormat = null;
+                $req->normalizeAudioQuality = null;
                 $this->arrConvertFiles[] = $req;
                 foreach (array_keys($data) as $key) {
                     $value = $data[$key];
@@ -67,18 +68,10 @@ class CSVRequest
                                 break;
 
                             case "audio-format":
-                                if ($req->audioFormat == $req->normalizeAudioFormat) {
-                                    // if normalize format same, then set it as it means it wasn't set. Big assumption.
-                                    $req->normalizeAudioFormat = $value;
-                                }
                                 $req->audioFormat = $value;
                                 break;
 
                             case "audio-quality":
-                                if ($req->audioQuality == $req->normalizeAudioQuality) {
-                                    // if normalize quality same, then set it as it means it wasn't set. Big assumption.
-                                    $req->normalizeAudioQuality = $value;
-                                }
                                 $req->audioQuality = $value;
                                 break;
 
@@ -132,6 +125,14 @@ class CSVRequest
                         }
                     }
                 }
+                // if normalize data still null, then set to defaults
+                if (null == $req->normalizeAudioFormat) {
+                    $req->normalizeAudioFormat = $req->audioFormat;
+                }
+                if (null == $req->normalizeAudioQuality) {
+                    $req->normalizeAudioQuality = $req->audioQuality;
+                }
+
             }
             $req->prepareStreams();
         }
