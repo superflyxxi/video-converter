@@ -154,7 +154,8 @@ class FFmpegHelper
                 $decode = "-hwaccel vaapi -hwaccel_device /dev/dri/renderD128";
             }
             if ($encode == "" && $tmpRequest->isHwAccelEncode()) {
-                $encode = "-vaapi_device /dev/dri/renderD128";
+                // old $encode = "-vaapi_device /dev/dri/renderD128";
+                $encode = "-hwaccel_output_format vaapi";
             }
         }
         return $decode . " " . $encode;
