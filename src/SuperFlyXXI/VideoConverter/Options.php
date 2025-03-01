@@ -25,7 +25,7 @@ class Options
                     "video-format::",
                     "video-upscale::",
                     "deinterlace::",
-                    "deinterlace-check::",
+                    "deinterlace-mode::",
                     "audio-tracks::",
                     "audio-format::",
                     "audio-quality::",
