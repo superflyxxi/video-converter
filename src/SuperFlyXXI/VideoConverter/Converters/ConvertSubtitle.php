@@ -28,7 +28,7 @@ class ConvertSubtitle
                         $dvdFile = self::convertBluraySubtitle($oRequest, $dir, $filename, $index);
                     } elseif ("vobsub" == $codecName || "dvd_subtitle" == $codecName) {
                         $dvdFile = self::convertDvdSubtitle($oRequest, $dir, $filename, $index);
-                    } elseif ("subrip" == $codecName) {
+                    } else {
                         self::$log->info(
                             "Adding subrip to request",
                             [
