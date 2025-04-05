@@ -113,6 +113,12 @@ jobs:
           registry: ${CACHE_REGISTRY}
           docker-username: CACHE_USERNAME
           docker-password: CACHE_PASSWORD
+      - run:
+          name: Docker pull cache images
+          command: |
+            for I in $(echo ${CACHE_FROM_IMAGES} | tr "," "\n"); do
+              docker pull $I
+            done
       - docker/build:
           step-name: Build parent image
           dockerfile: Dockerfile.parent
