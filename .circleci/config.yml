@@ -13,7 +13,7 @@ jobs:
     resource_class: small
     executor:
       name: php/default
-      tag: "7.4"
+      tag: "8.3"
     steps:
       - checkout
       - php/install-composer:
