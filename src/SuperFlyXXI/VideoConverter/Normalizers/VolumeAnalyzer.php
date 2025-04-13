@@ -36,7 +36,13 @@ class VolumeAnalyzer
             "output" => $out
         ]);
         $out = implode(array_slice($out, - 12));
+        self::$log->debug("output after implode", [
+            "output" => $out
+        ]);
         $json = json_decode($out, true);
+        self::$log->debug("json decoded", [
+            "json" => $json
+        ]);
         return $json;
     }
 }
