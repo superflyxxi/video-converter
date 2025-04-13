@@ -35,7 +35,7 @@ class VolumeAnalyzer
         self::$log->debug("Command output", [
             "output" => $out
         ]);
-        // No $out = implode(array_slice($out, - 12));
+        $out = implode(array_slice($out, - 14));
         self::$log->debug("output after implode", [
             "output" => $out
         ]);
