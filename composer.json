@@ -14,7 +14,7 @@
 		"check-format" : "php-cs-fixer fix --config .php-cs-fixer.dist.php src/ tests/"
 	},
 	"require" : {
-		"php" : "^7.4.0",
+		"php" : "^8.3",
 		"monolog/monolog" : "~2"
 	},
 	"require-dev" : {
