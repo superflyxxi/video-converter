@@ -20,7 +20,7 @@ class VolumeAnalyzer
             "index" => $index
         ]);
         $command = 'ffmpeg -stats_period 30 -hide_banner -i "' . $inFileName . '" -map 0:' . $index .
-            ' -filter:a loudnorm=print_format=json -f null - 2>&1';
+            ' -filter:a loudnorm=print_format=json -f null - 2>&1 1>/dev/null';
         self::$log->debug("Analyzing audio for normalization", [
             "filename" => $inFileName,
             "index" => $index
@@ -35,8 +35,20 @@ class VolumeAnalyzer
         self::$log->debug("Command output", [
             "output" => $out
         ]);
-        $out = implode(array_slice($out, - 12));
+        $out = implode(array_slice($out, - 14));
+        self::$log->debug("output after implode", [
+            "output" => $out
+	]);
+	$open = strpos($out, "{");
+	$close = strpos($out, "}");
+        $out = substr($out, $open, $close - $open + 1);
+        self::$log->debug("output after substr", [
+            "output" => $out
+        ]);
         $json = json_decode($out, true);
+        self::$log->debug("json decoded", [
+            "json" => $json
+        ]);
         return $json;
     }
 }
