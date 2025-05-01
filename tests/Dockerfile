@@ -1,4 +1,4 @@
-FROM composer:2.8.7 AS composer
+FROM composer:2.8.8 AS composer
 FROM video-converter-parent
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
