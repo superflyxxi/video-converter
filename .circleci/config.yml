@@ -87,14 +87,12 @@ jobs:
           command: |
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
             export CACHE_ROOT_IMAGE="${CACHE_REGISTRY}/${CACHE_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
-            if ! [[ "<< pipeline.git.branch >>" =~ (main|dev) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:dev,${CACHE_FROM_IMAGES}"
-            elif [[ "<< pipeline.git.branch >>" =~ (dev) ]]; then
+            if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
               export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:latest,${CACHE_FROM_IMAGES}"
             fi
             export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
-            if ! [[ "<< pipeline.git.branch >>" =~ (main|release-.*|dev) ]]; then
-              export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-dev,${TEST_CACHE_FROM_IMAGES}"
+            if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
+              export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-main,${TEST_CACHE_FROM_IMAGES}"
             fi
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
@@ -216,15 +214,11 @@ jobs:
           registry: ${<< parameters.registry-env >>}
           image: ${FINAL_IMAGE_NAME}
           tag: ${DOCKER_TAGS}
-      - unless:
-          condition:
-            equal: [main, << pipeline.git.branch >>]
-          steps:
-            - docker/push:
-                step-name: Pushing test image to desired repo
-                registry: ${<< parameters.registry-env >>}
-                image: ${FINAL_IMAGE_NAME}
-                tag: test-${PRIMARY_DOCKER_TAG}
+      - docker/push:
+          step-name: Pushing test image to desired repo
+          registry: ${<< parameters.registry-env >>}
+          image: ${FINAL_IMAGE_NAME}
+          tag: test-${PRIMARY_DOCKER_TAG}
 
   test-docker:
     parallelism: 5
@@ -371,7 +365,6 @@ workflows:
             branches:
               only:
                 - main
-                - dev
       - publish-docker:
           name: publish-docker-hub
           context: default
