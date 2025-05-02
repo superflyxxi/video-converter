@@ -2,7 +2,7 @@ version: 2
 
 updates:
   - package-ecosystem: "composer"
-    open-pull-requests-limit: 1
+    target-branch: "dependabot"
     directory: "/"
     schedule:
       interval: "monthly"
@@ -15,7 +15,7 @@ updates:
     assignees:
       - superflyxxi
   - package-ecosystem: "docker"
-    open-pull-requests-limit: 1
+    target-branch: "dependabot"
     directory: "/"
     schedule:
       interval: "monthly"
@@ -28,7 +28,7 @@ updates:
     assignees:
       - superflyxxi
   - package-ecosystem: "docker"
-    open-pull-requests-limit: 1
+    target-branch: "dependabot"
     directory: "/tests/"
     schedule:
       interval: "monthly"
