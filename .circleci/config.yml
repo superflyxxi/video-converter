@@ -132,7 +132,7 @@ jobs:
           name: Docker pull cache test images
           command: |
             for I in $(echo ${TEST_CACHE_FROM_IMAGES} | tr "," "\n"); do
-              docker pull $I
+              docker pull $I || true
             done
       - docker/build:
           step-name: Build test image
