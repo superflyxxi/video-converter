@@ -38,9 +38,9 @@ class VolumeAnalyzer
         $out = implode(array_slice($out, - 14));
         self::$log->debug("output after implode", [
             "output" => $out
-	]);
-	$open = strpos($out, "{");
-	$close = strpos($out, "}");
+    ]);
+        $open = strpos($out, "{");
+        $close = strpos($out, "}");
         $out = substr($out, $open, $close - $open + 1);
         self::$log->debug("output after substr", [
             "output" => $out
