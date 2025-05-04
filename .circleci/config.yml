@@ -128,6 +128,12 @@ jobs:
           dockerfile: src/Dockerfile
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: latest
+      - run:
+          name: Docker pull cache test images
+          command: |
+            for I in $(echo ${TEST_CACHE_FROM_IMAGES} | tr "," "\n"); do
+              docker pull $I
+            done
       - docker/build:
           step-name: Build test image
           docker-context: .
