@@ -3,6 +3,7 @@ require_once "Test.php";
 
 final class AudioTest extends Test
 {
+
     public function testChannelMappingOverrideToLowerValue()
     {
         $this->getFile("dvd");
@@ -49,6 +50,18 @@ final class AudioTest extends Test
         $this->normalize("Test Normalize with Copy", null, 6, "copy");
     }
 
+    private function extractNormJson($file, $track)
+    {
+        $out = "";
+        printf("Executing analysis " . $file . "\n");
+        exec("ffmpeg -hide_banner -i \"" . $file . "\" -map 0:" . $track . " -filter:a loudnorm=print_format=json -f null - 2>&1", $out);
+        $out = implode(array_slice($out, - 14));
+        $open = strpos($out, "{");
+        $close = strpos($out, "}");
+        $out = substr($out, $open, $close - $open + 1);
+        return json_decode($out, true);
+    }
+
     public function normalize($title, $channelLayout, $channels, $audioFormat)
     {
         $this->getFile("dvd");
@@ -90,16 +103,9 @@ final class AudioTest extends Test
         // original results "input_i\" : \"-28.59\",","\t\"input_tp\" : \"-8.10\",","\t\"input_lra\" : \"11.70\",","\t\"input_thresh\" : \"-39.21\",
         // normalized measured "input_i" : "-28.62",   "input_tp" : "-8.11",   "input_lra" : "11.70",  "input_thresh" : "-39.22",
         // original aac measure "input_i" : "-23.85",   "input_tp" : "-1.99",   "input_lra" : "8.30",   "input_thresh" : "-34.16",
-        $output = "";
-        printf("Executing analysis 0\n");
-        exec("ffmpeg -hide_banner -i \"" . $this->getDataDir() . DIRECTORY_SEPARATOR . $title . " (2019).dvd.mkv.mkv\" -map 0:0 -filter:a loudnorm=print_format=json -f null - 2>&1", $output);
-        $output = implode(array_slice($output, - 12));
-        $jsonZero = json_decode($output, true);
+        $jsonZero = $this->extractNormJson($this->getDataDir() . DIRECTORY_SEPARATOR . $title . " (2019).dvd.mkv.mkv", 0);
         print_r($jsonZero);
-        printf("Executing analysis 1\n");
-        exec("ffmpeg -hide_banner -i \"" . $this->getDataDir() . DIRECTORY_SEPARATOR . $title . " (2019).dvd.mkv.mkv\" -map 0:1 -filter:a loudnorm=print_format=json -f null - 2>&1", $output);
-        $output = implode(array_slice($output, - 12));
-        $jsonOne = json_decode($output, true);
+        $jsonOne = $this->extractNormJson($this->getDataDir() . DIRECTORY_SEPARATOR . $title . " (2019).dvd.mkv.mkv", 1);
         print_r($jsonOne);
         $this->assertNotEquals($jsonZero["input_i"], $jsonOne["input_i"], "input_i");
         $this->assertNotEquals($jsonZero["input_tp"], $jsonOne["input_tp"], "input_tp");
