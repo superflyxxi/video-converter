@@ -115,7 +115,8 @@ jobs:
           name: Docker pull cache images
           command: |
             for I in $(echo ${CACHE_FROM_IMAGES} | tr "," "\n"); do
-              docker pull $I
+              echo "Pulling $I"
+              docker pull $I || [[ "main" == "<< pipeline.git.branch >>" ]]
             done
       - docker/build:
           step-name: Build parent image
