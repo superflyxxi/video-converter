@@ -54,9 +54,8 @@ docker cp test:/opt/video-converter/testResults ./
 docker rm test
 printf "Test results\n============\n\n"
 cat testResults/testdox.txt
-ls testResults
 mkdir -p testResults/junitResults
-mv -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml || true
+mv -v testResults/clover.xml testResults/clover-${CIRCLE_NODE_INDEX}.xml
 mv -v testResults/junit.xml testResults/junitResults/junit-${CIRCLE_NODE_INDEX}.xml
 tar -cjf testResults/coverage.tar.bz2 testResults/coverage
 rm -rfv testResults/coverage
