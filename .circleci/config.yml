@@ -18,6 +18,10 @@ jobs:
       - checkout
       - php/install-composer:
           install-version: 2.7.1
+      - restore_cache:
+          name: Restoring Composer Caches
+          keys:
+            - composer-{{ checksum "composer.lock" }}
       - php/install-packages
       - run: composer run lint
       - run: composer run check-format -- --dry-run
@@ -30,6 +34,11 @@ jobs:
           command: |
             php ./phar-composer --version
             php ./phar-composer build .
+      - save_cache:
+          name: Saving Composer Caches
+          key: composer-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
       - persist_to_workspace:
           root: ./
           paths:
