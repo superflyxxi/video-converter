@@ -17,7 +17,7 @@ jobs:
     steps:
       - checkout
       - php/install-composer:
-          install-version: 2.7.1
+          install-version: 2.8.9
       - php/install-packages
       - run: composer run lint
       - run: composer run check-format -- --dry-run
