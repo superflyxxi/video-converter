@@ -10,8 +10,6 @@ updates:
       prefix: "fix"
       prefix-development: "ci"
       include: "scope"
-    reviewers:
-      - superflyxxi
     assignees:
       - superflyxxi
   - package-ecosystem: "docker"
@@ -23,8 +21,6 @@ updates:
       prefix: "fix"
       prefix-development: "ci"
       include: "scope"
-    reviewers:
-      - superflyxxi
     assignees:
       - superflyxxi
   - package-ecosystem: "docker"
@@ -36,7 +32,5 @@ updates:
       prefix: "ci"
       prefix-development: "ci"
       include: "scope"
-    reviewers:
-      - superflyxxi
     assignees:
       - superflyxxi
