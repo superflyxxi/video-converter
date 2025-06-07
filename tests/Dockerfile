@@ -3,19 +3,19 @@ FROM video-converter-parent
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG TEST_SAMPLE_DOMAIN
-ENV DATA_DIR=/data \
-	TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples" \
-	XDEBUG_MODE=coverage
+ENV DATA_DIR=/data
+WORKDIR ${DATA_DIR}
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends php8.3-xml php8.3-mbstring curl php-xdebug && \
-	apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-	mkdir -m 777 "${DATA_DIR}"
+	apt-get clean -y && rm -rf /var/lib/apt/lists/* 
 
-ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml", "--verbose"]
+ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml"]
 CMD [ "/opt/video-converter/tests" ]
-WORKDIR ${DATA_DIR}
 
+ARG TEST_SAMPLE_DOMAIN
+ENV	TEST_SAMPLE_BASE_URL="https://${TEST_SAMPLE_DOMAIN}/samples" \
+	XDEBUG_MODE=coverage
+RUN chmod 777 "${DATA_DIR}"
 RUN curl --fail -k -L "${TEST_SAMPLE_BASE_URL}/DVD_Sample.mkv" -o "${DATA_DIR}/dvd.mkv"
 RUN curl --fail -k -L "${TEST_SAMPLE_BASE_URL}/Bluray_Sample.mkv" -o "${DATA_DIR}/bluray.mkv"
 
