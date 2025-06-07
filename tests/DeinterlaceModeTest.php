@@ -1,7 +1,7 @@
 <?php
-require_once "Test.php";
+require_once "TestSetup.php";
 
-final class DeinterlaceModeTest extends Test
+final class DeinterlaceModeTest extends TestSetup
 {
     public function dataProvider(): array
     {

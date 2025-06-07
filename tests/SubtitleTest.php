@@ -1,7 +1,7 @@
 <?php
-require_once "Test.php";
+require_once "TestSetup.php";
 
-final class SubtitleTest extends Test
+final class SubtitleTest extends TestSetup
 {
     public function sourceFormats(): array
     {
