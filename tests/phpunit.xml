@@ -1,4 +1,9 @@
-<phpunit testdox="true" noInteraction="true" cacheResult="false">
+<phpunit testdox="true" cacheResult="false">
+	<source>
+		<include>
+			<directory>../src</directory>
+		</include>
+	</source>
 	<php>
 		<includePath>/opt/video-converter/src</includePath>
 		<includePath>/opt/video-converter/tests</includePath>
@@ -14,9 +19,6 @@
 			<html outputDirectory="../testResults/coverage" />
 			<clover outputFile="../testResults/clover.xml" />
 		</report>
-		<include>
-			<directory suffix=".php">../src/</directory>
-		</include>
 	</coverage>
 	<testsuites>
 		<testsuite name="all">
