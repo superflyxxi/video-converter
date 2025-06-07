@@ -42,7 +42,7 @@ docker run --name test -d \
 sleep 2s
 until [[ "$( docker container inspect -f '{{.State.Running}}' test )" == "false" ]];
 do
-	printf "Current Test: %s; %s\n" "$(docker exec test tail -n1 /opt/video-converter/testResults/testdox.txt)" "$(docker logs -n 1 test)"
+	docker logs -n 1 test
 	sleep ${SLEEPTIME:-30s}
 done
 EXIT_CODE=$(docker inspect test | grep "ExitCode\"" | sed 's/.*: \([0-9]\+\).*/\1/g')
