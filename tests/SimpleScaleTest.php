@@ -1,7 +1,7 @@
 <?php
-require_once "Test.php";
+require_once "TestSetup.php";
 
-final class SimpleScaleTest extends Test
+final class SimpleScaleTest extends TestSetup
 {
     public function scaling(): array
     {

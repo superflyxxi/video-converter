@@ -1,7 +1,7 @@
 <?php
-require_once "Test.php";
+require_once "TestSetup.php";
 
-final class DeinterlaceDetectionTest extends Test
+final class DeinterlaceDetectionTest extends TestSetup
 {
     public function probeModes(): array
     {
