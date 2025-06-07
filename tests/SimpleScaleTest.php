@@ -1,9 +1,10 @@
 <?php
 require_once "TestSetup.php";
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class SimpleScaleTest extends TestSetup
 {
-    public function scaling(): array
+    public static function scaling(): array
     {
         return [
             "Upscale" => [
@@ -19,11 +20,7 @@ final class SimpleScaleTest extends TestSetup
         ];
     }
 
-    /**
-     *
-     * @test
-     * @dataProvider scaling
-     */
+    #[DataProvider('scaling')]
     public function testScaling($factor, $height, $width)
     {
         $this->getFile("dvd");
