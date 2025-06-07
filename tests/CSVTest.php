@@ -2,9 +2,9 @@
 /*
  * Tests when no input is given. It should product results for the file as expected.
  */
-require_once "Test.php";
+require_once "TestSetup.php";
 
-final class CSVTest extends Test
+final class CSVTest extends TestSetup
 {
     public function test_Running_Against_CSV()
     {

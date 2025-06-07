@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 use SuperFlyXXI\VideoConverter\Options;
 use SuperFlyXXI\VideoConverter\RipVideo;
 
-abstract class Test extends TestCase
+abstract class TestSetup extends TestCase
 {
     protected function getDataDir()
     {
