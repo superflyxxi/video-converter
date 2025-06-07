@@ -1,9 +1,10 @@
 <?php
 require_once "TestSetup.php";
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class DeinterlaceModeTest extends TestSetup
 {
-    public function dataProvider(): array
+    public static function dataProvider(): array
     {
         return [
             "doubleFramerate" => [
@@ -26,11 +27,7 @@ final class DeinterlaceModeTest extends TestSetup
         $this->assertTrue(true, "Already covered by auto-detection tests");
     }
 
-    /**
-     *
-     * @test
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testDeinterlaceModes($mode, $expectedFramerate)
     {
         $this->getFile("dvd");
