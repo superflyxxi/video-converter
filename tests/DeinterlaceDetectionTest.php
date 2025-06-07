@@ -1,9 +1,10 @@
 <?php
 require_once "TestSetup.php";
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class DeinterlaceDetectionTest extends TestSetup
 {
-    public function probeModes(): array
+    public static function probeModes(): array
     {
         return [
             "probe" => [
@@ -12,15 +13,11 @@ final class DeinterlaceDetectionTest extends TestSetup
             "idet" => [
                 "check-idet"
             ]
-        ];
+    ];
     }
 
-    /**
-     *
-     * @test
-     * @dataProvider probeModes
-     */
-    public function testAutoDeinterlace($check)
+    #[DataProvider('probeModes')]
+    public function testAutoDeinterlace($check): void
     {
         $this->getFile("dvd");
 

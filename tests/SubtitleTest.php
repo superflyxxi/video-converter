@@ -1,9 +1,10 @@
 <?php
 require_once "TestSetup.php";
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class SubtitleTest extends TestSetup
 {
-    public function sourceFormats(): array
+    public static function sourceFormats(): array
     {
         return [
             /* cover by testSrtToAss
@@ -28,11 +29,7 @@ final class SubtitleTest extends TestSetup
         ];
     }
 
-    /**
-     *
-     * @test
-     * @dataProvider sourceFormats
-     */
+    #[DataProvider('sourceFormats')]
     public function testSubtitleConversion($source, $track, $format, $language)
     {
         $this->getFile($source);
