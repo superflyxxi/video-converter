@@ -8,7 +8,7 @@ class InputFile
 {
     public function __construct($filename)
     {
-        $this->filename = $filename;
+        $this->filename = $filename ?? "";
         if (is_dir($filename) || substr($filename, - strlen($filename)) === ".iso") {
             $this->prefix = "bluray:";
         }
@@ -94,6 +94,6 @@ class InputFile
     public function getTemporaryFileNamePrefix()
     {
         $res = null != $this->prefix ? realpath($this->getFileName()) . "-dir-" : $this->getFileName() . "-";
-        return str_replace(DIRECTORY_SEPARATOR, "-", $res);
+        return str_replace(DIRECTORY_SEPARATOR, "-", $res ?? "");
     }
 }

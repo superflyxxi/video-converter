@@ -11,7 +11,7 @@ class RipVideo
 
     public function rip()
     {
-        $envInput = Options::getInputFile();
+        $envInput = Options::getInputFile() ?? "";
         $csvRequest = null;
         if (strcasecmp(substr($envInput, - 4), ".csv") === 0) {
             $csvRequest = new CSVRequest(new SplFileObject($envInput, "r"));

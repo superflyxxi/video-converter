@@ -302,7 +302,7 @@ class Request
 
     public function isHwAccelEncode()
     {
-        return $this->hwaccel && strpos($this->videoFormat, "vaapi");
+        return $this->hwaccel && strpos($this->videoFormat ?? "", "vaapi");
     }
 
     public function isHDR()

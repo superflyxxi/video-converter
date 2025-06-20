@@ -39,7 +39,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                 $filters .= ",scale_vaapi=w=" . $request->videoUpscale * $stream->width . ":h=" .
                     $request->videoUpscale * $stream->height;
             }
-            if (strlen($filters) > 0) {
+            if (strlen($filters ?? "") > 0) {
                 $args = ' -vf "' . substr($filters, 1) . '"' . $args;
             }
             $args .= " " . $request->videoFormat . " -qp 20 -level:v 4";
@@ -66,7 +66,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                 $filters .= ",scale=" . $request->videoUpscale * $stream->width . ":" .
                     $request->videoUpscale * $stream->height;
             }
-            if (strlen($filters) > 0) {
+            if (strlen($filters ?? "") > 0) {
                 $args = ' -vf "' . substr($filters, 1) . '"' . $args;
             }
             $args .= " " . $request->videoFormat . " -crf 20 -level:v 4";
