@@ -7,16 +7,16 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TMP_DIR=/tmp/wip
 
-# PHP
+RUN mkdir -p "${TMP_DIR}" && chmod -R ugo+rw "${TMP_DIR}"
+
+# Most dependencies
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends apt-utils php8.3-cli mkvtoolnix openjdk-17-jre-headless && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Install DBSup2Sub
 ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /opt/
-RUN mkdir -p "${TMP_DIR}" && \
-	chmod -R ugo+rw "${TMP_DIR}" && \
-	chmod ugo+r /opt/BDSup2Sub.jar
+RUN chmod ugo+r /opt/BDSup2Sub.jar
 
 # install tesseract, language packs, and java
 RUN apt-get update && \
