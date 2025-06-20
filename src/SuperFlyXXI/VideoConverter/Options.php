@@ -66,7 +66,7 @@ class Options
         ], [
             "_",
             "__"
-        ], $arg)));
+        ], $arg ?? "")));
         if ($env) {
             return $env;
         }

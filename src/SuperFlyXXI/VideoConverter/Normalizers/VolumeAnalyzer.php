@@ -39,6 +39,7 @@ class VolumeAnalyzer
         self::$log->debug("output after implode", [
             "output" => $out
     ]);
+        $out = $out ?? "";
         $open = strpos($out, "{");
         $close = strpos($out, "}");
         $out = substr($out, $open, $close - $open + 1);
