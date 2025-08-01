@@ -346,6 +346,7 @@ workflows:
           name: validate-dockerfile
           context: default
           dockerfiles: src/Dockerfile:Dockerfile:tests/Dockerfile
+          hadolint-tag: v2.12.0-debian
       - build-docker:
           context: default
           requires:
