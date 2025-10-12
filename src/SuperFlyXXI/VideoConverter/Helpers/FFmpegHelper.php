@@ -138,8 +138,9 @@ class FFmpegHelper
         if ($outputFile->format != null) {
             $finalCommand .= " -f " . $outputFile->format;
         }
-        // -max_interleave_delta 0 to workaround starting new cluster warnings
-        $finalCommand .= " -max_interleave_delta 0 ";
+        // -max_interleave_delta to workaround starting new cluster warnings
+        // default is 10000000 (10 seconds); 0 causes out of memory when dealing with pgs subtitles
+        $finalCommand .= " -max_interleave_delta 120000000 ";
         $finalCommand .= ' "' . $outputFile->getFileName() . '"';
 
         return $finalCommand;
