@@ -59,6 +59,14 @@ class OneAtATimeNormalizer implements Normalizer
         $stream = $oRequest->oInputFile->getAudioStreams()[$index];
         $json = $this->volAnalyzer->analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
+        self::$log->debug("Normalized JSON", [
+            "json" => $json
+    ]);
+        if (null == $json) {
+            self::$log->warning("Missing JSON, skipping normalization");
+            return "";
+        }
+
         $normChannelMap = $this->getNormalizedChannelMap($oRequest, $index, $stream);
 
         $command = ' -map 0:' . $index;
