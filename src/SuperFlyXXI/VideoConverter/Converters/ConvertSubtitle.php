@@ -36,7 +36,7 @@ class ConvertSubtitle
                                 "filename" => $oRequest->oInputFile->getFileName()
                             ]
                         );
-                        $oNewRequest = new Request($oRequest->oInputFile->getFileName());
+                        $oNewRequest = new Request(getcwd() . '/' . $oRequest->oInputFile->getFileName());
                         $oNewRequest->setSubtitleTracks($index);
                         $oNewRequest->subtitleFormat = $oRequest->subtitleFormat;
                         $oNewRequest->setAudioTracks(null);

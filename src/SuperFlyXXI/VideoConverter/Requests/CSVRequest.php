@@ -22,7 +22,7 @@ class CSVRequest
                 self::$log->debug("Creating metadata", [
                     "metadata" => $data
                 ]);
-                $req = Request::newInstanceFromEnv($data["filename"]);
+                $req = Request::newInstanceFromEnv(getcwd() . '/' . $data["filename"]);
                 $this->arrConvertFiles[] = $req;
                 foreach (array_keys($data) as $key) {
                     $value = $data[$key];

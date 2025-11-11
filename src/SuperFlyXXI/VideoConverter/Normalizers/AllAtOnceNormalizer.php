@@ -24,7 +24,7 @@ class AllAtOnceNormalizer implements Normalizer
         $stream = $oRequest->oInputFile->getAudioStreams()[$index];
         $json = $this->volAnalyzer->analyzeAudio($oRequest->oInputFile->getFileName(), $index);
 
-        $request = new Request($oRequest->oInputFile->getFileName());
+        $request = new Request(getcwd() . '/' . $oRequest->oInputFile->getFileName());
         $request->setAudioTracks($index);
         $request->audioFormat = (null == $oRequest->normalizeAudioFormat ? $oRequest->audioFormat: $oRequest->normalizeAudioFormat);
         $request->audioQuality = (null == $oRequest->normalizeAudioQuality ? $oRequest->audioQuality: $oRequest->normalizeAudioQuality);
