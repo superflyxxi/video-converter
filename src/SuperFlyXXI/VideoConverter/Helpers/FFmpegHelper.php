@@ -19,7 +19,7 @@ class FFmpegHelper
     public static function probe(InputFile $inputFile): array
     {
         if (! array_key_exists($inputFile->getFileName(), self::$probeCache)) {
-            $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "' . $inputFile->getPrefix() .
+            $command = 'ffprobe -v quiet -print_format json -show_format -show_streams "file://' . $inputFile->getPrefix() .
                 $inputFile->getFileName() . '"';
             self::$log->info("Executing ffprobe", [
                 "command" => $command
@@ -56,7 +56,7 @@ class FFmpegHelper
         self::$log->info("Checking for interlacing", [
             "filename" => $inputFile->getFileName()
         ]);
-        $args = '-i "' . $inputFile->getFileName()
+        $args = '-i "file://' . $inputFile->getFileName()
                 . '" -ss 00:05:00 -to 00:10:00 -vf idet -f rawvideo -y /dev/null 2>&1';
         $command = "ffmpeg " . $args;
         self::$log->info("Checking for interlace", [
@@ -121,7 +121,7 @@ class FFmpegHelper
 
         // generate input args
         foreach ($listRequests as $tmpRequest) {
-            $finalCommand .= ' -i "' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() .
+            $finalCommand .= ' -i "file://' . $tmpRequest->oInputFile->getPrefix() . $tmpRequest->oInputFile->getFileName() .
                 '" ';
         }
 
@@ -141,7 +141,7 @@ class FFmpegHelper
         // -max_interleave_delta to workaround starting new cluster warnings
         // default is 10000000 (10 seconds); 0 causes out of memory when dealing with pgs subtitles
         $finalCommand .= " -max_interleave_delta 120000000 ";
-        $finalCommand .= ' "' . $outputFile->getFileName() . '"';
+        $finalCommand .= ' "file://' . $outputFile->getFileName() . '"';
 
         return $finalCommand;
     }
