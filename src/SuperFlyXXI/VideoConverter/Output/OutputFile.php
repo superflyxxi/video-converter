@@ -30,7 +30,7 @@ class OutputFile
         if (null != $this->envOutput) {
             return $this->envOutput;
         }
-        $out = $this->title;
+        $out = getcwd() . '/' . $this->title;
         if (null != $this->year) {
             $out .= " (" . $this->year . ")";
         }
