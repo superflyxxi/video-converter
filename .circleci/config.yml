@@ -19,12 +19,20 @@ jobs:
       - php/install-composer:
           install-version: 2.8.12
       - php/install-packages
-      - run: composer run lint
-      - run: composer run check-format -- --dry-run
-      - run: rm -rvf vendor
+      - run: 
+          name: Lint
+          command: composer run lint
+      - run: 
+          name: Check format
+          command: composer run check-format -- --dry-run
+      - run: 
+          name: Cleanup dependencies
+          command: rm -rvf vendor
       - php/install-packages:
           install-flags: "--no-interaction --prefer-dist --no-dev"
-      - run: curl -o phar-composer -JL "https://github.com/clue/phar-composer/releases/download/v1.4.0/phar-composer-1.4.0.phar"
+      - run:
+          name: Download composer
+          command: curl -o phar-composer -JL "https://github.com/clue/phar-composer/releases/download/v1.4.0/phar-composer-1.4.0.phar"
       - run:
           name: Build phar
           command: |
