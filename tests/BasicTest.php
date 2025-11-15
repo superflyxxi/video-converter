@@ -12,7 +12,7 @@ final class BasicTest extends TestSetup
         $return = $this->ripvideo(
             null,
             [
-                "--title" => "Test No Input",
+                "--title" => "Test: No Input",
                 "--year" => 2019,
                 "--audio-format" => "copy",
                 "--video-format" => "copy",
@@ -22,7 +22,7 @@ final class BasicTest extends TestSetup
 
         $this->assertEquals(0, $return, "Exit status not expected");
 
-        $probe = $this->probe("Test No Input (2019).dvd.mkv.mkv", true);
+        $probe = $this->probe("Test: No Input (2019).dvd.mkv.mkv", true);
 
         $this->assertEquals("video", $probe["streams"][0]["codec_type"], "Stream 0 code_type");
         $this->assertEquals("mpeg2video", $probe["streams"][0]["codec_name"], "Stream 0 codec");
@@ -37,7 +37,7 @@ final class BasicTest extends TestSetup
         $this->assertEquals("dvd_subtitle", $probe["streams"][3]["codec_name"], "Stream 3 codec");
         $this->assertEquals("fre", $probe["streams"][3]["tags"]["language"], "Stream 3 language");
         $this->assertArrayNotHasKey(4, $probe["streams"], "Stream 4 exists");
-        $this->assertEquals("Test No Input", $probe["format"]["tags"]["title"], "Metadata title");
+        $this->assertEquals("Test: No Input", $probe["format"]["tags"]["title"], "Metadata title");
         $this->assertEquals("2019", $probe["format"]["tags"]["YEAR"], "Metadata YEAR");
         $this->assertArrayNotHasKey("SEASON", $probe["format"]["tags"], "Metadata SEASON exists");
         $this->assertArrayNotHasKey("EPISODE", $probe["format"]["tags"], "Metadata EPISODE exists");

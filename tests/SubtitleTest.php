@@ -38,7 +38,7 @@ final class SubtitleTest extends TestSetup
             $source . ".mkv",
             [
                 "--disable-postfix" => true,
-                "--title" => "Test Convert $source-$track Subtitle to $format",
+                "--title" => "Test: Convert $source-$track Subtitle to $format",
                 "--video-tracks" => - 1,
                 "--audio-tracks" => - 1,
                 "--subtitle-tracks" => $track,
@@ -49,14 +49,14 @@ final class SubtitleTest extends TestSetup
 
         $this->assertEquals(0, $return, "ripvideo exit code");
 
-        $probe = $this->probe("Test Convert $source-$track Subtitle to $format (2019).mkv");
+        $probe = $this->probe("Test: Convert $source-$track Subtitle to $format (2019).mkv");
 
         $this->assertEquals("subtitle", $probe["streams"][0]["codec_type"], "Stream 0 codec_type");
         $this->assertEquals($format, $probe["streams"][0]["codec_name"], "Stream 0 codec");
         $this->assertEquals($language, $probe["streams"][0]["tags"]["language"], "Stream 0 language");
         $this->assertArrayNotHasKey(1, $probe["streams"], "Stream 2 exists");
         $this->assertEquals(
-            "Test Convert $source-$track Subtitle to $format",
+            "Test: Convert $source-$track Subtitle to $format",
             $probe["format"]["tags"]["title"],
             "Metadata title"
         );
