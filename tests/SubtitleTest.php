@@ -106,7 +106,7 @@ final class SubtitleTest extends TestSetup
         $this->testSubtitleConversion("dvd", $track, "subrip", "eng");
 
         $return = $this->ripvideo(
-            "Test Convert dvd-$track Subtitle to subrip (2019).mkv",
+            "Test: Convert dvd-$track Subtitle to subrip (2019).mkv",
             [
                 "--disable-postfix" => true,
                 "--title" => "Test Convert to Ass",
