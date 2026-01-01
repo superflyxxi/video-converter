@@ -1,4 +1,4 @@
-ARG COMPOSER_VERSION
+ARG COMPOSER_VERSION=2.9.2
 FROM composer:$COMPOSER_VERSION AS composer
 FROM video-converter-parent
 LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
