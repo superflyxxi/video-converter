@@ -1,5 +1,9 @@
 version: 2.1
 
+variables:
+  composer-version: &composer-version '2.9.2'
+  php-version: &php-version '8.3'
+
 orbs:
   docker: circleci/docker@2
   node: circleci/node@5
@@ -13,11 +17,11 @@ jobs:
     resource_class: small
     executor:
       name: php/default
-      tag: "8.3"
+      tag: *php-version
     steps:
       - checkout
       - php/install-composer:
-          install-version: 2.8.12
+          install-version: *composer-version
       - php/install-packages
       - run: 
           name: Lint
@@ -64,7 +68,10 @@ jobs:
   build-docker:
     resource_class: small
     docker:
-      - image: cimg/base:stable 
+      - image: cimg/base:stable
+    environment:
+      PHP_VERSION: *php-version
+      COMPOSER_VERSION: *composer-version
     steps:
       - when:
           condition:
@@ -131,6 +138,7 @@ jobs:
           dockerfile: Dockerfile
           image: ${CIRCLE_PROJECT_REPONAME}-parent
           tag: latest
+          extra_build_args: "--build-arg PHP_VERSION=${PHP_VERSION}"
           cache_from: ${CACHE_FROM_IMAGES}
       - docker/build:
           step-name: Build docker image
@@ -151,7 +159,7 @@ jobs:
           image: test-${CIRCLE_PROJECT_REPONAME}
           tag: latest
           cache_from: ${TEST_CACHE_FROM_IMAGES}
-          extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN}
+          extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
       - run:
           name: Run sanity test
           command: |
