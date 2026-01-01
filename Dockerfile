@@ -10,7 +10,7 @@ ENV TMP_DIR=/tmp/wip
 RUN mkdir -p "${TMP_DIR}" && chmod -R ugo+rw "${TMP_DIR}"
 
 # Most dependencies
-ARG PHP_VERSION
+ARG PHP_VERSION=8.3
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends apt-utils php${PHP_VERSION}-cli mkvtoolnix openjdk-21-jre-headless && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
