@@ -292,7 +292,8 @@ jobs:
       name: node/default
       tag: '16.5.0'
     steps:
-      - checkout
+      - checkout:
+          method: full
       - attach_workspace:
           at: .
       - run:
