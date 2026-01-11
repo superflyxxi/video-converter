@@ -316,34 +316,24 @@ jobs:
     resource_class: small
     executor:
       name: node/default
-    parameters:
-      prerelease:
-        description: Whether it's a pre-release and not actually release.
-        type: boolean
-        default: false
     steps:
       - checkout
       - run: npm install -D @semantic-release/exec
       - attach_workspace:
           at: /tmp/workspace
-      - when:
-          condition: << parameters.prerelease >>
-          steps:
-            - run:
-                name: Define additional args
-                command: |
-                  echo "ADDITIONAL_ARGS=--dry-run" >> ${BASH_ENV}
       - run:
           name: Semantic-release
           command: |
-            npx semantic-release ${ADDITIONAL_ARGS}
-            if [[ "" == "$(cat version.txt)" ]]; then 
+            npx semantic-release
+            if [[ ! -f version.txt ]] || [[ "" == "$(cat version.txt)" ]]; then 
               printf "%s-%s" ${CIRCLE_BRANCH} ${CIRCLE_SHA1:0:7} | sed 's#/#-#g' > /tmp/workspace/full_version.txt
               printf "${CIRCLE_BRANCH}" | sed 's#/#-#g' > /tmp/workspace/short_version.txt
             else
               cp -v version.txt /tmp/workspace/full_version.txt
               cp -v version.txt /tmp/workspace/short_version.txt
             fi
+            printf "Short version"
+            cat /tmp/workspace/short_version.txt
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -353,10 +343,6 @@ jobs:
 workflows:
   default:
     jobs:
-      - release-notes:
-          name: pre-release
-          context: default
-          prerelease: true
       - build-phar:
           context: default
       - docker/hadolint:
@@ -367,7 +353,6 @@ workflows:
       - build-docker:
           context: default
           requires:
-            - pre-release
             - validate-dockerfile
             - build-phar
       - publish-docker:
@@ -421,7 +406,6 @@ workflows:
       - release-notes:
           name: release-notes
           context: default
-          prerelease: false
           requires:
             - test-docker
             - build-docker
