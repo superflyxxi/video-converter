@@ -377,7 +377,7 @@ workflows:
           docker-username-env: PRIVATE_DOCKER_USERNAME
           docker-password-env: PRIVATE_DOCKER_PASSWORD
           requires:
-            - build-docker
+            - release-notes
       - publish-docker:
           name: publish-docker-ghcr
           context: default
@@ -385,7 +385,7 @@ workflows:
           docker-username-env: GHCR_USERNAME
           docker-password-env: GHCR_TOKEN
           requires:
-            - test-docker
+            - release-notes
           filters:
             branches:
               only:
@@ -397,7 +397,7 @@ workflows:
           docker-username-env: DOCKER_IO_USERNAME
           docker-password-env: DOCKER_IO_PASSWORD
           requires:
-            - test-docker
+            - release-notes
           filters:
             branches:
               only:
@@ -423,4 +423,5 @@ workflows:
           context: default
           prerelease: false
           requires:
-            - publish-docker-private
+            - test-docker
+            - build-docker
