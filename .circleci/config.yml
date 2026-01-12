@@ -73,84 +73,25 @@ jobs:
       PHP_VERSION: *php-version
       COMPOSER_VERSION: *composer-version
     steps:
-      - when:
-          condition:
-            equal: [main, << pipeline.git.branch >>]
-          steps:
-          - setup_remote_docker:
-              docker_layer_caching: false
-      - unless:
-          condition:
-            equal: [main, << pipeline.git.branch >>]
-          steps:
-          - setup_remote_docker:
-              docker_layer_caching: true
-      - run:
-          name: Define cache env variables
-          command: |
-            echo "CACHE_REGISTRY=${GHCR_REGISTRY}" >> ${BASH_ENV}
-            echo "CACHE_USERNAME=${GHCR_USERNAME}" >> ${BASH_ENV}
-            echo "CACHE_PASSWORD=${GHCR_TOKEN}" >> ${BASH_ENV}
+      - setup_remote_docker:
+          docker_layer_caching: true
       - attach_workspace:
           at: /tmp/workspace
       - checkout
       - run:
           name: Move phar to docker dir
           command: cp -v /tmp/workspace/video-converter.phar ./
-      - run:
-          name: Custom enviroment variables
-          command: |
-            export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
-            export CACHE_ROOT_IMAGE="${CACHE_REGISTRY}/${CACHE_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
-            if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:latest,${CACHE_FROM_IMAGES}"
-            fi
-            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
-            if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
-              export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-main,${TEST_CACHE_FROM_IMAGES}"
-            fi
-            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
-            if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
-            #VERSION="1.2.3"; PREV=${VERSION:0:1}; for A in $(echo ${VERSION:1} | tr "." "\n"); do NOW="$PREV.$A"; echo A=$A; echo PREV=${PREV}; echo caching=${NOW}; PREV=$NOW; done
-              PREV=${PRIMARY_DOCKER_TAG:0:1}
-              for A in $(echo ${PRIMARY_DOCKER_TAG:1} | tr "." "\n"); do 
-                NOW="$PREV.$A"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:${NOW}"
-                PREV=$NOW
-              done
-            fi
-            echo "export CACHE_FROM_IMAGES=${CACHE_FROM_IMAGES}" >> ${BASH_ENV}
-            echo "export TEST_CACHE_FROM_IMAGES=${TEST_CACHE_FROM_IMAGES}" >> ${BASH_ENV}
-            cat ${BASH_ENV}
-      - docker/check:
-          registry: ${CACHE_REGISTRY}
-          docker-username: CACHE_USERNAME
-          docker-password: CACHE_PASSWORD
-      - run:
-          name: Docker pull cache images
-          command: |
-            for I in $(echo ${CACHE_FROM_IMAGES} | tr "," "\n"); do
-              echo "Pulling $I"
-              docker pull $I || [[ "main" == "<< pipeline.git.branch >>" ]]
-            done
       - docker/build:
           step-name: Build parent image
           dockerfile: Dockerfile
           image: ${CIRCLE_PROJECT_REPONAME}-parent
           tag: latest
           extra_build_args: "--build-arg PHP_VERSION=${PHP_VERSION}"
-          cache_from: ${CACHE_FROM_IMAGES}
       - docker/build:
           step-name: Build docker image
           dockerfile: src/Dockerfile
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: latest
-      - run:
-          name: Docker pull cache test images
-          command: |
-            for I in $(echo ${TEST_CACHE_FROM_IMAGES} | tr "," "\n"); do
-              docker pull $I || true
-            done
       - docker/build:
           step-name: Build test image
           docker-context: .
@@ -158,7 +99,6 @@ jobs:
           dockerfile: tests/Dockerfile
           image: test-${CIRCLE_PROJECT_REPONAME}
           tag: latest
-          cache_from: ${TEST_CACHE_FROM_IMAGES}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
       - run:
           name: Run sanity test
