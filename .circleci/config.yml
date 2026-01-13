@@ -112,6 +112,7 @@ jobs:
           command: |
             docker save -o video-converter-images.tar ${CIRCLE_PROJECT_REPONAME} test-${CIRCLE_PROJECT_REPONAME}
             ls -lha video-converter-images.tar
+            docker images -a
       - persist_to_workspace:
           root: ./
           paths:
