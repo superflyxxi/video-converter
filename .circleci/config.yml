@@ -86,7 +86,7 @@ jobs:
           dockerfile: Dockerfile
           image: ${CIRCLE_PROJECT_REPONAME}-parent
           tag: latest
-          extra_build_args: "--build-arg PHP_VERSION=${PHP_VERSION}"
+          extra_build_args: "--pull --build-arg PHP_VERSION=${PHP_VERSION}"
       - docker/build:
           step-name: Build docker image
           dockerfile: src/Dockerfile
