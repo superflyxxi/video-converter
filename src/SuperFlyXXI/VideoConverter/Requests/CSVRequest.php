@@ -104,6 +104,10 @@ class CSVRequest
                                 $req->videoFormat = $value;
                                 break;
 
+                            case "video-rate-control-mode":
+                                $req->videoRateControlMode = $value;
+                                break;
+
                             case "deinterlace":
                                 $req->setDeinterlace($value);
                                 break;
