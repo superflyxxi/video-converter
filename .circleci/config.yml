@@ -242,8 +242,7 @@ jobs:
     docker:
       - image: cimg/base:stable 
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - attach_workspace:
           at: /tmp/workspace
       - checkout
@@ -263,7 +262,7 @@ jobs:
             export CLASSES=$(echo "${ALL_CLASSES}" | circleci tests split --split-by=timings --timings-type=classname)
             export TESTCASES=$(echo "${ALL_TESTCASES}" | circleci tests split --split-by=timings --timings-type=testname)
             printf "All Testcases=%s\n\nRunning with=%s\n\n" "${ALL_TESTCASES}" "${TESTCASES}"
-            printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
+            #printf "All Classes=%s\n\nRunning with=%s\n\n" "${ALL_CLASSES}" "${CLASSES}"
             if [[ $(echo ${ALL_CLASSES} | wc -w) -eq 0 ]]; then
               echo "Not enough classes. Something's wrong"
               exit 1
