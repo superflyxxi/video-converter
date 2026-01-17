@@ -51,6 +51,7 @@ Option (short) | Description | Default | Example
 `--show-title` | The episode title of the TV show. | | `The One Where They Dance`
 `--video-tracks` | The input video tracks to convert. | `*` | `0`
 `--video-format` | The desired output video format to use. | `libx265` | `hevc_vaapi`
+`--video-rate-control-mode` | The Rate controle mode for video. CBR=Constant Bit Rate or QVBR=Quality Variable Bit Rate (Hardware required). | `cbr` | `qvbr`
 `--video-upscale` | The upscale multiplier to use for uscaling the video. | `1` | `2.25`
 `--hdr` | The input is in HDR and the desired output should also be HDR. | |
 `--deinterlace-mode` | Whether to use fieldmap/decimate which will allow 30fps to 24fps(`00`), double framerate (`01`), or default behavior of deinterlacing while keeping the same framerate (`02`). | `02` | `00`

@@ -72,6 +72,8 @@ class Request
 
     public $videoUpscale = 1;
 
+    public $videoRateControlMode = "crf";
+
     public $customFilter = null;
 
     public function __construct($filename)
@@ -96,6 +98,7 @@ class Request
         $req->setVideoTracks(Options::get("video-tracks", "*"));
         $req->videoFormat = Options::get("video-format", "libx265");
         $req->videoUpscale = Options::get("video-upscale", 1);
+        $req->videoRateControlMode = Options::get("video-rate-control-mode", "cbr");
         // deinterlace = true, false, check-probe, check-idet
         // deinterlace-mode = 00, 01, 02
         $req->deinterlaceMode = Options::get("deinterlace-mode", "02");
