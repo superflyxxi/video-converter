@@ -72,7 +72,7 @@ class Request
 
     public $videoUpscale = 1;
 
-    public $videoRateControlMode = "crf";
+    public $videoRateControlMode = "cbr";
 
     public $customFilter = null;
 

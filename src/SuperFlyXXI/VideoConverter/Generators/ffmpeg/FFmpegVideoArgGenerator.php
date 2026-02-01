@@ -42,8 +42,9 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
             if (strlen($filters ?? "") > 0) {
                 $args = ' -vf "' . substr($filters, 1) . '"' . $args;
             }
-            $args .= " " . $request->videoFormat . " -qp 20 -level:v 4";
-            if ($request->videoRateControlMode == "qvbr") {
+            $args .= " " . $request->videoFormat;
+	    if ($request->videoRateControlMode == "qvbr") {
+                // only for amd hardware
                 $args .= " -rc qvbr -qvbr_quality_level 20";
             } else {
                 $args .= " -qp 20";
