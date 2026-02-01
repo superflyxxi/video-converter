@@ -37,3 +37,9 @@ RUN DIR=$(mktemp -d) && cd "${DIR}" && \
 	apt-get purge -y ${BUILD_DEPS} && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
 	rm -rf "${DIR}"
+
+# Workaround issue with VAAPI drivers
+RUN apt-get update &&  \
+	apt-get install -y --no-install-recommends vainfo && \
+	apt-get install -y --no-install-recommends va-driver-all && \
+	apt-get clean -y && rm -rf /var/lib/apt/lists/*
