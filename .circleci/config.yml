@@ -108,12 +108,13 @@ jobs:
           tag: latest
           extra_build_args: "--build-arg PHP_VERSION=${PHP_VERSION}"
           cache_from: ${MAIN_CACHE_FROM}
-          cache_to: ${MAIN_CACHE_TO}
       - docker/build:
           step_name: Build docker image
           dockerfile: src/Dockerfile
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: latest
+          cache_from: ${MAIN_CACHE_FROM}
+          cache_to: ${MAIN_CACHE_TO}
       - docker/build:
           step_name: Build test image
           docker_context: .
