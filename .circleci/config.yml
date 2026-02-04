@@ -100,30 +100,53 @@ jobs:
             echo "export MAIN_CACHE_FROM=type=registry,ref=${CACHE_IMAGE}:main" >> ${BASH_ENV}
             echo "export TEST_CACHE_FROM=type=registry,ref=${CACHE_IMAGE}:test" >> ${BASH_ENV}
             cat ${BASH_ENV} | grep "CACHE"
-      - docker/build:
-          step_name: Build parent image
-          dockerfile: Dockerfile
-          docker_context: ${PARENT_DOCKER_CONTEXT}
-          image: ${CIRCLE_PROJECT_REPONAME}-parent
-          tag: latest
-          extra_build_args: "--build-arg PHP_VERSION=${PHP_VERSION}"
-          cache_from: ${MAIN_CACHE_FROM}
-          cache_to: ${MAIN_CACHE_TO}
-      - docker/build:
-          step_name: Build docker image
-          dockerfile: src/Dockerfile
-          image: ${CIRCLE_PROJECT_REPONAME}
-          tag: latest
-      - docker/build:
-          step_name: Build test image
-          docker_context: .
-          path: .
-          dockerfile: tests/Dockerfile
-          image: test-${CIRCLE_PROJECT_REPONAME}
-          tag: latest
-          cache_from: ${TEST_CACHE_FROM}
-          cache_to: ${TEST_CACHE_TO}
-          extra_build_args: --build-arg PHP_VERSION=${PHP_VERSION} --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
+      - run:
+          name: Setup Buildx Env
+          command: |
+            docker buildx create --name cci --use
+            docker buildx use cci
+      - run:
+          name: Build parent image
+          command: |
+            if [[ "" != "${MAIN_CACHE_TO}" ]]; then
+              export CACHE_TO="--cache-to ${MAIN_CACHE_TO}"
+            fi
+            docker buildx build -f Dockerfile -t video-converter-parent --build-arg PHP_VERSION=${PHP_VERSION} --cache-from ${MAIN_CACHE_FROM} ${CACHE_TO} $(mktemp -d)
+      - run:
+          name: Build code image
+          command: |
+            docker buildx build -f src/Dockerfile -t video-converter --load .
+      - run:
+          name: Build test image
+          command: |
+            if [[ "" != "${TEST_CACHE_TO}" ]]; then
+              export CACHE_TO="--cache-to ${TEST_CACHE_TO}"
+            fi
+            docker buildx build -f tests/Dockerfile -t test-video-converter --build-arg PHP_VERSION=${PHP_VERSION} --cache-from ${TEST_CACHE_FROM} ${CACHE_TO} --build-arg PHP_VERSION=${PHP_VERSION} --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION} --load .
+      #- docker/build:
+      #    step_name: Build parent image
+      #    dockerfile: Dockerfile
+      #    docker_context: ${PARENT_DOCKER_CONTEXT}
+      #    image: ${CIRCLE_PROJECT_REPONAME}-parent
+      #    tag: latest
+      #    extra_build_args: "--build-arg PHP_VERSION=${PHP_VERSION}"
+      #    cache_from: ${MAIN_CACHE_FROM}
+      #    cache_to: ${MAIN_CACHE_TO}
+      #- docker/build:
+      #    step_name: Build docker image
+      #    dockerfile: src/Dockerfile
+      #    image: ${CIRCLE_PROJECT_REPONAME}
+      #    tag: latest
+      #- docker/build:
+      #    step_name: Build test image
+      #    docker_context: .
+      #    path: .
+      #    dockerfile: tests/Dockerfile
+      #    image: test-${CIRCLE_PROJECT_REPONAME}
+      #    tag: latest
+      #    cache_from: ${TEST_CACHE_FROM}
+      #    cache_to: ${TEST_CACHE_TO}
+      #    extra_build_args: --build-arg PHP_VERSION=${PHP_VERSION} --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
       - run:
           name: Run sanity test
           command: |
