@@ -16,8 +16,7 @@ RUN apt-get update && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Install DBSup2Sub
-ADD "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /opt/
-RUN chmod ugo+r /opt/BDSup2Sub.jar
+ADD --chmod=444 "https://raw.githubusercontent.com/wiki/mjuhasz/BDSup2Sub/downloads/BDSup2Sub.jar" /opt/
 
 # install tesseract, language packs, and java
 RUN apt-get update && \
