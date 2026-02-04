@@ -202,11 +202,16 @@ jobs:
           registry: ${<< parameters.registry-env >>}
           image: ${FINAL_IMAGE_NAME}
           tag: ${DOCKER_TAGS}
-      - docker/push:
-          step_name: Pushing test image to desired repo
-          registry: ${<< parameters.registry-env >>}
-          image: ${FINAL_IMAGE_NAME}
-          tag: test-${PRIMARY_DOCKER_TAG}
+      - when:
+          condition:
+            not:
+              equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - docker/push:
+                step_name: Pushing test image to desired repo
+                registry: ${<< parameters.registry-env >>}
+                image: ${FINAL_IMAGE_NAME}
+                tag: test-${PRIMARY_DOCKER_TAG}
 
   test-docker:
     parallelism: 5
