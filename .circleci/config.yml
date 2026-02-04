@@ -5,7 +5,7 @@ variables:
   php-version: &php-version '8.3'
 
 orbs:
-  docker: circleci/docker@2
+  docker: circleci/docker@3
   node: circleci/node@5
   php: circleci/php@1
   sonarcloud: sonarsource/sonarcloud@2
@@ -74,16 +74,11 @@ jobs:
       COMPOSER_VERSION: *composer-version
     steps:
       - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Define cache env variables
-          command: |
-            #echo "CACHE_REGISTRY=${GHCR_REGISTRY}" >> ${BASH_ENV}
-            #echo "CACHE_USERNAME=${GHCR_USERNAME}" >> ${BASH_ENV}
-            #echo "CACHE_PASSWORD=${GHCR_TOKEN}" >> ${BASH_ENV}
-            echo "CACHE_REGISTRY=${PRIVATE_DOCKER_REGISTRY}" >> ${BASH_ENV}
-            echo "CACHE_USERNAME=${PRIVATE_DOCKER_USERNAME}" >> ${BASH_ENV}
-            echo "CACHE_PASSWORD=${PRIVATE_DOCKER_TOKEN}" >> ${BASH_ENV}
+          docker_layer_caching: false
+      - docker/check:
+          registry: ${DOCKER_CACHE_REGISTRY}
+          docker_username: DOCKER_CACHE_USERNAME
+          docker_password: DOCKER_CACHE_PASSWORD
       - attach_workspace:
           at: /tmp/workspace
       - checkout
@@ -92,65 +87,40 @@ jobs:
           command: |
             mkdir build
             cp -v /tmp/workspace/video-converter.phar build/
+            echo "export PARENT_DOCKER_CONTEXT=$(mktemp -d)" >> ${BASH_ENV}
       - run:
           name: Custom enviroment variables
           command: |
-            export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g')
-            export CACHE_ROOT_IMAGE="${CACHE_REGISTRY}/${CACHE_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
-            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g')
-            if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:latest ${CACHE_FROM_IMAGES}"
-              export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-main ${TEST_CACHE_FROM_IMAGES}"
-            fi
-            export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
-            if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
-              PREV=${PRIMARY_DOCKER_TAG:0:1}
-              for A in $(echo ${PRIMARY_DOCKER_TAG:1} | tr "." "\n"); do 
-                NOW="$PREV.$A"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES} ${CACHE_ROOT_IMAGE}:${NOW}"
-                PREV=$NOW
-              done
-            fi
-            echo "export CACHE_FROM_IMAGES=${CACHE_FROM_IMAGES}" >> ${BASH_ENV}
-            echo "export TEST_CACHE_FROM_IMAGES=${TEST_CACHE_FROM_IMAGES}" >> ${BASH_ENV}
-            cat ${BASH_ENV}
-      - docker/check:
-          registry: ${CACHE_REGISTRY}
-          docker-username: CACHE_USERNAME
-          docker-password: CACHE_PASSWORD
-      - run:
-          name: Docker pull cache images
-          command: |
-            for I in ${CACHE_FROM_IMAGES}; do
-              echo "Pulling $I"
-              docker pull $I || [[ "main" == "<< pipeline.git.branch >>" ]]
-            done
+            export CACHE_IMAGE="${DOCKER_CACHE_REGISTRY}/caches/${CIRCLE_PROJECT_REPONAME}"
+            #if [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
+              # main branches cache to image
+              echo "export CACHE_TO=type=registry,ref=${CACHE_IMAGE},mode=max" >> ${BASH_ENV}
+            #fi
+            echo "export CACHE_FROM=type=registry,ref=${CACHE_IMAGE}" >> ${BASH_ENV}
+            cat ${BASH_ENV} | grep "CACHE"
       - docker/build:
-          step-name: Build parent image
+          step_name: Build parent image
           dockerfile: Dockerfile
+          docker_context: ${PARENT_DOCKER_CONTEXT}
           image: ${CIRCLE_PROJECT_REPONAME}-parent
           tag: latest
           extra_build_args: "--build-arg PHP_VERSION=${PHP_VERSION}"
-          cache_from: ${CACHE_FROM_IMAGES}
+          cache_from: ${CACHE_FROM}
+          cache_to: ${CACHE_TO}
       - docker/build:
-          step-name: Build docker image
+          step_name: Build docker image
           dockerfile: src/Dockerfile
           image: ${CIRCLE_PROJECT_REPONAME}
           tag: latest
-      - run:
-          name: Docker pull cache test images
-          command: |
-            for I in ${TEST_CACHE_FROM_IMAGES}; do
-              docker pull $I || true
-            done
       - docker/build:
-          step-name: Build test image
-          docker-context: .
+          step_name: Build test image
+          docker_context: .
           path: .
           dockerfile: tests/Dockerfile
           image: test-${CIRCLE_PROJECT_REPONAME}
           tag: latest
-          cache_from: ${TEST_CACHE_FROM_IMAGES}
+          cache_from: ${CACHE_FROM}
+          cache_to: ${CACHE_TO}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
       - run:
           name: Run sanity test
@@ -164,8 +134,6 @@ jobs:
           command: |
             docker save -o video-converter-images.tar ${CIRCLE_PROJECT_REPONAME} test-${CIRCLE_PROJECT_REPONAME}
             ls -lha video-converter-images.tar
-            docker images -a
-            docker system prune -f
       - persist_to_workspace:
           root: ./
           paths:
@@ -211,8 +179,8 @@ jobs:
             cat ${BASH_ENV}
       - docker/check:
           registry: ${<< parameters.registry-env >>}
-          docker-password: << parameters.docker-password-env >>
-          docker-username: << parameters.docker-username-env >>
+          docker_password: << parameters.docker-password-env >>
+          docker_username: << parameters.docker-username-env >>
       - run:
           name: Load docker images
           command: |
@@ -228,12 +196,12 @@ jobs:
             docker tag test-${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry-env >>}/${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
             set +x
       - docker/push:
-          step-name: Pushing image to desired repo
+          step_name: Pushing image to desired repo
           registry: ${<< parameters.registry-env >>}
           image: ${FINAL_IMAGE_NAME}
           tag: ${DOCKER_TAGS}
       - docker/push:
-          step-name: Pushing test image to desired repo
+          step_name: Pushing test image to desired repo
           registry: ${<< parameters.registry-env >>}
           image: ${FINAL_IMAGE_NAME}
           tag: test-${PRIMARY_DOCKER_TAG}
@@ -344,7 +312,6 @@ workflows:
           name: validate-dockerfile
           context: default
           dockerfiles: src/Dockerfile:Dockerfile:tests/Dockerfile
-          hadolint-tag: v2.12.0-debian
       - build-docker:
           context: default
           requires:

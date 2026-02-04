@@ -3,6 +3,7 @@ vendor/
 .phplint-cache
 **/*.phar
 testdox.txt
+build/
 
 # Prettier stuff
 .php-cs-fixer.cache
