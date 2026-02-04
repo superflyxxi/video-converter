@@ -95,22 +95,19 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
+            export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g')
             export CACHE_ROOT_IMAGE="${CACHE_REGISTRY}/${CACHE_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:latest,${CACHE_FROM_IMAGES}"
-            fi
-            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g' | xargs echo | sed 's/ /,/g')
-            if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
-              export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-main,${TEST_CACHE_FROM_IMAGES}"
+              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:latest ${CACHE_FROM_IMAGES}"
+              export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-main ${TEST_CACHE_FROM_IMAGES}"
             fi
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
             if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
-            #VERSION="1.2.3"; PREV=${VERSION:0:1}; for A in $(echo ${VERSION:1} | tr "." "\n"); do NOW="$PREV.$A"; echo A=$A; echo PREV=${PREV}; echo caching=${NOW}; PREV=$NOW; done
               PREV=${PRIMARY_DOCKER_TAG:0:1}
               for A in $(echo ${PRIMARY_DOCKER_TAG:1} | tr "." "\n"); do 
                 NOW="$PREV.$A"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES},${CACHE_ROOT_IMAGE}:${NOW}"
+                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES} ${CACHE_ROOT_IMAGE}:${NOW}"
                 PREV=$NOW
               done
             fi
@@ -124,7 +121,7 @@ jobs:
       - run:
           name: Docker pull cache images
           command: |
-            for I in $(echo ${CACHE_FROM_IMAGES} | tr "," "\n"); do
+            for I in ${CACHE_FROM_IMAGES}; do
               echo "Pulling $I"
               docker pull $I || [[ "main" == "<< pipeline.git.branch >>" ]]
             done
@@ -143,7 +140,7 @@ jobs:
       - run:
           name: Docker pull cache test images
           command: |
-            for I in $(echo ${TEST_CACHE_FROM_IMAGES} | tr "," "\n"); do
+            for I in ${TEST_CACHE_FROM_IMAGES}; do
               docker pull $I || true
             done
       - docker/build:
