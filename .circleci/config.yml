@@ -92,11 +92,11 @@ jobs:
           name: Custom enviroment variables
           command: |
             export CACHE_IMAGE="${DOCKER_CACHE_REGISTRY}/caches/${CIRCLE_PROJECT_REPONAME}"
-            if [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
+            #if [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
               # main branches cache to image
               echo "export MAIN_CACHE_TO=type=registry,ref=${CACHE_IMAGE}:main,mode=max" >> ${BASH_ENV}
               echo "export TEST_CACHE_TO=type=registry,ref=${CACHE_IMAGE}:test,mode=max" >> ${BASH_ENV}
-            fi
+            #fi
             echo "export MAIN_CACHE_FROM=type=registry,ref=${CACHE_IMAGE}:main" >> ${BASH_ENV}
             echo "export TEST_CACHE_FROM=type=registry,ref=${CACHE_IMAGE}:test" >> ${BASH_ENV}
             cat ${BASH_ENV} | grep "CACHE"
