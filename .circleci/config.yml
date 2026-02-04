@@ -78,15 +78,20 @@ jobs:
       - run:
           name: Define cache env variables
           command: |
-            echo "CACHE_REGISTRY=${GHCR_REGISTRY}" >> ${BASH_ENV}
-            echo "CACHE_USERNAME=${GHCR_USERNAME}" >> ${BASH_ENV}
-            echo "CACHE_PASSWORD=${GHCR_TOKEN}" >> ${BASH_ENV}
+            #echo "CACHE_REGISTRY=${GHCR_REGISTRY}" >> ${BASH_ENV}
+            #echo "CACHE_USERNAME=${GHCR_USERNAME}" >> ${BASH_ENV}
+            #echo "CACHE_PASSWORD=${GHCR_TOKEN}" >> ${BASH_ENV}
+            echo "CACHE_REGISTRY=${PRIVATE_DOCKER_REGISTRY}" >> ${BASH_ENV}
+            echo "CACHE_USERNAME=${PRIVATE_DOCKER_USERNAME}" >> ${BASH_ENV}
+            echo "CACHE_PASSWORD=${PRIVATE_DOCKER_TOKEN}" >> ${BASH_ENV}
       - attach_workspace:
           at: /tmp/workspace
       - checkout
       - run:
           name: Move phar to docker dir
-          command: cp -v /tmp/workspace/video-converter.phar ./
+          command: |
+            mkdir build
+            cp -v /tmp/workspace/video-converter.phar build/
       - run:
           name: Custom enviroment variables
           command: |
