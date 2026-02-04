@@ -103,8 +103,9 @@ jobs:
       - run:
           name: Setup Buildx Env
           command: |
-            docker buildx create --name cci --use
-            docker buildx use cci
+            #docker buildx create --name cci --use
+            #docker buildx use cci
+            docker buildx ls
       - run:
           name: Build parent image
           command: |
