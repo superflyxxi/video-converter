@@ -123,7 +123,7 @@ jobs:
           tag: latest
           cache_from: ${TEST_CACHE_FROM}
           cache_to: ${TEST_CACHE_TO}
-          extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
+          extra_build_args: --build-arg PHP_VERSION=${PHP_VERSION} --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
       - run:
           name: Run sanity test
           command: |

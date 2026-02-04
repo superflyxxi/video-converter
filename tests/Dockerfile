@@ -6,8 +6,10 @@ LABEL org.opencontainers.image.authors="SuperFlyXXI <superflyxxi@yahoo.com>"
 ARG DEBIAN_FRONTEND=noninteractive
 ENV DATA_DIR=/data
 WORKDIR ${DATA_DIR}
+
+ARG PHP_VERSION=8.3
 RUN apt-get update && \
-	apt-get install -y --no-install-recommends php8.3-xml php8.3-mbstring curl php-xdebug && \
+	apt-get install -y --no-install-recommends php${PHP_VERSION}-xml php${PHP_VERSION}-mbstring curl php-xdebug && \
 	apt-get clean -y && rm -rf /var/lib/apt/lists/* 
 
 ENTRYPOINT ["/opt/video-converter/vendor/bin/phpunit", "-c", "/opt/video-converter/tests/phpunit.xml"]
