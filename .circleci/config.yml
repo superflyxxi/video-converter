@@ -92,11 +92,13 @@ jobs:
           name: Custom enviroment variables
           command: |
             export CACHE_IMAGE="${DOCKER_CACHE_REGISTRY}/caches/${CIRCLE_PROJECT_REPONAME}"
-            #if [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
+            if [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
               # main branches cache to image
-              echo "export CACHE_TO=type=registry,ref=${CACHE_IMAGE},mode=max" >> ${BASH_ENV}
-            #fi
-            echo "export CACHE_FROM=type=registry,ref=${CACHE_IMAGE}" >> ${BASH_ENV}
+              echo "export MAIN_CACHE_TO=type=registry,ref=${CACHE_IMAGE}:main,mode=max" >> ${BASH_ENV}
+              echo "export TEST_CACHE_TO=type=registry,ref=${CACHE_IMAGE}:test,mode=max" >> ${BASH_ENV}
+            fi
+            echo "export MAIN_CACHE_FROM=type=registry,ref=${CACHE_IMAGE}:main" >> ${BASH_ENV}
+            echo "export TEST_CACHE_FROM=type=registry,ref=${CACHE_IMAGE}:test" >> ${BASH_ENV}
             cat ${BASH_ENV} | grep "CACHE"
       - docker/build:
           step_name: Build parent image
@@ -105,8 +107,8 @@ jobs:
           image: ${CIRCLE_PROJECT_REPONAME}-parent
           tag: latest
           extra_build_args: "--build-arg PHP_VERSION=${PHP_VERSION}"
-          cache_from: ${CACHE_FROM}
-          cache_to: ${CACHE_TO}
+          cache_from: ${MAIN_CACHE_FROM}
+          cache_to: ${MAIN_CACHE_TO}
       - docker/build:
           step_name: Build docker image
           dockerfile: src/Dockerfile
@@ -119,8 +121,8 @@ jobs:
           dockerfile: tests/Dockerfile
           image: test-${CIRCLE_PROJECT_REPONAME}
           tag: latest
-          cache_from: ${CACHE_FROM}
-          cache_to: ${CACHE_TO}
+          cache_from: ${TEST_CACHE_FROM}
+          cache_to: ${TEST_CACHE_TO}
           extra_build_args: --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
       - run:
           name: Run sanity test
