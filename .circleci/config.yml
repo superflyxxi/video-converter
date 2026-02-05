@@ -96,7 +96,7 @@ jobs:
             export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g')
             export CACHE_ROOT_IMAGE="${CACHE_REGISTRY}/${CACHE_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
             if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:ci-inline_cache ${CACHE_FROM_IMAGES}"
+              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:parent-ci-inline_cache ${CACHE_FROM_IMAGES}"
             fi
             export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g')
             if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
@@ -163,7 +163,7 @@ jobs:
       - run:
           name: Export images to tar
           command: |
-            docker save -o video-converter-images.tar ${CIRCLE_PROJECT_REPONAME} test-${CIRCLE_PROJECT_REPONAME}
+            docker save -o video-converter-images.tar ${CIRCLE_PROJECT_REPONAME}-parent ${CIRCLE_PROJECT_REPONAME} test-${CIRCLE_PROJECT_REPONAME}
             ls -lha video-converter-images.tar
             docker images -a
             docker system prune -f
@@ -227,6 +227,7 @@ jobs:
               docker tag ${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry-env >>}/${FINAL_IMAGE_NAME}:${TAG}
             done
             docker tag test-${CIRCLE_PROJECT_REPONAME} ${<< parameters.registry-env >>}/${FINAL_IMAGE_NAME}:test-${PRIMARY_DOCKER_TAG} 
+            docker tag ${CIRCLE_PROJECT_REPONAME}-parent ${<< parameters.registry-env >>}/${FINAL_IMAGE_NAME}:parent-${PRIMARY_DOCKER_TAG} 
             set +x
       - docker/push:
           step-name: Pushing image to desired repo
@@ -238,6 +239,11 @@ jobs:
           registry: ${<< parameters.registry-env >>}
           image: ${FINAL_IMAGE_NAME}
           tag: test-${PRIMARY_DOCKER_TAG}
+      - docker/push:
+          step-name: Pushing parent image to desired repo
+          registry: ${<< parameters.registry-env >>}
+          image: ${FINAL_IMAGE_NAME}
+          tag: parent-${PRIMARY_DOCKER_TAG}
 
   test-docker:
     parallelism: 5
