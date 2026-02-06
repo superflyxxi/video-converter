@@ -93,38 +93,33 @@ jobs:
       - run:
           name: Custom enviroment variables
           command: |
-            export CACHE_FROM_IMAGES=$(grep "^FROM " Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g')
             export CACHE_ROOT_IMAGE="${CACHE_REGISTRY}/${CACHE_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
-            if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
-              export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:parent-ci-inline_cache ${CACHE_FROM_IMAGES}"
-            fi
-            export TEST_CACHE_FROM_IMAGES=$(grep "^FROM " tests/Dockerfile | sed 's/FROM //g' | sed 's/ AS .*$//g')
-            if ! [[ "<< pipeline.git.branch >>" =~ (main) ]]; then
-              export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-ci-inline_cache ${TEST_CACHE_FROM_IMAGES}"
-            fi
+            export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:parent-ci-inline_cache ${CACHE_FROM_IMAGES}"
+            export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-ci-inline_cache ${TEST_CACHE_FROM_IMAGES}"
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
-            if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
-              PREV=${PRIMARY_DOCKER_TAG:0:1}
-              for A in $(echo ${PRIMARY_DOCKER_TAG:1} | tr "." "\n"); do 
-                NOW="$PREV.$A"
-                export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES} ${CACHE_ROOT_IMAGE}:${NOW}"
-                PREV=$NOW
-              done
-            fi
+            #if [[ "main" == "<< pipeline.git.branch >>" ]] && [[ "main" != "${PRIMARY_DOCKER_TAG}" ]]; then
+            #  PREV=${PRIMARY_DOCKER_TAG:0:1}
+            #  for A in $(echo ${PRIMARY_DOCKER_TAG:1} | tr "." "\n"); do 
+            #    NOW="$PREV.$A"
+            #    export CACHE_FROM_IMAGES="${CACHE_FROM_IMAGES} ${CACHE_ROOT_IMAGE}:${NOW}"
+            #    PREV=$NOW
+            #  done
+            #fi
             echo "export CACHE_FROM_IMAGES=\"${CACHE_FROM_IMAGES}\"" >> ${BASH_ENV}
             echo "export TEST_CACHE_FROM_IMAGES=\"${TEST_CACHE_FROM_IMAGES}\"" >> ${BASH_ENV}
-            cat ${BASH_ENV}
+            cat ${BASH_ENV} | grep "CACHE"
       - docker/check:
           registry: ${CACHE_REGISTRY}
           docker-username: CACHE_USERNAME
           docker-password: PRIVATE_DOCKER_PASSWORD
-      - run:
-          name: Docker pull cache images
-          command: |
-            for I in ${CACHE_FROM_IMAGES}; do
-              echo "Pulling $I"
-              docker pull $I || [[ "main" == "<< pipeline.git.branch >>" ]]
-            done
+          #docker-password: CACHE_PASSWORD
+      #- run:
+      #    name: Docker pull cache images
+      #    command: |
+      #      for I in ${CACHE_FROM_IMAGES}; do
+      #        echo "Pulling $I"
+      #        docker pull $I || [[ "main" == "<< pipeline.git.branch >>" ]]
+      #      done
       - docker/build:
           step-name: Build parent image
           dockerfile: Dockerfile
@@ -138,12 +133,12 @@ jobs:
           image: ${CIRCLE_PROJECT_REPONAME}
           extra_build_args: "--cache-to type=inline"
           tag: latest
-      - run:
-          name: Docker pull cache test images
-          command: |
-            for I in ${TEST_CACHE_FROM_IMAGES}; do
-              docker pull $I || true
-            done
+      #- run:
+      #    name: Docker pull cache test images
+      #    command: |
+      #      for I in ${TEST_CACHE_FROM_IMAGES}; do
+      #        docker pull $I || true
+      #      done
       - docker/build:
           step-name: Build test image
           docker-context: .
@@ -209,7 +204,6 @@ jobs:
             fi
             echo "export DOCKER_TAGS=${DOCKER_TAGS}" >> ${BASH_ENV}
             echo "export FINAL_IMAGE_NAME=${<< parameters.docker-username-env >>}/${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
-            cat ${BASH_ENV}
       - docker/check:
           registry: ${<< parameters.registry-env >>}
           docker-password: << parameters.docker-password-env >>
