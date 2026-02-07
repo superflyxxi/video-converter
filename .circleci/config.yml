@@ -82,7 +82,7 @@ jobs:
           name: Move phar to docker dir
           command: cp -v /tmp/workspace/video-converter.phar ./
       - run:
-          name: Custom enviroment variables
+          name: Cache enviroment variables
           command: |
             export CACHE_ROOT_IMAGE="${PRIVATE_DOCKER_REGISTRY}/${PRIVATE_DOCKER_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
             export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:parent-latest ${CACHE_FROM_IMAGES}"
