@@ -5,7 +5,7 @@ variables:
   php-version: &php-version '8.3'
 
 orbs:
-  docker: circleci/docker@2
+  docker: circleci/docker@3
   node: circleci/node@5
   php: circleci/php@1
   sonarcloud: sonarsource/sonarcloud@2
@@ -101,24 +101,24 @@ jobs:
             cat ${BASH_ENV} | grep "CACHE"
       - docker/check:
           registry: ${PRIVATE_DOCKER_REGISTRY}
-          docker-username: PRIVATE_DOCKER_USERNAME
-          docker-password: PRIVATE_DOCKER_PASSWORD
+          docker_username: PRIVATE_DOCKER_USERNAME
+          docker_password: PRIVATE_DOCKER_PASSWORD
       - docker/build:
-          step-name: Build parent image
+          step_name: Build parent image
           dockerfile: Dockerfile
           image: ${CIRCLE_PROJECT_REPONAME}-parent
           tag: latest
           extra_build_args: "--cache-to type=inline --build-arg PHP_VERSION=${PHP_VERSION}"
           cache_from: ${CACHE_FROM_IMAGES}
       - docker/build:
-          step-name: Build docker image
+          step_name: Build docker image
           dockerfile: src/Dockerfile
           image: ${CIRCLE_PROJECT_REPONAME}
           extra_build_args: "--cache-to type=inline"
           tag: latest
       - docker/build:
-          step-name: Build test image
-          docker-context: .
+          step_name: Build test image
+          docker_context: .
           path: .
           dockerfile: tests/Dockerfile
           image: test-${CIRCLE_PROJECT_REPONAME}
@@ -188,8 +188,8 @@ jobs:
             echo "export FINAL_IMAGE_NAME=${<< parameters.docker-username-env >>}/${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
       - docker/check:
           registry: ${<< parameters.registry-env >>}
-          docker-password: << parameters.docker-password-env >>
-          docker-username: << parameters.docker-username-env >>
+          docker_password: << parameters.docker-password-env >>
+          docker_username: << parameters.docker-username-env >>
       - run:
           name: Load docker images
           command: |
@@ -216,12 +216,12 @@ jobs:
               - equal: [ private, << parameters.registry-type >> ]
           steps:
             - docker/push:
-                step-name: Pushing parent image to desired repo
+                step_name: Pushing parent image to desired repo
                 registry: ${<< parameters.registry-env >>}
                 image: ${FINAL_IMAGE_NAME}
                 tag: parent-latest
       - docker/push:
-          step-name: Pushing image to desired repo
+          step_name: Pushing image to desired repo
           registry: ${<< parameters.registry-env >>}
           image: ${FINAL_IMAGE_NAME}
           tag: ${DOCKER_TAGS}
@@ -231,7 +231,7 @@ jobs:
               - equal: [ private, << parameters.registry-type >> ]
           steps:
             - docker/push:
-                step-name: Pushing test image to desired repo
+                step_name: Pushing test image to desired repo
                 registry: ${<< parameters.registry-env >>}
                 image: ${FINAL_IMAGE_NAME}
                 tag: test-${PRIMARY_DOCKER_TAG}
@@ -342,7 +342,6 @@ workflows:
           name: validate-dockerfile
           context: default
           dockerfiles: src/Dockerfile:Dockerfile:tests/Dockerfile
-          hadolint-tag: v2.12.0-debian
       - build-docker:
           context: default
           requires:
