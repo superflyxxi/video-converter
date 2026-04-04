@@ -2,7 +2,7 @@ version: 2
 
 updates:
   - package-ecosystem: "composer"
-    target-branch: "deps"
+    target-branch: "main"
     directory: "/"
     schedule:
       interval: "monthly"
@@ -13,7 +13,7 @@ updates:
     assignees:
       - superflyxxi
   - package-ecosystem: "docker"
-    target-branch: "deps"
+    target-branch: "main"
     directory: "/"
     schedule:
       interval: "monthly"
@@ -24,7 +24,7 @@ updates:
     assignees:
       - superflyxxi
   - package-ecosystem: "docker"
-    target-branch: "deps"
+    target-branch: "main"
     directory: "/tests/"
     schedule:
       interval: "monthly"
