@@ -1,6 +1,6 @@
 testResults/
 vendor/
-.phplint-cache
+.phplint.cache/
 **/*.phar
 testdox.txt
 
