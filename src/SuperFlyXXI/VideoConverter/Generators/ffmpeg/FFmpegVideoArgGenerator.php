@@ -40,7 +40,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                     $request->videoUpscale * $stream->height;
             }
             if (strlen($filters ?? "") > 0) {
-                $args = '-vf "' . substr($filters, 1) . '"' . $args;
+                $args = '-init_hw_device vaapi=vaapi:/dev/dri/renderD128 -filter_hw_device vaapi -vf "' . substr($filters, 1) . '"' . $args;
             }
             $args .= " " . $request->videoFormat . " -qp 20 -level:v 4";
         } else {
