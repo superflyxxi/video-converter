@@ -21,8 +21,8 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                 switch ($request->deinterlaceMode) {
                     default:
                     case "00":
-                        $filters .= ",hwdownload,dejudder,fps=" . $stream->frame_rate .
-                            ",fieldmatch,yadif=deint=interlaced,decimate,hwupload";
+                        $filters .= ",hwdownload,format=nv12,dejudder,fps=" . $stream->frame_rate .
+                            ",fieldmatch,yadif=deint=interlaced,decimate,format=nv12,hwupload";
                         // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
                     case "01":
@@ -40,7 +40,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                     $request->videoUpscale * $stream->height;
             }
             if (strlen($filters ?? "") > 0) {
-                $args = ' -vf "' . substr($filters, 1) . '"' . $args;
+                $args = '-vf "' . substr($filters, 1) . '"' . $args;
             }
             $args .= " " . $request->videoFormat . " -qp 20 -level:v 4";
         } else {
