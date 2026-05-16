@@ -14,17 +14,12 @@ final class DeinterlaceModeTest extends TestSetup
             "sameFramerate" => [
                 "02",
                 "30000/1001"
+            ],
+            "fieldmatch" => [
+                "00",
+                "24000/1001"
             ]
         ];
-    }
-
-    /**
-     *
-     * @test
-     */
-    public function testDeinterlaceMode00()
-    {
-        $this->assertTrue(true, "Already covered by auto-detection tests");
     }
 
     #[DataProvider('dataProvider')]
