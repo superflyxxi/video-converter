@@ -24,7 +24,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                     default:
                     case "00":
                         $filters .= ",hwdownload,format=nv12,fps=" . $stream->frame_rate .
-                            ",fieldmatch,yadif=deint=interlaced,decimate,format=nv12,hwupload";
+                            self::SOFTWARE_DEINTERLACE . ",format=nv12,hwupload";
                         // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
                     case "01":
@@ -52,7 +52,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                     default:
                     case "00":
                         $filters .= ",fps=" . $stream->frame_rate
-                            . ",fieldmatch,yadif=deint=interlaced,decimate";
+                            . self::SOFTWARE_DEINTERLACE;
                         // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
                     case "01":
