@@ -7,6 +7,8 @@ use SuperFlyXXI\VideoConverter\Input\InputFile;
 
 class FFmpegVideoArgGenerator implements FFmpegArgGenerator
 {
+    private const SOFTWARE_DEINTERLACE = ",fieldmatch=order=auto:combmatch=full,yadif=deint=interlaced,decimate";
+
     public function getAdditionalArgs($typeOutTrack, Request $request, $index, $typeInputTrack, Stream $stream)
     {
         $args = " -c:v:" . $typeOutTrack;
@@ -21,7 +23,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                 switch ($request->deinterlaceMode) {
                     default:
                     case "00":
-                        $filters .= ",hwdownload,format=nv12,dejudder,fps=" . $stream->frame_rate .
+                        $filters .= ",hwdownload,format=nv12,fps=" . $stream->frame_rate .
                             ",fieldmatch,yadif=deint=interlaced,decimate,format=nv12,hwupload";
                         // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
@@ -49,7 +51,7 @@ class FFmpegVideoArgGenerator implements FFmpegArgGenerator
                 switch ($request->deinterlaceMode) {
                     default:
                     case "00":
-                        $filters .= ",dejudder,fps=" . $stream->frame_rate
+                        $filters .= ",fps=" . $stream->frame_rate
                             . ",fieldmatch,yadif=deint=interlaced,decimate";
                         // https://ffmpeg.org/ffmpeg-filters.html#fieldmatch
                         break;
