@@ -10,8 +10,6 @@ updates:
       prefix: "fix"
       prefix-development: "ci"
       include: "scope"
-    assignees:
-      - superflyxxi
   - package-ecosystem: "docker"
     target-branch: "main"
     directory: "/"
@@ -21,8 +19,6 @@ updates:
       prefix: "fix"
       prefix-development: "ci"
       include: "scope"
-    assignees:
-      - superflyxxi
   - package-ecosystem: "docker"
     target-branch: "main"
     directory: "/tests/"
@@ -32,5 +28,3 @@ updates:
       prefix: "ci"
       prefix-development: "ci"
       include: "scope"
-    assignees:
-      - superflyxxi
