@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Cache enviroment variables
           command: |
-            export CACHE_ROOT_IMAGE="${PRIVATE_DOCKER_REGISTRY}/${PRIVATE_DOCKER_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+            export CACHE_ROOT_IMAGE="${PRIVATE_DOCKER_REGISTRY}/${CIRCLE_PROJECT_REPONAME}"
             export CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:parent-latest ${CACHE_FROM_IMAGES}"
             export TEST_CACHE_FROM_IMAGES="${CACHE_ROOT_IMAGE}:test-latest ${TEST_CACHE_FROM_IMAGES}"
             export PRIMARY_DOCKER_TAG=$(cat /tmp/workspace/short_version.txt)
@@ -190,7 +190,11 @@ jobs:
             else
               echo "export TEST_DOCKER_TAG=test-${PRIMARY_DOCKER_TAG}" >> ${BASH_ENV}
             fi
-            echo "export FINAL_IMAGE_NAME=${<< parameters.docker-username-env >>}/${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
+            if [[ "private" == << parameters.registry-type >> ]]; then
+              echo "export FINAL_IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
+            else
+              echo "export FINAL_IMAGE_NAME=${<< parameters.docker-username-env >>}/${CIRCLE_PROJECT_REPONAME}" >> ${BASH_ENV}
+            fi
       - docker/check:
           registry: ${<< parameters.registry-env >>}
           docker_password: << parameters.docker-password-env >>
