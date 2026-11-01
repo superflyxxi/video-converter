@@ -1,7 +1,7 @@
 version: 2.1
 
 variables:
-  composer-version: &composer-version '2.9.2'
+  composer-version: &composer-version '2.11.1'
   php-version: &php-version '8.5'
 
 orbs:
