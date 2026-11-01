@@ -2,7 +2,7 @@ version: 2.1
 
 variables:
   composer-version: &composer-version '2.9.2'
-  php-version: &php-version '8.3'
+  php-version: &php-version '8.5'
 
 orbs:
   docker: circleci/docker@3
@@ -124,7 +124,7 @@ jobs:
           image: test-${CIRCLE_PROJECT_REPONAME}
           tag: latest
           cache_from: ${TEST_CACHE_FROM_IMAGES}
-          extra_build_args: --cache-to type=inline --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
+          extra_build_args: --cache-to type=inline --build-arg PHP_VERSION=${PHP_VERSION} --build-arg TEST_SAMPLE_DOMAIN=${TEST_SAMPLE_DOMAIN} --build-arg COMPOSER_VERSION=${COMPOSER_VERSION}
       - run:
           name: Run sanity test
           command: |
