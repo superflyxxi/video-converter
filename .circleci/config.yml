@@ -361,6 +361,10 @@ workflows:
           docker-password-env: PRIVATE_DOCKER_PASSWORD
           requires:
             - release-notes
+          filters:
+            branches:
+              ignore:
+                - /^dependabot.*/ # skip dependanbot
       - publish-docker:
           name: publish-docker-ghcr
           context: default
